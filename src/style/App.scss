@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital@1&display=swap');
+
+.App {
+  display: grid;
+  grid-template-areas:
+    "logo       top-bar"
+    "side-bar   content";
+  grid-template-columns: 8% 92%;
+  grid-template-rows: 8% 92%;
+  height: 100vh;
+  width: 100vw;
+
+  #top-bar {
+    grid-area: top-bar;
+    display: flex;
+    background: #232323;
+    color: #FFFFFF;
+    font-family: 'Nunito Sans', sans-serif;
+    align-items: center;
+  }
+
+  #side-bar {
+    grid-area: side-bar;
+    background: #313131;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #main-content {
+    margin: 1rem;
+    grid-area: content;
+  }
+
+  #fbw-logo-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #232323;
+
+    #fbw-logo {
+      grid-area: logo;
+      height: 1.5rem;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+
