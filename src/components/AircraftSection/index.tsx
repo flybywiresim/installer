@@ -1,12 +1,42 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Select, Typography } from 'antd';
-import { CheckOutlined } from '@ant-design/icons';
+import { DownloadOutlined } from '@ant-design/icons';
 import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, AircraftModelSelect, VersionSelect, EngineOptionsContainer, EngineOption } from './styles';
+import * as fflate from 'fflate';
 
 const { Option } = Select;
 const { Paragraph } = Typography;
 
+type a32nxVersion = {
+    name: string,
+    url: string,
+}
+
 const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
+    const [isDownloading, setIsDownloading] = useState<boolean>(false);
+
+    const versions: a32nxVersion[] = [
+        {
+            name: 'dev',
+            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip'
+        },
+        {
+            name: 'stable',
+            url: '',
+        }
+    ]
+
+    async function downloada32nx(version: a32nxVersion) {
+        // const a32nxBuf = await fetch(version.url).then(
+        //     res => res.arrayBuffer()
+        // );
+//
+        // const a32nxFile = new Uint8Array(a32nxBuf);
+//
+        // const unzippeda32nx = fflate.unzipSync(a32nxFile);
+
+    }
+
     return (
         <Container>
             <HeaderImage>
@@ -24,15 +54,19 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                         <Option value="A321neo">A321neo</Option>
                         <Option value="A319">A319</Option>
                     </AircraftModelSelect>
-                    <VersionSelect defaultValue="0.4.2" style={{ width: 120 }}>
-                        <Option value="dev">dev</Option>
-                        <Option value="0.4.2">0.4.2</Option>
-                        <Option value="0.4.1">0.4.1</Option>
+                    <VersionSelect defaultValue="dev" style={{ width: 120 }}>
+                        {
+                            versions.map(version =>
+                                <Option value={version.name}>{version.name}</Option>
+                            )
+                        }
                     </VersionSelect>
                     <InstallButton
                         type="primary"
+                        icon={<DownloadOutlined />}
+                        loading={isDownloading}
+                        onClick={() => downloada32nx(versions[0])}
                         style={{ background: "#00CB5D", borderColor: "#00CB5D" }}
-                        loading={true}
                     >Install</InstallButton>
                 </SelectionContainer>
             </HeaderImage>
