@@ -84,11 +84,18 @@ export const AircraftMenuItem = styled(MenuItem)`
     height: 73px !important;
     padding-left: 8px !important;
 
-    img {
+    #a320 {
         height: 173px;
         position: absolute;
-        right: -149px;
+        right: -191px;
         top: -62px;
+    }
+
+    #a380 {
+        height: 173px;
+        position: absolute;
+        right: -180px;
+        top: -55px;
     }
 
 `

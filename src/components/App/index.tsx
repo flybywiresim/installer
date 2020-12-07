@@ -10,6 +10,7 @@ import Logo from '../LogoWithText';
 import TailWhite from '../../assets/FBW-Tailwhite.svg'
 // import { ReactComponent as PlaneSVG } from '../../assets/Plane.svg'
 import A320SVG from '../../assets/a32nx_nose.svg'
+import A380SVG from '../../assets/a380x_nose.svg'
 import { Container, PageHeader, HomeMenuItem, PageContent, PageSider, SettingsMenuItem, MainLayout, AircraftSubMenuItem, AircraftMenuItem, AircraftInstalledVersion, AircraftName, AircraftDetailsContainer } from './styles';
 import HomeSection from '../HomeSection'
 import SettingsSection from '../SettingsSection'
@@ -59,7 +60,13 @@ function App() {
                   <AircraftDetailsContainer>
                     <AircraftName>A320neo</AircraftName>
                   </AircraftDetailsContainer>
-                  <img src={A320SVG} />
+                  <img id="a320" src={A320SVG} />
+                </AircraftMenuItem>
+                <AircraftMenuItem key="a380x">
+                  <AircraftDetailsContainer>
+                    <AircraftName>A380</AircraftName>
+                  </AircraftDetailsContainer>
+                  <img id="a380" src={A380SVG} />
                 </AircraftMenuItem>
               </AircraftSubMenuItem>
               <SettingsMenuItem key="settings" icon={<SettingFilled />}>
