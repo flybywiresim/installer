@@ -9,7 +9,7 @@ import Icon from '@ant-design/icons';
 import Logo from '../LogoWithText';
 import TailWhite from '../../assets/FBW-Tailwhite.svg'
 // import { ReactComponent as PlaneSVG } from '../../assets/Plane.svg'
-import A320SVG from '../../assets/a320.svg'
+import A320SVG from '../../assets/a32nx_nose.svg'
 import { Container, PageHeader, HomeMenuItem, PageContent, PageSider, SettingsMenuItem, MainLayout, AircraftSubMenuItem, AircraftMenuItem, AircraftInstalledVersion, AircraftName, AircraftDetailsContainer } from './styles';
 import HomeSection from '../HomeSection'
 import SettingsSection from '../SettingsSection'

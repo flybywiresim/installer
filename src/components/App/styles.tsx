@@ -13,6 +13,7 @@ export const PageHeader = styled(Header)`
     height: 40px;
     padding-left: 12px;
     background-color: #232323;
+    -webkit-app-region: drag;
 
 `
 
@@ -84,10 +85,10 @@ export const AircraftMenuItem = styled(MenuItem)`
     padding-left: 8px !important;
 
     img {
-        height: 80px;
+        height: 173px;
         position: absolute;
-        right: -6px;
-        top: -12px;
+        right: -149px;
+        top: -62px;
     }
 
 `
