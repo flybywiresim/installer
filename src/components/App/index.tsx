@@ -31,7 +31,7 @@ function App() {
       sectionToShow = <HomeSection />
       break;
     case 'a32nx':
-      sectionToShow = <AircraftSection aircraftModel="A320neo" />
+      sectionToShow = <AircraftSection aircraftModel="A32NX" />
       break;
     case 'settings':
       sectionToShow = <SettingsSection />

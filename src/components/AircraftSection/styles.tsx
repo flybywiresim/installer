@@ -19,11 +19,13 @@ export const HeaderImage = styled.div`
 `;
 
 export const ModelName = styled.span`
-    font-size: 24px;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 30px;
 `;
 
 export const ModelSmallDesc = styled.span`
-  
+    font-size: 20px;
 `;
 
 export const ModelInformationContainer = styled.div`
@@ -50,7 +52,6 @@ export const Content = styled.div`
     h3 {
         color: #FFFFFF;
     }
-
 `;
 
 export const EngineOptionsContainer = styled.div`
