@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
 
 import { Layout, Menu, } from 'antd';
@@ -6,9 +7,9 @@ import {
 } from '@ant-design/icons';
 import Icon from '@ant-design/icons';
 import Logo from '../LogoWithText';
-// import TailWhite from '../../assets/FBW-Tailwhite.svg'
+import TailWhite from '../../assets/FBW-Tailwhite.svg'
 // import { ReactComponent as PlaneSVG } from '../../assets/Plane.svg'
-// import A320SVG from '../../assets/a320.svg'
+import A320SVG from '../../assets/a320.svg'
 import { Container, PageHeader, HomeMenuItem, PageContent, PageSider, SettingsMenuItem, MainLayout, AircraftSubMenuItem, AircraftMenuItem, AircraftInstalledVersion, AircraftName, AircraftDetailsContainer } from './styles';
 import HomeSection from '../HomeSection'
 import SettingsSection from '../SettingsSection'
@@ -48,15 +49,15 @@ function App() {
         <Layout className="site-layout">
           <PageSider onCollapse={toggleCollapse} collapsible collapsed={collapsed}>
             <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
-              <HomeMenuItem key="home" icon={<img  />}>
+              <HomeMenuItem key="home" icon={<img src={TailWhite} />}>
                 Home
               </HomeMenuItem>
-              <AircraftSubMenuItem key="aircrafts" icon={<Icon  />} title="Aircraft's">
+              <AircraftSubMenuItem key="aircrafts"  title="Aircraft's">
                 <AircraftMenuItem key="a32nx">
                   <AircraftDetailsContainer>
                     <AircraftName>A320neo</AircraftName>
                   </AircraftDetailsContainer>
-                  <img  />
+                  <img src={A320SVG} />
                 </AircraftMenuItem>
               </AircraftSubMenuItem>
               <SettingsMenuItem key="settings" icon={<SettingFilled />}>
@@ -73,11 +74,4 @@ function App() {
   );
 }
 
-export default App;
-
-// import { hot } from 'react-hot-loader';
-//  import * as React from 'react';
-
-//  const App = () => <div>Hi from react!</div>;
-
-// export default hot(module)(App);
+export default hot(module)(App);

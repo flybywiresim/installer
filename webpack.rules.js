@@ -25,17 +25,6 @@ module.exports = [
     }
   },
   {
-    test: /\.(png|jp(e*)g|svg|gif)$/,
-    use: [
-      {
-        loader: 'file-loader',
-        options: {
-          name: 'images/[hash]-[name].[ext]',
-        },
-      },
-    ],
-  },
-  {
     test: /\.less$/,
     use: [{
       loader: 'style-loader',
@@ -52,6 +41,19 @@ module.exports = [
        },
      },
     }],
-
+  },
+  {
+    test: /\.svg$/,
+    use: [
+      {
+        loader: "babel-loader"
+      },
+      {
+        loader: "react-svg-loader",
+        options: {
+          jsx: true 
+        }
+      }
+    ]
   }
 ];

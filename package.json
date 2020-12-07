@@ -63,6 +63,9 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
@@ -73,6 +76,7 @@
     "@types/styled-components": "^5.1.4",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
+    "babel-loader": "^8.2.2",
     "css-loader": "^4.3.0",
     "electron": "11.0.3",
     "eslint": "^7.6.0",
@@ -82,6 +86,7 @@
     "less": "^3.12.2",
     "less-loader": "^7.1.0",
     "node-loader": "^1.0.1",
+    "react-svg-loader": "^3.0.3",
     "style-loader": "^1.3.0",
     "ts-loader": "^8.0.2",
     "typescript": "^4.0.2"
