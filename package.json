@@ -12,10 +12,7 @@
     "lint": "eslint --ext .ts ."
   },
   "keywords": [],
-  "author": {
-    "name": "Ilyes Hammadi",
-    "email": "hammadiilyesahmed@gmail.com"
-  },
+  "author": "FlyByWire Simulations",
   "license": "MIT",
   "config": {
     "forge": {
