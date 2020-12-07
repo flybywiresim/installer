@@ -11,9 +11,14 @@ Menu.setApplicationMenu(null)
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800,
+    height: 800,
+    width: 1200,
     frame: false,
+    backgroundColor: '#FFF',
+    webPreferences: {
+        nodeIntegration: true,
+        enableRemoteModule: true
+    }
   });
 
   // and load the index.html of the app.

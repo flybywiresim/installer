@@ -14,6 +14,7 @@ import { Container, PageHeader, HomeMenuItem, PageContent, PageSider, SettingsMe
 import HomeSection from '../HomeSection'
 import SettingsSection from '../SettingsSection'
 import AircraftSection from '../AircraftSection'
+import WindowActionButtons from '../WindowActionButtons'
 
 function App() {
   const [collapsed, setCollapsed] = useState(false);
@@ -44,6 +45,7 @@ function App() {
       <MainLayout>
         <PageHeader>
           <Logo />
+          <WindowActionButtons />
         </PageHeader>
 
         <Layout className="site-layout">
@@ -52,7 +54,7 @@ function App() {
               <HomeMenuItem key="home" icon={<img src={TailWhite} />}>
                 Home
               </HomeMenuItem>
-              <AircraftSubMenuItem key="aircrafts"  title="Aircraft's">
+              <AircraftSubMenuItem key="aircraft"  title="Aircraft">
                 <AircraftMenuItem key="a32nx">
                   <AircraftDetailsContainer>
                     <AircraftName>A320neo</AircraftName>

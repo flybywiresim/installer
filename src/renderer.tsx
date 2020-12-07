@@ -25,10 +25,43 @@
  *  });
  * ```
  */
+import { remote } from 'electron'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.less';
 import './index.css';
 import App from './components/App'
 
+const win = remote.getCurrentWindow();
+
 ReactDOM.render(<App />, document.getElementById('root'));
+
+// When document has loaded, initialize
+document.onreadystatechange = (event) => {
+    if (document.readyState == "complete") {
+        handleWindowControls();
+    }
+};
+
+window.onbeforeunload = (event: any) => {
+    win.removeAllListeners();
+}
+
+function handleWindowControls() {
+    document.getElementById('min-button').addEventListener("click", event => {
+        win.minimize();
+    });
+
+    document.getElementById('max-button').addEventListener("click", event => {
+        if (win.isMaximized()) {
+            win.unmaximize();
+        } else {
+            win.maximize();
+        }
+    });
+
+    document.getElementById('close-button').addEventListener("click", event => {
+        win.destroy();
+    });
+}
+
