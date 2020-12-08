@@ -98,7 +98,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                 </SelectionContainer>
                 
             </HeaderImage>
-            <DownloadProgress percent={70} showInfo={false} status="active" />
+            <DownloadProgress percent={65} showInfo={false} status="active" />
             <Content>
                 <>
                     <h3>Details</h3>
