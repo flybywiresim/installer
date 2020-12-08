@@ -13,6 +13,7 @@ const { Paragraph } = Typography;
 
 type a32nxVersion = {
     name: string,
+    key: string,
     url: string,
 }
 
@@ -22,10 +23,12 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
     const versions: a32nxVersion[] = [
         {
             name: 'dev',
+            key: 'dev',
             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip'
         },
         {
             name: 'stable',
+            key: 'stable',
             url: '',
         }
     ]
@@ -73,15 +76,15 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                     </ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    <AircraftModelSelect defaultValue="A320neo" style={{ width: 120 }}>
+                    {/** <AircraftModelSelect defaultValue="A320neo" style={{ width: 120 }}>
                         <Option value="A320neo">A320neo</Option>
                         <Option value="A321neo">A321neo</Option>
                         <Option value="A319">A319</Option>
-                    </AircraftModelSelect>
+                    </AircraftModelSelect> **/}
                     <VersionSelect defaultValue="dev" style={{ width: 120 }}>
                         {
                             versions.map(version =>
-                                <Option value={version.name}>{version.name}</Option>
+                                <Option value={version.name} key={version.key}>{version.name}</Option>
                             )
                         }
                     </VersionSelect>
@@ -109,10 +112,10 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                 </>
                 <EngineOptionsContainer>
                     <EngineOption image="https://d3lcr32v2pp4l1.cloudfront.net/Pictures/1024x536/3/5/3/74353_leapengine_665436.jpg">
-                        Neo (CFM LEAP-1A)
+                        Neo (CFM LEAP-1A) / (PW1100G-JM)
                     </EngineOption>
                     <EngineOption image="https://www.airport-data.com/images/aircraft/001/554/001554528.jpg" disabled>
-                        Classic (IAE-V2500)
+                        Classic (CFM56) / (IAE-V2500)
                     </EngineOption>
                 </EngineOptionsContainer>
             </Content>
