@@ -1,5 +1,5 @@
-import { Button, Select } from 'antd';
-import styled, { StyledFunction, ThemedStyledFunction } from 'styled-components';
+import { Button, Select, Progress } from 'antd';
+import styled from 'styled-components';
 
 export const Container = styled.div`
   
@@ -91,4 +91,18 @@ export const EngineOption = styled.div<EngineOptionProps>`
         position: absolute;
     }
 
+`;
+
+export const DownloadProgress = styled(Progress)`
+    top: -10px;
+
+    .ant-progress-inner {
+        border: none;
+        height: 3px;
+        background-color: #1C1C1C;
+    }
+
+    .ant-progress-bg {
+        border-radius: 0;
+    }
 `;

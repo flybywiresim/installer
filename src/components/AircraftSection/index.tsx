@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
-import { Select, Typography } from 'antd';
+import { Select, Typography  } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, AircraftModelSelect, VersionSelect, EngineOptionsContainer, EngineOption } from './styles';
+import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, AircraftModelSelect, VersionSelect, EngineOptionsContainer, EngineOption, DownloadProgress } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
 import Zip from 'adm-zip';
@@ -93,7 +93,9 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                         style={{ background: "#00CB5D", borderColor: "#00CB5D" }}
                     >Install</InstallButton>
                 </SelectionContainer>
+                
             </HeaderImage>
+            <DownloadProgress percent={70} showInfo={false} status="active" />
             <Content>
                 <>
                     <h3>Details</h3>
