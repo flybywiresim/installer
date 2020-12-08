@@ -25,34 +25,34 @@
  *  });
  * ```
  */
-import { remote } from 'electron'
+import { remote } from 'electron';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.less';
 import './index.css';
-import App from './components/App'
+import App from './components/App';
 
 const win = remote.getCurrentWindow();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // When document has loaded, initialize
-document.onreadystatechange = (event) => {
+document.onreadystatechange = () => {
     if (document.readyState == "complete") {
         handleWindowControls();
     }
 };
 
-window.onbeforeunload = (event: any) => {
+window.onbeforeunload = () => {
     win.removeAllListeners();
-}
+};
 
 function handleWindowControls() {
-    document.getElementById('min-button').addEventListener("click", event => {
+    document.getElementById('min-button').addEventListener("click", () => {
         win.minimize();
     });
 
-    document.getElementById('max-button').addEventListener("click", event => {
+    document.getElementById('max-button').addEventListener("click", () => {
         if (win.isMaximized()) {
             win.unmaximize();
         } else {
@@ -60,8 +60,7 @@ function handleWindowControls() {
         }
     });
 
-    document.getElementById('close-button').addEventListener("click", event => {
+    document.getElementById('close-button').addEventListener("click", () => {
         win.destroy();
     });
 }
-

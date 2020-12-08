@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import { remote } from 'electron'
+import React, { useState } from 'react';
+import { remote } from 'electron';
 import Store from 'electron-store';
-import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems, SettingButton } from './styles'
+import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems, SettingButton } from './styles';
 
-
-function InstallPathSettingItem() {
+function InstallPathSettingItem(): JSX.Element {
     const settings = new Store;
-    const [installPath, setInstallPath] = useState(settings.get('mainSettings.msfsPackagePath'))
-
+    const [installPath, setInstallPath] = useState(settings.get('mainSettings.msfsPackagePath'));
 
     async function handleClick() {
         const path = await remote.dialog.showOpenDialog({
@@ -18,18 +16,17 @@ function InstallPathSettingItem() {
             settings.set('mainSettings.msfsPackagePath', installPath);
         }
     }
-        
+
     return (
         <SettingsItem>
             <SettingItemName>Install Directory</SettingItemName>
             <SettingItemContent>{installPath}</SettingItemContent>
             <SettingButton onClick={handleClick}>Modify</SettingButton>
         </SettingsItem>
-    )
+    );
 }
 
-
-function index() {
+function index(): JSX.Element {
     return (
         <Container>
             <PageTitle>General Settings</PageTitle>
@@ -37,7 +34,7 @@ function index() {
                 <InstallPathSettingItem />
             </SettingsItems>
         </Container>
-    )
+    );
 }
 
-export default index
+export default index;

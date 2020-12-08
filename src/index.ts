@@ -1,9 +1,9 @@
 import { app, BrowserWindow, Menu, globalShortcut } from 'electron';
-import * as fs from 'fs'
+import * as fs from 'fs';
 import * as readLine from 'readline';
 import Store from 'electron-store';
 import walk from 'walkdir';
-declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
+declare const MAIN_WINDOW_WEBPACK_ENTRY: never;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -15,11 +15,11 @@ const settingsSchema: Record<string, unknown> = {
         msfsPackagePath: 'string',
         cdn: 'url'
     }
-}
+};
 
 const settings = new Store(settingsSchema);
 
-Menu.setApplicationMenu(null)
+Menu.setApplicationMenu(null);
 
 const createWindow = (): void => {
     // Create the browser window.
@@ -42,7 +42,7 @@ const createWindow = (): void => {
 
     globalShortcut.register('f5', () => {
         mainWindow.reload();
-    })
+    });
 
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
@@ -56,9 +56,9 @@ const createWindow = (): void => {
             userPath = msStoreMsfsPath;
         } else {
             walk(app.getPath('home') + "\\AppData\\Local\\", (path) => {
-               if (path.includes("Flight") && path.includes("UserCfg.opt")) {
-                   userPath = path;
-               }
+                if (path.includes("Flight") && path.includes("UserCfg.opt")) {
+                    userPath = path;
+                }
             });
         }
 

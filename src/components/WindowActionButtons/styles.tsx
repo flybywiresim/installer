@@ -23,7 +23,7 @@ export const Button = styled.div<ButtonProps>`
     user-select: none;
 
     :hover {
-        background-color: ${props => props.isClose ?  '#F04747': '#282B2E' };
+        background-color: ${props => props.isClose ? '#F04747' : '#282B2E' };
         color: white;
     }
 

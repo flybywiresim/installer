@@ -1,16 +1,16 @@
-import React from 'react'
-import { Layout } from 'antd'
-import { Container, Content, Menu, PageSider} from './styles'
+import React from 'react';
+import { Layout } from 'antd';
+import { Container, Content, Menu, PageSider} from './styles';
 
-import GeneralSettings from '../GeneralSettings'
+import GeneralSettings from '../GeneralSettings';
 
-function index() {
+function index(): JSX.Element {
     return (
         <Container>
             <Layout>
                 <PageSider>
                     <Menu theme="dark" mode="inline" style={{ width: 256, backgroundColor: ' #313131', color: 'white' }}
-        defaultSelectedKeys={['general-settings']}>
+                        defaultSelectedKeys={['general-settings']}>
                         <Menu.Item key="general-settings">
                             General Settings
                         </Menu.Item>
@@ -21,7 +21,7 @@ function index() {
                 </Content>
             </Layout>
         </Container>
-    )
+    );
 }
 
-export default index
+export default index;

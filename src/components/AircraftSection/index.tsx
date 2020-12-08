@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import { Select, Typography  } from 'antd';
+import React, {useState} from 'react';
+import { Select, Typography } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, AircraftModelSelect, VersionSelect, EngineOptionsContainer, EngineOption, DownloadProgress } from './styles';
 import Store from 'electron-store';
@@ -29,7 +29,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
             key: 'stable',
             url: '',
         }
-    ]
+    ];
 
     async function downloada32nx(version: a32nxVersion) {
         const settings = new Store;
@@ -48,7 +48,6 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
             });
 
             const a32nxCompressed = Buffer.from(new Uint8Array(a32nxBuf));
-
 
             if (typeof msfs_package_dir === "string") {
                 const a32nx = new Zip(a32nxCompressed);
@@ -94,7 +93,6 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                         style={{ background: "#00CB5D", borderColor: "#00CB5D" }}
                     >Install</InstallButton>
                 </SelectionContainer>
-                
             </HeaderImage>
             <DownloadProgress percent={65} showInfo={false} status="active" />
             <Content>
@@ -106,7 +104,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                         aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines
                         (the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International)
                         and features large, fuel-saving wingtip devices known as Sharklets.
-                </Paragraph>
+                    </Paragraph>
                 </>
                 <EngineOptionsContainer>
                     <EngineOption image="https://d3lcr32v2pp4l1.cloudfront.net/Pictures/1024x536/3/5/3/74353_leapengine_665436.jpg">
@@ -118,7 +116,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                 </EngineOptionsContainer>
             </Content>
         </Container>
-    )
-}
+    );
+};
 
 export default index;

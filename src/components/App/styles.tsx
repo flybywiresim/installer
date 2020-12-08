@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Layout, Menu } from 'antd'
+import { Layout, Menu } from 'antd';
 
 const { Header, Content, Sider } = Layout;
 
@@ -15,12 +15,12 @@ export const PageHeader = styled(Header)`
     background-color: #232323;
     -webkit-app-region: drag;
 
-`
+`;
 
 export const PageContent = styled(Content)`
     background-color: #1C1C1C;
     margin: 0 !important;
-`
+`;
 
 const menuItemCss = css`
     margin: 0 !important;
@@ -48,7 +48,7 @@ export const AircraftSubMenuItem = styled(Menu.SubMenu)`
         margin: 0;
     }
 
-`
+`;
 
 export const SettingsMenuItem = styled(MenuItem)`
     position: absolute !important;
@@ -62,7 +62,6 @@ export const HomeMenuItem = styled(MenuItem)`
     }
 `;
 
-
 export const PageSider = styled(Sider)`
     background-color: #313131;
     
@@ -72,11 +71,11 @@ export const PageSider = styled(Sider)`
         background-color: #232323;
     }
 
-`
+`;
 
 export const MainLayout = styled(Layout)`
     height: 100%;
-`
+`;
 
 export const AircraftMenuItem = styled(MenuItem)`
     display: flex !important;
@@ -98,7 +97,7 @@ export const AircraftMenuItem = styled(MenuItem)`
         top: -55px;
     }
 
-`
+`;
 export const AircraftDetailsContainer = styled.div`
     display: flex !important;
     flex-direction: column;

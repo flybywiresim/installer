@@ -19,7 +19,7 @@ export const Content = styled(Layout.Content)`
 
 export const Menu = styled(AntdMenu)`
   border-right: 1px solid #bfbfbf !important;
-`
+`;
 
 export const PageSider = styled(Layout.Sider)`
     background-color: #313131;
@@ -30,4 +30,4 @@ export const PageSider = styled(Layout.Sider)`
         background-color: #232323;
     }
 
-`
+`;

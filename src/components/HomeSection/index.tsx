@@ -1,12 +1,12 @@
-import React from 'react'
-import { Container } from './styles'
+import React from 'react';
+import { Container } from './styles';
 
-function index() {
+function index(): JSX.Element {
     return (
         <Container>
             Home
         </Container>
-    )
+    );
 }
 
-export default index
+export default index;

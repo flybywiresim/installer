@@ -36,16 +36,15 @@ export const ModelInformationContainer = styled.div`
 export const ButtonsContainer = styled.div``;
 export const VersionsButton = styled(Button)`
     margin-right: 8px;
-`
+`;
 export const InstallButton = styled(Button)`
     background: green;
-`
+`;
 export const ModelsDropdownButton = styled(Button)``;
 
 interface SomeInterface {
     awesome: boolean
 }
-
 
 export const AircraftModelSelect = styled(Select)<{ backgroundColor?: string }>`
     margin-right: 8px;
