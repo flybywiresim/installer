@@ -5,8 +5,6 @@ import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage
 import Store from 'electron-store';
 import * as fs from "fs";
 import Zip from 'adm-zip';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { app } = require('electron').remote;
 
 const { Option } = Select;
 const { Paragraph } = Typography;
