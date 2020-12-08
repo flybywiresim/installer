@@ -38,6 +38,7 @@ function App() {
       break;
 
     default:
+      sectionToShow = <HomeSection />
       break;
   }
 
