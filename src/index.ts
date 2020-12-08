@@ -66,8 +66,9 @@ const createWindow = (): void => {
             const msfsConfig = fs.createReadStream(userPath.toString());
             readLine.createInterface(msfsConfig).on('line', (line) => {
                 if (line.includes("InstalledPackagesPath")) {
-                    const splitLine = line.split(" ")
-                    const dir = splitLine[1].replaceAll('"', '');
+                    const splitLine = line.split(" ");
+                    const combineSplit = splitLine.slice(1).join(" ");
+                    const dir = combineSplit.replaceAll('"', '');
                     const msfs_community_path = dir + "\\Community\\";
 
                     settings.set('mainSettings.msfsPackagePath', msfs_community_path);
