@@ -17,6 +17,7 @@ type a32nxVersion = {
 
 const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
+    const [downloadPercentage, setDownloadPercentage] = useState<number>(0);
 
     const versions: a32nxVersion[] = [
         {
@@ -42,12 +43,45 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                 console.log("Deleted original file");
             });
 
-            const a32nxBuf = await fetch(version.url).then((res) => {
+            const a32nxResp = await fetch(version.url).then((res) => {
                 console.log("Starting Download");
-                return res.arrayBuffer();
+                return res;
             });
 
-            const a32nxCompressed = Buffer.from(new Uint8Array(a32nxBuf));
+            const a32nxReader = a32nxResp.body.getReader();
+            const a32nxLength = +a32nxResp.headers.get('Content-Length');
+
+            let a32nxRecievedLength = 0;
+            const chunks = [];
+
+            let lastPercentFloor = 0;
+
+            for (;;) {
+                const {done, value} = await a32nxReader.read();
+
+                if (done) {
+                    break;
+                }
+
+                chunks.push(value);
+                a32nxRecievedLength += value.length;
+
+                const newPercentFloor = Math.floor((a32nxRecievedLength / a32nxLength) * 100);
+
+                if (lastPercentFloor !== newPercentFloor) {
+                    lastPercentFloor = newPercentFloor;
+                    setDownloadPercentage(lastPercentFloor);
+                }
+            }
+
+            const chunksAll = new Uint8Array(a32nxLength);
+            let position = 0;
+            for (const chunk of chunks) {
+                chunksAll.set(chunk, position);
+                position += chunk.length;
+            }
+
+            const a32nxCompressed = Buffer.from(chunksAll);
 
             if (typeof msfs_package_dir === "string") {
                 const a32nx = new Zip(a32nxCompressed);
@@ -57,6 +91,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                 a32nx.extractAllTo(msfs_package_dir);
             }
             setIsDownloading(false);
+            setDownloadPercentage(0);
             console.log("Download complete!");
         }
     }
@@ -94,7 +129,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                     >Install</InstallButton>
                 </SelectionContainer>
             </HeaderImage>
-            <DownloadProgress percent={65} showInfo={false} status="active" />
+            <DownloadProgress percent={downloadPercentage} showInfo={false} status="active" />
             <Content>
                 <>
                     <h3>Details</h3>
