@@ -42,9 +42,7 @@ function App() {
                 <Layout className="site-layout">
                     <PageSider>
                         <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
-                            <HomeMenuItem key="home">
-                Home
-                            </HomeMenuItem>
+                            <HomeMenuItem key="home">Home</HomeMenuItem>
                             <AircraftMenuItem key="a32nx">
                                 <AircraftDetailsContainer>
                                     <AircraftName>A320neo</AircraftName>
@@ -57,9 +55,7 @@ function App() {
                                 </AircraftDetailsContainer>
                                 <img id="a380" src={A380SVG} />
                             </AircraftMenuItem>
-                            <SettingsMenuItem key="settings">
-                Settings
-                            </SettingsMenuItem>
+                            <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
                         </Menu>
                     </PageSider>
                     <PageContent>

@@ -10,11 +10,10 @@ export const Container = styled.div`
 export const PageHeader = styled(Header)`
     display: flex;
     align-items: center;
-    height: 40px;
-    padding-left: 12px;
+    height: 50px;
+    padding-left: 18px;
     background-color: #232323;
     -webkit-app-region: drag;
-
 `;
 
 export const PageContent = styled(Content)`
@@ -26,6 +25,8 @@ const menuItemCss = css`
     margin: 0 !important;
     height: 34px;
     background-color: #444444;
+    font-size: 16px;
+    font-weight: 600;
     :hover {
         background-color: #7e7e7e !important;
     }
@@ -99,13 +100,13 @@ export const AircraftMenuItem = styled(MenuItem)`
 
 `;
 export const AircraftDetailsContainer = styled.div`
-    display: flex !important;
-    flex-direction: column;
-    align-items: baseline;
+  display: flex !important;
+  flex-direction: column;
+  align-items: baseline;
 `;
 export const AircraftName = styled.span`
-        margin-left: 16px;
+  margin-left: 16px;
 `;
 export const AircraftInstalledVersion = styled.span`
-    font-size: 10px;
+  font-size: 10px;
 `;
