@@ -52,7 +52,7 @@ export const AircraftSubMenuItem = styled(Menu.SubMenu)`
 
 export const SettingsMenuItem = styled(MenuItem)`
     position: absolute !important;
-    bottom: 40px;
+    bottom: 0px;
     width: 100%;
 `;
 
@@ -104,7 +104,9 @@ export const AircraftDetailsContainer = styled.div`
     flex-direction: column;
     align-items: baseline;
 `;
-export const AircraftName = styled.span``;
+export const AircraftName = styled.span`
+        margin-left: 16px;
+`;
 export const AircraftInstalledVersion = styled.span`
     font-size: 10px;
 `;
