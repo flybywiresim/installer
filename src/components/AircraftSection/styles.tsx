@@ -1,5 +1,5 @@
 import { Button, Select } from 'antd';
-import styled, { StyledFunction } from 'styled-components';
+import styled, { StyledFunction, ThemedStyledFunction } from 'styled-components';
 
 export const Container = styled.div`
   
@@ -41,8 +41,17 @@ export const InstallButton = styled(Button)`
     background: green;
 `
 export const ModelsDropdownButton = styled(Button)``;
-export const AircraftModelSelect = styled(Select)`
+
+interface SomeInterface {
+    awesome: boolean
+}
+
+
+export const AircraftModelSelect = styled(Select)<{ backgroundColor?: string }>`
     margin-right: 8px;
+    .ant-select-selector {
+      background-color: ${props => props.backgroundColor ? 'unset' : props.backgroundColor} !important;
+    }
 `;
 export const VersionSelect = styled(Select)`
     margin-right: 8px;
