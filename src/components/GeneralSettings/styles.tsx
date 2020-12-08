@@ -37,7 +37,7 @@ export const SettingItemContent = styled.span`
     font-size: 15px;
     color: #bfbfbf;
     margin-bottom: 15px;
-    white-space: nowrap;
+    white-space: wrap;
     overflow: hidden;
     text-overflow: ellipsis;
 `;
