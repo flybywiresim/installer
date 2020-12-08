@@ -1,17 +1,40 @@
-import { Button } from 'antd'
-import React from 'react'
-import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems } from './styles'
+import React, { useState } from 'react'
+import { remote } from 'electron'
+import Store from 'electron-store';
+import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems, SettingButton } from './styles'
+
+
+function InstallPathSettingItem() {
+    const settings = new Store;
+    const [installPath, setInstallPath] = useState(settings.get('mainSettings.msfsPackagePath'))
+
+
+    async function handleClick() {
+        const path = await remote.dialog.showOpenDialog({
+            properties: ['openDirectory']
+        });
+        if (path.filePaths[0]) {
+            setInstallPath(path.filePaths[0]);
+            settings.set('mainSettings.msfsPackagePath', installPath);
+        }
+    }
+        
+    return (
+        <SettingsItem>
+            <SettingItemName>Install Directory</SettingItemName>
+            <SettingItemContent>{installPath}</SettingItemContent>
+            <SettingButton onClick={handleClick}>Modify</SettingButton>
+        </SettingsItem>
+    )
+}
+
 
 function index() {
     return (
         <Container>
             <PageTitle>General Settings</PageTitle>
             <SettingsItems>
-                <SettingsItem>
-                    <SettingItemName>Install Path</SettingItemName>
-                    <SettingItemContent>C:\\Somewhere</SettingItemContent>
-                    <Button type="link" style={{color: '#41a4ff'}}>Modify</Button>
-                </SettingsItem>
+                <InstallPathSettingItem />
             </SettingsItems>
         </Container>
     )

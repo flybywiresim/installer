@@ -1,3 +1,5 @@
+import React from 'react'
+import { Button } from 'antd';
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -31,8 +33,13 @@ export const SettingItemName = styled.span`
 `;
 
 export const SettingItemContent = styled.span`
+    width: 80%;
     font-size: 15px;
     color: #bfbfbf;
     margin-bottom: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
+export const SettingButton = styled((props) => <Button type="link" style={{color: '#41a4ff'}} {...props}>{props.children}</Button>)``;
