@@ -6,6 +6,8 @@ import Store from 'electron-store';
 import * as fs from "fs";
 import Zip from 'adm-zip';
 
+const settings = new Store;
+
 const { Option } = Select;
 const { Paragraph } = Typography;
 
@@ -21,6 +23,8 @@ type indexProps = {
     downloadPercentage: number,
     setDownloadPercentage: React.Dispatch<React.SetStateAction<number>>,
     aircraftModel: string,
+    isUpdated: boolean,
+    setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 const index: React.FC<indexProps> = (props: indexProps) => {
@@ -37,9 +41,28 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         }
     ];
 
-    async function downloada32nx(version: a32nxVersion) {
-        const settings = new Store;
+    async function checkForA32nxUpdate(version: a32nxVersion) {
+        const localLastUpdate = settings.get('cache.lastUpdatedA32nx');
 
+        const res = await fetch(version.url);
+
+        const webLastUpdate = res.headers.get('Last-Modified').toString();
+
+        if (typeof localLastUpdate === "string") {
+            if (localLastUpdate === webLastUpdate) {
+                console.log("Is Updated");
+                props.setIsUpdated(true);
+            } else {
+                console.log("Is not Updated");
+                props.setIsUpdated(false);
+            }
+        } else {
+            console.log("Failed");
+            props.setIsUpdated(false);
+        }
+    }
+
+    async function downloadA32nx(version: a32nxVersion) {
         if (!props.isDownloading) {
             props.setIsDownloading(true);
             const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
@@ -55,6 +78,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
             const a32nxReader = a32nxResp.body.getReader();
             const a32nxLength = +a32nxResp.headers.get('Content-Length');
+            const a32nxUpdateTime = a32nxResp.headers.get('Last-Modified');
 
             let a32nxRecievedLength = 0;
             const chunks = [];
@@ -97,6 +121,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             }
             props.setIsDownloading(false);
             props.setDownloadPercentage(0);
+            settings.set('cache.lastUpdatedA32nx', a32nxUpdateTime);
             console.log("Download complete!");
         }
     }
@@ -118,6 +143,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         <Option value="A321neo">A321neo</Option>
                         <Option value="A319">A319</Option>
                     </AircraftModelSelect> **/}
+                    <button onClick={() => checkForA32nxUpdate(versions[0])}>Check for update</button>
                     <VersionSelect defaultValue="Version" style={{ width: 130}}>
                         {
                             versions.map(version =>
@@ -129,9 +155,9 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         type="primary"
                         icon={<DownloadOutlined />}
                         loading={props.isDownloading}
-                        onClick={() => downloada32nx(versions[0])}
+                        onClick={() => downloadA32nx(versions[0])}
                         style={{ background: "#00CB5D", borderColor: "#00CB5D" }}
-                    >{props.isDownloading ? `${props.downloadPercentage}%` : "Install"}</InstallButton>
+                    >{props.isDownloading ? `${props.downloadPercentage}%` : props.isUpdated ? "Installed" : "Install"}</InstallButton>
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={props.downloadPercentage} showInfo={false} status="active" />
