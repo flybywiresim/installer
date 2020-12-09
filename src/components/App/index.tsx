@@ -52,6 +52,7 @@ function App() {
     const [selectedItem, setSelectedItem] = useState<string>('home');
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
     const [downloadPercentage, setDownloadPercentage] = useState<number>(0);
+    const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
     const mods: Mod[] = [
         {
@@ -120,7 +121,9 @@ function App() {
                 isDownloading={isDownloading}
                 setIsDownloading={setIsDownloading}
                 downloadPercentage={downloadPercentage}
-                setDownloadPercentage={setDownloadPercentage} />;
+                setDownloadPercentage={setDownloadPercentage}
+                isUpdated={isUpdated}
+                setIsUpdated={setIsUpdated}/>;
             break;
     }
 

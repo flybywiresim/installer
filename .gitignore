@@ -90,3 +90,6 @@ out/
 
 # JetBrains
 .idea/
+
+# VIM
+.vim/

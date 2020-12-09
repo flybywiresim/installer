@@ -7,7 +7,6 @@ function index(): JSX.Element {
         <Container>
             <LogoAndText>
                 <Logo />
-                <span>flybywire</span>
             </LogoAndText>
             <DescAndImages>
                 <p>FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft,
