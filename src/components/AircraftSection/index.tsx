@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Typography } from 'antd';
+import { Select, Typography, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, VersionSelect, EngineOptionsContainer, EngineOption, DownloadProgress } from './styles';
 import Store from 'electron-store';
@@ -43,6 +43,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     ];
 
     async function checkForA32nxUpdate(version: a32nxVersion) {
+        {/* TODO: Implement the check version logic */}
         const localLastUpdate = settings.get('cache.lastUpdatedA32nx');
 
         const res = await fetch(version.url);
@@ -144,7 +145,8 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         <Option value="A321neo">A321neo</Option>
                         <Option value="A319">A319</Option>
                     </AircraftModelSelect> **/}
-                    <button onClick={() => checkForA32nxUpdate(versions[0])}>Check for update</button>
+                    {/* TODO: Implement the check version logic */}
+                    {/* <Button onClick={() => checkForA32nxUpdate(versions[0])}>Check for update</Button> */}
                     <VersionSelect defaultValue="Version" style={{ width: 130}}>
                         {
                             versions.map(version =>
