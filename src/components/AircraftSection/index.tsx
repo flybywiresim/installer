@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Select, Typography } from 'antd';
+import { Select, Typography, notification } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
     ButtonsContainer as SelectionContainer,
@@ -124,12 +124,18 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             props.setDownloadPercentage(0);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
             console.log("Download complete!");
+            notification.open({
+                placement: 'bottomRight',
+                message: 'Download complete!'
+              });
         }
     }
 
     function findAndSetTrack(key: string) {
         setSelectedTrack(selectedVariant.tracks.find(x => x.key === key));
     }
+
+
 
     return (
         <Container>
