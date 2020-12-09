@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Select, Typography } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, AircraftModelSelect, VersionSelect, EngineOptionsContainer, EngineOption, DownloadProgress } from './styles';
@@ -15,10 +15,15 @@ type a32nxVersion = {
     url: string,
 }
 
-const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
-    const [isDownloading, setIsDownloading] = useState<boolean>(false);
-    const [downloadPercentage, setDownloadPercentage] = useState<number>(0);
+type indexProps = {
+    isDownloading: boolean,
+    setIsDownloading: React.Dispatch<React.SetStateAction<boolean>>,
+    downloadPercentage: number,
+    setDownloadPercentage: React.Dispatch<React.SetStateAction<number>>,
+    aircraftModel: string,
+}
 
+const index: React.FC<indexProps> = (props: indexProps) => {
     const versions: a32nxVersion[] = [
         {
             name: 'Development',
@@ -35,8 +40,8 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
     async function downloada32nx(version: a32nxVersion) {
         const settings = new Store;
 
-        if (!isDownloading) {
-            setIsDownloading(true);
+        if (!props.isDownloading) {
+            props.setIsDownloading(true);
             const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
 
             const deleteHandle = fs.rmdir(msfs_package_dir + 'A32NX\\', {recursive: true}, () => {
@@ -70,7 +75,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
 
                 if (lastPercentFloor !== newPercentFloor) {
                     lastPercentFloor = newPercentFloor;
-                    setDownloadPercentage(lastPercentFloor);
+                    props.setDownloadPercentage(lastPercentFloor);
                 }
             }
 
@@ -90,8 +95,8 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
 
                 a32nx.extractAllTo(msfs_package_dir);
             }
-            setIsDownloading(false);
-            setDownloadPercentage(0);
+            props.setIsDownloading(false);
+            props.setDownloadPercentage(0);
             console.log("Download complete!");
         }
     }
@@ -101,7 +106,7 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
             <HeaderImage>
                 <ModelInformationContainer>
                     <ModelName>
-                        {aircraftModel}
+                        {props.aircraftModel}
                     </ModelName>
                     <ModelSmallDesc>
                         Airbus A320neo Series
@@ -126,13 +131,13 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                     <InstallButton
                         type="primary"
                         icon={<DownloadOutlined />}
-                        loading={isDownloading}
+                        loading={props.isDownloading}
                         onClick={() => downloada32nx(versions[0])}
                         style={{ background: "#00CB5D", borderColor: "#00CB5D" }}
-                    >Install</InstallButton>
+                    >{props.isDownloading ? `${props.downloadPercentage}%` : "Install"}</InstallButton>
                 </SelectionContainer>
             </HeaderImage>
-            <DownloadProgress percent={downloadPercentage} showInfo={false} status="active" />
+            <DownloadProgress percent={props.downloadPercentage} showInfo={false} status="active" />
             <Content>
                 <>
                     <h3>Details</h3>

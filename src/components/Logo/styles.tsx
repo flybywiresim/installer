@@ -6,6 +6,6 @@ export const Container = styled.div`
     justify-content: center;
     img {
         grid-area: logo;
-      height: 1.5rem;
+        height: 1.2rem;
     }
 `;

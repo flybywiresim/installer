@@ -13,6 +13,8 @@ import WindowActionButtons from '../WindowActionButtons';
 
 function App() {
     const [selectedItem, setSelectedItem] = useState<string>('1');
+    const [a32nxIsDownloading, setA32nxIsDownloading] = useState<boolean>(false);
+    const [a32nxDownloadPercentage, setA32nxDownloadPercentage] = useState<number>(0);
 
     let sectionToShow;
     switch (selectedItem) {
@@ -20,7 +22,11 @@ function App() {
             sectionToShow = <HomeSection />;
             break;
         case 'a32nx':
-            sectionToShow = <AircraftSection aircraftModel="A32NX" />;
+            sectionToShow = <AircraftSection
+                aircraftModel="A32NX" isDownloading={a32nxIsDownloading}
+                setIsDownloading={setA32nxIsDownloading}
+                downloadPercentage={a32nxDownloadPercentage}
+                setDownloadPercentage={setA32nxDownloadPercentage}/>;
             break;
         case 'settings':
             sectionToShow = <SettingsSection />;
@@ -42,9 +48,7 @@ function App() {
                 <Layout className="site-layout">
                     <PageSider>
                         <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
-                            <HomeMenuItem key="home">
-                Home
-                            </HomeMenuItem>
+                            <HomeMenuItem key="home">Home</HomeMenuItem>
                             <AircraftMenuItem key="a32nx">
                                 <AircraftDetailsContainer>
                                     <AircraftName>A320neo</AircraftName>
@@ -57,9 +61,7 @@ function App() {
                                 </AircraftDetailsContainer>
                                 <img id="a380" src={A380SVG} />
                             </AircraftMenuItem>
-                            <SettingsMenuItem key="settings">
-                Settings
-                            </SettingsMenuItem>
+                            <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
                         </Menu>
                     </PageSider>
                     <PageContent>
