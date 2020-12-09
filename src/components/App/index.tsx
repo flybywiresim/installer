@@ -3,41 +3,123 @@ import React, { useState } from 'react';
 
 import { Layout, Menu, } from 'antd';
 import Logo from '../LogoWithText';
-import A320SVG from '../../assets/a32nx_nose.svg';
-import A380SVG from '../../assets/a380x_nose.svg';
-import { Container, PageHeader, HomeMenuItem, PageContent, PageSider, SettingsMenuItem, MainLayout, AircraftSubMenuItem, AircraftMenuItem, AircraftInstalledVersion, AircraftName, AircraftDetailsContainer } from './styles';
+import {
+    Container,
+    PageHeader,
+    HomeMenuItem,
+    PageContent,
+    PageSider,
+    SettingsMenuItem,
+    MainLayout,
+    AircraftMenuItem,
+    AircraftName,
+    AircraftDetailsContainer
+} from './styles';
 import HomeSection from '../HomeSection';
 import SettingsSection from '../SettingsSection';
 import AircraftSection from '../AircraftSection';
 import WindowActionButtons from '../WindowActionButtons';
 
+export type Mod = {
+    name: string,
+    aircraftName: string,
+    key: string,
+    backgroundImageUrls: string[],
+    shortDescription: string,
+    description: string,
+    menuIconUrl: string,
+    targetDirectory: string,
+    variants: ModVariant[],
+    enabled: boolean,
+}
+
+export type ModVariant = {
+    name: string,
+    key: string,
+    imageUrl: string,
+    enabled: boolean,
+    tracks: ModTrack[],
+}
+
+export type ModTrack = {
+    name: string,
+    key: string,
+    url: string,
+}
+
 function App() {
-    const [selectedItem, setSelectedItem] = useState<string>('1');
-    const [a32nxIsDownloading, setA32nxIsDownloading] = useState<boolean>(false);
-    const [a32nxDownloadPercentage, setA32nxDownloadPercentage] = useState<number>(0);
-    const [a32nxIsUpdated, setA32nxIsUpdated] = useState<boolean>(false);
+    const [selectedItem, setSelectedItem] = useState<string>('home');
+    const [isDownloading, setIsDownloading] = useState<boolean>(false);
+    const [downloadPercentage, setDownloadPercentage] = useState<number>(0);
+
+    const mods: Mod[] = [
+        {
+            name: 'A32NX',
+            aircraftName: 'A320neo',
+            key: 'A32NX',
+            enabled: true,
+            menuIconUrl: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a32nx_nose.svg',
+            backgroundImageUrls: [
+                'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'
+            ],
+            shortDescription: 'Airbus A320neo Series',
+            description: 'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
+                'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +
+                'aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines ' +
+                '(the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) ' +
+                'and features large, fuel-saving wingtip devices known as Sharklets.',
+            targetDirectory: 'A32NX',
+            variants: [
+                {
+                    name: 'Neo (CFM LEAP-1A) / (PW1100G-JM)',
+                    key: 'LEAP',
+                    imageUrl: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/cfm_leap1-a.svg',
+                    enabled: true,
+                    tracks: [
+                        {
+                            name: 'Development',
+                            key: 'a32nx-dev',
+                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip',
+                        },
+                        {
+                            name: 'Stable',
+                            key: 'a32nx-stable',
+                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/stable/A32NX-stable.zip',
+                        }
+                    ],
+                }
+            ],
+        },
+        {
+            name: 'A380',
+            aircraftName: 'A380',
+            key: 'A380',
+            enabled: false,
+            menuIconUrl: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a380x_nose.svg',
+            backgroundImageUrls: [],
+            shortDescription: 'Airbus A380-800',
+            description: '',
+            targetDirectory: 'A380',
+            variants: [],
+        }
+    ];
 
     let sectionToShow;
     switch (selectedItem) {
         case 'home':
             sectionToShow = <HomeSection />;
             break;
-        case 'a32nx':
-            sectionToShow = <AircraftSection
-                aircraftModel="A32NX"
-                isDownloading={a32nxIsDownloading}
-                setIsDownloading={setA32nxIsDownloading}
-                downloadPercentage={a32nxDownloadPercentage}
-                setDownloadPercentage={setA32nxDownloadPercentage}
-                isUpdated={a32nxIsUpdated}
-                setIsUpdated={setA32nxIsUpdated}/>;
-            break;
         case 'settings':
             sectionToShow = <SettingsSection />;
             break;
 
         default:
-            sectionToShow = <HomeSection />;
+            sectionToShow = <AircraftSection
+                mod={mods.find(x => x.key === selectedItem)}
+                isDownloading={isDownloading}
+                setIsDownloading={setIsDownloading}
+                downloadPercentage={downloadPercentage}
+                setDownloadPercentage={setDownloadPercentage}/>;
             break;
     }
 
@@ -53,18 +135,16 @@ function App() {
                     <PageSider>
                         <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
                             <HomeMenuItem key="home">Home</HomeMenuItem>
-                            <AircraftMenuItem key="a32nx">
-                                <AircraftDetailsContainer>
-                                    <AircraftName>A320neo</AircraftName>
-                                </AircraftDetailsContainer>
-                                <img id="a320" src={A320SVG} />
-                            </AircraftMenuItem>
-                            <AircraftMenuItem key="a380x">
-                                <AircraftDetailsContainer>
-                                    <AircraftName>A380</AircraftName>
-                                </AircraftDetailsContainer>
-                                <img id="a380" src={A380SVG} />
-                            </AircraftMenuItem>
+                            {
+                                mods.map(mod =>
+                                    <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
+                                        <AircraftDetailsContainer>
+                                            <AircraftName>{mod.aircraftName}</AircraftName>
+                                        </AircraftDetailsContainer>
+                                        <img id={mod.key} src={mod.menuIconUrl} />
+                                    </AircraftMenuItem>
+                                )
+                            }
                             <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
                         </Menu>
                     </PageSider>
