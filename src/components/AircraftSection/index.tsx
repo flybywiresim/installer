@@ -121,10 +121,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     <VersionSelect defaultValue="Version" style={{ width: 130}}>
                         {
                             versions.map(version =>
-                                <Option 
-                                value={version.name}
-                                key={version.key}>{version.name}
-                                </Option>
+                                <Option value={version.name} key={version.key}>{version.name}</Option>
                             )
                         }
                     </VersionSelect>
