@@ -21,13 +21,13 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
 
     const versions: a32nxVersion[] = [
         {
-            name: 'dev',
-            key: 'dev',
+            name: 'Development',
+            key: 'Development',
             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip'
         },
         {
-            name: 'stable',
-            key: 'stable',
+            name: 'Stable',
+            key: 'Stable',
             url: '',
         }
     ];
@@ -113,10 +113,13 @@ const index: React.FC<{ aircraftModel: string }> = ({ aircraftModel }) => {
                         <Option value="A321neo">A321neo</Option>
                         <Option value="A319">A319</Option>
                     </AircraftModelSelect> **/}
-                    <VersionSelect defaultValue="dev" style={{ width: 120 }}>
+                    <VersionSelect defaultValue="Version" style={{ width: 130}}>
                         {
                             versions.map(version =>
-                                <Option value={version.name} key={version.key}>{version.name}</Option>
+                                <Option 
+                                value={version.name}
+                                key={version.key}>{version.name}
+                                </Option>
                             )
                         }
                     </VersionSelect>
