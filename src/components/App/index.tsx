@@ -2,6 +2,7 @@ import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
 
 import { Layout, Menu, } from 'antd';
+import SimpleBar from 'simplebar-react';
 import Logo from '../LogoWithText';
 import {
     Container,
@@ -119,41 +120,44 @@ function App() {
                 isDownloading={isDownloading}
                 setIsDownloading={setIsDownloading}
                 downloadPercentage={downloadPercentage}
-                setDownloadPercentage={setDownloadPercentage}/>;
+                setDownloadPercentage={setDownloadPercentage} />;
             break;
     }
 
     return (
-        <Container>
-            <MainLayout>
-                <PageHeader>
-                    <Logo />
-                    <WindowActionButtons />
-                </PageHeader>
+        <SimpleBar style={{ maxHeight: 1000 }}>
+            <Container>
+                <MainLayout>
+                    <PageHeader>
+                        <Logo />
+                        <WindowActionButtons />
+                    </PageHeader>
 
-                <Layout className="site-layout">
-                    <PageSider>
-                        <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
-                            <HomeMenuItem key="home">Home</HomeMenuItem>
-                            {
-                                mods.map(mod =>
-                                    <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
-                                        <AircraftDetailsContainer>
-                                            <AircraftName>{mod.aircraftName}</AircraftName>
-                                        </AircraftDetailsContainer>
-                                        <img id={mod.key} src={mod.menuIconUrl} />
-                                    </AircraftMenuItem>
-                                )
-                            }
-                            <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
-                        </Menu>
-                    </PageSider>
-                    <PageContent>
-                        {sectionToShow}
-                    </PageContent>
-                </Layout>
-            </MainLayout>
-        </Container >
+                    <Layout className="site-layout">
+                        <PageSider>
+                            <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
+                                <HomeMenuItem key="home">Home</HomeMenuItem>
+                                {
+                                    mods.map(mod =>
+                                        <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
+                                            <AircraftDetailsContainer>
+                                                <AircraftName>{mod.aircraftName}</AircraftName>
+                                            </AircraftDetailsContainer>
+                                            <img id={mod.key} src={mod.menuIconUrl} />
+                                        </AircraftMenuItem>
+                                    )
+                                }
+                                <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
+                            </Menu>
+                        </PageSider>
+                        <PageContent>
+                            {sectionToShow}
+                        </PageContent>
+                    </Layout>
+                </MainLayout>
+            </Container >
+        </SimpleBar>
+
     );
 }
 
