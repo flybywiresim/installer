@@ -1,10 +1,11 @@
 import React from 'react';
 import { Select, Typography } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, AircraftModelSelect, VersionSelect, EngineOptionsContainer, EngineOption, DownloadProgress } from './styles';
+import { ButtonsContainer as SelectionContainer, Content, Container, HeaderImage, InstallButton, ModelInformationContainer, ModelName, ModelSmallDesc, VersionSelect, EngineOptionsContainer, EngineOption, DownloadProgress } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
 import Zip from 'adm-zip';
+import LeapEngineSVG from '../../assets/cfm_leap1-a.svg'
 
 const settings = new Store;
 
@@ -173,11 +174,10 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     </Paragraph>
                 </>
                 <EngineOptionsContainer>
-                    <EngineOption image="https://d3lcr32v2pp4l1.cloudfront.net/Pictures/1024x536/3/5/3/74353_leapengine_665436.jpg">
-                        Neo (CFM LEAP-1A) / (PW1100G-JM)
-                    </EngineOption>
-                    <EngineOption image="https://www.airport-data.com/images/aircraft/001/554/001554528.jpg" disabled>
-                        Classic (CFM56) / (IAE-V2500)
+                    <h3>Variants</h3>
+                    <EngineOption>
+                        <img src={LeapEngineSVG} />
+                        <span>Neo (CFM LEAP-1A) / (PW1100G-JM)</span>
                     </EngineOption>
                 </EngineOptionsContainer>
             </Content>
