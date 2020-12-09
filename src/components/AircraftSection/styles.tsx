@@ -46,12 +46,6 @@ interface SomeInterface {
     awesome: boolean
 }
 
-export const AircraftModelSelect = styled(Select)<{ backgroundColor?: string }>`
-    margin-right: 8px;
-    .ant-select-selector {
-      background-color: ${props => props.backgroundColor ? 'unset' : props.backgroundColor} !important;
-    }
-`;
 export const VersionSelect = styled(Select)`
     margin-right: 8px;
 `;
@@ -63,31 +57,26 @@ export const Content = styled.div`
 `;
 
 export const EngineOptionsContainer = styled.div`
-  display: flex;
+  margin-top: 40px;
 `;
 
-interface EngineOptionProps {
-    image: string,
-    disabled?: boolean
-}
-
-export const EngineOption = styled.div<EngineOptionProps>`
-    height: 110px;
-    width: 225px;
+export const EngineOption = styled.div`
+    width: 215px;
     border-radius: 8px;
-    background-image: linear-gradient(${props => props.disabled ? 'rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)'}), url(${props => props.image});
     background-size: cover;
-    color: ${props => props.disabled ? 'grey' : 'white'};
-    display: flex;
-    align-items: flex-end;
     padding: 12px 12px 4px 12px;
     font-size: 14px;
     margin-right: 20px;
-    cursor: ${props => props.disabled ? 'no-drop' : 'pointer'};
+    border: 1px solid #d9d9d9;
+    color: #d9d9d9;
 
     #selected-icon {
         font-size: 50px;
         position: absolute;
+    }
+
+    img {
+        margin-bottom: 5px;
     }
 
 `;
