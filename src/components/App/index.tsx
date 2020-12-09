@@ -15,6 +15,7 @@ function App() {
     const [selectedItem, setSelectedItem] = useState<string>('1');
     const [a32nxIsDownloading, setA32nxIsDownloading] = useState<boolean>(false);
     const [a32nxDownloadPercentage, setA32nxDownloadPercentage] = useState<number>(0);
+    const [a32nxIsUpdated, setA32nxIsUpdated] = useState<boolean>(false);
 
     let sectionToShow;
     switch (selectedItem) {
@@ -23,10 +24,13 @@ function App() {
             break;
         case 'a32nx':
             sectionToShow = <AircraftSection
-                aircraftModel="A32NX" isDownloading={a32nxIsDownloading}
+                aircraftModel="A32NX"
+                isDownloading={a32nxIsDownloading}
                 setIsDownloading={setA32nxIsDownloading}
                 downloadPercentage={a32nxDownloadPercentage}
-                setDownloadPercentage={setA32nxDownloadPercentage}/>;
+                setDownloadPercentage={setA32nxDownloadPercentage}
+                isUpdated={a32nxIsUpdated}
+                setIsUpdated={setA32nxIsUpdated}/>;
             break;
         case 'settings':
             sectionToShow = <SettingsSection />;

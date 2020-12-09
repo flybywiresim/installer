@@ -14,6 +14,9 @@ const settingsSchema: Record<string, unknown> = {
     mainSettings: {
         msfsPackagePath: 'string',
         cdn: 'url'
+    },
+    cache: {
+        lastUpdatedA32nx: 'string',
     }
 };
 
