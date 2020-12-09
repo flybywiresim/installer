@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import React, {useState} from 'react';
 import { Select, Typography, notification } from 'antd';
+=======
+import React, {useEffect, useState} from 'react';
+import { Select, Typography } from 'antd';
+>>>>>>> 49020d1431d4cc031d8e06a1d85bfe056cbda942
 import { DownloadOutlined } from '@ant-design/icons';
 import {
     ButtonsContainer as SelectionContainer,
@@ -47,16 +52,22 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
         const webLastUpdate = res.headers.get('Last-Modified').toString();
 
-        if (typeof localLastUpdate === "string") {
-            if (localLastUpdate === webLastUpdate) {
-                console.log("Is Updated");
-                setIsUpdated(true);
+        const a32nxDir = `${settings.get('mainSettings.msfsPackagePath')}A32NX\\`;
+
+        if (fs.existsSync(a32nxDir)) {
+            if (typeof localLastUpdate === "string") {
+                if (localLastUpdate === webLastUpdate) {
+                    console.log("Is Updated");
+                    setIsUpdated(true);
+                } else {
+                    console.log("Is not Updated");
+                    setIsUpdated(false);
+                }
             } else {
-                console.log("Is not Updated");
+                console.log("Failed");
                 setIsUpdated(false);
             }
         } else {
-            console.log("Failed");
             setIsUpdated(false);
         }
     }
@@ -122,6 +133,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             }
             props.setIsDownloading(false);
             props.setDownloadPercentage(0);
+            setIsUpdated(true);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
             console.log("Download complete!");
             notification.open({
@@ -135,7 +147,13 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         setSelectedTrack(selectedVariant.tracks.find(x => x.key === key));
     }
 
+<<<<<<< HEAD
 
+=======
+    useEffect(() => {
+        checkForUpdates();
+    });
+>>>>>>> 49020d1431d4cc031d8e06a1d85bfe056cbda942
 
     return (
         <Container>
