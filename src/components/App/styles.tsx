@@ -105,7 +105,7 @@ export const AircraftDetailsContainer = styled.div`
   align-items: baseline;
 `;
 export const AircraftName = styled.span`
-  margin-left: 16px;
+  margin-left: 20px;
 `;
 export const AircraftInstalledVersion = styled.span`
   font-size: 10px;
