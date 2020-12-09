@@ -35,7 +35,7 @@ export const ModelInformationContainer = styled.div`
 
 export const ButtonsContainer = styled.div``;
 export const VersionsButton = styled(Button)`
-    margin-right: 39px;
+    margin-right: 8px;
 `;
 export const InstallButton = styled(Button)`
     background: green;
@@ -48,6 +48,9 @@ interface SomeInterface {
 
 export const AircraftModelSelect = styled(Select)<{ backgroundColor?: string }>`
     margin-right: 8px;
+    .ant-select-selector {
+      background-color: ${props => props.backgroundColor ? 'unset' : props.backgroundColor} !important;
+    }
 `;
 export const VersionSelect = styled(Select)`
     margin-right: 8px;
