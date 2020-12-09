@@ -13,6 +13,8 @@ import WindowActionButtons from '../WindowActionButtons';
 
 function App() {
     const [selectedItem, setSelectedItem] = useState<string>('1');
+    const [a32nxIsDownloading, setA32nxIsDownloading] = useState<boolean>(false);
+    const [a32nxDownloadPercentage, setA32nxDownloadPercentage] = useState<number>(0);
 
     let sectionToShow;
     switch (selectedItem) {
@@ -20,7 +22,11 @@ function App() {
             sectionToShow = <HomeSection />;
             break;
         case 'a32nx':
-            sectionToShow = <AircraftSection aircraftModel="A32NX" />;
+            sectionToShow = <AircraftSection
+                aircraftModel="A32NX" isDownloading={a32nxIsDownloading}
+                setIsDownloading={setA32nxIsDownloading}
+                downloadPercentage={a32nxDownloadPercentage}
+                setDownloadPercentage={setA32nxDownloadPercentage}/>;
             break;
         case 'settings':
             sectionToShow = <SettingsSection />;
