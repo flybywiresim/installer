@@ -27,13 +27,13 @@ type indexProps = {
 const index: React.FC<indexProps> = (props: indexProps) => {
     const versions: a32nxVersion[] = [
         {
-            name: 'dev',
-            key: 'dev',
+            name: 'Development',
+            key: 'Development',
             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip'
         },
         {
-            name: 'stable',
-            key: 'stable',
+            name: 'Stable',
+            key: 'Stable',
             url: '',
         }
     ];
