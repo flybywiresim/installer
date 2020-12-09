@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React, {useState} from 'react';
-import { Select, Typography, notification } from 'antd';
-=======
 import React, {useEffect, useState} from 'react';
-import { Select, Typography } from 'antd';
->>>>>>> 49020d1431d4cc031d8e06a1d85bfe056cbda942
+import { Select, Typography, notification } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
     ButtonsContainer as SelectionContainer,
@@ -147,13 +142,9 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         setSelectedTrack(selectedVariant.tracks.find(x => x.key === key));
     }
 
-<<<<<<< HEAD
-
-=======
     useEffect(() => {
         checkForUpdates();
     });
->>>>>>> 49020d1431d4cc031d8e06a1d85bfe056cbda942
 
     return (
         <Container>
