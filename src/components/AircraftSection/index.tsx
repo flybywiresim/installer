@@ -181,6 +181,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             setupInstallPath();
         }
     }
+
     function cancelDownload() {
         if (props.isDownloading) {
             console.log('Cancel download');
@@ -197,7 +198,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                 </ModelInformationContainer>
                 <SelectionContainer>
                     <VersionSelect
-                        styling={{ width: 130, backgroundColor: '#00C2CB', color: 'white' }}
+                        styling={{ backgroundColor: '#00C2CB', color: 'white' }}
                         defaultValue={selectedTrack.name}
                         onSelect={item => findAndSetTrack(item.toString())}>
                         {
@@ -211,18 +212,29 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         icon={<DownloadOutlined />}
                         onClick={handleClick}
                         style={
-                            needsUpdate ?
-                                {
-                                    background: "#fa8c16",
-                                    borderColor: "#fa8c16"
-                                } : {
-                                    background: "#00CB5D",
-                                    borderColor: "#00CB5D"
-                                }}
+                            isInstalled ? (
+                                needsUpdate ?
+                                    {
+                                        background: "#fa8c16",
+                                        borderColor: "#fa8c16"
+                                    } : {
+                                        color: "#dddddd",
+                                        background: "#2e995e",
+                                        borderColor: "#2e995e",
+                                        pointerEvents: "none"
+                                    }
+                            ) : {
+                                background: "#00CB5D",
+                                borderColor: "#00CB5D"
+                            }
+                        }
                     >{props.isDownloading ?
-                            (props.downloadPercentage >= 99) ? "Decompressing" : `${props.downloadPercentage}% -  Cancel Download`
+                            (props.downloadPercentage >= 99) ? "Decompressing" : `${props.downloadPercentage}% -  Cancel`
                             :
-                            isInstalled ? needsUpdate ? "Update" : "Installed" : "Install"
+                            isInstalled ?
+                                needsUpdate ? "Update" : "Installed"
+                                :
+                                "Install"
                         }
                     </InstallButton>
                 </SelectionContainer>

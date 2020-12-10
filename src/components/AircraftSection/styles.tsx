@@ -33,17 +33,29 @@ export const ModelInformationContainer = styled.div`
   flex-direction: column;
 `;
 
-export const ButtonsContainer = styled.div``;
-export const VersionsButton = styled(Button)`
+export const ButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+`;
+
+const BaseButton = styled(Button)`
+    font-size: 1.15em !important;
+    border-width: 0 !important;
+    border-radius: 5px;
+`;
+
+export const VersionsButton = styled(BaseButton)`
     margin-right: 8px;
 `;
-export const InstallButton = styled(Button)`
+export const InstallButton = styled(BaseButton)`
     background: green;
 `;
-export const CheckUpdateButton = styled(Button)`
+export const CheckUpdateButton = styled(BaseButton)`
     color: white !important;
 `;
-export const ModelsDropdownButton = styled(Button)``;
+export const ModelsDropdownButton = styled(BaseButton)``;
 
 function select<T>(...items: T[]): T {
     for (const item of items) {
@@ -63,16 +75,22 @@ type SelectStyle = {
 
 export const BaseSelect = styled(Select)<{ styling?: SelectStyle }>`
     .ant-select-selector {
-        width: ${props => select(String(props.styling?.width), 'unset')};
-        background-color: ${props => select(props.styling?.backgroundColor, 'unset')} !important;
-        color: ${props => select(props.styling?.color, 'unset')} !important;
-        border-color: ${props => select(props.styling?.borderColor, props.styling?.backgroundColor, 'unset')} !important;
+      font-size: 1.15em !important;
+      border-width: 0 !important;
+      border-radius: 5px !important;
+      width: ${props => select(String(props.styling?.width), 'unset')} !important;
+      background-color: ${props => select(props.styling?.backgroundColor, 'unset')} !important;
+      color: ${props => select(props.styling?.color, 'unset')} !important;
+      border-color: ${props => select(props.styling?.borderColor, props.styling?.backgroundColor, 'unset')} !important;
+      .ant-select-selection-item {
+        padding-top: 1px;
+      }
     }
 `;
 
 export const VersionSelect = styled(BaseSelect)`
+    width: 155px;
     margin-right: 8px;
-    width: 134px;
 `;
 
 export const Content = styled.div`
