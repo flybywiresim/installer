@@ -56,9 +56,9 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
         const webLastUpdate = res.headers.get('Last-Modified').toString();
 
-        const a32nxDir = `${settings.get('mainSettings.msfsPackagePath')}\\A32NX\\`;
+        const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
 
-        if (fs.existsSync(a32nxDir)) {
+        if (fs.existsSync(installDir)) {
             if (typeof localLastUpdate === "string") {
                 if (localLastUpdate === webLastUpdate) {
                     console.log("Is Updated");
