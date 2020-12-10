@@ -1,11 +1,20 @@
 import React from 'react';
-import logo from '../../assets/FBW-Logo-White.svg';
+import logo from '../../assets/FBW-Tail.svg';
+import fullLogo from '../../assets/FBW-Logo-White.svg';
 import { Container } from './styles';
 
-export default function Logo(): JSX.Element {
+export function Logo(): JSX.Element {
     return (
         <Container>
             <img src={logo} alt="FlyByWire Logo" id="fbw-logo"/>
+        </Container>
+    );
+}
+
+export function HomeLogo(): JSX.Element {
+    return (
+        <Container>
+            <img src={fullLogo} alt="FlyByWire Logo" id="fbw-logo"/>
         </Container>
     );
 }
