@@ -110,7 +110,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             for (;;) {
                 try {
                     const {done, value} = await respReader.read();
-                    cancelCheck.then(function (val: AbortSignal) {
+                    cancelCheck.then((val: AbortSignal) => {
                         signal = val;
                     });
                     if (done || signal.aborted) {
