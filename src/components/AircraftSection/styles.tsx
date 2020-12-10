@@ -74,6 +74,7 @@ export const BaseSelect = styled(Select)<{ styling?: SelectStyle }>`
 
 export const VersionSelect = styled(BaseSelect)`
     margin-right: 8px;
+    width: 134px;
 `;
 
 export const Content = styled.div`

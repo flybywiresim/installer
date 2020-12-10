@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import { Select, Typography, notification } from 'antd';
 import {DownloadOutlined, RedoOutlined} from '@ant-design/icons';
 import {
@@ -40,9 +40,13 @@ type indexProps = {
 const index: React.FC<indexProps> = (props: indexProps) => {
     const [selectedVariant, setSelectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
+    const [needsUpdate, setNeedsUpdate] = useState<Boolean>(false);
+
+    useEffect(() => {
+        checkForUpdates()
+    }, [])
 
     async function checkForUpdates() {
-        {/* TODO: Implement the check version logic */}
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
 
         // Should be HEAD instead of GET
@@ -50,14 +54,16 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
         const webLastUpdate = res.headers.get('Last-Modified').toString();
 
-        const a32nxDir = `${settings.get('mainSettings.msfsPackagePath')}A32NX\\`;
+        const a32nxDir = `${settings.get('mainSettings.msfsPackagePath')}\\A32NX\\`;
 
         if (fs.existsSync(a32nxDir)) {
             if (typeof localLastUpdate === "string") {
                 if (localLastUpdate === webLastUpdate) {
                     console.log("Is Updated");
                     props.setIsUpdated(true);
+                    setNeedsUpdate(false);
                 } else {
+                    setNeedsUpdate(true);
                     console.log("Is not Updated");
                     props.setIsUpdated(false);
                 }
@@ -131,6 +137,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             props.setIsDownloading(false);
             props.setDownloadPercentage(0);
             props.setIsUpdated(true);
+            console.log(props.mod.key);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
             console.log("Download complete!");
             notification.open({
@@ -140,8 +147,9 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         }
     }
 
-    function findAndSetTrack(key: string) {
+    async function findAndSetTrack(key: string) {
         setSelectedTrack(selectedVariant.tracks.find(x => x.key === key));
+        await checkForUpdates();
     }
 
     function handleClick() {
@@ -161,8 +169,10 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    <VersionSelect styling={{ width: 130, backgroundColor: '#00C2CB', color: 'white' }} defaultValue="Version"
-                                   onSelect={item => findAndSetTrack(item.toString())}>
+                    <VersionSelect 
+                    styling={{ width: 130, backgroundColor: '#00C2CB', color: 'white' }}
+                    defaultValue={selectedTrack.name}
+                    onSelect={item => findAndSetTrack(item.toString())}>
                         {
                             selectedVariant.tracks.map(version =>
                                 <Option value={version.key} key={version.key}>{version.name}</Option>
@@ -175,10 +185,10 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         loading={props.isDownloading}
                         onClick={handleClick}
                         style={
-                            props.isUpdated ?
+                            needsUpdate ?
                                 {
-                                    background: "gray",
-                                    borderColor: "gray"
+                                    background: "#fa8c16",
+                                    borderColor: "#fa8c16"
                                 } : {
                                     background: "#00CB5D",
                                     borderColor: "#00CB5D"
@@ -186,12 +196,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     >{props.isDownloading ?
                             (props.downloadPercentage >= 99) ? "Decompressing" : `${props.downloadPercentage}%`
                             :
-                            props.isUpdated ? "Installed" : "Install"}</InstallButton>
-                    <CheckUpdateButton
-                        type="text"
-                        shape="circle"
-                        icon={<RedoOutlined />}
-                        onClick={() => checkForUpdates()}/>
+                            needsUpdate ? "Update" : "Install"}</InstallButton>
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={props.downloadPercentage} showInfo={false} status="active" />
@@ -204,8 +209,8 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     <h3>Variants</h3>
                     {
                         props.mod.variants.map(variant =>
-                            // TODO: Fix Click and disabled not working
-                            <EngineOption key={variant.key} onClick={() => setSelectedVariant(variant)} aria-disabled={!variant.enabled}>
+                            // TODO: Enable onClick when mod variants are available
+                            <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
                                 <img src={variant.imageUrl} />
                                 <span>{variant.name}</span>
                             </EngineOption>
