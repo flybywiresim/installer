@@ -17,6 +17,7 @@ export const PageHeader = styled(Header)`
 `;
 
 export const PageContent = styled(Content)`
+    overflow-y: scroll;
     background-color: #1C1C1C;
     margin: 0 !important;
 `;

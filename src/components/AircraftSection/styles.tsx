@@ -46,9 +46,33 @@ interface SomeInterface {
     awesome: boolean
 }
 
-export const VersionSelect = styled(Select)`
+function select<T>(...items: T[]): T {
+    for (const item of items) {
+        if (item) return item;
+    }
+    return undefined;
+}
+
+type SelectStyle = {
+    width?: number,
+    backgroundColor?: string,
+    color?: string,
+    borderColor?: string
+};
+
+export const BaseSelect = styled(Select)<{ styling?: SelectStyle }>`
+    .ant-select-selector {
+        width: ${props => select(String(props.styling?.width), 'unset')};
+        background-color: ${props => select(props.styling?.backgroundColor, 'unset')} !important;
+        color: ${props => select(props.styling?.color, 'unset')} !important;
+        border-color: ${props => select(props.styling?.borderColor, props.styling?.backgroundColor, 'unset')} !important;
+    }
+`;
+
+export const VersionSelect = styled(BaseSelect)`
     margin-right: 8px;
 `;
+
 export const Content = styled.div`
     padding: 30px 24px 24px 24px;
     h3 {

@@ -161,8 +161,8 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     </AircraftModelSelect> **/}
                     {/* TODO: Implement the check version logic */}
                     {/* <Button onClick={() => checkForA32nxUpdate(versions[0])}>Check for update</Button> */}
-                    <VersionSelect defaultValue="Version" style={{ width: 130}}
-                        onSelect={item => findAndSetTrack(item.toString())}>
+                    <VersionSelect styling={{ width: 130, backgroundColor: '#00C2CB', color: 'white' }} defaultValue="Version"
+                                   onSelect={item => findAndSetTrack(item.toString())}>
                         {
                             selectedVariant.tracks.map(version =>
                                 <Option value={version.key} key={version.key}>{version.name}</Option>
