@@ -45,7 +45,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
 
     useEffect(() => {
-        checkForUpdates().then();
+        checkForUpdates();
     }, []);
 
     async function checkForUpdates() {
@@ -90,11 +90,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             props.setIsUpdated(false);
             const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
 
-            // I wouldn't delete the A32NX folder can run into issues and if patches are applied only patches files will be available
-            // const deleteHandle = fs.rmdir(msfs_package_dir + props.mod.targetDirectory + '\\', {recursive: true}, () => {
-            //     console.log("Deleted original file");
-            // });
-
             const fetchResp = await fetch(track.url);
             console.log("Starting Download");
 
@@ -127,7 +122,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         props.setDownloadPercentage(lastPercentFloor);
                     }
                 } catch (e) {
-                    if (e.name == 'AbortError') {
+                    if (e.name === 'AbortError') {
                         console.log('User aborted download');
                         break;
                     } else {
@@ -154,8 +149,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             if (typeof msfs_package_dir === "string") {
                 const zipFile = new Zip(compressedBuffer);
 
-                // await deleteHandle;
-
                 zipFile.extractAllTo(msfs_package_dir);
             }
             props.setIsDownloading(false);
@@ -181,7 +174,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         if (settings.has('mainSettings.msfsPackagePath')) {
             downloadMod(selectedTrack), cancelDownload();
         } else {
-            setupInstallPath().then();
+            setupInstallPath();
         }
     }
     function cancelDownload() {
