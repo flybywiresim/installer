@@ -46,14 +46,13 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
 
     useEffect(() => {
-        checkForUpdates();
+        checkForUpdates(selectedTrack);
     }, []);
 
-    async function checkForUpdates() {
+    async function checkForUpdates(track: ModTrack) {
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
 
-        // Should be HEAD instead of GET
-        const res = await fetch(selectedTrack.url);
+        const res = await fetch(track.url, { method: 'HEAD' });
 
         const webLastUpdate = res.headers.get('Last-Modified').toString();
 
@@ -169,8 +168,9 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     }
 
     async function findAndSetTrack(key: string) {
-        setSelectedTrack(selectedVariant.tracks.find(x => x.key === key));
-        await checkForUpdates();
+        const newTrack = selectedVariant.tracks.find(x => x.key === key);
+        await checkForUpdates(newTrack);
+        setSelectedTrack(newTrack);
     }
 
     function handleClick() {
