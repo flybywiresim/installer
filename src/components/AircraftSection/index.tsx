@@ -184,8 +184,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         }
     }
 
-    // useEffect(() => {});
-
     return (
         <Container>
             <HeaderImage>
