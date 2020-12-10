@@ -55,7 +55,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         const res = await fetch(track.url, { method: 'HEAD' });
 
         const webLastUpdate = res.headers.get('Last-Modified').toString();
-        console.log(track.name, webLastUpdate);
 
         const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
 
