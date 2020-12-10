@@ -21,6 +21,10 @@ import SettingsSection from '../SettingsSection';
 import AircraftSection from '../AircraftSection';
 import WindowActionButtons from '../WindowActionButtons';
 
+import A320NoseSVG from '../../assets/a32nx_nose.svg'
+import A380NoseSVG from '../../assets/a380x_nose.svg'
+import CFMLeap1SVG from '../../assets/cfm_leap1-a.svg'
+
 export type Mod = {
     name: string,
     aircraftName: string,
@@ -60,7 +64,7 @@ function App() {
             aircraftName: 'A320neo',
             key: 'A32NX',
             enabled: true,
-            menuIconUrl: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a32nx_nose.svg',
+            menuIconUrl: A320NoseSVG,
             backgroundImageUrls: [
                 'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'
             ],
@@ -75,7 +79,7 @@ function App() {
                 {
                     name: 'Neo (CFM LEAP-1A) / (PW1100G-JM)',
                     key: 'LEAP',
-                    imageUrl: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/cfm_leap1-a.svg',
+                    imageUrl: CFMLeap1SVG,
                     enabled: true,
                     tracks: [
                         {
@@ -97,7 +101,7 @@ function App() {
             aircraftName: 'A380',
             key: 'A380',
             enabled: false,
-            menuIconUrl: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a380x_nose.svg',
+            menuIconUrl: A380NoseSVG,
             backgroundImageUrls: [],
             shortDescription: 'Airbus A380-800',
             description: '',
