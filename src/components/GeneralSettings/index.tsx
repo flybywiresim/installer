@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import { remote } from 'electron';
 import Store from 'electron-store';
 import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems, SettingButton } from './styles';
+import { setupInstallPath } from '../../actions/install-path.utils';
+
+const settings = new Store;
 
 function InstallPathSettingItem(): JSX.Element {
-    const settings = new Store;
     const [installPath, setInstallPath] = useState(settings.get('mainSettings.msfsPackagePath'));
 
     async function handleClick() {
-        const path = await remote.dialog.showOpenDialog({
-            properties: ['openDirectory']
-        });
-        if (path.filePaths[0]) {
-            setInstallPath(path.filePaths[0]);
-            settings.set('mainSettings.msfsPackagePath', installPath);
-        }
+        const path = await setupInstallPath();
+        setInstallPath(path);
     }
 
     return (

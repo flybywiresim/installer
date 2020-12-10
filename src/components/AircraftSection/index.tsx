@@ -20,6 +20,7 @@ import Store from 'electron-store';
 import * as fs from "fs";
 import Zip from 'adm-zip';
 import {Mod, ModTrack, ModVariant} from "../App";
+import { setupInstallPath } from '../../actions/install-path.utils';
 
 const settings = new Store;
 
@@ -143,7 +144,14 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         setSelectedTrack(selectedVariant.tracks.find(x => x.key === key));
     }
 
-    // useEffect(() => {});
+    function handleClick() {
+        // check if install folder is set
+        if (settings.has('mainSettings.msfsPackagePath')){
+            downloadMod(selectedTrack);
+        } else {
+            setupInstallPath()
+        }
+    }
 
     return (
         <Container>
@@ -153,13 +161,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    {/** <AircraftModelSelect defaultValue="A320neo" style={{ width: 120 }}>
-                        <Option value="A320neo">A320neo</Option>
-                        <Option value="A321neo">A321neo</Option>
-                        <Option value="A319">A319</Option>
-                    </AircraftModelSelect> **/}
-                    {/* TODO: Implement the check version logic */}
-                    {/* <Button onClick={() => checkForA32nxUpdate(versions[0])}>Check for update</Button> */}
                     <VersionSelect styling={{ width: 130, backgroundColor: '#00C2CB', color: 'white' }} defaultValue="Version"
                                    onSelect={item => findAndSetTrack(item.toString())}>
                         {
@@ -172,7 +173,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         type="primary"
                         icon={<DownloadOutlined />}
                         loading={props.isDownloading}
-                        onClick={() => downloadMod(selectedTrack)}
+                        onClick={handleClick}
                         style={
                             props.isUpdated ?
                                 {
