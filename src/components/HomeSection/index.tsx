@@ -1,13 +1,12 @@
 import React from 'react';
-import Logo from '../Logo';
+import { HomeLogo } from '../Logo';
 import { Container, LogoAndText, Images, DescAndImages, Image } from './styles';
 
 function index(): JSX.Element {
     return (
         <Container>
             <LogoAndText>
-                <Logo />
-                <span>flybywire</span>
+                <HomeLogo />
             </LogoAndText>
             <DescAndImages>
                 <p>FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft,

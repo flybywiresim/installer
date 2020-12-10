@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from '../Logo';
+import { Logo } from '../Logo';
 import { Container, Title } from './styles';
 
 function index(): JSX.Element {

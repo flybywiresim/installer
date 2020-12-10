@@ -15,7 +15,7 @@ export const Container = styled.div`
   padding-top: 40px;
 
   img {
-    height: 70px;
+    height: 100px;
   }
 
   span {
@@ -28,6 +28,7 @@ export const Container = styled.div`
 export const LogoAndText = styled.div`
   display: flex;
   align-items:baseline;
+  margin: 1rem;
 `;
 
 export const DescAndImages = styled.div`

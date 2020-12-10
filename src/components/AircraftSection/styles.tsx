@@ -40,6 +40,9 @@ export const VersionsButton = styled(Button)`
 export const InstallButton = styled(Button)`
     background: green;
 `;
+export const CheckUpdateButton = styled(Button)`
+    color: white !important;
+`;
 export const ModelsDropdownButton = styled(Button)``;
 
 interface SomeInterface {

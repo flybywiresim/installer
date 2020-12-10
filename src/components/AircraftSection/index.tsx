@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import { Select, Typography, notification } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import {DownloadOutlined, RedoOutlined} from '@ant-design/icons';
 import {
     ButtonsContainer as SelectionContainer,
     Content,
@@ -13,7 +13,8 @@ import {
     VersionSelect,
     EngineOptionsContainer,
     EngineOption,
-    DownloadProgress
+    DownloadProgress,
+    CheckUpdateButton
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -30,13 +31,14 @@ type indexProps = {
     setIsDownloading: React.Dispatch<React.SetStateAction<boolean>>,
     downloadPercentage: number,
     setDownloadPercentage: React.Dispatch<React.SetStateAction<number>>,
+    isUpdated: boolean,
+    setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>,
     mod: Mod,
 }
 
 const index: React.FC<indexProps> = (props: indexProps) => {
     const [selectedVariant, setSelectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
-    const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
     async function checkForUpdates() {
         {/* TODO: Implement the check version logic */}
@@ -53,17 +55,17 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             if (typeof localLastUpdate === "string") {
                 if (localLastUpdate === webLastUpdate) {
                     console.log("Is Updated");
-                    setIsUpdated(true);
+                    props.setIsUpdated(true);
                 } else {
                     console.log("Is not Updated");
-                    setIsUpdated(false);
+                    props.setIsUpdated(false);
                 }
             } else {
                 console.log("Failed");
-                setIsUpdated(false);
+                props.setIsUpdated(false);
             }
         } else {
-            setIsUpdated(false);
+            props.setIsUpdated(false);
         }
     }
 
@@ -72,16 +74,15 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             console.log("Downloading Track", track);
 
             props.setIsDownloading(true);
+            props.setIsUpdated(false);
             const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
 
             const deleteHandle = fs.rmdir(msfs_package_dir + props.mod.targetDirectory + '\\', {recursive: true}, () => {
                 console.log("Deleted original file");
             });
 
-            const fetchResp = await fetch(track.url).then((res) => {
-                console.log("Starting Download");
-                return res;
-            });
+            const fetchResp = await fetch(track.url);
+            console.log("Starting Download");
 
             const respReader = fetchResp.body.getReader();
             const respLength = +fetchResp.headers.get('Content-Length');
@@ -128,13 +129,13 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             }
             props.setIsDownloading(false);
             props.setDownloadPercentage(0);
-            setIsUpdated(true);
+            props.setIsUpdated(true);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
             console.log("Download complete!");
             notification.open({
                 placement: 'bottomRight',
-                message: 'Download complete!'
-              });
+                message: `${props.mod.aircraftName}/${track.name} download complete!`
+            });
         }
     }
 
@@ -142,9 +143,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         setSelectedTrack(selectedVariant.tracks.find(x => x.key === key));
     }
 
-    useEffect(() => {
-        checkForUpdates();
-    });
+    // useEffect(() => {});
 
     return (
         <Container>
@@ -174,8 +173,24 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                         icon={<DownloadOutlined />}
                         loading={props.isDownloading}
                         onClick={() => downloadMod(selectedTrack)}
-                        style={{ background: "#00CB5D", borderColor: "#00CB5D" }}
-                    >{props.isDownloading ? `${props.downloadPercentage}%` : isUpdated ? "Installed" : "Install"}</InstallButton>
+                        style={
+                            props.isUpdated ?
+                                {
+                                    background: "gray",
+                                    borderColor: "gray"
+                                } : {
+                                    background: "#00CB5D",
+                                    borderColor: "#00CB5D"
+                                }}
+                    >{props.isDownloading ?
+                            (props.downloadPercentage >= 99) ? "Decompressing" : `${props.downloadPercentage}%`
+                            :
+                            props.isUpdated ? "Installed" : "Install"}</InstallButton>
+                    <CheckUpdateButton
+                        type="text"
+                        shape="circle"
+                        icon={<RedoOutlined />}
+                        onClick={() => checkForUpdates()}/>
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={props.downloadPercentage} showInfo={false} status="active" />
