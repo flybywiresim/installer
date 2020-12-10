@@ -51,7 +51,9 @@ interface SomeInterface {
 
 function select<T>(...items: T[]): T {
     for (const item of items) {
-        if (item) return item;
+        if (item) {
+            return item;
+        }
     }
     return undefined;
 }

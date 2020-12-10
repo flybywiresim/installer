@@ -21,9 +21,9 @@ import SettingsSection from '../SettingsSection';
 import AircraftSection from '../AircraftSection';
 import WindowActionButtons from '../WindowActionButtons';
 
-import A320NoseSVG from '../../assets/a32nx_nose.svg'
-import A380NoseSVG from '../../assets/a380x_nose.svg'
-import CFMLeap1SVG from '../../assets/cfm_leap1-a.svg'
+import A320NoseSVG from '../../assets/a32nx_nose.svg';
+import A380NoseSVG from '../../assets/a380x_nose.svg';
+import CFMLeap1SVG from '../../assets/cfm_leap1-a.svg';
 
 export type Mod = {
     name: string,
@@ -91,6 +91,11 @@ function App() {
                             name: 'Stable',
                             key: 'a32nx-stable',
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/stable/A32NX-stable.zip',
+                        },
+                        {
+                            name: 'FBW',
+                            key: 'a32nx-fbw',
+                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster-cfbw/A32NX-master-cfbw.zip',
                         }
                     ],
                 }

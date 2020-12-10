@@ -9,8 +9,8 @@ export async function setupInstallPath() {
     });
     if (path.filePaths[0]) {
         settings.set('mainSettings.msfsPackagePath', path.filePaths[0]);
-        return  path.filePaths[0]
+        return path.filePaths[0];
     } else {
-        return ""
+        return "";
     }
 }
