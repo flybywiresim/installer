@@ -1,6 +1,6 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Select, Typography, notification } from 'antd';
-import {DownloadOutlined} from '@ant-design/icons';
+import { DownloadOutlined } from '@ant-design/icons';
 import {
     ButtonsContainer as SelectionContainer,
     Content,
@@ -18,10 +18,8 @@ import {
 import Store from 'electron-store';
 import * as fs from "fs";
 import Zip from 'adm-zip';
-import {Mod, ModTrack, ModVariant} from "../App";
+import { Mod, ModTrack, ModVariant } from "../App";
 import { setupInstallPath } from '../../actions/install-path.utils';
-import {Simulate} from "react-dom/test-utils";
-import transitionEnd = Simulate.transitionEnd;
 
 const settings = new Store;
 
@@ -109,7 +107,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
             for (;;) {
                 try {
-                    const {done, value} = await respReader.read();
+                    const { done, value } = await respReader.read();
                     cancelCheck.then((val: AbortSignal) => {
                         signal = val;
                     });

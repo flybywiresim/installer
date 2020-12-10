@@ -32,6 +32,7 @@
     "quotes": "off",
     "semi": ["error", "always"],
     "curly": ["error", "all"],
+    "object-curly-spacing": ["error", "always"],
     "brace-style": ["error", "1tbs"],
     "space-before-blocks": "error",
     "space-before-function-paren": [
@@ -59,6 +60,7 @@
     ],
     "no-console": "off",
     "eol-last": ["error", "always"],
+    "no-unused-vars": "error",
     "no-multiple-empty-lines": [
       "error",
       {

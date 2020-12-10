@@ -42,4 +42,4 @@ export const SettingItemContent = styled.span`
     text-overflow: ellipsis;
 `;
 
-export const SettingButton = styled((props) => <Button type="link" style={{color: '#41a4ff'}} {...props}>{props.children}</Button>)``;
+export const SettingButton = styled((props) => <Button type="link" style={{ color: '#41a4ff' }} {...props}>{props.children}</Button>)``;

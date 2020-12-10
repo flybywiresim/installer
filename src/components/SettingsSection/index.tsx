@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout } from 'antd';
-import { Container, Content, Menu, PageSider} from './styles';
+import { Container, Content, Menu, PageSider } from './styles';
 
 import GeneralSettings from '../GeneralSettings';
 

@@ -45,10 +45,6 @@ export const CheckUpdateButton = styled(Button)`
 `;
 export const ModelsDropdownButton = styled(Button)``;
 
-interface SomeInterface {
-    awesome: boolean
-}
-
 function select<T>(...items: T[]): T {
     for (const item of items) {
         if (item) {
@@ -112,15 +108,15 @@ export const EngineOption = styled.div`
 `;
 
 export const DownloadProgress = styled(Progress)`
-    top: -10px;
+  top: -10px;
 
-    .ant-progress-inner {
-        border: none;
-        height: 3px;
-        background-color: #1C1C1C;
-    }
+  .ant-progress-inner {
+    border: none;
+    height: 3px;
+    background-color: #1C1C1C;
+  }
 
-    .ant-progress-bg {
-        border-radius: 0;
-    }
+  .ant-progress-bg {
+    border-radius: 0;
+  }
 `;
