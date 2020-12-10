@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import { Select, Typography, notification } from 'antd';
-import {DownloadOutlined, RedoOutlined} from '@ant-design/icons';
+import {DownloadOutlined} from '@ant-design/icons';
 import {
     ButtonsContainer as SelectionContainer,
     Content,
@@ -13,8 +13,7 @@ import {
     VersionSelect,
     EngineOptionsContainer,
     EngineOption,
-    DownloadProgress,
-    CheckUpdateButton
+    DownloadProgress
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -37,14 +36,17 @@ type indexProps = {
     mod: Mod,
 }
 
+let controller: AbortController;
+let signal: AbortSignal;
+
 const index: React.FC<indexProps> = (props: indexProps) => {
-    const [selectedVariant, setSelectedVariant] = useState<ModVariant>(props.mod.variants[0]);
+    const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
-    const [needsUpdate, setNeedsUpdate] = useState<Boolean>(false);
+    const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
 
     useEffect(() => {
-        checkForUpdates()
-    }, [])
+        checkForUpdates();
+    }, []);
 
     async function checkForUpdates() {
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
@@ -78,15 +80,15 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
     async function downloadMod(track: ModTrack) {
         if (!props.isDownloading) {
+            controller = new AbortController();
+            signal = controller.signal;
             console.log("Downloading Track", track);
-
+            const cancelCheck = new Promise((resolve) => {
+                resolve(signal);
+            });
             props.setIsDownloading(true);
             props.setIsUpdated(false);
             const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
-
-            const deleteHandle = fs.rmdir(msfs_package_dir + props.mod.targetDirectory + '\\', {recursive: true}, () => {
-                console.log("Deleted original file");
-            });
 
             const fetchResp = await fetch(track.url);
             console.log("Starting Download");
@@ -101,21 +103,38 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             let lastPercentFloor = 0;
 
             for (;;) {
-                const {done, value} = await respReader.read();
+                try {
+                    const {done, value} = await respReader.read();
+                    cancelCheck.then((val: AbortSignal) => {
+                        signal = val;
+                    });
+                    if (done || signal.aborted) {
+                        break;
+                    }
 
-                if (done) {
-                    break;
+                    chunks.push(value);
+                    receivedLength += value.length;
+
+                    const newPercentFloor = Math.floor((receivedLength / respLength) * 100);
+
+                    if (lastPercentFloor !== newPercentFloor) {
+                        lastPercentFloor = newPercentFloor;
+                        props.setDownloadPercentage(lastPercentFloor);
+                    }
+                } catch (e) {
+                    if (e.name === 'AbortError') {
+                        console.log('User aborted download');
+                        break;
+                    } else {
+                        throw e;
+                    }
                 }
+            }
 
-                chunks.push(value);
-                receivedLength += value.length;
-
-                const newPercentFloor = Math.floor((receivedLength / respLength) * 100);
-
-                if (lastPercentFloor !== newPercentFloor) {
-                    lastPercentFloor = newPercentFloor;
-                    props.setDownloadPercentage(lastPercentFloor);
-                }
+            if (signal.aborted) {
+                props.setIsDownloading(false);
+                props.setDownloadPercentage(0);
+                return;
             }
 
             const chunksAll = new Uint8Array(respLength);
@@ -129,8 +148,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
             if (typeof msfs_package_dir === "string") {
                 const zipFile = new Zip(compressedBuffer);
-
-                await deleteHandle;
 
                 zipFile.extractAllTo(msfs_package_dir);
             }
@@ -154,10 +171,16 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
     function handleClick() {
         // check if install folder is set
-        if (settings.has('mainSettings.msfsPackagePath')){
-            downloadMod(selectedTrack);
+        if (settings.has('mainSettings.msfsPackagePath')) {
+            downloadMod(selectedTrack), cancelDownload();
         } else {
-            setupInstallPath()
+            setupInstallPath();
+        }
+    }
+    function cancelDownload() {
+        if (props.isDownloading) {
+            console.log('Cancel download');
+            controller.abort();
         }
     }
 
@@ -169,10 +192,10 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    <VersionSelect 
-                    styling={{ width: 130, backgroundColor: '#00C2CB', color: 'white' }}
-                    defaultValue={selectedTrack.name}
-                    onSelect={item => findAndSetTrack(item.toString())}>
+                    <VersionSelect
+                        styling={{ width: 130, backgroundColor: '#00C2CB', color: 'white' }}
+                        defaultValue={selectedTrack.name}
+                        onSelect={item => findAndSetTrack(item.toString())}>
                         {
                             selectedVariant.tracks.map(version =>
                                 <Option value={version.key} key={version.key}>{version.name}</Option>
@@ -182,7 +205,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     <InstallButton
                         type="primary"
                         icon={<DownloadOutlined />}
-                        loading={props.isDownloading}
                         onClick={handleClick}
                         style={
                             needsUpdate ?
@@ -194,7 +216,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                                     borderColor: "#00CB5D"
                                 }}
                     >{props.isDownloading ?
-                            (props.downloadPercentage >= 99) ? "Decompressing" : `${props.downloadPercentage}%`
+                            (props.downloadPercentage >= 99) ? "Decompressing" : `${props.downloadPercentage}% -  Cancel Download`
                             :
                             needsUpdate ? "Update" : "Install"}</InstallButton>
                 </SelectionContainer>
