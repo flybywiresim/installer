@@ -20,6 +20,8 @@ import * as fs from "fs";
 import Zip from 'adm-zip';
 import {Mod, ModTrack, ModVariant} from "../App";
 import { setupInstallPath } from '../../actions/install-path.utils';
+import {Simulate} from "react-dom/test-utils";
+import transitionEnd = Simulate.transitionEnd;
 
 const settings = new Store;
 
@@ -43,6 +45,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
+    const [isInstalled, setIsInstalled] = useState<boolean>(false);
 
     useEffect(() => {
         checkForUpdates();
@@ -59,6 +62,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
 
         if (fs.existsSync(installDir)) {
+            setIsInstalled(true);
             if (typeof localLastUpdate === "string") {
                 if (localLastUpdate === webLastUpdate) {
                     console.log("Is Updated");
@@ -74,6 +78,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                 props.setIsUpdated(false);
             }
         } else {
+            setIsInstalled(false);
             props.setIsUpdated(false);
         }
     }
@@ -153,6 +158,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             }
             props.setIsDownloading(false);
             props.setDownloadPercentage(0);
+            setIsInstalled(true);
             props.setIsUpdated(true);
             console.log(props.mod.key);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
@@ -218,7 +224,9 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     >{props.isDownloading ?
                             (props.downloadPercentage >= 99) ? "Decompressing" : `${props.downloadPercentage}% -  Cancel Download`
                             :
-                            needsUpdate ? "Update" : "Install"}</InstallButton>
+                            isInstalled ? needsUpdate ? "Update" : "Installed" : "Install"
+                        }
+                    </InstallButton>
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={props.downloadPercentage} showInfo={false} status="active" />
