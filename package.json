@@ -2,7 +2,7 @@
   "name": "fbw-installer",
   "productName": "fbw-installer",
   "version": "0.1.0",
-  "description": "My Electron application description",
+  "description": "Desktop application to install and customize FlyByWire mods",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
