@@ -14,7 +14,6 @@ module.exports = {
   plugins: plugins,
   resolve: {
     alias: {
-      'src': path.resolve(__dirname, './src'),
       'renderer': path.resolve(__dirname, './src/renderer'),
       'common': path.resolve(__dirname, './src/common'),
     },

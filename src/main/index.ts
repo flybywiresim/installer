@@ -30,7 +30,7 @@ const createWindow = (): void => {
         height: 800,
         width: 1200,
         frame: false,
-        icon: 'src/icons/icn.ico',
+        icon: 'src/main/icons/icn.ico',
         backgroundColor: '#FFF',
         webPreferences: {
             nodeIntegration: true,
