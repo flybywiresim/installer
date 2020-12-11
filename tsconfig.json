@@ -11,7 +11,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*"],
+      "src/*": ["./src/*"],
+      "common/*": ["./src/common/*"],
+      "renderer/*": ["./src/renderer/*"],
+      "main/*": ["./src/main/*"],
     },
     "jsx": "react"
   },
