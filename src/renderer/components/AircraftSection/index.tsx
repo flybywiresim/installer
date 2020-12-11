@@ -147,6 +147,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             setIsDownloading(false);
             setDownloadPercentage(0);
             setIsInstalled(true);
+            setNeedsUpdate(false);
             console.log(props.mod.key);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
             console.log("Download complete!");

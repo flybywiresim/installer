@@ -51,6 +51,7 @@ export const VersionsButton = styled(BaseButton)`
 `;
 export const InstallButton = styled(BaseButton)`
     background: green;
+    min-width: 114px;
 `;
 export const CheckUpdateButton = styled(BaseButton)`
     color: white !important;
