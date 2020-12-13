@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Select, Typography, notification } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
 import {
     ButtonsContainer as SelectionContainer,
     Content,
