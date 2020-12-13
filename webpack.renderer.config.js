@@ -1,3 +1,4 @@
+const path = require('path');
 const rules = require('./webpack.rules');
 const plugins = require('./webpack.plugins');
 
@@ -12,6 +13,10 @@ module.exports = {
   },
   plugins: plugins,
   resolve: {
+    alias: {
+      'renderer': path.resolve(__dirname, './src/renderer'),
+      'common': path.resolve(__dirname, './src/common'),
+    },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
   },
 };

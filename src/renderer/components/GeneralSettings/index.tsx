@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Store from 'electron-store';
+import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems, SettingButton } from './styles';
-import { setupInstallPath } from '../../actions/install-path.utils';
+
 
 const settings = new Store;
 

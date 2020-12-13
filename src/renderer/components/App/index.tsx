@@ -1,9 +1,17 @@
 import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
-
 import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
-import Logo from '../LogoWithText';
+
+import Logo from 'renderer/components/LogoWithText';
+import HomeSection from 'renderer/components/HomeSection';
+import SettingsSection from 'renderer/components/SettingsSection';
+import AircraftSection from 'renderer/components/AircraftSection';
+import WindowActionButtons from 'renderer/components/WindowActionButtons';
+import A320NoseSVG from 'renderer/assets/a32nx_nose.svg';
+import A380NoseSVG from 'renderer/assets/a380x_nose.svg';
+import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
+
 import {
     Container,
     PageHeader,
@@ -16,14 +24,6 @@ import {
     AircraftName,
     AircraftDetailsContainer
 } from './styles';
-import HomeSection from '../HomeSection';
-import SettingsSection from '../SettingsSection';
-import AircraftSection from '../AircraftSection';
-import WindowActionButtons from '../WindowActionButtons';
-
-import A320NoseSVG from '../../assets/a32nx_nose.svg';
-import A380NoseSVG from '../../assets/a380x_nose.svg';
-import CFMLeap1SVG from '../../assets/cfm_leap1-a.svg';
 
 export type Mod = {
     name: string,
@@ -54,9 +54,6 @@ export type ModTrack = {
 
 function App() {
     const [selectedItem, setSelectedItem] = useState<string>('home');
-    const [isDownloading, setIsDownloading] = useState<boolean>(false);
-    const [downloadPercentage, setDownloadPercentage] = useState<number>(0);
-    const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
     const mods: Mod[] = [
         {
@@ -125,14 +122,7 @@ function App() {
             break;
 
         default:
-            sectionToShow = <AircraftSection
-                mod={mods.find(x => x.key === selectedItem)}
-                isDownloading={isDownloading}
-                setIsDownloading={setIsDownloading}
-                downloadPercentage={downloadPercentage}
-                setDownloadPercentage={setDownloadPercentage}
-                isUpdated={isUpdated}
-                setIsUpdated={setIsUpdated}/>;
+            sectionToShow = <AircraftSection mod={mods.find(x => x.key === selectedItem)}/>;
             break;
     }
 

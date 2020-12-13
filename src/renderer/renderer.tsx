@@ -28,14 +28,23 @@
 import { remote } from 'electron';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
+
 import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
 import './index.css';
-import App from './components/App';
+import App from 'renderer/components/App';
+import store from 'renderer/redux/stores'
 
 const win = remote.getCurrentWindow();
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>, 
+    document.getElementById('root')
+);
 
 // When document has loaded, initialize
 document.onreadystatechange = () => {
