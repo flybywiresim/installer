@@ -35,7 +35,7 @@ import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
 import './index.css';
 import App from 'renderer/components/App';
-import store from 'renderer/redux/stores'
+import store from 'renderer/redux/store'
 
 const win = remote.getCurrentWindow();
 
