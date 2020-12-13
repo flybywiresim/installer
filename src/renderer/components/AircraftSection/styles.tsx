@@ -161,7 +161,8 @@ export const UpdateButton = styled(
 
 export const CancelButton = styled(
     props => 
-    <InstallButton 
+    <InstallButton
+        icon={null} 
         style={{
                 background: "#fa8c16",
                 borderColor: "#fa8c16"
@@ -172,7 +173,8 @@ export const CancelButton = styled(
 
 export const InstalledButton = styled(
     props => 
-    <InstallButton 
+    <InstallButton
+        icon={null} 
         style={{
             color: "#dddddd",
             background: "#2e995e",
