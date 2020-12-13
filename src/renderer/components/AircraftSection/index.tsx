@@ -174,7 +174,8 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     function handleClick() {
         // check if install folder is set
         if (settings.has('mainSettings.msfsPackagePath')) {
-            downloadMod(selectedTrack), cancelDownload();
+            downloadMod(selectedTrack);
+            cancelDownload();
         } else {
             setupInstallPath();
         }
@@ -184,6 +185,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         if (isDownloading) {
             console.log('Cancel download');
             controller.abort();
+            dispatch(deleteDownload(props.mod.name));
         }
     }
 
