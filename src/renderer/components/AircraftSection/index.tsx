@@ -216,8 +216,8 @@ const index: React.FC<Props> = (props: Props) => {
                             )
                         }
                     </VersionSelect>
-                    {!isInstalled && <InstallButton onClick={handleInstall} />}
-                    {isInstalled && !needsUpdate && <InstalledButton />}
+                    {!isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
+                    {isInstalled && !needsUpdate && !isDownloading && <InstalledButton />}
                     {needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
                     {isDownloading && <CancelButton onClick={handleCancel}>
                         {(download?.progress >= 99) ? "Decompressing" : `${download?.progress}% -  Cancel`}
