@@ -13,7 +13,10 @@ import {
     VersionSelect,
     EngineOptionsContainer,
     EngineOption,
-    DownloadProgress
+    DownloadProgress,
+    UpdateButton,
+    InstalledButton,
+    CancelButton
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -30,14 +33,14 @@ const settings = new Store;
 const { Option } = Select;
 const { Paragraph } = Typography;
 
-type indexProps = {
+type Props = {
     mod: Mod,
 }
 
 let controller: AbortController;
 let signal: AbortSignal;
 
-const index: React.FC<indexProps> = (props: indexProps) => {
+const index: React.FC<Props> = (props: Props) => {
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
@@ -171,23 +174,30 @@ const index: React.FC<indexProps> = (props: indexProps) => {
         setSelectedTrack(newTrack);
     }
 
-    function handleClick() {
-        // check if install folder is set
+    function handleInstall() {
         if (settings.has('mainSettings.msfsPackagePath')) {
             downloadMod(selectedTrack);
-            cancelDownload();
         } else {
             setupInstallPath();
         }
     }
 
-    function cancelDownload() {
+    function handleUpdate() {
+        if (settings.has('mainSettings.msfsPackagePath')) {
+            downloadMod(selectedTrack);
+        } else {
+            setupInstallPath();
+        }
+    }
+
+    function handleCancel() {
         if (isDownloading) {
             console.log('Cancel download');
             controller.abort();
             dispatch(deleteDownload(props.mod.name));
         }
     }
+
 
     return (
         <Container>
@@ -207,36 +217,12 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                             )
                         }
                     </VersionSelect>
-                    <InstallButton
-                        type="primary"
-                        icon={<DownloadOutlined />}
-                        onClick={handleClick}
-                        style={
-                            isInstalled ? (
-                                needsUpdate ?
-                                    {
-                                        background: "#fa8c16",
-                                        borderColor: "#fa8c16"
-                                    } : {
-                                        color: "#dddddd",
-                                        background: "#2e995e",
-                                        borderColor: "#2e995e",
-                                        pointerEvents: "none"
-                                    }
-                            ) : {
-                                background: "#00CB5D",
-                                borderColor: "#00CB5D"
-                            }
-                        }
-                    >{isDownloading ?
-                            (download?.progress >= 99) ? "Decompressing" : `${download?.progress}% -  Cancel`
-                            :
-                            isInstalled ?
-                                needsUpdate ? "Update" : "Installed"
-                                :
-                                "Install"
-                        }
-                    </InstallButton>
+                    {!isInstalled && <InstallButton onClick={handleInstall} />}
+                    {isInstalled && !needsUpdate && <InstalledButton />}
+                    {needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
+                    {isDownloading && <CancelButton onClick={handleCancel}>
+                        {(download?.progress >= 99) ? "Decompressing" : `${download?.progress}% -  Cancel`}
+                    </CancelButton>}
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
