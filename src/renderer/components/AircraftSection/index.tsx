@@ -42,10 +42,11 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
-    const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
     const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, {id: props.mod.name}))
     const dispatch = useDispatch();
+
+    const isDownloading = download?.progress >= 0;
 
 
     useEffect(() => {
@@ -88,7 +89,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             const cancelCheck = new Promise((resolve) => {
                 resolve(signal);
             });
-            setIsDownloading(true);
             const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
 
             const fetchResp = await fetch(track.url);
@@ -133,7 +133,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
             }
 
             if (signal.aborted) {
-                setIsDownloading(false);
                 dispatch(updateDownloadProgress(props.mod.name, 0));
                 return;
             }
@@ -152,7 +151,6 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
                 zipFile.extractAllTo(msfs_package_dir);
             }
-            setIsDownloading(false);
             dispatch(updateDownloadProgress(props.mod.name, 0));
             setIsInstalled(true);
             setNeedsUpdate(false);
