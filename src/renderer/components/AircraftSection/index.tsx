@@ -20,6 +20,10 @@ import * as fs from "fs";
 import Zip from 'adm-zip';
 import { Mod, ModTrack, ModVariant } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
+import { DownloadItem, RootStore } from 'renderer/redux/types'
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
+import _ from 'lodash'
 
 const settings = new Store;
 
@@ -39,7 +43,10 @@ const index: React.FC<indexProps> = (props: indexProps) => {
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
-    const [downloadPercentage, setDownloadPercentage] = useState<number>(0);
+
+    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, {id: props.mod.name}))
+    const dispatch = useDispatch();
+
 
     useEffect(() => {
         checkForUpdates(selectedTrack);
@@ -74,6 +81,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
     async function downloadMod(track: ModTrack) {
         if (!isDownloading) {
+            dispatch(registerDownload(props.mod.name));
             controller = new AbortController();
             signal = controller.signal;
             console.log("Downloading Track", track);
@@ -112,7 +120,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
                     if (lastPercentFloor !== newPercentFloor) {
                         lastPercentFloor = newPercentFloor;
-                        setDownloadPercentage(lastPercentFloor);
+                        dispatch(updateDownloadProgress(props.mod.name, lastPercentFloor));
                     }
                 } catch (e) {
                     if (e.name === 'AbortError') {
@@ -126,7 +134,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
 
             if (signal.aborted) {
                 setIsDownloading(false);
-                setDownloadPercentage(0);
+                dispatch(updateDownloadProgress(props.mod.name, 0));
                 return;
             }
 
@@ -145,7 +153,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                 zipFile.extractAllTo(msfs_package_dir);
             }
             setIsDownloading(false);
-            setDownloadPercentage(0);
+            dispatch(updateDownloadProgress(props.mod.name, 0));
             setIsInstalled(true);
             setNeedsUpdate(false);
             console.log(props.mod.key);
@@ -155,6 +163,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                 placement: 'bottomRight',
                 message: `${props.mod.aircraftName}/${track.name} download complete!`
             });
+            dispatch(deleteDownload(props.mod.name));
         }
     }
 
@@ -220,7 +229,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                             }
                         }
                     >{isDownloading ?
-                            (downloadPercentage >= 99) ? "Decompressing" : `${downloadPercentage}% -  Cancel`
+                            (download?.progress >= 99) ? "Decompressing" : `${download?.progress}% -  Cancel`
                             :
                             isInstalled ?
                                 needsUpdate ? "Update" : "Installed"
@@ -230,7 +239,7 @@ const index: React.FC<indexProps> = (props: indexProps) => {
                     </InstallButton>
                 </SelectionContainer>
             </HeaderImage>
-            <DownloadProgress percent={downloadPercentage} showInfo={false} status="active" />
+            <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
             <Content>
                 <>
                     <h3>Details</h3>
