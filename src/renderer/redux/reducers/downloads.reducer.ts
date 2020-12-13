@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 const initialState: DownloadsState = [];
 
-const reducer = produce((downloads: Draft<DownloadsState>, action: DownloadActionType) => {
+const reducer = produce((downloads: Draft<DownloadsState>, action: DownloadActionType) => {      
     switch (action.type) {
         case actionTypes.UPDATE_DOWNLOAD_PROGRESS:
             downloads.forEach(download => {
@@ -25,9 +25,6 @@ const reducer = produce((downloads: Draft<DownloadsState>, action: DownloadActio
             break;
     }
 }, initialState);
-
-
-
 
 
 export default reducer;
