@@ -1,4 +1,5 @@
-![FlyByWireLogo](https://raw.githubusercontent.com/flybywiresim/fbw-branding/master/svg/FBW-Logo.svg)
+# <img src="https://raw.githubusercontent.com/flybywiresim/fbw-branding/master/svg/FBW-Logo.svg" placeholder="FlyByWire" width="400"/>
+
 # FlyByWire Simulations Installer
 
 This repo contains the installer prototype for FlyByWire Simulations projects.
