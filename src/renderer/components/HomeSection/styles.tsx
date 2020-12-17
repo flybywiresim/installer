@@ -8,7 +8,7 @@ export const Container = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://i.redd.it/c9vrznvyz4r51.png');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://cdn.discordapp.com/attachments/770835189419999262/789225162380804116/c573bc14bafbfff0f2211e4dfc978475.jpg');
   background-color: #1C1C1C;
   background-size: cover;
   padding-left: 60px;
