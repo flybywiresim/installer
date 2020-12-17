@@ -22,10 +22,10 @@ import * as fs from "fs";
 import Zip from 'adm-zip';
 import { Mod, ModTrack, ModVariant } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, RootStore } from 'renderer/redux/types'
+import { DownloadItem, RootStore } from 'renderer/redux/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
-import _ from 'lodash'
+import _ from 'lodash';
 
 const settings = new Store;
 
@@ -40,16 +40,17 @@ let controller: AbortController;
 let signal: AbortSignal;
 
 const index: React.FC<Props> = (props: Props) => {
+
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
+
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
 
-    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, {id: props.mod.name}))
+    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name }));
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
-
 
     useEffect(() => {
         checkForUpdates(selectedTrack);
@@ -196,7 +197,6 @@ const index: React.FC<Props> = (props: Props) => {
             dispatch(deleteDownload(props.mod.name));
         }
     }
-
 
     return (
         <Container>

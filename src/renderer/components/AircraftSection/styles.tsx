@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Button, Select, Progress } from 'antd';
 import styled from 'styled-components';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -141,46 +141,42 @@ export const DownloadProgress = styled(Progress)`
 
 export const InstallButton = styled(props => <BaseButton
     type="primary"
-    icon={<DownloadOutlined />}  
+    icon={<DownloadOutlined />}
     {...props}
-    />)`
+/>)`
     min-width: 114px;    
 `;
 
 export const UpdateButton = styled(
-    props => 
-    <InstallButton 
-        style={{
+    props =>
+        <InstallButton
+            style={{
                 background: "#fa8c16",
                 borderColor: "#fa8c16"
             }}
-        {...props} 
-    >Update</InstallButton>)``;
-
-
+            {...props}
+        >Update</InstallButton>)``;
 
 export const CancelButton = styled(
-    props => 
-    <InstallButton
-        icon={null} 
-        style={{
+    props =>
+        <InstallButton
+            icon={null}
+            style={{
                 background: "#fa8c16",
                 borderColor: "#fa8c16"
             }}
-        {...props} 
-    />)``;
-
+            {...props}
+        />)``;
 
 export const InstalledButton = styled(
-    props => 
-    <InstallButton
-        icon={null} 
-        style={{
-            color: "#dddddd",
-            background: "#2e995e",
-            borderColor: "#2e995e",
-            pointerEvents: "none"
+    props =>
+        <InstallButton
+            icon={null}
+            style={{
+                color: "#dddddd",
+                background: "#2e995e",
+                borderColor: "#2e995e",
+                pointerEvents: "none"
             }}
-        {...props} 
-    >Installed</InstallButton>)``;
-    
+            {...props}
+        >Installed</InstallButton>)``;

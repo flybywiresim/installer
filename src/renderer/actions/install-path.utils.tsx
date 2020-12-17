@@ -3,7 +3,7 @@ import Store from 'electron-store';
 
 const settings = new Store;
 
-export async function setupInstallPath() {
+export async function setupInstallPath(): Promise<string> {
     const path = await remote.dialog.showOpenDialog({
         properties: ['openDirectory']
     });

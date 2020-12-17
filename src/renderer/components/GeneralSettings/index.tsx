@@ -3,7 +3,6 @@ import Store from 'electron-store';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems, SettingButton } from './styles';
 
-
 const settings = new Store;
 
 function InstallPathSettingItem(): JSX.Element {
