@@ -30,10 +30,11 @@ import _ from 'lodash';
 const settings = new Store;
 
 const { Option } = Select;
+
 const { Paragraph } = Typography;
 
 type Props = {
-    mod: Mod,
+    mod: Mod
 }
 
 let controller: AbortController;
@@ -54,7 +55,10 @@ const index: React.FC<Props> = (props: Props) => {
 
     useEffect(() => {
         checkForUpdates(selectedTrack);
-    }, []);
+
+    },
+
+    []);
 
     async function checkForUpdates(track: ModTrack) {
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
