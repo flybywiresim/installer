@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "lint-fix": "eslint --fix --ext .ts,.tsx ."
+    "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "keywords": [],
   "author": "FlyByWire Simulations",
@@ -113,6 +113,8 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": "eslint --fix --ext .ts,.tsx ."
+    "*.{ts,tsx}": [
+      "npm run lint:fix"
+    ]
   }
 }
