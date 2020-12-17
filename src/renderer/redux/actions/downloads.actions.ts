@@ -7,7 +7,7 @@ export function registerDownload(id: string): RegisterNewDownloadProgressAction 
         payload: {
             id
         }
-    }
+    };
 }
 
 export function updateDownloadProgress(id: string, progress: number): UpdateDownloadProgressAction {
@@ -17,7 +17,7 @@ export function updateDownloadProgress(id: string, progress: number): UpdateDown
             id,
             progress
         }
-    }
+    };
 }
 
 export function deleteDownload(id: string): DeleteDownloadAction {
@@ -26,5 +26,5 @@ export function deleteDownload(id: string): DeleteDownloadAction {
         payload: {
             id,
         }
-    }
+    };
 }

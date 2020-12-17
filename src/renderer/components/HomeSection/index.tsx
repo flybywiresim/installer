@@ -1,6 +1,7 @@
 import React from 'react';
 import { HomeLogo } from 'renderer/components/Logo';
-import { Container, LogoAndText, Images, DescAndImages, Image } from './styles';
+// import { Container, LogoAndText, Images, DescAndImages, Image } from './styles';
+import { Container, LogoAndText, DescAndImages } from './styles';
 
 function index(): JSX.Element {
     return (

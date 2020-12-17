@@ -1,9 +1,9 @@
-import * as actions from './actionTypes'
+import * as actions from './actionTypes';
 
 export interface DownloadItem {
     id: string
     progress: number
-} 
+}
 
 export type DownloadsState = DownloadItem[];
 
@@ -22,15 +22,12 @@ export interface RegisterNewDownloadProgressAction {
     }
 }
 
-
 export interface DeleteDownloadAction {
     type: typeof actions.DELETE_DOWNLOAD
     payload: {
         id: string
     }
 }
-
-
 
 export type DownloadActionType = UpdateDownloadProgressAction | RegisterNewDownloadProgressAction | DeleteDownloadAction
 
