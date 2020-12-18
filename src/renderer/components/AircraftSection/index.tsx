@@ -52,6 +52,7 @@ const index: React.FC<Props> = (props: Props) => {
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
+    const defaultBranch = getLastInstalledBranch();
 
     useEffect(() => {
         checkForUpdates(selectedTrack);
@@ -164,6 +165,8 @@ const index: React.FC<Props> = (props: Props) => {
             setNeedsUpdate(false);
             console.log(props.mod.key);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
+            settings.set('cache.' + props.mod.key + '.lastInstalledBranchName', track.name);
+            settings.set('cache.' + props.mod.key + '.lastInstalledBranchKey', track.key);
             console.log("Download complete!");
             notification.open({
                 placement: 'bottomRight',
@@ -203,6 +206,21 @@ const index: React.FC<Props> = (props: Props) => {
         }
     }
 
+    function getLastInstalledBranch(): string {
+        const branchName = settings.get('cache.' + props.mod.key + '.lastInstalledBranchName');
+        const branchKey = settings.get('cache.' + props.mod.key + '.lastInstalledBranchKey');
+        if (typeof branchName === "string") {
+            if (typeof branchKey === "string") {
+                findAndSetTrack(branchKey);
+                return branchName;
+            } else {
+                return "Development";
+            }
+        } else {
+            return "Development";
+        }
+    }
+
     return (
         <Container>
             <HeaderImage>
@@ -213,7 +231,7 @@ const index: React.FC<Props> = (props: Props) => {
                 <SelectionContainer>
                     <VersionSelect
                         styling={{ backgroundColor: '#00C2CB', color: 'white' }}
-                        defaultValue={selectedTrack.name}
+                        defaultValue={defaultBranch}
                         onSelect={item => findAndSetTrack(item.toString())}
                         disabled={isDownloading}>
                         {
