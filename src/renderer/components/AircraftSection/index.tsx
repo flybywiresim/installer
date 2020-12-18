@@ -80,6 +80,7 @@ const index: React.FC<Props> = (props: Props) => {
                     console.log("Is not Updated");
                 }
             } else {
+                setIsInstalled(false);
                 console.log("Failed");
             }
         } else {
