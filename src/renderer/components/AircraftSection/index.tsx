@@ -214,7 +214,8 @@ const index: React.FC<Props> = (props: Props) => {
                     <VersionSelect
                         styling={{ backgroundColor: '#00C2CB', color: 'white' }}
                         defaultValue={selectedTrack.name}
-                        onSelect={item => findAndSetTrack(item.toString())}>
+                        onSelect={item => findAndSetTrack(item.toString())}
+                        disabled={isDownloading}>
                         {
                             selectedVariant.tracks.map(version =>
                                 <Option value={version.key} key={version.key}>{version.name}</Option>
