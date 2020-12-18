@@ -9,7 +9,7 @@ export const Container = styled.div`
 
 export const HeaderImage = styled.div`
     height: 400px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://cdn.discordapp.com/attachments/770835189419999262/789316154225065984/Screenshot_213-min.png');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a32nx-background.png');
     background-size: cover;
     color: white;
     display: flex;
