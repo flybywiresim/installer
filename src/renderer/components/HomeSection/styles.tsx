@@ -8,7 +8,7 @@ export const Container = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://cdn.discordapp.com/attachments/770835189419999262/789225162380804116/c573bc14bafbfff0f2211e4dfc978475.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a32nx-background-2.jpg');
   background-color: #1C1C1C;
   background-size: cover;
   padding-left: 60px;
