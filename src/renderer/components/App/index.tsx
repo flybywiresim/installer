@@ -127,7 +127,7 @@ function App() {
     }
 
     return (
-        <SimpleBar style={{ maxHeight: 1000 }}>
+        <SimpleBar>
             <Container>
                 <MainLayout>
                     <PageHeader>
