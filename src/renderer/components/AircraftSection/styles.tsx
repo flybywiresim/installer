@@ -209,7 +209,7 @@ export const CancelButton = styled(
         />)``;
 
 export const InstalledButton = styled(
-    props =>
+    (props: { inGitRepo: boolean }) =>
         <InstallButtonTemplate
             icon={null}
             style={{
@@ -219,7 +219,7 @@ export const InstalledButton = styled(
                 pointerEvents: "none"
             }}
             {...props}
-        >Installed</InstallButtonTemplate>)``;
+        >{props.inGitRepo ? 'Installed (git)' : 'Installed'}</InstallButtonTemplate>)``;
 
 export const MSFSIsOpenButton = styled(
     props =>
