@@ -47,6 +47,7 @@ const index: React.FC<Props> = (props: Props) => {
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
+    const [isInstalledAsGitRepo, setIsInstalledAsGitRepo] = useState(false);
 
     const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name }));
     const dispatch = useDispatch();
@@ -71,6 +72,16 @@ const index: React.FC<Props> = (props: Props) => {
 
         if (fs.existsSync(installDir)) {
             setIsInstalled(true);
+
+            // Check for git install
+            const symlinkPath = fs.readlinkSync(installDir);
+            if (symlinkPath) {
+                if (fs.existsSync(symlinkPath + '\\..\\.git\\')) {
+                    setIsInstalledAsGitRepo(true);
+                    return;
+                }
+            }
+
             if (typeof localLastUpdate === "string") {
                 if (localLastUpdate === webLastUpdate) {
                     console.log("Is Updated");
@@ -215,7 +226,7 @@ const index: React.FC<Props> = (props: Props) => {
                         styling={{ backgroundColor: '#00C2CB', color: 'white' }}
                         defaultValue={selectedTrack.name}
                         onSelect={item => findAndSetTrack(item.toString())}
-                        disabled={isDownloading}>
+                        disabled={isDownloading || isInstalledAsGitRepo}>
                         {
                             selectedVariant.tracks.map(version =>
                                 <Option value={version.key} key={version.key}>{version.name}</Option>
@@ -223,8 +234,9 @@ const index: React.FC<Props> = (props: Props) => {
                         }
                     </VersionSelect>
                     {!isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
-                    {isInstalled && !needsUpdate && !isDownloading && <InstalledButton />}
-                    {needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
+                    {isInstalled && isInstalledAsGitRepo && <InstalledButton inGitRepo={true} />}
+                    {isInstalled && !isInstalledAsGitRepo && !needsUpdate && !isDownloading && <InstalledButton inGitRepo={false} />}
+                    {needsUpdate && !isInstalledAsGitRepo && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
                     {isDownloading && <CancelButton onClick={handleCancel}>
                         {(download?.progress >= 99) ? "Decompressing" : `${download?.progress}% -  Cancel`}
                     </CancelButton>}

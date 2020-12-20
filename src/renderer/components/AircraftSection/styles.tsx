@@ -169,7 +169,7 @@ export const CancelButton = styled(
         />)``;
 
 export const InstalledButton = styled(
-    props =>
+    (props: { inGitRepo: boolean }) =>
         <InstallButton
             icon={null}
             style={{
@@ -179,4 +179,4 @@ export const InstalledButton = styled(
                 pointerEvents: "none"
             }}
             {...props}
-        >Installed</InstallButton>)``;
+        >{props.inGitRepo ? 'Installed (git)' : 'Installed'}</InstallButton>)``;
