@@ -99,7 +99,7 @@ const index: React.FC<Props> = (props: Props) => {
             });
             const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
 
-            const fetchResp = await fetch(track.url);
+            const fetchResp = await fetch("https://api.flybywiresim.com/api/v1/download?url=" + track.url, { redirect: "follow" });
             console.log("Starting Download");
 
             const respReader = fetchResp.body.getReader();
