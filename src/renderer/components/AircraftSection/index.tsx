@@ -43,7 +43,7 @@ let signal: AbortSignal;
 const index: React.FC<Props> = (props: Props) => {
 
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
-    const [selectedTrack, setSelectedTrack] = useState<ModTrack>(props.mod.variants[0]?.tracks[0]);
+    const [selectedTrack, setSelectedTrack] = useState<ModTrack>(handleFindInstalledTrack());
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
@@ -164,6 +164,7 @@ const index: React.FC<Props> = (props: Props) => {
             setNeedsUpdate(false);
             console.log(props.mod.key);
             settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
+            settings.set('cache.' + props.mod.key + '.lastInstalledTrack', track.name);
             console.log("Download complete!");
             notification.open({
                 placement: 'bottomRight',
@@ -203,6 +204,34 @@ const index: React.FC<Props> = (props: Props) => {
         }
     }
 
+    function handleFindInstalledTrack() {
+        const lastInstalledTrackName = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
+
+        let lastInstalledTrack = null;
+
+        props.mod.variants[0].tracks.map(track => {
+            if (track.name === lastInstalledTrackName) {
+                lastInstalledTrack = track;
+            }
+        });
+
+        if (lastInstalledTrack) {
+            return lastInstalledTrack;
+        } else {
+            return props.mod.variants[0]?.tracks[0];
+        }
+    }
+
+    function handleLastInstalledTrackName() {
+        const name = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
+
+        if (typeof name === "string") {
+            return name;
+        } else {
+            return "Development";
+        }
+    }
+
     return (
         <Container>
             <HeaderImage>
@@ -213,7 +242,7 @@ const index: React.FC<Props> = (props: Props) => {
                 <SelectionContainer>
                     <VersionSelect
                         styling={{ backgroundColor: '#00C2CB', color: 'white' }}
-                        defaultValue={selectedTrack.name}
+                        defaultValue={handleLastInstalledTrackName()}
                         onSelect={item => findAndSetTrack(item.toString())}
                         disabled={isDownloading}>
                         {
@@ -242,7 +271,7 @@ const index: React.FC<Props> = (props: Props) => {
                         props.mod.variants.map(variant =>
                             // TODO: Enable onClick when mod variants are available
                             <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
-                                <img src={variant.imageUrl} />
+                                <img src={variant.imageUrl} alt={variant.imageAlt} />
                                 <span>{variant.name}</span>
                             </EngineOption>
                         )

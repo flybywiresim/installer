@@ -42,6 +42,7 @@ export type ModVariant = {
     name: string,
     key: string,
     imageUrl: string,
+    imageAlt: string,
     enabled: boolean,
     tracks: ModTrack[],
 }
@@ -77,6 +78,7 @@ function App() {
                     name: 'Neo (CFM LEAP-1A) / (PW1100G-JM)',
                     key: 'LEAP',
                     imageUrl: CFMLeap1SVG,
+                    imageAlt: "CFM Leap-1",
                     enabled: true,
                     tracks: [
                         {
@@ -145,7 +147,7 @@ function App() {
                                             <AircraftDetailsContainer>
                                                 <AircraftName>{mod.aircraftName}</AircraftName>
                                             </AircraftDetailsContainer>
-                                            <img id={mod.key} src={mod.menuIconUrl} />
+                                            <img id={mod.key} src={mod.menuIconUrl} alt={mod.aircraftName} />
                                         </AircraftMenuItem>
                                     )
                                 }
