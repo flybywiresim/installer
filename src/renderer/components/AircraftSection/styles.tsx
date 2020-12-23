@@ -8,9 +8,10 @@ export const Container = styled.div`
 `;
 
 export const HeaderImage = styled.div`
-      height: 400px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png');
-  background-size: cover;
+    height: 400px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a32nx-background.png');
+    background-size: cover;
+    background-position: center;
     color: white;
     display: flex;
     align-items: flex-end;
