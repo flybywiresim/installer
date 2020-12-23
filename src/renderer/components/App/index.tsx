@@ -24,6 +24,7 @@ import {
     AircraftName,
     AircraftDetailsContainer
 } from './styles';
+import NoInternetModal from '../NoInternetModal';
 
 export type Mod = {
     name: string,
@@ -124,43 +125,47 @@ function App() {
             break;
 
         default:
-            sectionToShow = <AircraftSection mod={mods.find(x => x.key === selectedItem)}/>;
+            sectionToShow = <AircraftSection mod={mods.find(x => x.key === selectedItem)} />;
             break;
     }
 
     return (
-        <SimpleBar>
-            <Container>
-                <MainLayout>
-                    <PageHeader>
-                        <Logo />
-                        <WindowActionButtons />
-                    </PageHeader>
+        <>
+            <NoInternetModal />
+            <SimpleBar>
+                <Container>
+                    <MainLayout>
+                        <PageHeader>
+                            <Logo />
+                            <WindowActionButtons />
+                        </PageHeader>
 
-                    <Layout className="site-layout">
-                        <PageSider>
-                            <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
-                                <HomeMenuItem key="home">Home</HomeMenuItem>
-                                {
-                                    mods.map(mod =>
-                                        <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
-                                            <AircraftDetailsContainer>
-                                                <AircraftName>{mod.aircraftName}</AircraftName>
-                                            </AircraftDetailsContainer>
-                                            <img id={mod.key} src={mod.menuIconUrl} alt={mod.aircraftName} />
-                                        </AircraftMenuItem>
-                                    )
-                                }
-                                <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
-                            </Menu>
-                        </PageSider>
-                        <PageContent>
-                            {sectionToShow}
-                        </PageContent>
-                    </Layout>
-                </MainLayout>
-            </Container >
-        </SimpleBar>
+                        <Layout className="site-layout">
+                            <PageSider>
+                                <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
+                                    <HomeMenuItem key="home">Home</HomeMenuItem>
+                                    {
+                                        mods.map(mod =>
+                                            <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
+                                                <AircraftDetailsContainer>
+                                                    <AircraftName>{mod.aircraftName}</AircraftName>
+                                                </AircraftDetailsContainer>
+                                                <img id={mod.key} src={mod.menuIconUrl} alt={mod.aircraftName} />
+                                            </AircraftMenuItem>
+                                        )
+                                    }
+                                    <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
+                                </Menu>
+                            </PageSider>
+                            <PageContent>
+                                {sectionToShow}
+                            </PageContent>
+                        </Layout>
+                    </MainLayout>
+                </Container >
+            </SimpleBar>
+
+        </>
 
     );
 }
