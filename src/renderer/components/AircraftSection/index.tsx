@@ -157,6 +157,10 @@ const index: React.FC<Props> = (props: Props) => {
             if (typeof msfs_package_dir === "string") {
                 const zipFile = new Zip(compressedBuffer);
 
+                if (fs.existsSync(msfs_package_dir + props.mod.key)) {
+                    fs.rmdirSync(msfs_package_dir + props.mod.key, { recursive: true });
+                }
+
                 zipFile.extractAllTo(msfs_package_dir);
             }
             dispatch(updateDownloadProgress(props.mod.name, 0));
