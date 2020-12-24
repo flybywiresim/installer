@@ -164,9 +164,7 @@ function App() {
                     </MainLayout>
                 </Container >
             </SimpleBar>
-
         </>
-
     );
 }
 
