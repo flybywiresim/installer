@@ -98,6 +98,7 @@
     "immer": "^8.0.0",
     "lodash": "^4.17.20",
     "react": "^17.0.1",
+    "react-detect-offline": "^2.4.0",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
     "react-redux": "^7.2.2",
