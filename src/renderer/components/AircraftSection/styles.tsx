@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Select, Progress } from 'antd';
+import { Select, Progress } from 'antd';
 import styled from 'styled-components';
 import { DownloadOutlined } from '@ant-design/icons';
+import { dropShadow } from "renderer/style/theme";
 
-export const Container = styled.div`
-  
+export const Container = styled.div<{ wait: number }>`
+    visibility: ${props => props.wait ? 'hidden' : 'visible'};
 `;
 
 export const HeaderImage = styled.div`
@@ -43,10 +44,15 @@ export const ButtonsContainer = styled.div`
   align-items: stretch;
 `;
 
-const BaseButton = styled(Button)`
-    font-size: 1.15em !important;
-    border-width: 0 !important;
-    border-radius: 5px;
+const BaseButton = styled.button`
+  font-size: 1.45em !important;
+  font-weight: 600;
+  border-width: 0 !important;
+  border-radius: 5px;
+
+  padding: .25em 1.25em .15em;
+
+  ${dropShadow};
 `;
 
 export const VersionsButton = styled(BaseButton)`
@@ -98,20 +104,34 @@ export const Content = styled.div`
     display: grid;
     grid-template-columns: [start] 3fr [middle] 21.5em [end];
     grid-template-rows: auto auto;
-    grid-gap: 1.15em;
+    grid-gap: 1.32em;
     padding: 6px 24px 24px 24px;
     h3 {
         color: #FFFFFF;
     }
 `;
 
+export const TopContainer = styled.div`
+  grid-column: start / middle;
+  grid-row: 1;
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  column-gap: 2em;
+`;
+
 export const LeftContainer = styled.div`
   grid-column: start / middle;
+  grid-row: 2;
 `;
 
 export const DetailsContainer = styled.div``;
 
-export const VersionHistoryContainer = styled.div``;
+export const VersionHistoryContainer = styled.div`
+  grid-row: 2 / span 2;
+`;
 
 export const EngineOptionsContainer = styled.div``;
 

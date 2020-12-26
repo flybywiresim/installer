@@ -32,6 +32,8 @@ const VersionBase: React.FC<VersionProps> = (props) => {
 
     const openReleasePage = () => shell.openExternal(GITHUB_RELEASE_BASE_URL + props.version.title);
 
+    const displayDate = (date: string) => date.substring(0, 10).replaceAll('-', '/');
+
     return (
         <div ref={ref} className={props.className} onClick={openReleasePage}>
             <VersionLine>
@@ -41,7 +43,7 @@ const VersionBase: React.FC<VersionProps> = (props) => {
             </VersionLine>
 
             <VersionTitle>{props.version.title}</VersionTitle>
-            <VersionDate>{props.version.date}</VersionDate>
+            <VersionDate>{displayDate(props.version.date as unknown as string)}</VersionDate>
             <VersionType>{props.version.type} version</VersionType>
         </div>
     );

@@ -27,8 +27,8 @@ Menu.setApplicationMenu(null);
 const createWindow = (): void => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        height: 800,
-        width: 1200,
+        height: 1000,
+        width: 1400,
         frame: false,
         icon: 'src/main/icons/icn.ico',
         backgroundColor: '#FFF',
@@ -79,6 +79,10 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 
 function setupDefaultInstallPath(app: App) {
+    if (!settings.has('mainSettings.apiRelease')) {
+        settings.set('mainSettings.apiRelease', 'production');
+    }
+
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
 
