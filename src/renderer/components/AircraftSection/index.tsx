@@ -98,7 +98,7 @@ const index: React.FC<Props> = (props: Props) => {
             const cancelCheck = new Promise((resolve) => {
                 resolve(signal);
             });
-            const msfs_package_dir = settings.get('mainSettings.msfsPackagePath');
+            const msfsPackageDir = settings.get('mainSettings.msfsPackagePath');
 
             const fetchResp = await fetch("https://api.flybywiresim.com/api/v1/download?url=" + track.url, { redirect: "follow" });
             console.log("Starting Download");
@@ -155,14 +155,15 @@ const index: React.FC<Props> = (props: Props) => {
 
             const compressedBuffer = Buffer.from(chunksAll);
 
-            if (typeof msfs_package_dir === "string") {
+            if (typeof msfsPackageDir === "string") {
                 const zipFile = new Zip(compressedBuffer);
+                const modInstallPath = `${msfsPackageDir}\\${props.mod.key}`;
 
-                if (fs.existsSync(msfs_package_dir + props.mod.key)) {
-                    fs.rmdirSync(msfs_package_dir + props.mod.key, { recursive: true });
+                if (fs.existsSync(modInstallPath)) {
+                    fs.rmdirSync(modInstallPath, { recursive: true });
                 }
 
-                zipFile.extractAllTo(msfs_package_dir);
+                zipFile.extractAllTo(msfsPackageDir);
             }
             dispatch(updateDownloadProgress(props.mod.name, 0));
             setIsInstalled(true);
