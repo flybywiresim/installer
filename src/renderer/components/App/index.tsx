@@ -25,9 +25,11 @@ import {
     AircraftDetailsContainer
 } from './styles';
 import NoInternetModal from '../NoInternetModal';
+import { GitHubApi } from "renderer/components/App/GitHubApi";
 
 export type Mod = {
     name: string,
+    repoName: string,
     aircraftName: string,
     key: string,
     backgroundImageUrls: string[],
@@ -36,7 +38,14 @@ export type Mod = {
     menuIconUrl: string,
     targetDirectory: string,
     variants: ModVariant[],
+    versions: ModVersion[],
     enabled: boolean,
+}
+
+export type ModVersion = {
+    title: string,
+    date: string,
+    type: 'major' | 'minor' | 'patch'
 }
 
 export type ModVariant = {
@@ -54,12 +63,39 @@ export type ModTrack = {
     url: string,
 }
 
+/**
+ * Obtain versions for a specific mod
+ *
+ * @param mod {Mod}
+ */
+const fillModVersions = (mod: Mod) => {
+    GitHubApi.getVersions(mod)
+        .then(versions => mod.versions = versions.filter(v => /v\d/.test(v.title)))
+        .then(() => {
+            mod.versions.forEach((version, index) => {
+                const currentVersionTitle = version.title;
+                const otherVersionTitle = index === mod.versions.length - 1
+                    ? mod.versions[index - 1].title
+                    : mod.versions[index + 1].title;
+
+                if (currentVersionTitle[1] !== otherVersionTitle[1]) {
+                    mod.versions[index].type = 'major';
+                } else if (currentVersionTitle[3] !== otherVersionTitle[3]) {
+                    mod.versions[index].type = 'minor';
+                } else if (currentVersionTitle[5] !== otherVersionTitle[5]) {
+                    mod.versions[index].type = 'patch';
+                }
+            });
+        });
+};
+
 function App() {
     const [selectedItem, setSelectedItem] = useState<string>('home');
 
     const mods: Mod[] = [
         {
             name: 'A32NX',
+            repoName: 'a32nx',
             aircraftName: 'A320neo',
             key: 'A32NX',
             enabled: true,
@@ -100,9 +136,11 @@ function App() {
                     ],
                 }
             ],
+            versions: []
         },
         {
             name: 'A380',
+            repoName: 'a380x',
             aircraftName: 'A380',
             key: 'A380',
             enabled: false,
@@ -112,37 +150,43 @@ function App() {
             description: '',
             targetDirectory: 'A380',
             variants: [],
+            versions: []
         }
     ];
+
+    // Obtain mod versions
+
+    mods.forEach(fillModVersions);
 
     let sectionToShow;
     switch (selectedItem) {
         case 'home':
-            sectionToShow = <HomeSection />;
+            sectionToShow = <HomeSection/>;
             break;
         case 'settings':
-            sectionToShow = <SettingsSection />;
+            sectionToShow = <SettingsSection/>;
             break;
 
         default:
-            sectionToShow = <AircraftSection mod={mods.find(x => x.key === selectedItem)} />;
+            sectionToShow = <AircraftSection mod={mods.find(x => x.key === selectedItem)}/>;
             break;
     }
 
     return (
         <>
-            <NoInternetModal />
+            <NoInternetModal/>
             <SimpleBar>
                 <Container>
                     <MainLayout>
                         <PageHeader>
-                            <Logo />
-                            <WindowActionButtons />
+                            <Logo/>
+                            <WindowActionButtons/>
                         </PageHeader>
 
                         <Layout className="site-layout">
                             <PageSider>
-                                <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
+                                <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']}
+                                    onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
                                     <HomeMenuItem key="home">Home</HomeMenuItem>
                                     {
                                         mods.map(mod =>
@@ -150,7 +194,7 @@ function App() {
                                                 <AircraftDetailsContainer>
                                                     <AircraftName>{mod.aircraftName}</AircraftName>
                                                 </AircraftDetailsContainer>
-                                                <img id={mod.key} src={mod.menuIconUrl} alt={mod.aircraftName} />
+                                                <img id={mod.key} src={mod.menuIconUrl} alt={mod.aircraftName}/>
                                             </AircraftMenuItem>
                                         )
                                     }
@@ -162,7 +206,7 @@ function App() {
                             </PageContent>
                         </Layout>
                     </MainLayout>
-                </Container >
+                </Container>
             </SimpleBar>
         </>
     );

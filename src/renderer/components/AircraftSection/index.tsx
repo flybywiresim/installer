@@ -15,7 +15,7 @@ import {
     DownloadProgress,
     UpdateButton,
     InstalledButton,
-    CancelButton
+    CancelButton, DetailsContainer, VersionHistoryContainer, LeftContainer
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -26,6 +26,7 @@ import { DownloadItem, RootStore } from 'renderer/redux/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import _ from 'lodash';
+import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 
 const settings = new Store;
 
@@ -265,22 +266,34 @@ const index: React.FC<Props> = (props: Props) => {
             </HeaderImage>
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
             <Content>
-                <>
-                    <h3>Details</h3>
-                    <Paragraph style={{ color: '#858585' }}>{props.mod.description}</Paragraph>
-                </>
-                <EngineOptionsContainer>
-                    <h3>Variants</h3>
-                    {
-                        props.mod.variants.map(variant =>
-                            // TODO: Enable onClick when mod variants are available
-                            <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
-                                <img src={variant.imageUrl} alt={variant.imageAlt} />
-                                <span>{variant.name}</span>
-                            </EngineOption>
-                        )
-                    }
-                </EngineOptionsContainer>
+                <LeftContainer>
+                    <DetailsContainer>
+                        <h3>Details</h3>
+                        <Paragraph style={{ color: '#858585', fontSize: '17px' }}>{props.mod.description}</Paragraph>
+                    </DetailsContainer>
+                    <EngineOptionsContainer>
+                        <h3>Variants</h3>
+                        {
+                            props.mod.variants.map(variant =>
+                                // TODO: Enable onClick when mod variants are available
+                                <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
+                                    <img src={variant.imageUrl} alt={variant.imageAlt} />
+                                    <span>{variant.name}</span>
+                                </EngineOption>
+                            )
+                        }
+                    </EngineOptionsContainer>
+                </LeftContainer>
+                <VersionHistoryContainer>
+                    <h3>Version history</h3>
+                    <Versions>
+                        {
+                            props.mod.versions.map((version, idx) =>
+                                <Version key={idx} index={idx} version={version} />
+                            )
+                        }
+                    </Versions>
+                </VersionHistoryContainer>
             </Content>
         </Container>
     );

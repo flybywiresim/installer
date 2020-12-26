@@ -95,15 +95,25 @@ export const VersionSelect = styled(BaseSelect)`
 `;
 
 export const Content = styled.div`
-    padding: 30px 24px 24px 24px;
+    display: grid;
+    grid-template-columns: [start] 3fr [middle] 21.5em [end];
+    grid-template-rows: auto auto;
+    grid-gap: 1.15em;
+    padding: 6px 24px 24px 24px;
     h3 {
         color: #FFFFFF;
     }
 `;
 
-export const EngineOptionsContainer = styled.div`
-  margin-top: 40px;
+export const LeftContainer = styled.div`
+  grid-column: start / middle;
 `;
+
+export const DetailsContainer = styled.div``;
+
+export const VersionHistoryContainer = styled.div``;
+
+export const EngineOptionsContainer = styled.div``;
 
 export const EngineOption = styled.div`
     width: 215px;
