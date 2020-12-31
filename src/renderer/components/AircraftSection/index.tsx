@@ -14,10 +14,11 @@ import {
     DownloadProgress,
     UpdateButton,
     InstalledButton,
-    CancelButton, DetailsContainer, VersionHistoryContainer, LeftContainer, TopContainer
+    CancelButton, DetailsContainer, VersionHistoryContainer, LeftContainer, TopContainer, MSFSIsOpenButton
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
+import * as child_process from "child_process";
 import Zip from 'adm-zip';
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
@@ -46,6 +47,8 @@ const index: React.FC<Props> = (props: Props) => {
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
 
+    const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(false);
+
     const [wait, setWait] = useState(1);
 
     const [releases, setReleases] = useState<ModVersion[]>([]);
@@ -64,6 +67,7 @@ const index: React.FC<Props> = (props: Props) => {
 
     useEffect(() => {
         checkForUpdates(selectedTrack);
+        checkIfMSFS();
     }, []);
 
     async function checkForUpdates(track: ModTrack) {
@@ -92,6 +96,16 @@ const index: React.FC<Props> = (props: Props) => {
         } else {
             setIsInstalled(false);
         }
+    }
+
+    async function checkIfMSFS() {
+        child_process.exec('tasklist', (err, stdout) => {
+            if (stdout.indexOf("FlightSimulator.exe") > -1) {
+                setMsfsIsOpen(true);
+            } else {
+                setMsfsIsOpen(false);
+            }
+        });
     }
 
     async function downloadMod(track: ModTrack) {
@@ -130,7 +144,7 @@ const index: React.FC<Props> = (props: Props) => {
                     chunks.push(value);
                     receivedLength += value.length;
 
-                    const newPercentFloor = Math.floor((receivedLength / respLength) * 100);
+                    const newPercentFloor = (Math.floor((receivedLength / respLength) * 1000) / 10);
 
                     if (lastPercentFloor !== newPercentFloor) {
                         lastPercentFloor = newPercentFloor;
@@ -251,11 +265,12 @@ const index: React.FC<Props> = (props: Props) => {
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    {!isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
-                    {isInstalled && !needsUpdate && !isDownloading && <InstalledButton />}
-                    {needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
+                    {msfsIsOpen && <MSFSIsOpenButton />}
+                    {!msfsIsOpen && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
+                    {!msfsIsOpen && isInstalled && !needsUpdate && !isDownloading && <InstalledButton />}
+                    {!msfsIsOpen && needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
                     {isDownloading && <CancelButton onClick={handleCancel}>
-                        {(download?.progress >= 99) ? "Decompressing" : `${download?.progress}% -  Cancel`}
+                        {(Math.floor(download?.progress) >= 99) ? "Decompressing" : `${Math.floor(download?.progress)}% -  Cancel`}
                     </CancelButton>}
                 </SelectionContainer>
             </HeaderImage>
