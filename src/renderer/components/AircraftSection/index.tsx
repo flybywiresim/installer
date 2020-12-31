@@ -49,17 +49,45 @@ const index: React.FC<Props> = (props: Props) => {
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
 
-    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name }));
+    const [lastTime, setLastTime] = useState<Date | null>(null);
+    const [lastCount, setLastCount] = useState<number | null>(null);
+
+    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name })) as DownloadItem;
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
 
     useEffect(() => {
         checkForUpdates(selectedTrack);
-
     },
 
     []);
+
+    async function getDownloadSpeed() {
+        console.log("counter ran");
+        console.log(lastTime);
+        console.log(lastCount);
+        if (lastTime !== null) {
+            console.log("time ran");
+            if (lastCount !== null) {
+                console.log("count ran");
+                setLastCount(lastCount + 1);
+
+                if (lastCount === 1000) {
+                    setLastCount(0);
+                    const newTime = new Date;
+
+                    const deltaTime = newTime.getTime() - lastTime.getTime();
+
+                    console.log(deltaTime);
+                }
+            } else {
+                setLastCount(1);
+            }
+        } else {
+            setLastTime(new Date);
+        }
+    }
 
     async function checkForUpdates(track: ModTrack) {
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
@@ -119,6 +147,8 @@ const index: React.FC<Props> = (props: Props) => {
                         signal = val;
                     });
                     if (done || signal.aborted) {
+                        setLastTime(null);
+                        setLastCount(null);
                         break;
                     }
 
@@ -126,6 +156,9 @@ const index: React.FC<Props> = (props: Props) => {
                     receivedLength += value.length;
 
                     const newPercentFloor = Math.floor((receivedLength / respLength) * 100);
+
+                    console.log("run");
+                    getDownloadSpeed();
 
                     if (lastPercentFloor !== newPercentFloor) {
                         lastPercentFloor = newPercentFloor;
