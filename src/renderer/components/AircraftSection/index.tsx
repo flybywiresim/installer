@@ -52,7 +52,7 @@ const index: React.FC<Props> = (props: Props) => {
     const [lastTime, setLastTime] = useState<Date | null>(null);
     const [lastCount, setLastCount] = useState<number | null>(null);
 
-    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name })) as DownloadItem;
+    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name }));
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
