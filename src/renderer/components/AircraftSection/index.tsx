@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Select, Typography, notification } from 'antd';
+import { Typography, notification } from 'antd';
 import {
     ButtonsContainer as SelectionContainer,
     Content,
@@ -9,28 +9,26 @@ import {
     ModelInformationContainer,
     ModelName,
     ModelSmallDesc,
-    VersionSelect,
     EngineOptionsContainer,
     EngineOption,
     DownloadProgress,
     UpdateButton,
     InstalledButton,
-    CancelButton, DetailsContainer, VersionHistoryContainer, LeftContainer
+    CancelButton, DetailsContainer, VersionHistoryContainer, LeftContainer, TopContainer
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
 import Zip from 'adm-zip';
-import { Mod, ModTrack, ModVariant } from "renderer/components/App";
+import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, RootStore } from 'renderer/redux/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
+import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 
 const settings = new Store;
-
-const { Option } = Select;
 
 const { Paragraph } = Typography;
 
@@ -42,12 +40,22 @@ let controller: AbortController;
 let signal: AbortSignal;
 
 const index: React.FC<Props> = (props: Props) => {
-
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(handleFindInstalledTrack());
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
+
+    const [wait, setWait] = useState(1);
+
+    const [releases, setReleases] = useState<ModVersion[]>([]);
+
+    useEffect(() => {
+        getModReleases(props.mod).then(releases => {
+            setReleases(releases);
+            setWait(wait => wait - 1);
+        });
+    }, [props.mod]);
 
     const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name }));
     const dispatch = useDispatch();
@@ -56,10 +64,7 @@ const index: React.FC<Props> = (props: Props) => {
 
     useEffect(() => {
         checkForUpdates(selectedTrack);
-
-    },
-
-    []);
+    }, []);
 
     async function checkForUpdates(track: ModTrack) {
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
@@ -228,35 +233,24 @@ const index: React.FC<Props> = (props: Props) => {
         }
     }
 
-    function handleLastInstalledTrackName() {
-        const name = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
-
-        if (typeof name === "string") {
-            return name;
-        } else {
-            return "Development";
-        }
-    }
+    // function handleLastInstalledTrackName() {
+    //     const name = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
+    //
+    //     if (typeof name === "string") {
+    //         return name;
+    //     } else {
+    //         return "Development";
+    //     }
+    // }
 
     return (
-        <Container>
+        <Container wait={wait}>
             <HeaderImage>
                 <ModelInformationContainer>
                     <ModelName>{props.mod.name}</ModelName>
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    <VersionSelect
-                        styling={{ backgroundColor: '#00C2CB', color: 'white' }}
-                        defaultValue={handleLastInstalledTrackName()}
-                        onSelect={item => findAndSetTrack(item.toString())}
-                        disabled={isDownloading}>
-                        {
-                            selectedVariant.tracks.map(version =>
-                                <Option value={version.key} key={version.key}>{version.name}</Option>
-                            )
-                        }
-                    </VersionSelect>
                     {!isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
                     {isInstalled && !needsUpdate && !isDownloading && <InstalledButton />}
                     {needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
@@ -267,10 +261,32 @@ const index: React.FC<Props> = (props: Props) => {
             </HeaderImage>
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
             <Content>
+                <TopContainer>
+                    <div>
+                        <h5>Mainline versions</h5>
+                        <Tracks>
+                            {
+                                selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
+                                    <Track track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                )
+                            }
+                        </Tracks>
+                    </div>
+                    <div>
+                        <h5>Experimental versions</h5>
+                        <Tracks>
+                            {
+                                selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
+                                    <Track track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                )
+                            }
+                        </Tracks>
+                    </div>
+                </TopContainer>
                 <LeftContainer>
                     <DetailsContainer>
                         <h3>Details</h3>
-                        <Paragraph style={{ color: '#858585', fontSize: '17px' }}>{props.mod.description}</Paragraph>
+                        <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{props.mod.description}</Paragraph>
                     </DetailsContainer>
                     <EngineOptionsContainer>
                         <h3>Variants</h3>
@@ -289,7 +305,7 @@ const index: React.FC<Props> = (props: Props) => {
                     <h3>Version history</h3>
                     <Versions>
                         {
-                            props.mod.versions.map((version, idx) =>
+                            releases.map((version, idx) =>
                                 <Version key={idx} index={idx} version={version} />
                             )
                         }

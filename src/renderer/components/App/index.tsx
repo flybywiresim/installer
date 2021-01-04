@@ -13,19 +13,21 @@ import A380NoseSVG from 'renderer/assets/a380x_nose.svg';
 import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
 
 import {
-    Container,
-    PageHeader,
-    HomeMenuItem,
-    PageContent,
-    PageSider,
-    SettingsMenuItem,
-    MainLayout,
+    AircraftDetailsContainer,
     AircraftMenuItem,
     AircraftName,
-    AircraftDetailsContainer
+    Container,
+    HomeMenuItem,
+    MainLayout,
+    PageContent,
+    PageHeader,
+    PageSider,
+    SettingsMenuItem
 } from './styles';
 import NoInternetModal from '../NoInternetModal';
-import { GitHubApi } from "renderer/components/App/GitHubApi";
+import { GitVersions } from "@flybywiresim/api-client";
+
+import { DataCache } from '../../utils/DataCache';
 
 export type Mod = {
     name: string,
@@ -38,13 +40,12 @@ export type Mod = {
     menuIconUrl: string,
     targetDirectory: string,
     variants: ModVariant[],
-    versions: ModVersion[],
     enabled: boolean,
 }
 
 export type ModVersion = {
     title: string,
-    date: string,
+    date: Date,
     type: 'major' | 'minor' | 'patch'
 }
 
@@ -61,33 +62,46 @@ export type ModTrack = {
     name: string,
     key: string,
     url: string,
+    isExperimental: boolean,
+    latestVersionName: Promise<ModVersion | string>
 }
 
-/**
- * Obtain versions for a specific mod
- *
- * @param mod {Mod}
- */
-const fillModVersions = (mod: Mod) => {
-    GitHubApi.getVersions(mod)
-        .then(versions => mod.versions = versions.filter(v => /v\d/.test(v.title)))
-        .then(() => {
-            mod.versions.forEach((version, index) => {
-                const currentVersionTitle = version.title;
-                const otherVersionTitle = index === mod.versions.length - 1
-                    ? mod.versions[index - 1].title
-                    : mod.versions[index + 1].title;
+const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
 
-                if (currentVersionTitle[1] !== otherVersionTitle[1]) {
-                    mod.versions[index].type = 'major';
-                } else if (currentVersionTitle[3] !== otherVersionTitle[3]) {
-                    mod.versions[index].type = 'minor';
-                } else if (currentVersionTitle[5] !== otherVersionTitle[5]) {
-                    mod.versions[index].type = 'patch';
-                }
-            });
+/**
+ * Obtain releases for a specific mod
+ *
+ * @param mod
+ */
+export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
+    const releases = await releaseCache.fetchOrCompute(async (): Promise<ModVersion[]> => {
+        const a: ModVersion[] = (await GitVersions.getReleases('flybywiresim', mod.repoName))
+            .filter(r => /v\d/.test(r.name))
+            .map(r => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
+
+        return a;
+    });
+
+    releases
+        .forEach((version, index) => {
+            const currentVersionTitle = version.title;
+            const otherVersionTitle = index === releases.length - 1
+                ? releases[index - 1].title
+                : releases[index + 1].title;
+
+            if (currentVersionTitle[1] !== otherVersionTitle[1]) {
+                releases[index].type = 'major';
+            } else if (currentVersionTitle[3] !== otherVersionTitle[3]) {
+                releases[index].type = 'minor';
+            } else if (currentVersionTitle[5] !== otherVersionTitle[5]) {
+                releases[index].type = 'patch';
+            }
         });
+
+    return releases;
 };
+
+const RELEASE_CACHE_LIMIT = 3600 * 1000 * 24;
 
 function App() {
     const [selectedItem, setSelectedItem] = useState<string>('home');
@@ -122,21 +136,38 @@ function App() {
                             name: 'Development',
                             key: 'a32nx-dev',
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip',
+                            isExperimental: false,
+                            get latestVersionName() {
+                                return new DataCache<string>('latest_version_dev', RELEASE_CACHE_LIMIT).fetchOrCompute(async () => {
+                                    return (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'master')).sha.substring(0, 7);
+                                });
+                            }
                         },
                         {
                             name: 'Stable',
                             key: 'a32nx-stable',
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/stable/A32NX-stable.zip',
+                            isExperimental: false,
+                            get latestVersionName() {
+                                return new DataCache<string>('latest_version_stable', RELEASE_CACHE_LIMIT).fetchOrCompute(async () => {
+                                    return (await GitVersions.getReleases('flybywiresim', 'a32nx'))[0].name;
+                                });
+                            },
                         },
                         {
                             name: 'FBW',
                             key: 'a32nx-fbw',
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster-cfbw/A32NX-master-cfbw.zip',
+                            isExperimental: true,
+                            get latestVersionName() {
+                                return new DataCache<string>('latest_version_fbw', RELEASE_CACHE_LIMIT).fetchOrCompute(async () => {
+                                    return (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'fbw')).sha.substring(0, 7);
+                                });
+                            },
                         }
                     ],
                 }
             ],
-            versions: []
         },
         {
             name: 'A380',
@@ -150,13 +181,8 @@ function App() {
             description: '',
             targetDirectory: 'A380',
             variants: [],
-            versions: []
         }
     ];
-
-    // Obtain mod versions
-
-    mods.forEach(fillModVersions);
 
     let sectionToShow;
     switch (selectedItem) {
