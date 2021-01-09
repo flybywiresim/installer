@@ -223,4 +223,4 @@ export const MSFSIsOpenButton = styled(
                 pointerEvents: "none"
             }}
             {...props}
-        >Please Close MSFS</InstallButton>)``;
+        >Please close MSFS</InstallButton>)``;

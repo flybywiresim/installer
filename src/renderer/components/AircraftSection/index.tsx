@@ -282,7 +282,7 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
-                                    <Track track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
                                 )
                             }
                         </Tracks>
@@ -292,7 +292,7 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
-                                    <Track track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
                                 )
                             }
                         </Tracks>
