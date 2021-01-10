@@ -8,6 +8,10 @@ export class DataCache<T> {
         this.limit = limit;
     }
 
+    static from<T>(key: string, limit: number): DataCache<T> {
+        return new DataCache(key, limit);
+    }
+
     async fetchOrCompute(fetcher: () => Promise<T>): Promise<T> {
         const cachedData = JSON.parse(localStorage.getItem(`data_cache_${this.key}`));
         const cachedDataTimestamp = Number(localStorage.getItem(`data_cache_${this.key}_timestamp`));

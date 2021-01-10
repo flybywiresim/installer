@@ -138,9 +138,8 @@ function App() {
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip',
                             isExperimental: false,
                             get latestVersionName() {
-                                return new DataCache<string>('latest_version_dev', RELEASE_CACHE_LIMIT).fetchOrCompute(async () => {
-                                    return (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'master')).sha.substring(0, 7);
-                                });
+                                return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
+                                    .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'master')).sha.substring(0, 7));
                             }
                         },
                         {
@@ -149,9 +148,8 @@ function App() {
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/stable/A32NX-stable.zip',
                             isExperimental: false,
                             get latestVersionName() {
-                                return new DataCache<string>('latest_version_stable', RELEASE_CACHE_LIMIT).fetchOrCompute(async () => {
-                                    return (await GitVersions.getReleases('flybywiresim', 'a32nx'))[0].name;
-                                });
+                                return DataCache.from<string>('latest_version_stable', RELEASE_CACHE_LIMIT)
+                                    .fetchOrCompute(async () => (await GitVersions.getReleases('flybywiresim', 'a32nx'))[0].name);
                             },
                         },
                         {
@@ -160,9 +158,8 @@ function App() {
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster-cfbw/A32NX-master-cfbw.zip',
                             isExperimental: true,
                             get latestVersionName() {
-                                return new DataCache<string>('latest_version_fbw', RELEASE_CACHE_LIMIT).fetchOrCompute(async () => {
-                                    return (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'fbw')).sha.substring(0, 7);
-                                });
+                                return DataCache.from<string>('latest_version_fbw', RELEASE_CACHE_LIMIT)
+                                    .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'fbw')).sha.substring(0, 7));
                             },
                         }
                     ],
