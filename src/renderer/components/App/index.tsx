@@ -93,6 +93,8 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
                 releases[index].type = 'major';
             } else if (currentVersionTitle[3] !== otherVersionTitle[3]) {
                 releases[index].type = 'minor';
+            } else if (currentVersionTitle[5] !== otherVersionTitle[5] && index === releases.length - 1) {
+                releases[index].type = "minor";
             } else if (currentVersionTitle[5] !== otherVersionTitle[5]) {
                 releases[index].type = 'patch';
             }
