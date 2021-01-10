@@ -170,7 +170,7 @@ export const DownloadProgress = styled(Progress)`
   }
 `;
 
-export const InstallButton = styled(props => <BaseButton
+const InstallButtonTemplate = styled(props => <BaseButton
     type="primary"
     icon={<DownloadOutlined />}
     {...props}
@@ -178,19 +178,28 @@ export const InstallButton = styled(props => <BaseButton
     min-width: 114px;    
 `;
 
+export const InstallButton = styled(props =>
+    <InstallButtonTemplate
+        style={{
+            background: "#fa8c16",
+            borderColor: "#fa8c16"
+        }}
+        {...props}
+    >Install</InstallButtonTemplate>)``;
+
 export const UpdateButton = styled(
     props =>
-        <InstallButton
+        <InstallButtonTemplate
             style={{
                 background: "#fa8c16",
                 borderColor: "#fa8c16"
             }}
             {...props}
-        >Update</InstallButton>)``;
+        >Update</InstallButtonTemplate>)``;
 
 export const CancelButton = styled(
     props =>
-        <InstallButton
+        <InstallButtonTemplate
             icon={null}
             style={{
                 background: "#fa8c16",
@@ -201,7 +210,7 @@ export const CancelButton = styled(
 
 export const InstalledButton = styled(
     props =>
-        <InstallButton
+        <InstallButtonTemplate
             icon={null}
             style={{
                 color: "#dddddd",
@@ -210,11 +219,11 @@ export const InstalledButton = styled(
                 pointerEvents: "none"
             }}
             {...props}
-        >Installed</InstallButton>)``;
+        >Installed</InstallButtonTemplate>)``;
 
 export const MSFSIsOpenButton = styled(
     props =>
-        <InstallButton
+        <InstallButtonTemplate
             icon={null}
             style={{
                 color: "#dddddd",
@@ -223,4 +232,4 @@ export const MSFSIsOpenButton = styled(
                 pointerEvents: "none"
             }}
             {...props}
-        >Please close MSFS</InstallButton>)``;
+        >Please close MSFS</InstallButtonTemplate>)``;
