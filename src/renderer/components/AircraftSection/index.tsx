@@ -70,8 +70,20 @@ const index: React.FC<Props> = (props: Props) => {
         checkIfMSFS();
     }, []);
 
+    function findBuildTime(installDir: string) {
+        const buildInfo = `${installDir}\\build_info.json`;
+        if (fs.existsSync(buildInfo)) {
+            const data = fs.readFileSync(`${installDir}\\build_info.json`, 'utf-8');
+            const dataObject = JSON.parse(data);
+            return dataObject.built;
+        } else {
+            return null;
+        }
+    }
+
     async function checkForUpdates(track: ModTrack) {
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
+        const localLastBuildDate = settings.get('cache.' + props.mod.key + '.lastBuildTime');
 
         const res = await fetch(track.url, { method: 'HEAD' });
 
@@ -82,12 +94,17 @@ const index: React.FC<Props> = (props: Props) => {
         if (fs.existsSync(installDir)) {
             setIsInstalled(true);
             if (typeof localLastUpdate === "string") {
-                if (localLastUpdate === webLastUpdate) {
-                    console.log("Is Updated");
-                    setNeedsUpdate(false);
+                if (typeof localLastBuildDate === "string") {
+                    if ((localLastUpdate === webLastUpdate) && (localLastBuildDate === findBuildTime(installDir))) {
+                        console.log("Is Updated");
+                        setNeedsUpdate(false);
+                    } else {
+                        setNeedsUpdate(true);
+                        console.log("Is not Updated");
+                    }
                 } else {
                     setNeedsUpdate(true);
-                    console.log("Is not Updated");
+                    console.log("Needs update to register build file to cache");
                 }
             } else {
                 setIsInstalled(false);
@@ -183,6 +200,7 @@ const index: React.FC<Props> = (props: Props) => {
                 }
 
                 zipFile.extractAllTo(msfsPackageDir);
+                settings.set('cache.' + props.mod.key + '.lastBuildTime', findBuildTime(modInstallPath));
             }
             dispatch(updateDownloadProgress(props.mod.name, 0));
             setIsInstalled(true);
