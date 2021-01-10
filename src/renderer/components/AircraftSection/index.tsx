@@ -96,12 +96,16 @@ const index: React.FC<Props> = (props: Props) => {
             setIsInstalled(true);
 
             // Check for git install
-            const symlinkPath = fs.readlinkSync(installDir);
-            if (symlinkPath) {
-                if (fs.existsSync(symlinkPath + '\\..\\.git\\')) {
-                    setIsInstalledAsGitRepo(true);
-                    return;
+            try {
+                const symlinkPath = fs.readlinkSync(installDir);
+                if (symlinkPath) {
+                    if (fs.existsSync(symlinkPath + '\\..\\.git\\')) {
+                        setIsInstalledAsGitRepo(true);
+                        return;
+                    }
                 }
+            } catch {
+                setIsInstalledAsGitRepo(false);
             }
 
             if (typeof localLastUpdate === "string") {
