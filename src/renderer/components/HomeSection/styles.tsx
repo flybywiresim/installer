@@ -35,7 +35,7 @@ export const DescAndImages = styled.div`
   p {
     font-size: 15px;
     color: #ada5a3;
-    width: 800px;
+    max-width: 800px;
   }
 `;
 

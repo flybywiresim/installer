@@ -10,17 +10,7 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
     app.quit();
 }
 
-const settingsSchema: Record<string, unknown> = {
-    mainSettings: {
-        msfsPackagePath: 'string',
-        cdn: 'url'
-    },
-    cache: {
-        lastUpdatedA32nx: 'string',
-    }
-};
-
-const settings = new Store(settingsSchema);
+const settings = new Store;
 
 Menu.setApplicationMenu(null);
 
@@ -37,6 +27,13 @@ const createWindow = (): void => {
             enableRemoteModule: true
         }
     });
+
+    const lastX = settings.get('cache.main.lastWindowX');
+    const lastY = settings.get('cache.main.lastWindowY');
+
+    if ((typeof lastX === "number") && (typeof lastY === "number")) {
+        mainWindow.setSize(lastX, lastY);
+    }
 
     // and load the index.html of the app.
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);

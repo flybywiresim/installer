@@ -112,7 +112,7 @@ export const Content = styled.div`
 `;
 
 export const TopContainer = styled.div`
-  grid-column: start / middle;
+  grid-column: start / end;
   grid-row: 1;
   
   display: flex;

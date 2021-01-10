@@ -35,6 +35,9 @@ import 'simplebar/dist/simplebar.min.css';
 import './index.css';
 import App from 'renderer/components/App';
 import store from 'renderer/redux/store';
+import Store from "electron-store";
+
+const settings = new Store;
 
 const win = remote.getCurrentWindow();
 
@@ -70,6 +73,11 @@ function handleWindowControls() {
     });
 
     document.getElementById('close-button').addEventListener("click", () => {
+        const winSize = win.getSize();
+
+        settings.set('cache.main.lastWindowX', winSize[0]);
+        settings.set('cache.main.lastWindowY', winSize[1]);
+
         win.destroy();
     });
 }
