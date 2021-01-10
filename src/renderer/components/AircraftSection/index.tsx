@@ -46,6 +46,7 @@ const index: React.FC<Props> = (props: Props) => {
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
+    const [isInstalledAsGitRepo, setIsInstalledAsGitRepo] = useState<boolean>(false);
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(false);
 
@@ -93,6 +94,20 @@ const index: React.FC<Props> = (props: Props) => {
 
         if (fs.existsSync(installDir)) {
             setIsInstalled(true);
+
+            // Check for git install
+            try {
+                const symlinkPath = fs.readlinkSync(installDir);
+                if (symlinkPath) {
+                    if (fs.existsSync(symlinkPath + '\\..\\.git\\')) {
+                        setIsInstalledAsGitRepo(true);
+                        return;
+                    }
+                }
+            } catch {
+                setIsInstalledAsGitRepo(false);
+            }
+
             if (typeof localLastUpdate === "string") {
                 if (typeof localLastBuildDate === "string") {
                     if ((localLastUpdate === webLastUpdate) && (localLastBuildDate === findBuildTime(installDir))) {
@@ -284,9 +299,10 @@ const index: React.FC<Props> = (props: Props) => {
                 </ModelInformationContainer>
                 <SelectionContainer>
                     {msfsIsOpen && <MSFSIsOpenButton />}
-                    {!msfsIsOpen && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
-                    {!msfsIsOpen && isInstalled && !needsUpdate && !isDownloading && <InstalledButton />}
-                    {!msfsIsOpen && needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
+                    {!msfsIsOpen && isInstalledAsGitRepo && isInstalled && <InstalledButton inGitRepo={true} />}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading && <InstalledButton inGitRepo={false} />}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
                     {isDownloading && <CancelButton onClick={handleCancel}>
                         {(Math.floor(download?.progress) >= 99) ? "Decompressing" : `${Math.floor(download?.progress)}% -  Cancel`}
                     </CancelButton>}
