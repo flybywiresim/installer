@@ -21,7 +21,6 @@ jobs:
           npm run make
           rm out/make/squirrel.windows/x64/*.nupkg
           rm out/make/squirrel.windows/x64/RELEASES
-          zip flybywire-installer installer.exe
 
       - name: Create Release
         id: create_release
@@ -41,9 +40,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./flybywire-installer.zip
-          asset_name: flybywire-installer.zip
-          asset_content_type: application/zip
+          asset_path: out/make/squirrel.windows/x64/installer.exe
+          asset_name: installer.exe
+          asset_content_type: application/octet-stream
 
       - name: Upload to CDN
         uses: LibreTexts/do-space-sync-action@master
