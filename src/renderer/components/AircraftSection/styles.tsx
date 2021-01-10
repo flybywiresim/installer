@@ -211,3 +211,16 @@ export const InstalledButton = styled(
             }}
             {...props}
         >Installed</InstallButton>)``;
+
+export const MSFSIsOpenButton = styled(
+    props =>
+        <InstallButton
+            icon={null}
+            style={{
+                color: "#dddddd",
+                background: "#bc0d0d",
+                borderColor: "#bc0d0d",
+                pointerEvents: "none"
+            }}
+            {...props}
+        >Please close MSFS</InstallButton>)``;
