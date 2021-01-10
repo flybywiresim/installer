@@ -45,3 +45,15 @@ jobs:
           asset_path: ./flybywire-installer.zip
           asset_name: flybywire-installer.zip
           asset_content_type: application/zip
+
+      - name: Upload to CDN
+        uses: LibreTexts/do-space-sync-action@master
+        with:
+          args: --acl public-read
+        env:
+          SOURCE_DIR: ./out/make/squirrel.windows/x64/
+          DEST_DIR: installer
+          SPACE_NAME: ${{ secrets.CDN_SPACE_NAME }}
+          SPACE_REGION: ${{ secrets.CDN_SPACE_REGION }}
+          SPACE_ACCESS_KEY_ID: ${{ secrets.CDN_SPACE_ACCESS_KEY_ID }}
+          SPACE_SECRET_ACCESS_KEY: ${{ secrets.CDN_SPACE_SECRET_ACCESS_KEY }}
