@@ -122,11 +122,13 @@ const index: React.FC<Props> = (props: Props) => {
                 const symlinkPath = fs.readlinkSync(installDir);
                 if (symlinkPath) {
                     if (fs.existsSync(symlinkPath + '\\..\\.git\\')) {
+                        console.log('Is git repo');
                         setIsInstalledAsGitRepo(true);
                         return;
                     }
                 }
             } catch {
+                console.log('Is not git repo');
                 setIsInstalledAsGitRepo(false);
             }
 
@@ -334,7 +336,7 @@ const index: React.FC<Props> = (props: Props) => {
                 </ModelInformationContainer>
                 <SelectionContainer>
                     {msfsIsOpen && <MSFSIsOpenButton />}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} inGitRepo={false} />}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
                     {!msfsIsOpen && isInstalledAsGitRepo && isInstalled && <InstalledButton inGitRepo={true} />}
                     {!msfsIsOpen && !isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading && <InstalledButton inGitRepo={false} />}
                     {!msfsIsOpen && !isInstalledAsGitRepo && needsUpdate && !isDownloading && <>
