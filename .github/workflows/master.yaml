@@ -11,8 +11,7 @@ jobs:
     env:
       MASTER_PRE_RELEASE_ID: 36189658
       MASTER_PRE_RELEASE_TAG: vmaster
-      MASTER_ZIP_NAME: flybywire-installer.zip
-      BUILD_DIR_NAME: vmaster
+      ASSET_NAME: installer.exe
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -27,9 +26,6 @@ jobs:
       - name: Package installer
         run: |
           npm run make
-          rm out/make/squirrel.windows/x64/*.nupkg
-          rm out/make/squirrel.windows/x64/RELEASES
-          zip flybywire-installer installer.exe
 
       - name: Get and delete master pre-release zip asset
         run: |
@@ -53,9 +49,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets{?name,label}
-          asset_path: ${{ env.MASTER_ZIP_NAME }}
-          asset_name: ${{ env.MASTER_ZIP_NAME }}
-          asset_content_type: application/zip
+          asset_path: out/make/squirrel.windows/x64/installer.exe
+          asset_name: ${{ env.ASSET_NAME }}
+          asset_content_type: application/octet-stream
       - name: Update master pre-release body
         run: |
           curl --request PATCH \
@@ -63,5 +59,5 @@ jobs:
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'Content-Type: application/json' \
             --data-raw '{
-              "body": "This pre-release has its ${{ env.MASTER_ZIP_NAME }} asset updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\nThis link will always point to the latest master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.MASTER_ZIP_NAME }}"
+              "body": "This pre-release has its ${{ env.ASSET_NAME }} asset updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\nThis link will always point to the latest master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.ASSET_NAME }}"
             }'
