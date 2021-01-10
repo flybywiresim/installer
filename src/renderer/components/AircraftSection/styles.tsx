@@ -2,7 +2,7 @@ import React from 'react';
 import { Select, Progress } from 'antd';
 import styled from 'styled-components';
 import { DownloadOutlined } from '@ant-design/icons';
-import { dropShadow } from "renderer/style/theme";
+import { colors, dropShadow, fontSizes } from "renderer/style/theme";
 
 export const Container = styled.div<{ wait: number }>`
     visibility: ${props => props.wait ? 'hidden' : 'visible'};
@@ -181,11 +181,25 @@ const InstallButtonTemplate = styled(props => <BaseButton
 export const InstallButton = styled(props =>
     <InstallButtonTemplate
         style={{
-            background: "#fa8c16",
-            borderColor: "#fa8c16"
+            background: colors.positive,
+            borderColor: colors.positive
         }}
         {...props}
     >Install</InstallButtonTemplate>)``;
+
+export const UpdateContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  
+  column-gap: 1.25em;
+`;
+
+export const UpdateReason = styled(props => <span className={props.className}>{props.children}</span>)`
+  font-size: ${fontSizes.huge} !important;
+  color: ${colors.titleContrast};  
+`;
 
 export const UpdateButton = styled(
     props =>

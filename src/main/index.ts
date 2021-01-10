@@ -76,10 +76,6 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 
 function setupDefaultInstallPath(app: App) {
-    if (!settings.has('mainSettings.apiRelease')) {
-        settings.set('mainSettings.apiRelease', 'production');
-    }
-
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
 

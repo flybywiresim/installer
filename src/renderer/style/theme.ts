@@ -1,6 +1,12 @@
 import { css } from "styled-components";
 
+export const fontSizes = {
+    huge: '20px',
+};
+
 export const colors = {
+    positive: '#00b853',
+
     title: '#FFFFFFDD',
     titleContrast: '#FFFFFF',
 

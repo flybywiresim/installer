@@ -14,7 +14,14 @@ import {
     DownloadProgress,
     UpdateButton,
     InstalledButton,
-    CancelButton, DetailsContainer, VersionHistoryContainer, LeftContainer, TopContainer, MSFSIsOpenButton
+    CancelButton,
+    DetailsContainer,
+    VersionHistoryContainer,
+    LeftContainer,
+    TopContainer,
+    MSFSIsOpenButton,
+    UpdateReason,
+    UpdateContainer
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -40,10 +47,16 @@ type Props = {
 let controller: AbortController;
 let signal: AbortSignal;
 
+const UpdateReasonMessages = {
+    NEW_RELEASE_AVAILABLE: "New release available",
+    VERSION_CHANGED: "New version selected",
+};
+
 const index: React.FC<Props> = (props: Props) => {
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(handleFindInstalledTrack());
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
+    const [needsUpdateReason, setNeedsUpdateReason] = useState<string>();
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
     const [isInstalledAsGitRepo, setIsInstalledAsGitRepo] = useState<boolean>(false);
@@ -67,9 +80,15 @@ const index: React.FC<Props> = (props: Props) => {
     const isDownloading = download?.progress >= 0;
 
     useEffect(() => {
-        checkForUpdates(selectedTrack);
-        checkIfMSFS();
+        checkForUpdates();
+        const checkMsfsInterval = setInterval(checkIfMSFS, 5_000);
+
+        return () => clearInterval(checkMsfsInterval);
     }, []);
+
+    useEffect(() => {
+        checkForUpdates();
+    }, [selectedTrack]);
 
     function findBuildTime(installDir: string) {
         const buildInfo = `${installDir}\\build_info.json`;
@@ -82,11 +101,12 @@ const index: React.FC<Props> = (props: Props) => {
         }
     }
 
-    async function checkForUpdates(track: ModTrack) {
+    async function checkForUpdates() {
+        const localLastTrack = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
         const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
         const localLastBuildDate = settings.get('cache.' + props.mod.key + '.lastBuildTime');
 
-        const res = await fetch(track.url, { method: 'HEAD' });
+        const res = await fetch(selectedTrack.url, { method: 'HEAD' });
 
         const webLastUpdate = res.headers.get('Last-Modified').toString();
 
@@ -94,39 +114,67 @@ const index: React.FC<Props> = (props: Props) => {
 
         if (fs.existsSync(installDir)) {
             setIsInstalled(true);
+            console.log('Installed');
 
             // Check for git install
+            console.log('Checking for git install');
             try {
                 const symlinkPath = fs.readlinkSync(installDir);
                 if (symlinkPath) {
                     if (fs.existsSync(symlinkPath + '\\..\\.git\\')) {
+                        console.log('Is git repo');
                         setIsInstalledAsGitRepo(true);
                         return;
                     }
                 }
             } catch {
+                console.log('Is not git repo');
                 setIsInstalledAsGitRepo(false);
             }
 
-            if (typeof localLastUpdate === "string") {
-                if (typeof localLastBuildDate === "string") {
-                    if ((localLastUpdate === webLastUpdate) && (localLastBuildDate === findBuildTime(installDir))) {
-                        console.log("Is Updated");
-                        setNeedsUpdate(false);
-                    } else {
-                        setNeedsUpdate(true);
-                        console.log("Is not Updated");
-                    }
-                } else {
+            console.log(`Checking for track '${selectedTrack.name}' being installed...`);
+            if (typeof localLastTrack === "string") {
+                if (localLastTrack !== selectedTrack.name) {
+                    // The installed track is not the same - require update
+
                     setNeedsUpdate(true);
-                    console.log("Needs update to register build file to cache");
+                    setNeedsUpdateReason(UpdateReasonMessages.VERSION_CHANGED);
+                } else {
+                    // We are still on the same track - check the installed build
+
+                    if (typeof localLastUpdate === "string") {
+                        // There was an update before - check if that build is the latest
+
+                        if (typeof localLastBuildDate === "string") {
+                            if ((localLastUpdate === webLastUpdate) && (localLastBuildDate === findBuildTime(installDir))) {
+                                setNeedsUpdate(false);
+                                console.log("Is Updated");
+                            } else {
+                                setNeedsUpdate(true);
+                                setNeedsUpdateReason(UpdateReasonMessages.NEW_RELEASE_AVAILABLE);
+                                console.log("Is not Updated");
+                            }
+                        } else {
+                            setNeedsUpdate(true);
+                            setNeedsUpdateReason(UpdateReasonMessages.NEW_RELEASE_AVAILABLE);
+                            console.log("Needs update to register build file to cache");
+                        }
+                    } else {
+                        setIsInstalled(false);
+                        console.log("Failed");
+                    }
                 }
             } else {
-                setIsInstalled(false);
-                console.log("Failed");
+                // Don't know if the same track is installed - assume the worst
+                setNeedsUpdate(true);
+                setNeedsUpdateReason(UpdateReasonMessages.VERSION_CHANGED);
+                console.log('Don\'t know which track');
             }
+
         } else {
             setIsInstalled(false);
+            setNeedsUpdate(false);
+            console.log('Not installed');
         }
     }
 
@@ -234,7 +282,6 @@ const index: React.FC<Props> = (props: Props) => {
 
     async function findAndSetTrack(key: string) {
         const newTrack = selectedVariant.tracks.find(x => x.key === key);
-        await checkForUpdates(newTrack);
         setSelectedTrack(newTrack);
     }
 
@@ -280,16 +327,6 @@ const index: React.FC<Props> = (props: Props) => {
         }
     }
 
-    // function handleLastInstalledTrackName() {
-    //     const name = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
-    //
-    //     if (typeof name === "string") {
-    //         return name;
-    //     } else {
-    //         return "Development";
-    //     }
-    // }
-
     return (
         <Container wait={wait}>
             <HeaderImage>
@@ -302,7 +339,12 @@ const index: React.FC<Props> = (props: Props) => {
                     {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
                     {!msfsIsOpen && isInstalledAsGitRepo && isInstalled && <InstalledButton inGitRepo={true} />}
                     {!msfsIsOpen && !isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading && <InstalledButton inGitRepo={false} />}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && needsUpdate && !isDownloading && <UpdateButton onClick={handleUpdate}/>}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && needsUpdate && !isDownloading && <>
+                        <UpdateContainer>
+                            <UpdateReason>{needsUpdateReason}</UpdateReason>
+                            <UpdateButton onClick={handleUpdate} />
+                        </UpdateContainer>
+                    </>}
                     {isDownloading && <CancelButton onClick={handleCancel}>
                         {(Math.floor(download?.progress) >= 99) ? "Decompressing" : `${Math.floor(download?.progress)}% -  Cancel`}
                     </CancelButton>}
