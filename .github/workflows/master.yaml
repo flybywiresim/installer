@@ -17,7 +17,7 @@ jobs:
         run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32 wine64
       - name: Package installer
         run: |
-          npx electron-forge make -p win32
+          npm run make
           rm out/make/squirrel.windows/x64/*.nupkg
           rm out/make/squirrel.windows/x64/RELEASES
       - uses: actions/upload-artifact@v2
