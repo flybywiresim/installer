@@ -98,7 +98,7 @@ const index: React.FC<Props> = (props: Props) => {
         }
     }
 
-    async function checkIfMSFS() {
+    function checkIfMSFS() {
         child_process.exec('tasklist', (err, stdout) => {
             if (stdout.indexOf("FlightSimulator.exe") > -1) {
                 setMsfsIsOpen(true);
