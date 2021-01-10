@@ -19,6 +19,8 @@ const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
         height: 1000,
         width: 1400,
+        minWidth: 1000,
+        minHeight: 700,
         frame: false,
         icon: 'src/main/icons/icn.ico',
         backgroundColor: '#FFF',
