@@ -24,7 +24,12 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "fbw_installer",
-            "setupIcon": "./src/main/icons/icn.ico"
+            "authors": "FlyByWire Simulations",
+            "description": "FlyByWire Simulations Installer",
+            "setupIcon": "./src/main/icons/icn.ico",
+            "setupExe": "installer.exe",
+            "iconUrl": "https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/FBW-Tail.ico",
+            "loadingGif": "./src/main/icons/loading.gif"
           }
         }
       ],

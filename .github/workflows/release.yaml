@@ -21,7 +21,6 @@ jobs:
           npm run make
           rm out/make/squirrel.windows/x64/*.nupkg
           rm out/make/squirrel.windows/x64/RELEASES
-          mv out/make/squirrel.windows/x64/*.exe installer.exe
           zip flybywire-installer installer.exe
 
       - name: Create Release
