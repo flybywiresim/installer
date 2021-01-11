@@ -128,7 +128,7 @@ function App() {
             targetDirectory: 'A32NX',
             variants: [
                 {
-                    name: 'Neo (CFM LEAP-1A) / (PW1100G-JM)',
+                    name: 'Neo (CFM LEAP-1A)',
                     key: 'LEAP',
                     imageUrl: CFMLeap1SVG,
                     imageAlt: "CFM Leap-1",
