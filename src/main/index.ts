@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, globalShortcut, App, autoUpdater, dialog } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut, App, autoUpdater } from 'electron';
 import * as fs from 'fs';
 import * as readLine from 'readline';
 import Store from 'electron-store';
@@ -49,26 +49,28 @@ const createWindow = (): void => {
         });
     }
 
+    // Auto updater
+    if (process.env.NODE_ENV !== 'development') {
+        // The Squirrel application will watch the provided URL
+        autoUpdater.setFeedURL({ url: 'https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer' });
+
+        autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
+            mainWindow.webContents.send('update-downloaded', { event, releaseNotes, releaseName });
+        });
+
+        autoUpdater.addListener('update-available', () => {
+            mainWindow.webContents.send('update-available');
+        });
+
+        autoUpdater.addListener('error', (error) => {
+            mainWindow.webContents.send('update-error', { error });
+        });
+
+        // tell squirrel to check for updates
+        autoUpdater.checkForUpdates();
+    }
+
     setupDefaultInstallPath(app);
-};
-
-const startAutoUpdater = () => {
-    // The Squirrel application will watch the provided URL
-    autoUpdater.setFeedURL({ url: 'https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer' });
-
-    // Display a success message on successful update
-    // TODO: Make look pretty
-    autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
-        dialog.showMessageBox({ message: `The release ${releaseName} has been downloaded` });
-    });
-
-    // Display an error message on update error
-    autoUpdater.addListener('error', (error) => {
-        console.error(error);
-    });
-
-    // tell squirrel to check for updates
-    autoUpdater.checkForUpdates();
 };
 
 // This method will be called when Electron has finished
@@ -76,9 +78,6 @@ const startAutoUpdater = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
     createWindow();
-    if (process.env.NODE_ENV !== "development") {
-        startAutoUpdater();
-    }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
