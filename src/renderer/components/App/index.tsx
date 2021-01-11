@@ -169,7 +169,7 @@ function App() {
             ],
         },
         {
-            name: 'A380',
+            name: 'A380X',
             repoName: 'a380x',
             aircraftName: 'A380',
             key: 'A380',
@@ -217,7 +217,7 @@ function App() {
                                         mods.map(mod =>
                                             <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
                                                 <AircraftDetailsContainer>
-                                                    <AircraftName>{mod.aircraftName}</AircraftName>
+                                                    <AircraftName>{mod.name}</AircraftName>
                                                 </AircraftDetailsContainer>
                                                 <img id={mod.key} src={mod.menuIconUrl} alt={mod.aircraftName}/>
                                             </AircraftMenuItem>
