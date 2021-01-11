@@ -64,7 +64,7 @@ const startAutoUpdater = () => {
 
     // Display an error message on update error
     autoUpdater.addListener('error', (error) => {
-        dialog.showMessageBox({ message: 'Auto updater error: ' + error });
+        console.error(error);
     });
 
     // tell squirrel to check for updates
