@@ -51,6 +51,8 @@ const BaseButton = styled.button`
   border-radius: 5px;
 
   padding: .25em 1.25em .15em;
+  
+  cursor: pointer;
 
   ${dropShadow};
 `;
