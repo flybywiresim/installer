@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, globalShortcut, App } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut, App, autoUpdater, dialog } from 'electron';
 import * as fs from 'fs';
 import * as readLine from 'readline';
 import Store from 'electron-store';
@@ -52,10 +52,34 @@ const createWindow = (): void => {
     setupDefaultInstallPath(app);
 };
 
+const startAutoUpdater = () => {
+    // The Squirrel application will watch the provided URL
+    autoUpdater.setFeedURL({ url: 'https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer' });
+
+    // Display a success message on successful update
+    // TODO: Make look pretty
+    autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
+        dialog.showMessageBox({ message: `The release ${releaseName} has been downloaded` });
+    });
+
+    // Display an error message on update error
+    autoUpdater.addListener('error', (error) => {
+        dialog.showMessageBox({ message: 'Auto updater error: ' + error });
+    });
+
+    // tell squirrel to check for updates
+    autoUpdater.checkForUpdates();
+};
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+    createWindow();
+    if (process.env.NODE_ENV !== "development") {
+        startAutoUpdater();
+    }
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
