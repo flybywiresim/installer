@@ -19,8 +19,6 @@ jobs:
       - name: Package installer
         run: |
           npm run make
-          rm out/make/squirrel.windows/x64/*.nupkg
-          rm out/make/squirrel.windows/x64/RELEASES
 
       - name: Create Release
         id: create_release

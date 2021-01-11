@@ -29,7 +29,8 @@
             "setupIcon": "./src/main/icons/icn.ico",
             "setupExe": "installer.exe",
             "iconUrl": "https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/FBW-Tail.ico",
-            "loadingGif": "./src/main/icons/loading.gif"
+            "loadingGif": "./src/main/icons/loading.gif",
+            "remoteReleases": "https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer"
           }
         }
       ],
