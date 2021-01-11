@@ -187,7 +187,7 @@ export const InstallButton = styled(props =>
         {...props}
     >Install</InstallButtonTemplate>)``;
 
-export const UpdateContainer = styled.div`
+export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -196,7 +196,7 @@ export const UpdateContainer = styled.div`
   column-gap: 1.25em;
 `;
 
-export const UpdateReason = styled(props => <span className={props.className}>{props.children}</span>)`
+export const StateText = styled(props => <span className={props.className}>{props.children}</span>)`
   font-size: ${fontSizes.huge} !important;
   color: ${colors.titleContrast};  
 `;

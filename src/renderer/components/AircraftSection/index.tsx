@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, notification } from 'antd';
+import { Typography } from 'antd';
 import {
     ButtonsContainer as SelectionContainer,
     Content,
@@ -20,8 +20,8 @@ import {
     LeftContainer,
     TopContainer,
     MSFSIsOpenButton,
-    UpdateReason,
-    UpdateContainer
+    StateText,
+    ButtonContainer
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -59,6 +59,7 @@ const index: React.FC<Props> = (props: Props) => {
     const [needsUpdateReason, setNeedsUpdateReason] = useState<string>();
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
+    const [installedStateText, setInstalledStateText] = useState('');
     const [isInstalledAsGitRepo, setIsInstalledAsGitRepo] = useState<boolean>(false);
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(false);
@@ -262,21 +263,33 @@ const index: React.FC<Props> = (props: Props) => {
                     fs.rmdirSync(modInstallPath, { recursive: true });
                 }
 
-                zipFile.extractAllTo(msfsPackageDir);
-                settings.set('cache.' + props.mod.key + '.lastBuildTime', findBuildTime(modInstallPath));
+                // Extract the ZIP
+                zipFile.extractAllToAsync(msfsPackageDir, true, (error) => {
+                    dispatch(deleteDownload(props.mod.name));
+
+                    if (!error) {
+                        dispatch(updateDownloadProgress(props.mod.name, 0));
+
+                        // Set states
+                        setIsInstalled(true);
+                        setNeedsUpdate(false);
+
+                        // Flash completion text
+                        setInstalledStateText('Completed !');
+                        setTimeout(() => setInstalledStateText(''), 3_000);
+
+                        // Set appropriate cache keys
+                        settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
+                        settings.set('cache.' + props.mod.key + '.lastBuildTime', findBuildTime(modInstallPath));
+                        settings.set('cache.' + props.mod.key + '.lastInstalledTrack', track.name);
+
+                        console.log("Download complete!");
+                    } else {
+                        setInstalledStateText('Failed');
+                        setTimeout(() => setInstalledStateText(''), 3_000);
+                    }
+                });
             }
-            dispatch(updateDownloadProgress(props.mod.name, 0));
-            setIsInstalled(true);
-            setNeedsUpdate(false);
-            console.log(props.mod.key);
-            settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
-            settings.set('cache.' + props.mod.key + '.lastInstalledTrack', track.name);
-            console.log("Download complete!");
-            notification.open({
-                placement: 'bottomRight',
-                message: `${props.mod.aircraftName}/${track.name} download complete!`
-            });
-            dispatch(deleteDownload(props.mod.name));
         }
     }
 
@@ -337,17 +350,30 @@ const index: React.FC<Props> = (props: Props) => {
                 <SelectionContainer>
                     {msfsIsOpen && <MSFSIsOpenButton />}
                     {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
-                    {!msfsIsOpen && isInstalledAsGitRepo && isInstalled && <InstalledButton inGitRepo={true} />}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading && <InstalledButton inGitRepo={false} />}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && needsUpdate && !isDownloading && <>
-                        <UpdateContainer>
-                            <UpdateReason>{needsUpdateReason}</UpdateReason>
-                            <UpdateButton onClick={handleUpdate} />
-                        </UpdateContainer>
+                    {!msfsIsOpen && isInstalledAsGitRepo && isInstalled && <>
+                        <ButtonContainer>
+                            <StateText>{installedStateText}</StateText>
+                            <InstalledButton inGitRepo={true} />
+                        </ButtonContainer>
                     </>}
-                    {isDownloading && <CancelButton onClick={handleCancel}>
-                        {(Math.floor(download?.progress) >= 99) ? "Decompressing" : `${Math.floor(download?.progress)}% -  Cancel`}
-                    </CancelButton>}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading && <>
+                        <ButtonContainer>
+                            <StateText>{installedStateText}</StateText>
+                            <InstalledButton inGitRepo={false} />
+                        </ButtonContainer>
+                    </>}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && needsUpdate && !isDownloading && <>
+                        <ButtonContainer>
+                            <StateText>{needsUpdateReason}</StateText>
+                            <UpdateButton onClick={handleUpdate} />
+                        </ButtonContainer>
+                    </>}
+                    {isDownloading && <>
+                        <ButtonContainer>
+                            <StateText>{(Math.floor(download?.progress) >= 99) ? "Decompressing" : `${Math.floor(download?.progress)}%`}</StateText>
+                            <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+                        </ButtonContainer>
+                    </>}
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
