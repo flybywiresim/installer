@@ -13,6 +13,7 @@ export const colors = {
     mutedText: '#929292',
 
     cardBackground: '#313131',
+    cardBackgroundHover: '#3b3b3b',
     cardForeground: '#FFFFFFDD',
 };
 
@@ -25,8 +26,13 @@ export const smallCard = css`
   border-radius: 5px;
 
   background-color: ${colors.cardBackground};
+  &:hover {
+    background-color: ${colors.cardBackgroundHover};
+  }
   color: ${colors.cardForeground};
 
+  transition: background-color linear 200ms;
+  
   ${dropShadow};
 `;
 
