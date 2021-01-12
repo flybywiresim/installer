@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Store from 'electron-store';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { Container, PageTitle, SettingItemContent, SettingItemName, SettingsItem, SettingsItems, SettingButton } from './styles';
+import styled from "styled-components";
+import { colors } from "renderer/style/theme";
 
 const settings = new Store;
 
@@ -25,14 +27,22 @@ function InstallPathSettingItem(): JSX.Element {
     );
 }
 
+const VersionNumber = styled.h6`
+  margin-top: 1.5em;
+  color: ${colors.mutedText} !important;
+`;
+
 function index(): JSX.Element {
     return (
-        <Container>
-            <PageTitle>General Settings</PageTitle>
-            <SettingsItems>
-                <InstallPathSettingItem />
-            </SettingsItems>
-        </Container>
+        <>
+            <Container>
+                <PageTitle>General Settings</PageTitle>
+                <SettingsItems>
+                    <InstallPathSettingItem />
+                </SettingsItems>
+            </Container>
+            <VersionNumber>{settings.get('metaInfo.currentVersion')}</VersionNumber>
+        </>
     );
 }
 

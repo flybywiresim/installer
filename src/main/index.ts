@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as readLine from 'readline';
 import Store from 'electron-store';
 import walk from 'walkdir';
+import * as packageInfo from '../../package.json';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: never;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -75,7 +76,7 @@ const createWindow = (): void => {
         autoUpdater.checkForUpdates();
     }
 
-    setupDefaultInstallPath(app);
+    configureSettings(app);
 };
 
 // This method will be called when Electron has finished
@@ -115,7 +116,11 @@ app.on('second-instance', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-function setupDefaultInstallPath(app: App) {
+function configureSettings(app: App) {
+    // Store the current version
+    const version = packageInfo.version;
+    settings.set('metaInfo.currentVersion', version);
+
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
 

@@ -66,14 +66,19 @@ export const HomeMenuItem = styled(MenuItem)`
 `;
 
 export const PageSider = styled(Sider)`
-    background-color: #313131;
-    
-    .ant-layout-sider-trigger {
-        height: 40px;
-        line-height: 40px;
-        background-color: #232323;
-    }
+  background-color: #313131;
 
+  .ant-layout-sider-children {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .ant-layout-sider-trigger {
+    height: 40px;
+    line-height: 40px;
+    background-color: #232323;
+  }
 `;
 
 export const MainLayout = styled(Layout)`
