@@ -1,65 +1,66 @@
-name: vmaster
-on:
-  push:
-    branches: [ master ]
-
-jobs:
-  build:
-    # Prevent running this on forks
-    if: github.repository_owner == 'flybywiresim'
-    runs-on: ubuntu-latest
-    env:
-      MASTER_PRE_RELEASE_ID: 36189658
-      MASTER_PRE_RELEASE_TAG: vmaster
-      ASSET_NAME: installer.exe
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v2
-      - name: Set BUILT_DATE_TIME
-        run: echo "BUILT_DATE_TIME=$(date -u -Iseconds)" >> $GITHUB_ENV
-      - name: Install NPM dependencies
-        run: npm ci
-
-      - name: Install system requirements
-        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32 wine64
-
-      - name: Initialize Config
-        run: mv .github/workflows/forge.config.js forge.config.js
-
-      - name: Package installer
-        run: npm run make
-
-      - name: Get and delete master pre-release zip asset
-        run: |
-          echo 'checking for first release asset...'
-          assets=$( \
-            curl --location --request GET \
-              --url https://api.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets
-          )
-          if [ $(echo $assets | jq '.[0].size') -eq '0' ]; then
-            echo 'no asset to delete'
-          else
-            assetId=$(echo $assets | jq '.[0].id')
-            echo 'deleting asset '$assetId
-            curl --request DELETE \
-              --url https://api.github.com/repos/${{ github.repository }}/releases/assets/$assetId \
-              --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}'
-          fi
-      - name: Upload release binary
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets{?name,label}
-          asset_path: out/make/squirrel.windows/x64/installer.exe
-          asset_name: ${{ env.ASSET_NAME }}
-          asset_content_type: application/octet-stream
-      - name: Update master pre-release body
-        run: |
-          curl --request PATCH \
-            --url 'https://api.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}' \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            --header 'Content-Type: application/json' \
-            --data-raw '{
-              "body": "This pre-release has its ${{ env.ASSET_NAME }} asset updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\nThis link will always point to the latest master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.ASSET_NAME }}"
-            }'
+# name: vmaster
+# on:
+#   push:
+#     branches: [ master ]
+#
+# jobs:
+#   build:
+#     # Prevent running this on forks
+#     if: github.repository_owner == 'flybywiresim'
+#     runs-on: ubuntu-latest
+#     env:
+#       MASTER_PRE_RELEASE_ID: 36189658
+#       MASTER_PRE_RELEASE_TAG: vmaster
+#       ASSET_NAME: installer.exe
+#     steps:
+#       - name: Checkout source
+#         uses: actions/checkout@v2
+#       - name: Set BUILT_DATE_TIME
+#         run: echo "BUILT_DATE_TIME=$(date -u -Iseconds)" >> $GITHUB_ENV
+#       - name: Install NPM dependencies
+#         run: npm ci
+#
+#       - name: Install system requirements
+#         run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32 wine64
+#
+#       - name: Initialize Config
+#         run: mv .github/workflows/forge.config.js forge.config.js
+#
+#       - name: Package installer
+#         run: npm run make
+#
+#       - name: Get and delete master pre-release zip asset
+#         run: |
+#           echo 'checking for first release asset...'
+#           assets=$( \
+#             curl --location --request GET \
+#               --url https://api.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets
+#           )
+#           if [ $(echo $assets | jq '.[0].size') -eq '0' ]; then
+#             echo 'no asset to delete'
+#           else
+#             assetId=$(echo $assets | jq '.[0].id')
+#             echo 'deleting asset '$assetId
+#             curl --request DELETE \
+#               --url https://api.github.com/repos/${{ github.repository }}/releases/assets/$assetId \
+#               --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}'
+#           fi
+#       - name: Upload release binary
+#         uses: actions/upload-release-asset@v1.0.2
+#         env:
+#           GITHUB_TOKEN: ${{ github.token }}
+#         with:
+#           upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets{?name,label}
+#           asset_path: out/make/squirrel.windows/x64/installer.exe
+#           asset_name: ${{ env.ASSET_NAME }}
+#           asset_content_type: application/octet-stream
+#       - name: Update master pre-release body
+#         run: |
+#           curl --request PATCH \
+#             --url 'https://api.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}' \
+#             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+#             --header 'Content-Type: application/json' \
+#             --data-raw '{
+#               "body": "This pre-release has its ${{ env.ASSET_NAME }} asset updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\nThis link will always point to the latest master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.ASSET_NAME }}"
+#             }'
+#
