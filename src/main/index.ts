@@ -10,13 +10,18 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
     app.quit();
 }
 
+if (!app.requestSingleInstanceLock()) {
+    app.quit();
+}
+
 const settings = new Store;
+let mainWindow: BrowserWindow;
 
 Menu.setApplicationMenu(null);
 
 const createWindow = (): void => {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         height: 1000,
         width: 1400,
         minWidth: 1000,
@@ -94,6 +99,16 @@ app.on('activate', () => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
+    }
+});
+
+// Someone tried to run a second instance, we should focus our window.
+app.on('second-instance', () => {
+    if (mainWindow) {
+        if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+        }
+        mainWindow.focus();
     }
 });
 
