@@ -11,7 +11,7 @@ function index(): JSX.Element {
             </LogoAndText>
             <DescAndImages>
                 <p>FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft,
-                    the A32NX (a modification of the default A320neo in MSFS), and the A380.</p>
+                    the A32NX  (a modification of the default A320neo in MSFS), and the A380.</p>
                 {/* <Images>
                     <Image />
                     <Image />
