@@ -4,7 +4,11 @@ import Store from 'electron-store';
 const settings = new Store;
 
 export async function setupInstallPath(): Promise<string> {
+    const currentPath = settings.get<string>('mainSettings.msfsPackagePath');
+
     const path = await remote.dialog.showOpenDialog({
+        title: 'Select your community directory',
+        defaultPath: typeof currentPath === 'string' ? currentPath : '',
         properties: ['openDirectory']
     });
     if (path.filePaths[0]) {

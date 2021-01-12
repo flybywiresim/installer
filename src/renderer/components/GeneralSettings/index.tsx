@@ -10,7 +10,10 @@ function InstallPathSettingItem(): JSX.Element {
 
     async function handleClick() {
         const path = await setupInstallPath();
-        setInstallPath(path);
+
+        if (path) {
+            setInstallPath(path);
+        }
     }
 
     return (
