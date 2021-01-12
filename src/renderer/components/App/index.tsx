@@ -13,7 +13,7 @@ import A380NoseSVG from 'renderer/assets/a380x_nose.svg';
 import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
 
 import {
-    AircraftDetailsContainer,
+    AircraftDetailsContainer, AircraftInfo, AircraftInstalledVersion,
     AircraftMenuItem,
     AircraftName,
     Container,
@@ -28,6 +28,7 @@ import NoInternetModal from '../NoInternetModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
+import Store from "electron-store";
 
 export type Mod = {
     name: string,
@@ -65,6 +66,8 @@ export type ModTrack = {
     isExperimental: boolean,
     latestVersionName: Promise<ModVersion | string>
 }
+
+const settings = new Store;
 
 const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -172,7 +175,7 @@ function App() {
             name: 'A380X',
             repoName: 'a380x',
             aircraftName: 'A380',
-            key: 'A380',
+            key: 'A380X',
             enabled: false,
             menuIconUrl: A380NoseSVG,
             backgroundImageUrls: [],
@@ -217,9 +220,12 @@ function App() {
                                         mods.map(mod =>
                                             <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
                                                 <AircraftDetailsContainer>
-                                                    <AircraftName>{mod.name}</AircraftName>
+                                                    <AircraftInfo>
+                                                        <AircraftName>{mod.name}</AircraftName>
+                                                        <AircraftInstalledVersion>{settings.get('cache.' + mod.key + '.lastUpdated') ? 'installed' : 'not installed'}</AircraftInstalledVersion>
+                                                    </AircraftInfo>
+                                                    <img id={`icon-${mod.key}`} src={mod.menuIconUrl} alt={mod.aircraftName} />
                                                 </AircraftDetailsContainer>
-                                                <img id={mod.key} src={mod.menuIconUrl} alt={mod.aircraftName}/>
                                             </AircraftMenuItem>
                                         )
                                     }

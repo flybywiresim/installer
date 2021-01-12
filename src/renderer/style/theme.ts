@@ -12,6 +12,9 @@ export const colors = {
 
     mutedText: '#929292',
 
+    listItem: '#393939',
+    listItemSelected: '#474747',
+
     cardBackground: '#313131',
     cardBackgroundHover: '#3b3b3b',
     cardForeground: '#FFFFFFDD',

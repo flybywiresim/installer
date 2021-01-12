@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Layout, Menu } from 'antd';
+import { colors } from "renderer/style/theme";
 
 const { Header, Content, Sider } = Layout;
 
@@ -25,7 +26,7 @@ export const PageContent = styled(Content)`
 const menuItemCss = css`
     margin: 0 !important;
     height: 34px;
-    background-color: #444444;
+    background-color: ${colors.listItem};
     font-size: 16px;
     font-weight: 600;
     :hover {
@@ -84,30 +85,47 @@ export const AircraftMenuItem = styled(MenuItem)`
     justify-content: space-between;
     height: 73px !important;
     padding-left: 8px !important;
-
-    #a320 {
-        height: 173px;
-        position: absolute;
-        right: -191px;
-        top: -62px;
-    }
-
-    #a380 {
-        height: 173px;
-        position: absolute;
-        right: -180px;
-        top: -55px;
-    }
-
 `;
+
 export const AircraftDetailsContainer = styled.div`
   display: flex !important;
+  flex-direction: row;
+  justify-content: space-between;
+  
+  img#icon-A32NX {
+    height: 173px !important;
+    position: absolute;
+    right: -192px;
+    top: -62px;
+  }
+
+  img#icon-A380X {
+    height: 172px !important;
+    position: absolute;
+    right: -180px;
+    top: -55px;
+  }
+`;
+
+export const AircraftInfo = styled.div`
+  width: 22em;
+        
+  display: flex;
   flex-direction: column;
-  align-items: baseline;
+  justify-content: flex-start;
+  align-items: flex-start;
+  
+  margin-top: 3em;
+  margin-left: 14px;
 `;
-export const AircraftName = styled.span`
-  margin-left: 20px;
+
+export const AircraftName = styled.h4`
+  font-size: 18px;
+  margin-top: -2em;
+  line-height: 18px;
 `;
-export const AircraftInstalledVersion = styled.span`
-  font-size: 10px;
+
+export const AircraftInstalledVersion = styled.h6`
+  font-size: 14px;
+  line-height: 18px;
 `;
