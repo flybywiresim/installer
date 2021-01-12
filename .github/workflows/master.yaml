@@ -23,11 +23,9 @@ jobs:
       - name: Install system requirements
         run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32 wine64
 
-      - name: Initialize Config
-        run: mv .github/workflows/forge.config.js forge.config.js
-
       - name: Package installer
-        run: npm run make
+        run: |
+          npm run make
 
       - name: Get and delete master pre-release zip asset
         run: |
