@@ -13,15 +13,16 @@ import {
     EngineOption,
     DownloadProgress,
     UpdateButton,
+    SwitchButton,
     InstalledButton,
     CancelButton,
     DetailsContainer,
     VersionHistoryContainer,
     LeftContainer,
     TopContainer,
-    MSFSIsOpenButton,
     StateText,
-    ButtonContainer
+    ButtonContainer,
+    DisabledButton
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -57,6 +58,7 @@ const index: React.FC<Props> = (props: Props) => {
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(handleFindInstalledTrack());
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
     const [needsUpdateReason, setNeedsUpdateReason] = useState<string>();
+    const [changeVersion, setChangeVersion] = useState<boolean>(false);
 
     const [isInstalled, setIsInstalled] = useState<boolean>(false);
     const [installedStateText, setInstalledStateText] = useState('');
@@ -82,7 +84,7 @@ const index: React.FC<Props> = (props: Props) => {
 
     useEffect(() => {
         checkForUpdates();
-        const checkMsfsInterval = setInterval(checkIfMSFS, 5_000);
+        const checkMsfsInterval = setInterval(checkIfMSFS, 500);
 
         return () => clearInterval(checkMsfsInterval);
     }, []);
@@ -113,6 +115,8 @@ const index: React.FC<Props> = (props: Props) => {
 
         const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
 
+        setChangeVersion(false);
+
         if (fs.existsSync(installDir)) {
             setIsInstalled(true);
             console.log('Installed');
@@ -138,8 +142,9 @@ const index: React.FC<Props> = (props: Props) => {
                 if (localLastTrack !== selectedTrack.name) {
                     // The installed track is not the same - require update
 
-                    setNeedsUpdate(true);
-                    setNeedsUpdateReason(UpdateReasonMessages.VERSION_CHANGED);
+                    setNeedsUpdate(false);
+                    setIsInstalled(false);
+                    setChangeVersion(true);
                 } else {
                     // We are still on the same track - check the installed build
 
@@ -340,6 +345,21 @@ const index: React.FC<Props> = (props: Props) => {
         }
     }
 
+    function getButtonText() {
+        if (!isInstalledAsGitRepo && !isInstalled && !isDownloading && !changeVersion) {
+            return "Install";
+        } else if (!isInstalledAsGitRepo && !isInstalled && !isDownloading && changeVersion) {
+            return "Switch version";
+        } else if (isInstalledAsGitRepo && isInstalled) {
+            return "Installed (git)";
+        } else if (!isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading) {
+            return "Installed";
+        } else if (!isInstalledAsGitRepo && needsUpdate && !isDownloading) {
+            return "Update";
+        }
+        return "";
+    }
+
     return (
         <Container wait={wait}>
             <HeaderImage>
@@ -348,8 +368,14 @@ const index: React.FC<Props> = (props: Props) => {
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    {msfsIsOpen && <MSFSIsOpenButton />}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && <InstallButton onClick={handleInstall} />}
+                    {msfsIsOpen && <>
+                        <ButtonContainer>
+                            <StateText>Please close MSFS</StateText>
+                            <DisabledButton text={getButtonText()} />
+                        </ButtonContainer>
+                    </>}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && !changeVersion && <InstallButton onClick={handleInstall} />}
+                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && changeVersion && <SwitchButton onClick={handleInstall} />}
                     {!msfsIsOpen && isInstalledAsGitRepo && isInstalled && <>
                         <ButtonContainer>
                             <StateText>{installedStateText}</StateText>

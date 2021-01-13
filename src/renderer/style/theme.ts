@@ -11,6 +11,7 @@ export const colors = {
     titleContrast: '#FFFFFF',
 
     mutedText: '#929292',
+    mutedTextDark: '#666666',
 
     listItem: '#393939',
     listItemSelected: '#474747',
