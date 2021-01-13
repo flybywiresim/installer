@@ -18,9 +18,9 @@ export const HeaderImage = styled.div`
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    padding-left: 18px;
-    padding-right: 18px;
-    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 12px;
 `;
 
 export const ModelName = styled.span`
@@ -36,6 +36,14 @@ export const ModelSmallDesc = styled.span`
 export const ModelInformationContainer = styled.div`
   display: flex;
   flex-direction: column;
+  
+  *:first-child {
+    line-height: 40px;
+  }
+  
+  *:last-child {
+    line-height: 20px;
+  }
 `;
 
 export const ButtonsContainer = styled.div`
@@ -214,13 +222,23 @@ export const UpdateButton = styled(
             {...props}
         >Update</InstallButtonTemplate>)``;
 
+export const SwitchButton = styled(
+    props =>
+        <InstallButtonTemplate
+            style={{
+                background: "#BC05E1",
+                borderColor: "#BC05E1"
+            }}
+            {...props}
+        >Switch version</InstallButtonTemplate>)``;
+
 export const CancelButton = styled(
     props =>
         <InstallButtonTemplate
             icon={null}
             style={{
-                background: "#fa8c16",
-                borderColor: "#fa8c16"
+                background: "#fa3516",
+                borderColor: "#fa3516"
             }}
             {...props}
         />)``;
@@ -238,15 +256,15 @@ export const InstalledButton = styled(
             {...props}
         >{props.inGitRepo ? 'Installed (git)' : 'Installed'}</InstallButtonTemplate>)``;
 
-export const MSFSIsOpenButton = styled(
-    props =>
+export const DisabledButton = styled(
+    (props: { text: string }) =>
         <InstallButtonTemplate
             icon={null}
             style={{
                 color: "#dddddd",
-                background: "#bc0d0d",
-                borderColor: "#bc0d0d",
+                background: "#2e3236",
+                borderColor: "#2e3236",
                 pointerEvents: "none"
             }}
             {...props}
-        >Please close MSFS</InstallButtonTemplate>)``;
+        >{props.text}</InstallButtonTemplate>)``;
