@@ -138,16 +138,6 @@ function App() {
                     enabled: true,
                     tracks: [
                         {
-                            name: 'Development',
-                            key: 'a32nx-dev',
-                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip',
-                            isExperimental: false,
-                            get latestVersionName() {
-                                return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
-                                    .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'master')).sha.substring(0, 7));
-                            }
-                        },
-                        {
                             name: 'Stable',
                             key: 'a32nx-stable',
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/stable/A32NX-stable.zip',
@@ -156,6 +146,16 @@ function App() {
                                 return DataCache.from<string>('latest_version_stable', RELEASE_CACHE_LIMIT)
                                     .fetchOrCompute(async () => (await GitVersions.getReleases('flybywiresim', 'a32nx'))[0].name);
                             },
+                        },
+                        {
+                            name: 'Development',
+                            key: 'a32nx-dev',
+                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip',
+                            isExperimental: false,
+                            get latestVersionName() {
+                                return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
+                                    .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'master')).sha.substring(0, 7));
+                            }
                         },
                         {
                             name: 'FBW',
