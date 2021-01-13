@@ -11,7 +11,8 @@ jobs:
     env:
       MASTER_PRE_RELEASE_ID: 36189658
       MASTER_PRE_RELEASE_TAG: vmaster
-      ASSET_NAME: installer.exe
+      ASSET_PATH: out/make/squirrel.windows/x64/setup.exe
+      ASSET_NAME: setup.exe
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -49,9 +50,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets{?name,label}
-          asset_path: out/make/squirrel.windows/x64/installer.exe
+          asset_path: ${{ env.ASSET_PATH }}
           asset_name: ${{ env.ASSET_NAME }}
-          asset_content_type: application/octet-stream
+          asset_content_type: application/x-msdos-program
       - name: Update master pre-release body
         run: |
           curl --request PATCH \
