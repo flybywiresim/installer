@@ -64,7 +64,7 @@ const index: React.FC<Props> = (props: Props) => {
     const [installedStateText, setInstalledStateText] = useState('');
     const [isInstalledAsGitRepo, setIsInstalledAsGitRepo] = useState<boolean>(false);
 
-    const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(false);
+    const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(true);
 
     const [wait, setWait] = useState(1);
 
