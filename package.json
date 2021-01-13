@@ -27,7 +27,7 @@
             "authors": "FlyByWire Simulations",
             "description": "FlyByWire Simulations Installer",
             "setupIcon": "./src/main/icons/icn.ico",
-            "setupExe": "installer.exe",
+            "setupExe": "setup.exe",
             "iconUrl": "https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/FBW-Tail.ico",
             "loadingGif": "./src/main/icons/loading.gif",
             "remoteReleases": "https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer"
