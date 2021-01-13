@@ -65,6 +65,7 @@ const index: React.FC<Props> = (props: Props) => {
     const [isInstalledAsGitRepo, setIsInstalledAsGitRepo] = useState<boolean>(false);
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(true);
+    const [hasCheckedStatus, setHasCheckedStatus] = useState<boolean>(false);
 
     const [wait, setWait] = useState(1);
 
@@ -191,6 +192,7 @@ const index: React.FC<Props> = (props: Props) => {
             } else {
                 setMsfsIsOpen(false);
             }
+            setHasCheckedStatus(true);
         });
     }
 
@@ -370,7 +372,7 @@ const index: React.FC<Props> = (props: Props) => {
                 <SelectionContainer>
                     {msfsIsOpen && <>
                         <ButtonContainer>
-                            <StateText>Please close MSFS</StateText>
+                            <StateText>{hasCheckedStatus ? "Please close MSFS" : "Checking status..."}</StateText>
                             <DisabledButton text={getButtonText()} />
                         </ButtonContainer>
                     </>}
