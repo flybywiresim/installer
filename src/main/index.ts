@@ -29,7 +29,7 @@ const createWindow = (): void => {
         minHeight: 700,
         frame: false,
         icon: 'src/main/icons/icn.ico',
-        backgroundColor: '#FFF',
+        backgroundColor: '#1C1C1C',
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true
