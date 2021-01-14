@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ASSET_PATH: out/make/squirrel.windows/x64/setup.exe
+      ASSET_DIRECTORY: out/make/squirrel.windows/x64/
       ASSET_NAME: setup.exe
     steps:
       - uses: actions/checkout@v2
@@ -54,6 +55,6 @@ jobs:
           aws_access_key_id = ${{ secrets.CDN_SPACE_ACCESS_KEY_ID }}
           aws_secret_access_key = ${{ secrets.CDN_SPACE_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
 
-          aws s3 sync ${{ env.ASSET_PATH }} s3://${{ secrets.CDN_SPACE_NAME }}/installer \
+          aws s3 sync ${{ env.ASSET_DIRECTORY }} s3://${{ secrets.CDN_SPACE_NAME }}/installer \
                       --follow-symlinks \
                       --endpoint https://${{ secrets.CDN_SPACE_REGION }}.digitaloceanspaces.com --acl public-read
