@@ -12,6 +12,9 @@ jobs:
       ASSET_DIRECTORY: out/make/squirrel.windows/x64/
       ASSET_NAME: setup.exe
     steps:
+      - name: Disabled
+        run: echo "Disabled" && exit 1
+
       - uses: actions/checkout@v2
 
       - name: Install NPM dependencies
