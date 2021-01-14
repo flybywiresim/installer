@@ -282,7 +282,7 @@ const index: React.FC<Props> = (props: Props) => {
                         setNeedsUpdate(false);
 
                         // Flash completion text
-                        setInstalledStateText('Completed !');
+                        setInstalledStateText('Completed!');
                         setTimeout(() => setInstalledStateText(''), 3_000);
 
                         // Set appropriate cache keys
