@@ -4,7 +4,6 @@ import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
 
 import Logo from 'renderer/components/LogoWithText';
-import HomeSection from 'renderer/components/HomeSection';
 import SettingsSection from 'renderer/components/SettingsSection';
 import AircraftSection from 'renderer/components/AircraftSection';
 import WindowActionButtons from 'renderer/components/WindowActionButtons';
@@ -17,7 +16,6 @@ import {
     AircraftMenuItem,
     AircraftName,
     Container,
-    HomeMenuItem,
     MainLayout,
     PageContent,
     PageHeader,
@@ -109,8 +107,6 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
 const RELEASE_CACHE_LIMIT = 3600 * 1000 * 24;
 
 function App() {
-    const [selectedItem, setSelectedItem] = useState<string>('home');
-
     const mods: Mod[] = [
         {
             name: 'A32NX',
@@ -186,11 +182,10 @@ function App() {
         }
     ];
 
+    const [selectedItem, setSelectedItem] = useState<string>(mods[0].key);
+
     let sectionToShow;
     switch (selectedItem) {
-        case 'home':
-            sectionToShow = <HomeSection/>;
-            break;
         case 'settings':
             sectionToShow = <SettingsSection/>;
             break;
@@ -213,9 +208,8 @@ function App() {
 
                         <Layout className="site-layout">
                             <PageSider>
-                                <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']}
+                                <Menu theme="dark" mode="inline" defaultSelectedKeys={[selectedItem]}
                                     onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
-                                    <HomeMenuItem key="home">Home</HomeMenuItem>
                                     {
                                         mods.map(mod =>
                                             <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>

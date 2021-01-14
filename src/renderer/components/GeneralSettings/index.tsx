@@ -47,6 +47,8 @@ const InfoContainer = styled.div`
 const InfoItem = styled.h6`
   margin-top: 1.5em;
   color: ${colors.mutedText} !important;
+  
+  cursor: pointer;
 `;
 
 function index(): JSX.Element {
