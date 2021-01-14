@@ -30,10 +30,15 @@ const createWindow = (): void => {
         frame: false,
         icon: 'src/main/icons/icn.ico',
         backgroundColor: '#1C1C1C',
+        show: false,
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true
         }
+    });
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
     });
 
     const lastX = settings.get('cache.main.lastWindowX');
