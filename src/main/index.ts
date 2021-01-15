@@ -15,7 +15,7 @@ if (!app.requestSingleInstanceLock()) {
     app.quit();
 }
 
-const settings = new Store;
+let settings = new Store;
 let mainWindow: BrowserWindow;
 
 Menu.setApplicationMenu(null);
@@ -39,6 +39,13 @@ const createWindow = (): void => {
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
+    });
+
+    mainWindow.on('closed', () => {
+        mainWindow.removeAllListeners();
+        mainWindow = null;
+        settings = null;
+        app.quit();
     });
 
     const lastX = settings.get('cache.main.lastWindowX');
