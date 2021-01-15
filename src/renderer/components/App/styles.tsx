@@ -4,6 +4,7 @@ import { colors } from "renderer/style/theme";
 import React, { useEffect, useState } from "react";
 import { Mod } from "renderer/components/App/index";
 import Store from "electron-store";
+import * as fs from "fs";
 
 const settings = new Store<{ [p: string]: string }>({ watch: true });
 
@@ -150,9 +151,18 @@ type AircraftMenuItemProps = { mod: Mod, disabled: boolean };
 export const AircraftMenuItem = (props: AircraftMenuItemProps) => {
     const getInstallText = (value: boolean) => value ? InstallationStates.INSTALLED : InstallationStates.NOT_INSTALLED;
 
-    const [installationStatus, setInstallationStatus] = useState<string>(() => getInstallText(!!settings.get(`cache.${props.mod.key}.lastUpdated`)));
+    const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
 
-    useEffect(() => settings.onDidChange(`cache.${props.mod.key}.lastUpdated`, value => setInstallationStatus(getInstallText(!!value))));
+    let isInstalled = false;
+
+    try {
+        isInstalled = fs.existsSync(installDir);
+        // eslint-disable-next-line no-empty
+    } catch {}
+
+    const [installationStatus, setInstallationStatus] = useState<string>(() => getInstallText(isInstalled));
+
+    useEffect(() => settings.onDidChange(`cache.${props.mod.key}.lastUpdated`, () => setInstallationStatus(getInstallText(true))));
 
     return (
         <AircraftMenuItemBase {...props}>
