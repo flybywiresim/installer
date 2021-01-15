@@ -147,7 +147,7 @@ function App() {
                             }
                         },
                         {
-                            name: 'FBW',
+                            name: 'Custom FBW',
                             key: 'a32nx-fbw',
                             url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster-cfbw/A32NX-master-cfbw.zip',
                             isExperimental: true,
