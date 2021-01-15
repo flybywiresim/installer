@@ -54,7 +54,10 @@ const InfoItem = styled.h6`
 function index(): JSX.Element {
     const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
 
-    const handleReset = async () => setInstallPath(await configureInitialInstallPath());
+    const handleReset = async () => {
+        settings.clear();
+        setInstallPath(await configureInitialInstallPath());
+    };
 
     return (
         <>

@@ -12,9 +12,7 @@ import A380NoseSVG from 'renderer/assets/a380x_nose.svg';
 import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
 
 import {
-    AircraftDetailsContainer, AircraftInfo, AircraftInstalledVersion,
     AircraftMenuItem,
-    AircraftName,
     Container,
     MainLayout,
     PageContent,
@@ -26,7 +24,6 @@ import NoInternetModal from '../NoInternetModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
-import Store from "electron-store";
 
 export type Mod = {
     name: string,
@@ -65,8 +62,6 @@ export type ModTrack = {
     latestVersionName: Promise<ModVersion | string>
 }
 
-const settings = new Store;
-
 const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
 
 /**
@@ -76,11 +71,9 @@ const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
  */
 export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
     const releases = await releaseCache.fetchOrCompute(async (): Promise<ModVersion[]> => {
-        const a: ModVersion[] = (await GitVersions.getReleases('flybywiresim', mod.repoName))
+        return (await GitVersions.getReleases('flybywiresim', mod.repoName))
             .filter(r => /v\d/.test(r.name))
             .map(r => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
-
-        return a;
     });
 
     releases
@@ -212,15 +205,7 @@ function App() {
                                     onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
                                     {
                                         mods.map(mod =>
-                                            <AircraftMenuItem key={mod.key} disabled={!mod.enabled}>
-                                                <AircraftDetailsContainer>
-                                                    <AircraftInfo>
-                                                        <AircraftName>{mod.name}</AircraftName>
-                                                        <AircraftInstalledVersion>{settings.get('cache.' + mod.key + '.lastUpdated') ? 'installed' : 'not installed'}</AircraftInstalledVersion>
-                                                    </AircraftInfo>
-                                                    <img id={`icon-${mod.key}`} src={mod.menuIconUrl} alt={mod.aircraftName} />
-                                                </AircraftDetailsContainer>
-                                            </AircraftMenuItem>
+                                            <AircraftMenuItem mod={mod} key={mod.key} disabled={!mod.enabled} />
                                         )
                                     }
                                     <SettingsMenuItem key="settings">Settings</SettingsMenuItem>

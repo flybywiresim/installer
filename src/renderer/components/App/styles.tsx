@@ -1,6 +1,11 @@
 import styled, { css } from 'styled-components';
 import { Layout, Menu } from 'antd';
 import { colors } from "renderer/style/theme";
+import React, { useEffect, useState } from "react";
+import { Mod } from "renderer/components/App/index";
+import Store from "electron-store";
+
+const settings = new Store<{ [p: string]: string }>({ watch: true });
 
 const { Header, Content, Sider } = Layout;
 
@@ -85,14 +90,7 @@ export const MainLayout = styled(Layout)`
     height: 100%;
 `;
 
-export const AircraftMenuItem = styled(MenuItem)`
-    display: flex !important;
-    justify-content: space-between;
-    height: 73px !important;
-    padding-left: 8px !important;
-`;
-
-export const AircraftDetailsContainer = styled.div`
+const AircraftDetailsContainer = styled.div`
   display: flex !important;
   flex-direction: row;
   justify-content: space-between;
@@ -112,7 +110,7 @@ export const AircraftDetailsContainer = styled.div`
   }
 `;
 
-export const AircraftInfo = styled.div`
+const AircraftInfo = styled.div`
   width: 22em;
         
   display: flex;
@@ -124,13 +122,47 @@ export const AircraftInfo = styled.div`
   margin-left: 14px;
 `;
 
-export const AircraftName = styled.h4`
+const AircraftName = styled.h4`
   font-size: 18px;
   margin-top: -2em;
   line-height: 18px;
 `;
 
-export const AircraftInstalledVersion = styled.h6`
+const AircraftInstalledVersion = styled.h6`
   font-size: 14px;
   line-height: 18px;
 `;
+
+const AircraftMenuItemBase = styled(MenuItem)`
+    display: flex !important;
+    justify-content: space-between;
+    height: 73px !important;
+    padding-left: 8px !important;
+`;
+
+const InstallationStates = {
+    INSTALLED: 'installed',
+    NOT_INSTALLED: 'not installed'
+};
+
+type AircraftMenuItemProps = { mod: Mod, disabled: boolean };
+
+export const AircraftMenuItem = (props: AircraftMenuItemProps) => {
+    const getInstallText = (value: boolean) => value ? InstallationStates.INSTALLED : InstallationStates.NOT_INSTALLED;
+
+    const [installationStatus, setInstallationStatus] = useState<string>(() => getInstallText(!!settings.get(`cache.${props.mod.key}.lastUpdated`)));
+
+    useEffect(() => settings.onDidChange(`cache.${props.mod.key}.lastUpdated`, value => setInstallationStatus(getInstallText(!!value))));
+
+    return (
+        <AircraftMenuItemBase {...props}>
+            <AircraftDetailsContainer>
+                <AircraftInfo>
+                    <AircraftName>{props.mod.name}</AircraftName>
+                    <AircraftInstalledVersion>{installationStatus}</AircraftInstalledVersion>
+                </AircraftInfo>
+                <img id={`icon-${props.mod.key}`} src={props.mod.menuIconUrl} alt={props.mod.aircraftName}/>
+            </AircraftDetailsContainer>
+        </AircraftMenuItemBase>
+    );
+};
