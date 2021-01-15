@@ -169,7 +169,7 @@ export const AircraftMenuItem = (props: AircraftMenuItemProps) => {
             <AircraftDetailsContainer>
                 <AircraftInfo>
                     <AircraftName>{props.mod.name}</AircraftName>
-                    <AircraftInstalledVersion>{props.mod.key === "A380X" ? "not available" : installationStatus}</AircraftInstalledVersion>
+                    <AircraftInstalledVersion>{props.mod.enabled ? installationStatus : "not available"}</AircraftInstalledVersion>
                 </AircraftInfo>
                 <img id={`icon-${props.mod.key}`} src={props.mod.menuIconUrl} alt={props.mod.aircraftName}/>
             </AircraftDetailsContainer>
