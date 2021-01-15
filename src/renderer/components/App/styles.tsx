@@ -148,7 +148,7 @@ const InstallationStates = {
 
 type AircraftMenuItemProps = { mod: Mod, disabled: boolean };
 
-export const AircraftMenuItem = (props: AircraftMenuItemProps): JSX.Element => {
+export const AircraftMenuItem = (props: AircraftMenuItemProps) => {
     const getInstallText = (value: boolean) => value ? InstallationStates.INSTALLED : InstallationStates.NOT_INSTALLED;
 
     const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
@@ -157,9 +157,8 @@ export const AircraftMenuItem = (props: AircraftMenuItemProps): JSX.Element => {
 
     try {
         isInstalled = fs.existsSync(installDir);
-    } catch (e) {
-        console.error(e);
-    }
+        // eslint-disable-next-line no-empty
+    } catch {}
 
     const [installationStatus, setInstallationStatus] = useState<string>(() => getInstallText(isInstalled));
 
