@@ -10,7 +10,7 @@ export default function (): JSX.Element {
             <Offline>
                 <Container>
                     <Modal >
-                        <img src={NoInternetSVG} />
+                        <img alt={"It seems you're offline"} src={NoInternetSVG} />
                         <p>It seems you're offline</p>
                     </Modal>
                 </Container>

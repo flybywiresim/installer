@@ -66,15 +66,6 @@ const BaseButton = styled.button`
   ${dropShadow};
 `;
 
-export const VersionsButton = styled(BaseButton)`
-    margin-right: 8px;
-`;
-
-export const CheckUpdateButton = styled(BaseButton)`
-    color: white !important;
-`;
-export const ModelsDropdownButton = styled(BaseButton)``;
-
 function select<T>(...items: T[]): T {
     for (const item of items) {
         if (item) {
@@ -104,11 +95,6 @@ export const BaseSelect = styled(Select)<{ styling?: SelectStyle }>`
         padding-top: 1px;
       }
     }
-`;
-
-export const VersionSelect = styled(BaseSelect)`
-    width: 155px;
-    margin-right: 8px;
 `;
 
 export const Content = styled.div`

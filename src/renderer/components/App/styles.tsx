@@ -46,29 +46,10 @@ export const MenuItem = styled(Menu.Item)`
     ${menuItemCss}
 `;
 
-export const AircraftSubMenuItem = styled(Menu.SubMenu)`
-    background-color: #444444 !important;
-    img {
-        height: 16px;
-        margin-right: 6px;
-    }
-
-    .ant-menu-submenu-title {
-        margin: 0;
-    }
-
-`;
-
 export const SettingsMenuItem = styled(MenuItem)`
     position: absolute !important;
     bottom: 0px;
     width: 100%;
-`;
-
-export const HomeMenuItem = styled(MenuItem)`
-    img {
-        height: 13px !important;
-    }
 `;
 
 export const PageSider = styled(Sider)`

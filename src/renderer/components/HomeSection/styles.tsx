@@ -38,16 +38,3 @@ export const DescAndImages = styled.div`
     max-width: 800px;
   }
 `;
-
-export const Images = styled.div`
-      margin-top: 140px;
-      display: flex;
-`;
-
-export const Image = styled.div`
-  height: 350px;
-  width: 670px;
-  background-image: url('https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png');
-  background-size: cover;
-  margin-right: 35px;
-`;

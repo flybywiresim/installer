@@ -9,10 +9,3 @@ export const Container = styled.div`
         height: 20px;
     }
 `;
-
-export const Title = styled.span`
-    color: #ececec;
-    font-size: 16px;
-    font-weight: 700;
-    margin-left: 17px;
-`;
