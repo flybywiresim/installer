@@ -66,6 +66,7 @@ const index: React.FC<Props> = (props: Props) => {
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(true);
     const [hasCheckedStatus, setHasCheckedStatus] = useState<boolean>(false);
+    const [childProcess, setChildProcess] = useState<child_process.ChildProcess>();
 
     const [wait, setWait] = useState(1);
 
@@ -84,10 +85,15 @@ const index: React.FC<Props> = (props: Props) => {
     const isDownloading = download?.progress >= 0;
 
     useEffect(() => {
-        checkForUpdates();
         const checkMsfsInterval = setInterval(checkIfMSFS, 500);
 
-        return () => clearInterval(checkMsfsInterval);
+        return () => {
+            clearInterval(checkMsfsInterval);
+
+            if (childProcess) {
+                childProcess.kill();
+            }
+        };
     }, []);
 
     useEffect(() => {
@@ -186,14 +192,12 @@ const index: React.FC<Props> = (props: Props) => {
     }
 
     function checkIfMSFS() {
-        child_process.exec('tasklist', (err, stdout) => {
-            if (stdout.indexOf("FlightSimulator.exe") > -1) {
-                setMsfsIsOpen(true);
-            } else {
-                setMsfsIsOpen(false);
-            }
+        const childProcess = child_process.exec('tasklist', (err, stdout) => {
+            setMsfsIsOpen(stdout.indexOf("FlightSimulator.exe") > -1);
             setHasCheckedStatus(true);
         });
+
+        setChildProcess(childProcess);
     }
 
     async function downloadMod(track: ModTrack) {
