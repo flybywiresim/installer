@@ -54,7 +54,21 @@ export const Track = styled(BaseTrack)`
 
   cursor: pointer;
   
-  border: ${props => props.isSelected ? `solid ${colors.title} 2px` : 'solid transparent 2px'};
+  border: solid 3px;
+  
+  border-color: ${colors.cardBackground};
+    border-left-color: ${props => props.isSelected ? `${colors.cardSelected}` : `${colors.cardBackground}`};
+  &:hover {
+    border-color: ${colors.cardBackgroundHover};
+      border-left-color: ${props => props.isSelected ? `${colors.cardSelected}` : `${colors.cardBackgroundHover}`};
+  }
+  
+  transition: border-color linear 200ms;
+  transition: border-top-color linear 200ms;
+  transition: border-right-color linear 200ms;
+  transition: border-bottom-color linear 200ms;
+  transition: border-left-color linear 200ms;
+
 `;
 
 const TrackTitle = styled.h5`
