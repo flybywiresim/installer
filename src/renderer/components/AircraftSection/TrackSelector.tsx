@@ -74,7 +74,6 @@ export const Track = styled(BaseTrack)`
   }
   
   transition: border-color linear 200ms;
-
 `;
 
 const TrackTitle = styled.h5`
