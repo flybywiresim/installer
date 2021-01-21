@@ -26,7 +26,7 @@ import {
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
-import * as child_process from "child_process";
+import net from "net";
 import Zip from 'adm-zip';
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
@@ -66,7 +66,6 @@ const index: React.FC<Props> = (props: Props) => {
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(true);
     const [hasCheckedStatus, setHasCheckedStatus] = useState<boolean>(false);
-    const [childProcess, setChildProcess] = useState<child_process.ChildProcess>();
 
     const [wait, setWait] = useState(1);
 
@@ -87,13 +86,7 @@ const index: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         const checkMsfsInterval = setInterval(checkIfMSFS, 500);
 
-        return () => {
-            clearInterval(checkMsfsInterval);
-
-            if (childProcess) {
-                childProcess.kill();
-            }
-        };
+        return () => clearInterval(checkMsfsInterval);
     }, []);
 
     useEffect(() => {
@@ -192,12 +185,18 @@ const index: React.FC<Props> = (props: Props) => {
     }
 
     function checkIfMSFS() {
-        const childProcess = child_process.exec('tasklist', (err, stdout) => {
-            setMsfsIsOpen(stdout.indexOf("FlightSimulator.exe") > -1);
-            setHasCheckedStatus(true);
-        });
+        const socket = net.connect(500);
 
-        setChildProcess(childProcess);
+        socket.on('connect', () => {
+            setMsfsIsOpen(true);
+            setHasCheckedStatus(true);
+            socket.destroy();
+        });
+        socket.on('error', () => {
+            setMsfsIsOpen(false);
+            setHasCheckedStatus(true);
+            socket.destroy();
+        });
     }
 
     async function downloadMod(track: ModTrack) {
