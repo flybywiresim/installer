@@ -53,21 +53,27 @@ export const Track = styled(BaseTrack)`
   align-items: flex-start;
 
   cursor: pointer;
-  
-  border: solid 3px;
+ 
+  border: solid transparent 2px;
+  :after {
+    content:'';
+    position: absolute;
+    top:5%;
+    left:-2px;
+    width: 5px;
+    height: 90%;
+    background-color: ${props => props.isSelected ? `${colors.cardSelected}` : `transparent` } ;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    transition: 200ms;
+  }
   
   border-color: ${colors.cardBackground};
-    border-left-color: ${props => props.isSelected ? `${colors.cardSelected}` : `${colors.cardBackground}`};
   &:hover {
     border-color: ${colors.cardBackgroundHover};
-      border-left-color: ${props => props.isSelected ? `${colors.cardSelected}` : `${colors.cardBackgroundHover}`};
   }
   
   transition: border-color linear 200ms;
-  transition: border-top-color linear 200ms;
-  transition: border-right-color linear 200ms;
-  transition: border-bottom-color linear 200ms;
-  transition: border-left-color linear 200ms;
 
 `;
 
