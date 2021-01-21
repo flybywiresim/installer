@@ -93,3 +93,6 @@ out/
 
 # VIM
 .vim/
+
+# VSCode
+.vscode/
