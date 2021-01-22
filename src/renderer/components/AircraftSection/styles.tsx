@@ -163,6 +163,7 @@ export const EngineOption = styled.div`
 
     img {
         margin-bottom: 5px;
+        -webkit-user-drag: none;
     }
 
 `;
