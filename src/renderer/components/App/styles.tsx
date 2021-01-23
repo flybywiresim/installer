@@ -51,7 +51,6 @@ export const AircraftSubMenuItem = styled(Menu.SubMenu)`
     img {
         height: 16px;
         margin-right: 6px;
-        -webkit-user-drag: none;
     }
 
     .ant-menu-submenu-title {
@@ -69,7 +68,6 @@ export const SettingsMenuItem = styled(MenuItem)`
 export const HomeMenuItem = styled(MenuItem)`
     img {
         height: 13px !important;
-        -webkit-user-drag: none;
     }
 `;
 
@@ -103,7 +101,6 @@ const AircraftDetailsContainer = styled.div`
     position: absolute;
     right: -192px;
     top: -62px;
-    -webkit-user-drag: none;
   }
 
   img#icon-A380X {
@@ -111,7 +108,6 @@ const AircraftDetailsContainer = styled.div`
     position: absolute;
     right: -180px;
     top: -55px;
-    -webkit-user-drag: none;
   }
 `;
 
