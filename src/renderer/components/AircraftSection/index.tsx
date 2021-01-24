@@ -304,8 +304,10 @@ const index: React.FC<Props> = (props: Props) => {
     }
 
     async function findAndSetTrack(key: string) {
-        const newTrack = selectedVariant.tracks.find(x => x.key === key);
-        setSelectedTrack(newTrack);
+        if (!isDownloading) {
+            const newTrack = selectedVariant.tracks.find(x => x.key === key);
+            setSelectedTrack(newTrack);
+        }
     }
 
     function handleInstall() {
