@@ -32,12 +32,18 @@ export const Modal = styled.div`
         height: 200px;
     }
 
-    .text .content {
+    .text {
         margin: auto;
+        color: #fff;
+    }
+    h1 {
+        margin-left: auto
+    }
+    h2 {
+        margin-left: auto
     }
     p {
         margin-left: auto;
-        color: #fff;
         font-size: 22px;
     }
     ::-webkit-scrollbar {
@@ -53,7 +59,7 @@ export const Close = styled.div`
     margin-left: 650px;
     width: 30px;
     height: 30px;
-    overflow: auto;
+    overflow: hidden;
     user-select: none;
     color: white;
     font-size: 20px;
