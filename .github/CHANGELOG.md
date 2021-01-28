@@ -10,6 +10,7 @@
 1. [UI] Do not allow text selection - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UI] Do not allow image dragging - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [LOGIC] Do not allow preselecting different version while downloading - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UX] Add Windows notification when download complete - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add changelog for installer - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 
 ## 1.0.3
