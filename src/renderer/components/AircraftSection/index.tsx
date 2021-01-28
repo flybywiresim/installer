@@ -336,11 +336,15 @@ const index: React.FC<Props> = (props: Props) => {
     }
 
     function notifyDownload() {
-        Notification.requestPermission().then(function () {
-            new Notification('Download complete!', {
-                'body': "You're ready to fly",
+        try {
+            Notification.requestPermission().then(function () {
+                new Notification('Download complete!', {
+                    'body': "You're ready to fly",
+                });
             });
-        });
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     function handleFindInstalledTrack() {
