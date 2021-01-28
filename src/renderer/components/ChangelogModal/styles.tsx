@@ -63,4 +63,5 @@ export const Close = styled.div`
     user-select: none;
     color: white;
     font-size: 20px;
+    cursor: pointer;
 `;
