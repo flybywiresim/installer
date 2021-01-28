@@ -294,6 +294,7 @@ const index: React.FC<Props> = (props: Props) => {
                         settings.set('cache.' + props.mod.key + '.lastInstalledTrack', track.name);
 
                         console.log("Download complete!");
+                        notifyDownload();
                     } else {
                         setInstalledStateText('Failed');
                         setTimeout(() => setInstalledStateText(''), 3_000);
@@ -332,6 +333,14 @@ const index: React.FC<Props> = (props: Props) => {
             controller.abort();
             dispatch(deleteDownload(props.mod.name));
         }
+    }
+
+    function notifyDownload() {
+        Notification.requestPermission().then(function () {
+            new Notification('Download complete!', {
+                'body': "You're ready to fly",
+            });
+        }).catch(e => console.log(e));
     }
 
     function handleFindInstalledTrack() {
