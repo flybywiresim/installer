@@ -16,6 +16,21 @@ export const Container = styled.div`
     border-radius: 10px;
     user-select: none;
 `;
+export const InnerContainer = styled.div`
+    background-color: #313131;
+    height: 100%;
+    width: 96%;
+    margin: auto;
+    margin-left: 0px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    color: #fff;
+    overflow: scroll;
+    ::-webkit-scrollbar {
+        width: 0px;
+        height: 0px;
+`;
 
 export const Modal = styled.div`
     background-color: #313131;
@@ -31,7 +46,6 @@ export const Modal = styled.div`
     img {
         height: 200px;
     }
-
     .text {
         margin: auto;
         color: #fff;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from '../../redux/store';
-import { Container, Modal, Close } from './styles';
+import { Container, InnerContainer, Modal, Close } from './styles';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import ReactHtmlParser from 'react-html-parser';
 // @ts-ignore: Disabling ts check here because this package has no @types
@@ -15,8 +15,9 @@ function showchangelog(props: any) {
             <Container>
                 <Modal >
                     <Close onClick={hidechangelog}>X</Close>
-                    <div className='text'></div>
-                    <div className='text'> { ReactHtmlParser (html) } </div>
+                    <InnerContainer>
+                        <div className='text'> { ReactHtmlParser (html) } </div>
+                    </InnerContainer>
                 </Modal>
             </Container>
         );
