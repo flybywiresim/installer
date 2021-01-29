@@ -78,4 +78,5 @@ export const Close = styled.div`
     color: white;
     font-size: 20px;
     cursor: pointer;
+    :hover { color: red;}
 `;
