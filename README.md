@@ -13,7 +13,7 @@ Please make sure you have:
 
 First install the dependencies
 ```shell script
-npm ci
+npm install
 ```
 
 Then run the development server using
