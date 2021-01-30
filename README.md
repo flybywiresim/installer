@@ -6,7 +6,7 @@ This repo contains the installer prototype for FlyByWire Simulations projects.
 
 ## Build dependencies
 
-Please make sure you have: 
+Please make sure you have:
 - NodeJS 14 - [Homepage](https://nodejs.org/en/)
 
 ## How to open

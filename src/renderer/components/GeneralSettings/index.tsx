@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import store from '../../redux/store';
 import Store from 'electron-store';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import {
@@ -68,11 +69,18 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoItem>{settings.get('metaInfo.currentVersion')}</InfoItem>
+                <InfoItem onClick={showchangelog}>{settings.get('metaInfo.currentVersion')}</InfoItem>
                 <InfoItem onClick={handleReset}>Reset</InfoItem>
             </InfoContainer>
         </>
     );
+}
+
+function showchangelog() {
+    const showchangelog = true;
+    store.dispatch({ type: 'CHANGELOG', payload: {
+        showchangelog
+    } });
 }
 
 export default index;

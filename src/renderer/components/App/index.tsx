@@ -21,6 +21,7 @@ import {
     SettingsMenuItem
 } from './styles';
 import NoInternetModal from '../NoInternetModal';
+import ChangelogModal from '../ChangelogModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
@@ -190,6 +191,7 @@ function App() {
 
     return (
         <>
+            <ChangelogModal/>
             <NoInternetModal/>
             <SimpleBar>
                 <Container>
