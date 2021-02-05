@@ -18,6 +18,7 @@ type TrackProps = {
     className?: string,
     track: ModTrack,
     isSelected: boolean,
+    isInstalled: boolean,
     // eslint-disable-next-line no-unused-vars
     onSelected(track: ModTrack): void,
 };
@@ -54,7 +55,24 @@ export const Track = styled(BaseTrack)`
 
   cursor: pointer;
   
-  border: ${props => props.isSelected ? `solid ${colors.title} 2px` : 'solid transparent 2px'};
+  :after {
+    content:'';
+    position: absolute;
+    top: ${props => props.isSelected ? '0% !important' : 'calc(50% - 5px)'};
+    left: 0;
+    width: ${props => props.isSelected ? '10px' : '5px'};
+    height: ${props => props.isSelected ? '100% !important' : '10px'};
+    border-left: 5px solid;
+    border-color: ${props => props.isInstalled ? colors.cardInstalled : colors.cardSelected};
+    border-radius: 5px;
+    transition-property: height, top;
+    transition-duration: .1s;
+  }
+  
+  &:hover:after {
+    top: calc(50% - 10px);
+    height: 20px;
+  }
 `;
 
 const TrackTitle = styled.h5`

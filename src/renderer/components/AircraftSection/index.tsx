@@ -56,6 +56,7 @@ const UpdateReasonMessages = {
 const index: React.FC<Props> = (props: Props) => {
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(handleFindInstalledTrack());
+    const [installedTrack, setInstalledTrack] = useState<ModTrack>(handleFindInstalledTrack());
     const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
     const [needsUpdateReason, setNeedsUpdateReason] = useState<string>();
     const [changeVersion, setChangeVersion] = useState<boolean>(false);
@@ -282,6 +283,7 @@ const index: React.FC<Props> = (props: Props) => {
 
                         // Set states
                         setIsInstalled(true);
+                        setInstalledTrack(track);
                         setNeedsUpdate(false);
 
                         // Flash completion text
@@ -426,7 +428,7 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
-                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
                                 )
                             }
                         </Tracks>
@@ -436,7 +438,7 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
-                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
                                 )
                             }
                         </Tracks>
