@@ -20,6 +20,7 @@ export const colors = {
     cardBackgroundHover: '#3b3b3b',
     cardForeground: '#FFFFFFDD',
     cardSelected: '#01C2CB',
+    cardInstalled: '#2E995E'
 };
 
 export const dropShadow = css`
