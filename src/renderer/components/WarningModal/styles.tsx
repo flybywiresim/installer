@@ -87,22 +87,19 @@ export const Continue = styled.div`
     align-self: flex-start;
     align-items: center;
     position:fixed;
-    width: 120px;
+    width: 160px;
     height: 40px;
     margin: 358px;
-    margin-left: 403px;
+    margin-left: 363px;
     overflow: hidden;
     user-select: none;
     color: white;
     font-size: 20px;
+    font-weight: 600;
     cursor: pointer;
-    border: 2px solid #00C2CB;
+    border: 2px solid #00b853;
     border-radius: 5px !important;
-    :hover {
-        background-color:#00C2CB;
-        color: ${colors.cardBackground};
-        border: 2px solid #00C2CB;
-    }
+    background-color:#00b853;
 `;
 export const Cancel = styled.div`
     display: flex;
@@ -118,12 +115,11 @@ export const Cancel = styled.div`
     user-select: none;
     color: white;
     font-size: 20px;
+    font-weight: 600;
     cursor: pointer;
-    border: 2px solid white;
+    border: 2px solid #fc3a3a;
     border-radius: 5px !important;
-    :hover { 
-        border: 2px solid #fc3a3a;
-    }
+    background-color:#fc3a3a;
 `;
 export const Title = styled.div`
     display: flex;

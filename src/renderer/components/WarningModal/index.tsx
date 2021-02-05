@@ -40,7 +40,7 @@ function showwarning(props: any) {
                         } catch (e) {
                             console.log(e);
                         }
-                    }}>Continue</Continue>
+                    }}>Select version</Continue>
                     <Cancel onClick={() => {
                         hidewarning();
                     }}>Cancel</Cancel>
