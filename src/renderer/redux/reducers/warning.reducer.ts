@@ -1,5 +1,5 @@
 const initialState = {
-    warningmessage: ''
+    warningmessage: '',
 };
 
 const reducer = (state = initialState, action: any) => {

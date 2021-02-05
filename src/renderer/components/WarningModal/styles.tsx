@@ -19,11 +19,9 @@ export const Container = styled.div`
 `;
 export const InnerContainer = styled.div`
     background-color: #313131;
-    height: 80%;
+    height: 70%;
     width: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
+    margin-top: 50px;
     border-radius: 10px;
     color: #fff;
     overflow: scroll;
@@ -35,13 +33,15 @@ export const InnerContainer = styled.div`
 export const Modal = styled.div`
     background-color:  ${colors.cardBackground};
     height: 450px;
-    width: 700px;
+    width: 800px;
     display: flex;
     flex-direction: column;
     border-radius: 10px;
     color: #fff;
     overflow: scroll;
-    padding: 10px;
+    padding: 25px;
+    padding-left: 25px;
+    padding-right: 25px:
 
     img {
         height: 200px;
@@ -69,24 +69,52 @@ export const Modal = styled.div`
         width: 0px;
         height: 0px;
 `;
-export const Close = styled.div`
+export const Continue = styled.div`
     display: flex;
     justify-content: center;
     align-self: flex-start;
     align-items: center;
     position:fixed;
     width: 100px;
-    margin: 380px;
-    margin-left: 300px;
+    margin: 363px;
+    margin-left: 525px;
     overflow: hidden;
     user-select: none;
     color: white;
+    background-color: #00C2CB;
     font-size: 20px;
     cursor: pointer;
-    border: 2px solid white;
+    border: 2px solid #00C2CB;
     border-radius: 5px !important;
-    :hover {
-        background-color: ${colors.cardBackgroundHover};
-        border: 2px solid red;
-    }
+`;
+export const Cancel = styled.div`
+    display: flex;
+    justify-content: center;
+    align-self: flex-start;
+    align-items: center;
+    position:fixed;
+    width: 100px;
+    margin: 363px;
+    margin-left: 650px;
+    overflow: hidden;
+    user-select: none;
+    color: white;
+    background-color: #fc3a3a;
+    font-size: 20px;
+    cursor: pointer;
+    border: 2px solid #fc3a3a;
+    border-radius: 5px !important;
+`;
+export const Title = styled.div`
+    display: flex;
+    justify-content: center;
+    align-self: flex-start;
+    align-items: center;
+    position:fixed;
+    margin: 0;
+    line-height: 80%;
+    overflow: hidden;
+    user-select: none;
+    color: white;
+    font-size: 40px;
 `;

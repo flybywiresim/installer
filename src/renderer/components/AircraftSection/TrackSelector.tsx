@@ -35,8 +35,10 @@ const BaseTrack: React.FC<TrackProps> = (props) => {
 
     return (
         <div className={props.className} onClick={() => {
-            props.onSelected(props.track); if (props.track.isExperimental) {
-                showwarning(props.track.key);
+            if (props.track.isExperimental) {
+                showwarning(props.track.key, props);
+            } else {
+                props.onSelected(props.track);
             }
         }}>
             <TrackTitle>{props.track.name}</TrackTitle>
@@ -45,10 +47,10 @@ const BaseTrack: React.FC<TrackProps> = (props) => {
     );
 };
 
-function showwarning(key:string) {
+function showwarning(key:string, props:any) {
     const warningmessage = key;
     store.dispatch({ type: 'WARNING', payload: {
-        warningmessage
+        warningmessage, props
     } });
 }
 

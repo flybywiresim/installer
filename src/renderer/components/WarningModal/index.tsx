@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from '../../redux/store';
-import { Container, InnerContainer, Modal, Close } from './styles';
+import { Container, InnerContainer, Modal, Continue, Cancel, Title } from './styles';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import ReactHtmlParser from 'react-html-parser';
 // @ts-ignore: Disabling ts check here because this package has no @types
@@ -13,9 +13,12 @@ function showwarning(props: any) {
     if (props.warningmessage != '') {
         const marked = require("marked");
         let html;
+        let title;
         if (props.warningmessage === 'a32nx-fbw') {
+            title = 'CAUTION';
             html = marked(warning_exp_a32nx_fbw);
         } else if (props.warningmessage === 'a32nx-ap') {
+            title = 'CAUTION';
             html = marked(warning_exp_a32nx_ap);
         } else {
             console.log(props.warningmessage);
@@ -24,7 +27,19 @@ function showwarning(props: any) {
         return (
             <Container>
                 <Modal >
-                    <Close onClick={hidewarning}>Continue</Close>
+                    <Title>{title}</Title>
+                    <Continue onClick={() => {
+                        hidewarning(); try {
+                            if (props.warningmessage === 'a32nx-fbw' || props.warningmessage === 'a32nx-ap') {
+                                props.props.onSelected(props.props.track);
+                            }
+                        } catch (e) {
+                            console.log(e);
+                        }
+                    }}>Continue</Continue>
+                    <Cancel onClick={() => {
+                        hidewarning();
+                    }}>Cancel</Cancel>
                     <InnerContainer>
                         <div className='text'> { ReactHtmlParser (html) } </div>
                     </InnerContainer>
