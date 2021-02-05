@@ -19,7 +19,7 @@ export const colors = {
     cardBackground: '#313131',
     cardBackgroundHover: '#3b3b3b',
     cardForeground: '#FFFFFFDD',
-    cardSelected: '#01C2CB',
+    cardSelected: '#00C2CB',
     cardInstalled: '#2E995E'
 };
 
