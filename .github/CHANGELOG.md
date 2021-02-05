@@ -12,6 +12,7 @@
 1. [LOGIC] Do not allow preselecting different version while downloading - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add Windows notification when download complete - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add changelog for installer - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UX] Add report issue button at top right corner of installer - @Armankir (Arman#5297)
 
 ## 1.0.3
 
