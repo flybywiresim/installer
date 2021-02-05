@@ -10,7 +10,7 @@ import {
     SettingsItem,
     SettingsItems,
     InfoContainer,
-    InfoButton
+    InfoButton, ResetButton
 } from './styles';
 import { configureInitialInstallPath } from "renderer/settings";
 
@@ -52,7 +52,7 @@ function index(): JSX.Element {
             </Container>
             <InfoContainer>
                 <InfoButton onClick={showchangelog}>{settings.get('metaInfo.currentVersion')}</InfoButton>
-                <InfoButton onClick={handleReset}>Reset</InfoButton>
+                <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>
     );

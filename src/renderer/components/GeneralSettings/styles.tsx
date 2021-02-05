@@ -71,4 +71,19 @@ export const InfoButton = styled.h6`
   }
 `;
 
+export const ResetButton = styled.h6`
+  padding: 0.2em;
+  margin-top: 1.5em;
+  color: white !important;
+  background: #fa3516;
+  border: 2px solid;
+  border-color: #fa3516;
+  border-radius: 5px;
+  cursor: pointer;
+
+  :hover {
+    color: ${colors.mutedTextDark} !important;
+  }
+`;
+
 export const SettingButton = styled((props) => <Button type="link" style={{ color: '#41a4ff' }} {...props}>{props.children}</Button>)``;
