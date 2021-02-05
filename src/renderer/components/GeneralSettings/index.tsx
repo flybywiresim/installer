@@ -5,14 +5,13 @@ import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import {
     Container,
     PageTitle,
-    SettingButton,
     SettingItemContent,
     SettingItemName,
     SettingsItem,
-    SettingsItems
+    SettingsItems,
+    InfoContainer,
+    InfoButton
 } from './styles';
-import styled from "styled-components";
-import { colors } from "renderer/style/theme";
 import { configureInitialInstallPath } from "renderer/settings";
 
 const settings = new Store;
@@ -30,27 +29,10 @@ function InstallPathSettingItem(props: { path: string, setPath: (path: string) =
     return (
         <SettingsItem>
             <SettingItemName>Install Directory</SettingItemName>
-            <SettingItemContent>{props.path}</SettingItemContent>
-            <SettingButton onClick={handleClick}>Modify</SettingButton>
+            <SettingItemContent onClick={handleClick}>{props.path}</SettingItemContent>
         </SettingsItem>
     );
 }
-
-const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  
-  padding-right: .55em;
-`;
-
-const InfoItem = styled.h6`
-  margin-top: 1.5em;
-  color: ${colors.mutedText} !important;
-  
-  cursor: pointer;
-`;
 
 function index(): JSX.Element {
     const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
@@ -69,8 +51,8 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoItem onClick={showchangelog}>{settings.get('metaInfo.currentVersion')}</InfoItem>
-                <InfoItem onClick={handleReset}>Reset</InfoItem>
+                <InfoButton onClick={showchangelog}>{settings.get('metaInfo.currentVersion')}</InfoButton>
+                <InfoButton onClick={handleReset}>Reset</InfoButton>
             </InfoContainer>
         </>
     );
