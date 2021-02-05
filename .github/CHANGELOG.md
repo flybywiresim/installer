@@ -14,7 +14,8 @@
 1. [UX] Add changelog for installer - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UI] Fix button styling in settings menu - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add report issue button at top right corner of installer - @Armankir (Arman#5297)
-=======
+1. [UI] Change scrollbar thumb color for more visablility - @Armankir (Arman#5297)
+
 
 ## 1.0.3
 
