@@ -35,7 +35,8 @@ const BaseTrack: React.FC<TrackProps> = (props) => {
 
     return (
         <div className={props.className} onClick={() => {
-            if (props.track.isExperimental) {
+            const download = store.getState().downloads;
+            if (props.track.isExperimental && Object.keys(download).length === 0) {
                 showwarning(props.track.key, props);
             } else {
                 props.onSelected(props.track);

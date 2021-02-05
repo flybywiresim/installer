@@ -18,8 +18,7 @@ export const Container = styled.div`
     user-select: none;
 `;
 export const InnerContainer = styled.div`
-    background-color: #313131;
-    height: 290px;
+    height: 285px;
     width: 100%;
     margin-top: 47px;
     border-radius: 10px;
@@ -89,16 +88,21 @@ export const Continue = styled.div`
     align-items: center;
     position:fixed;
     width: 120px;
-    margin: 363px;
+    height: 40px;
+    margin: 358px;
     margin-left: 403px;
     overflow: hidden;
     user-select: none;
     color: white;
-    background-color: #00C2CB;
     font-size: 20px;
     cursor: pointer;
     border: 2px solid #00C2CB;
     border-radius: 5px !important;
+    :hover {
+        background-color:#00C2CB;
+        color: ${colors.cardBackground};
+        border: 2px solid #00C2CB;
+    }
 `;
 export const Cancel = styled.div`
     display: flex;
@@ -107,16 +111,19 @@ export const Cancel = styled.div`
     align-items: center;
     position:fixed;
     width: 100px;
-    margin: 363px;
+    height: 40px;
+    margin: 358px;
     margin-left: 548px;
     overflow: hidden;
     user-select: none;
     color: white;
-    background-color: #fc3a3a;
     font-size: 20px;
     cursor: pointer;
-    border: 2px solid #fc3a3a;
+    border: 2px solid white;
     border-radius: 5px !important;
+    :hover { 
+        border: 2px solid #fc3a3a;
+    }
 `;
 export const Title = styled.div`
     display: flex;
