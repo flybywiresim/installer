@@ -73,8 +73,6 @@ export const Track = styled(BaseTrack)`
     top: calc(50% - 10px);
     height: 20px;
   }
-  
-  
 `;
 
 const TrackTitle = styled.h5`
