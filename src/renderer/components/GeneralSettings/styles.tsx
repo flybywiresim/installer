@@ -72,7 +72,7 @@ export const InfoButton = styled.h6`
 `;
 
 export const ResetButton = styled.h6`
-  padding: 0.2em;
+  padding: 0.2em 0.5em 0.2em 0.5em;
   margin-top: 1.5em;
   color: white !important;
   background: #fa3516;
