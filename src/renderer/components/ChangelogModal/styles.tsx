@@ -51,7 +51,7 @@ export const Modal = styled.div`
         color: #fff;
     }
     h1 {
-        margin-left: auto
+        margin-left: auto;
     }
     h2 {
         margin-left: auto
@@ -59,6 +59,10 @@ export const Modal = styled.div`
     p {
         margin-left: auto;
         font-size: 22px;
+        color: #ffffff;
+    }
+    li {
+        color: #ffffffdd;
     }
     ::-webkit-scrollbar {
         width: 0px;

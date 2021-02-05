@@ -19,9 +19,9 @@ export const Container = styled.div`
 `;
 export const InnerContainer = styled.div`
     background-color: #313131;
-    height: 70%;
+    height: 290px;
     width: 100%;
-    margin-top: 50px;
+    margin-top: 47px;
     border-radius: 10px;
     color: #fff;
     overflow: scroll;
@@ -33,7 +33,7 @@ export const InnerContainer = styled.div`
 export const Modal = styled.div`
     background-color:  ${colors.cardBackground};
     height: 450px;
-    width: 800px;
+    width: 700px;
     display: flex;
     flex-direction: column;
     border-radius: 10px;
@@ -48,11 +48,23 @@ export const Modal = styled.div`
     }
     .text {
         margin: auto;
-        color: #fff;
+        color: #ffffffdd;
+        font-size: 20px;
+    }
+    .button {
+        display: inline-block;
+        margin: auto;
+        color: #ffffffdd;
+        font-size: 20px;
+        cursor: pointer;
+        text-decoration: underline;
+        :hover {
+            color: #00C2CB;
+        }
     }
     h1 {
         margin-left: auto;
-        font-size: 40px;
+        font-size: 30px;
     }
     h2 {
         margin-left: auto;
@@ -61,9 +73,10 @@ export const Modal = styled.div`
     p {
         margin-left: auto;
         font-size: 20px;
+        color: #ffffffdd;
     }
     strong {
-        font-size: 24px;
+        color: white;
     }
     ::-webkit-scrollbar {
         width: 0px;
@@ -75,9 +88,9 @@ export const Continue = styled.div`
     align-self: flex-start;
     align-items: center;
     position:fixed;
-    width: 100px;
+    width: 120px;
     margin: 363px;
-    margin-left: 525px;
+    margin-left: 403px;
     overflow: hidden;
     user-select: none;
     color: white;
@@ -95,7 +108,7 @@ export const Cancel = styled.div`
     position:fixed;
     width: 100px;
     margin: 363px;
-    margin-left: 650px;
+    margin-left: 548px;
     overflow: hidden;
     user-select: none;
     color: white;

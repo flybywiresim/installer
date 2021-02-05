@@ -8,18 +8,22 @@ import ReactHtmlParser from 'react-html-parser';
 import warning_exp_a32nx_fbw from '../../../../.github/WARNING_EXPERIMENTAL_A32NX_FBW.md';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import warning_exp_a32nx_ap from '../../../../.github/WARNING_EXPERIMENTAL_A32NX_AP.md';
+import { shell } from 'electron';
 
 function showwarning(props: any) {
     if (props.warningmessage != '') {
         const marked = require("marked");
         let html;
         let title;
+        let openReadme: () => any;
         if (props.warningmessage === 'a32nx-fbw') {
             title = 'CAUTION';
             html = marked(warning_exp_a32nx_fbw);
+            openReadme = () => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/fbw/docs/README.md");
         } else if (props.warningmessage === 'a32nx-ap') {
             title = 'CAUTION';
             html = marked(warning_exp_a32nx_ap);
+            openReadme = () => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/autopilot/docs/README.md");
         } else {
             console.log(props.warningmessage);
             return (<></>);
@@ -41,7 +45,7 @@ function showwarning(props: any) {
                         hidewarning();
                     }}>Cancel</Cancel>
                     <InnerContainer>
-                        <div className='text'> { ReactHtmlParser (html) } </div>
+                        <div className='text'> { ReactHtmlParser (html) } <div className='button' onClick={openReadme}>Readme</div></div>
                     </InnerContainer>
                 </Modal>
             </Container>
