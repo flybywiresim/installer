@@ -15,6 +15,8 @@
 1. [UI] Fix button styling in settings menu - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add report issue button at top right corner of installer - @Armankir (Arman#5297)
 1. [UI] Changed the scrollbar color for eased visibility - @Armankir (Arman#5297)
+1. [VARIANTS] Implement download for 'Custom FBW+AP' - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UX] Warning message when selecting experimental version  - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 
 ## 1.0.3
 

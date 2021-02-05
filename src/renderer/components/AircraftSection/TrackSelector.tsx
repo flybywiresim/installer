@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import store from '../../redux/store';
 import styled from "styled-components";
 import { colors, noPadding, smallCard } from "renderer/style/theme";
 import { ModTrack } from "renderer/components/App";
@@ -33,12 +34,23 @@ const BaseTrack: React.FC<TrackProps> = (props) => {
     });
 
     return (
-        <div className={props.className} onClick={() => props.onSelected(props.track)}>
+        <div className={props.className} onClick={() => {
+            props.onSelected(props.track); if (props.track.isExperimental) {
+                showwarning(props.track.key);
+            }
+        }}>
             <TrackTitle>{props.track.name}</TrackTitle>
             <TrackState><code>{latestVersionName}</code></TrackState>
         </div>
     );
 };
+
+function showwarning(key:string) {
+    const warningmessage = key;
+    store.dispatch({ type: 'WARNING', payload: {
+        warningmessage
+    } });
+}
 
 /**
  * Visually displays of a mod track
