@@ -161,7 +161,7 @@ function App() {
                         {
                             name: 'Custom FBW+AP',
                             key: 'a32nx-ap',
-                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster-cfbw-cap/A32NX-master-cfbw-cap.zip',
+                            url: 'https://flybywiresim-packages.b-cdn.net/vmaster-cfbw-cap/A32NX-master-cfbw-cap.zip',
                             isExperimental: true,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_ap', RELEASE_CACHE_LIMIT)
