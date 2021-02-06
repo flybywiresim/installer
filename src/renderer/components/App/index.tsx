@@ -130,7 +130,7 @@ function App() {
                         {
                             name: 'Stable',
                             key: 'a32nx-stable',
-                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/stable/A32NX-stable.zip',
+                            url: 'https://flybywiresim-packages.b-cdn.net/stable/A32NX-stable.zip',
                             isExperimental: false,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_stable', RELEASE_CACHE_LIMIT)
@@ -140,7 +140,7 @@ function App() {
                         {
                             name: 'Development',
                             key: 'a32nx-dev',
-                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster/A32NX-master.zip',
+                            url: 'https://flybywiresim-packages.b-cdn.net/vmaster/A32NX-master.zip',
                             isExperimental: false,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
@@ -150,7 +150,7 @@ function App() {
                         {
                             name: 'Custom FBW',
                             key: 'a32nx-fbw',
-                            url: 'https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/vmaster-cfbw/A32NX-master-cfbw.zip',
+                            url: 'https://flybywiresim-packages.b-cdn.net/vmaster-cfbw/A32NX-master-cfbw.zip',
                             isExperimental: true,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_fbw', RELEASE_CACHE_LIMIT)
