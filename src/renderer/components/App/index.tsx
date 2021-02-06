@@ -22,6 +22,7 @@ import {
 } from './styles';
 import NoInternetModal from '../NoInternetModal';
 import ChangelogModal from '../ChangelogModal';
+import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
@@ -156,6 +157,16 @@ function App() {
                                 return DataCache.from<string>('latest_version_fbw', RELEASE_CACHE_LIMIT)
                                     .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'fbw')).sha.substring(0, 7));
                             },
+                        },
+                        {
+                            name: 'Custom FBW+AP',
+                            key: 'a32nx-ap',
+                            url: 'https://flybywiresim-packages.b-cdn.net/vmaster-cfbw-cap/A32NX-master-cfbw-cap.zip',
+                            isExperimental: true,
+                            get latestVersionName() {
+                                return DataCache.from<string>('latest_version_ap', RELEASE_CACHE_LIMIT)
+                                    .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'autopilot')).sha.substring(0, 7));
+                            },
                         }
                     ],
                 }
@@ -192,6 +203,7 @@ function App() {
     return (
         <>
             <ChangelogModal/>
+            <WarningModal/>
             <NoInternetModal/>
             <SimpleBar>
                 <Container>
