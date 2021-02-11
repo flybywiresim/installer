@@ -380,7 +380,6 @@ const index: React.FC<Props> = (props: Props) => {
     }
 
     function warningModalCall(show: boolean, track: ModTrack | null, setTrack?: boolean, findAndSetTrack?: CallableFunction) {
-        console.log("dispatch");
         dispatch(callWarningModal(show, track, setTrack, findAndSetTrack));
     }
 
@@ -439,7 +438,7 @@ const index: React.FC<Props> = (props: Props) => {
                                         track={track}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
-                                        onSelected={track => warningModalCall(false, track, true, () => findAndSetTrack(track.key))}
+                                        onSelected={() => warningModalCall(false, track, true, () => findAndSetTrack(track.key))}
                                     />
                                 )
                             }
