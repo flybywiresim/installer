@@ -54,13 +54,6 @@ const UpdateReasonMessages = {
     VERSION_CHANGED: "New version selected",
 };
 
-function showWarningModal() {
-    const showWarningModal = true;
-    store.dispatch({ type: 'SHOW_WARNING_MODAL', payload: {
-        showWarningModal
-    } });
-}
-
 const index: React.FC<Props> = (props: Props) => {
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
     const [selectedTrack, setSelectedTrack] = useState<ModTrack>(handleFindInstalledTrack());
@@ -386,6 +379,14 @@ const index: React.FC<Props> = (props: Props) => {
         return "";
     }
 
+    function showWarningModal() {
+        console.log("dispatch");
+        const showWarningModal = true;
+        store.dispatch({ type: 'SHOW_WARNING_MODAL', payload: {
+            showWarningModal
+        } });
+    }
+
     return (
         <Container wait={wait}>
             <HeaderImage>
@@ -436,7 +437,13 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
-                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track
+                                        key={track.key}
+                                        track={track}
+                                        isSelected={selectedTrack === track}
+                                        isInstalled={installedTrack === track}
+                                        onSelected={track => findAndSetTrack(track.key)}
+                                    />
                                 )
                             }
                         </Tracks>
@@ -446,7 +453,13 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
-                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={showWarningModal} />
+                                    <Track
+                                        key={track.key}
+                                        track={track}
+                                        isSelected={selectedTrack === track}
+                                        isInstalled={installedTrack === track}
+                                        onSelected={showWarningModal}
+                                    />
                                 )
                             }
                         </Tracks>

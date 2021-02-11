@@ -7,7 +7,7 @@ function showWarningModal(props: any) {
     if (props.showWarningModal) {
         return (
             <Container>
-                <Modal >
+                <Modal>
                     <Close onClick={hideWarningModal}>X</Close>
                     <InnerContainer>
                         <p>Hello there, general kenobi!</p>
@@ -30,7 +30,7 @@ function hideWarningModal() {
 
 function mapStateToProps(state: any) {
     return {
-        ...state.changelog,
+        ...state.showWarningModal,
     };
 }
 
