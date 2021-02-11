@@ -22,6 +22,7 @@ import {
 } from './styles';
 import NoInternetModal from '../NoInternetModal';
 import ChangelogModal from '../ChangelogModal';
+import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
@@ -201,8 +202,9 @@ function App() {
 
     return (
         <>
-            <ChangelogModal/>
-            <NoInternetModal/>
+            <NoInternetModal />
+            <ChangelogModal />
+            <WarningModal />
             <SimpleBar>
                 <Container>
                     <MainLayout>

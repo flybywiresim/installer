@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import store from '../../redux/store';
 import { Typography } from 'antd';
 import {
     ButtonsContainer as SelectionContainer,
@@ -52,6 +53,13 @@ const UpdateReasonMessages = {
     NEW_RELEASE_AVAILABLE: "New release available",
     VERSION_CHANGED: "New version selected",
 };
+
+function showWarningModal() {
+    const showWarningModal = true;
+    store.dispatch({ type: 'SHOW_WARNING_MODAL', payload: {
+        showWarningModal
+    } });
+}
 
 const index: React.FC<Props> = (props: Props) => {
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
@@ -438,7 +446,7 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
-                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={showWarningModal} />
                                 )
                             }
                         </Tracks>
