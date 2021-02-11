@@ -1,24 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from '../../redux/store';
-import { Container, InnerContainer, Modal, Close } from './styles';
+import { WarningModal } from "./styles";
 
 function showWarningModal(props: any) {
-    if (props.showWarningModal) {
-        return (
-            <Container>
-                <Modal>
-                    <Close onClick={hideWarningModal}>X</Close>
-                    <InnerContainer>
-                        <p>Hello there, general kenobi!</p>
-                    </InnerContainer>
-                </Modal>
-            </Container>
-        );
-    } else {
-        return (<></>);
-    }
-
+    return (
+        <WarningModal
+            title="Warning!"
+            visible={props.showWarningModal}
+            okText="Select"
+            onOk={hideWarningModal}
+            onCancel={hideWarningModal}
+            centered={true}
+            style={{
+                marginLeft: '200px',
+            }}
+        >
+            <p>The experimental branch kinda dangerous, yo!</p>
+        </WarningModal>
+    );
 }
 
 function hideWarningModal() {
@@ -30,7 +30,7 @@ function hideWarningModal() {
 
 function mapStateToProps(state: any) {
     return {
-        ...state.showWarningModal,
+        ...state.warningModal,
     };
 }
 
