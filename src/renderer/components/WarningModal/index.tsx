@@ -1,15 +1,25 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import store from '../../redux/store';
+import { connect, useDispatch } from 'react-redux';
+import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import { WarningModal } from "./styles";
 
 function showWarningModal(props: any) {
+    const dispatch = useDispatch();
+
+    function hideWarningModal() {
+        dispatch(callWarningModal(false, null));
+    }
+
+    function setTrackButton() {
+        dispatch(callWarningModal(false, props.track, true, props.trackHandle));
+    }
+
     return (
         <WarningModal
             title="Warning!"
             visible={props.showWarningModal}
             okText="Select"
-            onOk={hideWarningModal}
+            onOk={setTrackButton}
             onCancel={hideWarningModal}
             centered={true}
             style={{
@@ -19,13 +29,6 @@ function showWarningModal(props: any) {
             <p>The experimental branch kinda dangerous, yo!</p>
         </WarningModal>
     );
-}
-
-function hideWarningModal() {
-    const showWarningModal = false;
-    store.dispatch({ type: 'SHOW_WARNING_MODAL', payload: {
-        showWarningModal
-    } });
 }
 
 function mapStateToProps(state: any) {

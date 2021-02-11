@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import store from '../../redux/store';
 import { Typography } from 'antd';
 import {
     ButtonsContainer as SelectionContainer,
@@ -34,6 +33,7 @@ import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, RootStore } from 'renderer/redux/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
+import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
@@ -379,12 +379,9 @@ const index: React.FC<Props> = (props: Props) => {
         return "";
     }
 
-    function showWarningModal() {
+    function warningModalCall(show: boolean, track: ModTrack | null, setTrack?: boolean, findAndSetTrack?: CallableFunction) {
         console.log("dispatch");
-        const showWarningModal = true;
-        store.dispatch({ type: 'SHOW_WARNING_MODAL', payload: {
-            showWarningModal
-        } });
+        dispatch(callWarningModal(show, track, setTrack, findAndSetTrack));
     }
 
     return (
@@ -442,7 +439,7 @@ const index: React.FC<Props> = (props: Props) => {
                                         track={track}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
-                                        onSelected={track => findAndSetTrack(track.key)}
+                                        onSelected={track => warningModalCall(false, track, true, () => findAndSetTrack(track.key))}
                                     />
                                 )
                             }
@@ -458,7 +455,7 @@ const index: React.FC<Props> = (props: Props) => {
                                         track={track}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
-                                        onSelected={showWarningModal}
+                                        onSelected={() => warningModalCall(true, track, false, () => findAndSetTrack(track.key))}
                                     />
                                 )
                             }
