@@ -383,6 +383,10 @@ const index: React.FC<Props> = (props: Props) => {
         dispatch(callWarningModal(show, track, setTrack, findAndSetTrack));
     }
 
+    function locked() {
+        console.log("locked");
+    }
+
     return (
         <Container wait={wait}>
             <HeaderImage>
@@ -438,7 +442,7 @@ const index: React.FC<Props> = (props: Props) => {
                                         track={track}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
-                                        onSelected={() => warningModalCall(false, track, true, () => findAndSetTrack(track.key))}
+                                        onSelected={isDownloading ? () => locked : () => warningModalCall(false, track, true, () => findAndSetTrack(track.key))}
                                     />
                                 )
                             }
@@ -454,7 +458,7 @@ const index: React.FC<Props> = (props: Props) => {
                                         track={track}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
-                                        onSelected={() => warningModalCall(true, track, false, () => findAndSetTrack(track.key))}
+                                        onSelected={isDownloading ? () => locked : () => warningModalCall(true, track, false, () => findAndSetTrack(track.key))}
                                     />
                                 )
                             }
