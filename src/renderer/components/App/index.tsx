@@ -1,5 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
+import { shell } from "electron";
 import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
 
@@ -161,7 +162,7 @@ function App() {
                             warningContent:
                                 <>
                                     <p>The custom fly-by-wire version contains an experimental handling system that more closely matches real-life controls in an A320neo. This system is in development and bugs are to be expected.</p>
-                                    <p>To understand what you are getting into and the potential issues you might experience, please read <a href="https://github.com/flybywiresim/a32nx/blob/fbw/docs/README.md">this guide</a>.</p>
+                                    <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/fbw/docs/README.md")}>this guide</a>.</p>
 
                                     <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
                                 </>,
@@ -178,7 +179,7 @@ function App() {
                             warningContent:
                                 <>
                                     <p>The custom autopilot version contains a <b>very early</b> experimental system that more closely matches the A320neo autopilot and fixes multiple issues. This system is in development and bugs are to be expected.</p>
-                                    <p>To understand what you are getting into and the potential issues you might experience, please read <a href="https://github.com/flybywiresim/a32nx/blob/autopilot/docs/README.md">this guide.</a></p>
+                                    <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/autopilot/docs/README.md")}>this guide.</a></p>
 
                                     <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
                                 </>,
