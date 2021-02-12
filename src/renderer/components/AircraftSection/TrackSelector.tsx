@@ -63,7 +63,7 @@ export const Track = styled(BaseTrack)`
     width: ${props => props.isSelected ? '10px' : '5px'};
     height: ${props => props.isSelected ? '100% !important' : '10px'};
     border-left: 5px solid;
-    border-color: ${props => props.isInstalled ? colors.cardInstalled : props.isSelected ? colors.cardSelected : colors.mutedText};
+    border-color: ${props => props.isInstalled ? colors.cardInstalled : props.isSelected ? colors.cardSelected : colors.mutedTextDark};
     border-radius: 5px;
     transition-property: height, top;
     transition-duration: .1s;
