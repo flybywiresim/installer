@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Typography } from 'antd';
 import {
+    ButtonContainer,
     ButtonsContainer as SelectionContainer,
-    Content,
+    CancelButton,
     Container,
+    Content,
+    DetailsContainer,
+    DisabledButton,
+    DownloadProgress,
+    EngineOption,
+    EngineOptionsContainer,
     HeaderImage,
     InstallButton,
+    InstalledButton,
+    LeftContainer,
     ModelInformationContainer,
     ModelName,
     ModelSmallDesc,
-    EngineOptionsContainer,
-    EngineOption,
-    DownloadProgress,
-    UpdateButton,
-    SwitchButton,
-    InstalledButton,
-    CancelButton,
-    DetailsContainer,
-    VersionHistoryContainer,
-    LeftContainer,
-    TopContainer,
     StateText,
-    ButtonContainer,
-    DisabledButton
+    SwitchButton,
+    TopContainer,
+    UpdateButton,
+    VersionHistoryContainer
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -379,13 +379,11 @@ const index: React.FC<Props> = (props: Props) => {
         return "";
     }
 
-    function warningModalCall(show: boolean, track: ModTrack | null, setTrack?: boolean, findAndSetTrack?: CallableFunction) {
-        dispatch(callWarningModal(show, track, setTrack, findAndSetTrack));
-    }
-
-    function locked() {
-        console.log("locked");
-    }
+    const handleTrackSelection = (track: ModTrack) => {
+        if (!isDownloading) {
+            dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => findAndSetTrack(track.key)));
+        }
+    };
 
     return (
         <Container wait={wait}>
@@ -442,7 +440,7 @@ const index: React.FC<Props> = (props: Props) => {
                                         track={track}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
-                                        onSelected={isDownloading ? () => locked : () => warningModalCall(false, track, true, () => findAndSetTrack(track.key))}
+                                        onSelected={() => handleTrackSelection(track)}
                                     />
                                 )
                             }
@@ -458,7 +456,7 @@ const index: React.FC<Props> = (props: Props) => {
                                         track={track}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
-                                        onSelected={isDownloading ? () => locked : () => warningModalCall(true, track, false, () => findAndSetTrack(track.key))}
+                                        onSelected={() => handleTrackSelection(track)}
                                     />
                                 )
                             }

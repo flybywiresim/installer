@@ -33,7 +33,7 @@ export interface DeleteDownloadAction {
 export interface ShowWarningModalState {
     showWarningModal: boolean,
     track: null | ModTrack,
-    trackHandle: null | CallableFunction,
+    trackHandler: null | CallableFunction,
 }
 
 export interface ShowWarningModalAction {
@@ -41,7 +41,7 @@ export interface ShowWarningModalAction {
     payload: {
         showWarningModal: boolean,
         track: null | ModTrack,
-        trackHandle: null | CallableFunction,
+        trackHandler: null | CallableFunction,
     }
 }
 

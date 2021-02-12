@@ -1,40 +1,37 @@
 import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
-import { WarningModal } from "./styles";
+import { WarningModalBase } from "./styles";
+import { ExperimentalModTrack } from "renderer/components/App";
 
-function showWarningModal(props: any) {
+type WarningModalProps = { track: ExperimentalModTrack, trackHandler: CallableFunction, showWarningModal: boolean };
+
+const WarningModal: React.FC<WarningModalProps> = (props) => {
     const dispatch = useDispatch();
 
-    function hideWarningModal() {
-        dispatch(callWarningModal(false, null));
-    }
+    const handleTrackSelected = () => {
+        dispatch(callWarningModal(false, props.track, true, props.trackHandler));
+    };
 
-    function setTrackButton() {
-        dispatch(callWarningModal(false, props.track, true, props.trackHandle));
-    }
+    const handleCancel = () => {
+        dispatch(callWarningModal(false, null));
+    };
 
     return (
-        <WarningModal
+        <WarningModalBase
             title="Warning!"
             visible={props.showWarningModal}
             okText="Select"
-            onOk={setTrackButton}
-            onCancel={hideWarningModal}
+            onOk={handleTrackSelected}
+            onCancel={handleCancel}
             centered={true}
             style={{
                 marginLeft: '200px',
             }}
         >
-            <p>The experimental branch kinda dangerous, yo!</p>
-        </WarningModal>
+            <p>{props.track?.warningContent}</p>
+        </WarningModalBase>
     );
-}
+};
 
-function mapStateToProps(state: any) {
-    return {
-        ...state.warningModal,
-    };
-}
-
-export default connect(mapStateToProps)(showWarningModal);
+export default connect((state: { warningModal: WarningModalProps }) => ({ ...state.warningModal, }))(WarningModal);
