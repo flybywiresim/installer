@@ -13,14 +13,15 @@ interface ButtonProps {
 }
 
 export const Button = styled.div<ButtonProps>`
-    height: 25px;
-    width: 35px;
+    height: 50px;
+    width: 40px;
     color: #B9BBBE;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     user-select: none;
+    font-size: 1em;
 
     :hover {
         background-color: ${props => props.isClose ? '#F04747' : '#282B2E' };
