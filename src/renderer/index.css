@@ -60,3 +60,8 @@ h5 {
 h6 {
   font-size: 15px;
 }
+
+a {
+  color: #bbb;
+  text-decoration: underline;
+}

@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Typography } from 'antd';
 import {
+    ButtonContainer,
     ButtonsContainer as SelectionContainer,
-    Content,
+    CancelButton,
     Container,
+    Content,
+    DetailsContainer,
+    DisabledButton,
+    DownloadProgress,
+    EngineOption,
+    EngineOptionsContainer,
     HeaderImage,
     InstallButton,
+    InstalledButton,
+    LeftContainer,
     ModelInformationContainer,
     ModelName,
     ModelSmallDesc,
-    EngineOptionsContainer,
-    EngineOption,
-    DownloadProgress,
-    UpdateButton,
-    SwitchButton,
-    InstalledButton,
-    CancelButton,
-    DetailsContainer,
-    VersionHistoryContainer,
-    LeftContainer,
-    TopContainer,
     StateText,
-    ButtonContainer,
-    DisabledButton
+    SwitchButton,
+    TopContainer,
+    UpdateButton,
+    VersionHistoryContainer
 } from './styles';
 import Store from 'electron-store';
 import * as fs from "fs";
@@ -33,6 +33,7 @@ import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, RootStore } from 'renderer/redux/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
+import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
@@ -378,6 +379,12 @@ const index: React.FC<Props> = (props: Props) => {
         return "";
     }
 
+    const handleTrackSelection = (track: ModTrack) => {
+        if (!isDownloading) {
+            dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => findAndSetTrack(track.key)));
+        }
+    };
+
     return (
         <Container wait={wait}>
             <HeaderImage>
@@ -428,7 +435,13 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
-                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track
+                                        key={track.key}
+                                        track={track}
+                                        isSelected={selectedTrack === track}
+                                        isInstalled={installedTrack === track}
+                                        onSelected={() => handleTrackSelection(track)}
+                                    />
                                 )
                             }
                         </Tracks>
@@ -438,7 +451,13 @@ const index: React.FC<Props> = (props: Props) => {
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
-                                    <Track key={track.key} track={track} isSelected={selectedTrack === track} isInstalled={installedTrack === track} onSelected={track => findAndSetTrack(track.key)} />
+                                    <Track
+                                        key={track.key}
+                                        track={track}
+                                        isSelected={selectedTrack === track}
+                                        isInstalled={installedTrack === track}
+                                        onSelected={() => handleTrackSelection(track)}
+                                    />
                                 )
                             }
                         </Tracks>

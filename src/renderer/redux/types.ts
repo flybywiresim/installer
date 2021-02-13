@@ -1,4 +1,5 @@
 import * as actions from './actionTypes';
+import { ModTrack } from "renderer/components/App";
 
 export interface DownloadItem {
     id: string
@@ -26,6 +27,21 @@ export interface DeleteDownloadAction {
     type: typeof actions.DELETE_DOWNLOAD
     payload: {
         id: string
+    }
+}
+
+export interface ShowWarningModalState {
+    showWarningModal: boolean,
+    track: null | ModTrack,
+    trackHandler: null | CallableFunction,
+}
+
+export interface ShowWarningModalAction {
+    type: typeof actions.CALL_WARNING_MODAL
+    payload: {
+        showWarningModal: boolean,
+        track: null | ModTrack,
+        trackHandler: null | CallableFunction,
     }
 }
 

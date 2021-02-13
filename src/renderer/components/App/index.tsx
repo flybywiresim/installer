@@ -1,5 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
+import { shell } from "electron";
 import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
 
@@ -22,6 +23,7 @@ import {
 } from './styles';
 import NoInternetModal from '../NoInternetModal';
 import ChangelogModal from '../ChangelogModal';
+import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
@@ -55,13 +57,18 @@ export type ModVariant = {
     tracks: ModTrack[],
 }
 
-export type ModTrack = {
+type BaseModTrack = {
     name: string,
     key: string,
     url: string,
-    isExperimental: boolean,
     latestVersionName: Promise<ModVersion | string>
 }
+
+export type MainlineModTrack = BaseModTrack & { isExperimental: false }
+
+export type ExperimentalModTrack = BaseModTrack & { isExperimental: true, warningContent: JSX.Element }
+
+export type ModTrack = MainlineModTrack | ExperimentalModTrack;
 
 const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -152,6 +159,13 @@ function App() {
                             key: 'a32nx-fbw',
                             url: 'https://flybywiresim-packages.b-cdn.net/vmaster-cfbw/A32NX-master-cfbw.zip',
                             isExperimental: true,
+                            warningContent:
+                                <>
+                                    <p>The custom fly-by-wire version contains an experimental handling system that more closely matches real-life controls in an A320neo. This system is in development and bugs are to be expected.</p>
+                                    <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/fbw/docs/README.md")}>this guide</a>.</p>
+
+                                    <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
+                                </>,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_fbw', RELEASE_CACHE_LIMIT)
                                     .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'fbw')).sha.substring(0, 7));
@@ -162,6 +176,13 @@ function App() {
                             key: 'a32nx-ap',
                             url: 'https://flybywiresim-packages.b-cdn.net/vmaster-cfbw-cap/A32NX-master-cfbw-cap.zip',
                             isExperimental: true,
+                            warningContent:
+                                <>
+                                    <p>The custom autopilot version contains a <b>very early</b> experimental system that more closely matches the A320neo autopilot and fixes multiple issues. This system is in development and bugs are to be expected.</p>
+                                    <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/autopilot/docs/README.md")}>this guide.</a></p>
+
+                                    <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
+                                </>,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_ap', RELEASE_CACHE_LIMIT)
                                     .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'autopilot')).sha.substring(0, 7));
@@ -201,8 +222,9 @@ function App() {
 
     return (
         <>
-            <ChangelogModal/>
-            <NoInternetModal/>
+            <NoInternetModal />
+            <ChangelogModal />
+            <WarningModal />
             <SimpleBar>
                 <Container>
                     <MainLayout>
