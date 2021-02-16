@@ -7,7 +7,7 @@ import { Container, Modal } from './styles';
 export default function (): JSX.Element {
     return (
         <>
-            <Offline>
+            <Offline polling={false}>
                 <Container>
                     <Modal >
                         <img src={NoInternetSVG} />
