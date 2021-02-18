@@ -425,6 +425,8 @@ const index: React.FC<Props> = (props: Props) => {
                 </TopContainer>
                 <LeftContainer>
                     <DetailsContainer>
+                        <h3>Version Info</h3>
+                        <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{selectedTrack.description}</Paragraph>
                         <h3>Details</h3>
                         <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{props.mod.description}</Paragraph>
                     </DetailsContainer>
