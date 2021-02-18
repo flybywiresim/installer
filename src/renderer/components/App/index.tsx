@@ -21,7 +21,6 @@ import {
     PageSider,
     SettingsMenuItem
 } from './styles';
-import NoInternetModal from '../NoInternetModal';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
@@ -222,7 +221,6 @@ function App() {
 
     return (
         <>
-            <NoInternetModal />
             <ChangelogModal />
             <WarningModal />
             <SimpleBar>
