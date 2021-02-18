@@ -20,7 +20,6 @@ import {
     PageSider,
     SettingsMenuItem
 } from './styles';
-import NoInternetModal from '../NoInternetModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
@@ -190,7 +189,6 @@ function App() {
 
     return (
         <>
-            <NoInternetModal/>
             <SimpleBar>
                 <Container>
                     <MainLayout>
