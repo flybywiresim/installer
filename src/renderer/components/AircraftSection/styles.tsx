@@ -268,3 +268,20 @@ export const DisabledButton = styled(
             }}
             {...props}
         >{props.text}</InstallButtonTemplate>)``;
+
+export const PRContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const PRItem = styled.div`
+  background: ${colors.cardBackground};
+  display: flex;
+  flex-direction: row;
+  margin: 0.5rem 0 0 0;
+`;
+
+export const PRSubItem = styled.p`
+  color: ${colors.titleContrast};
+  margin: 0 1rem 0 1rem;
+`;

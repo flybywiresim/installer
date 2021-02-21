@@ -39,6 +39,8 @@ import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from "path";
 
+import QAPage from "./QAPage";
+
 const settings = new Store;
 
 const { Paragraph } = Typography;
