@@ -4,6 +4,7 @@ import { ModTrack } from "renderer/components/App";
 export interface DownloadItem {
     id: string
     progress: number
+    module: string
 }
 
 export type DownloadsState = DownloadItem[];
@@ -13,6 +14,7 @@ export interface UpdateDownloadProgressAction {
     payload: {
         id: string
         progress: number
+        module: string
     }
 }
 
@@ -20,6 +22,7 @@ export interface RegisterNewDownloadProgressAction {
     type: typeof actions.REGISTER_NEW_DOWNLOAD
     payload: {
         id: string
+        module: string
     }
 }
 

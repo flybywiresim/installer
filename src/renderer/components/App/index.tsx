@@ -136,7 +136,7 @@ function App() {
                         {
                             name: 'Stable',
                             key: 'a32nx-stable',
-                            url: 'https://flybywiresim-packages.b-cdn.net/stable/A32NX-stable.zip',
+                            url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
                             isExperimental: false,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_stable', RELEASE_CACHE_LIMIT)
@@ -146,7 +146,7 @@ function App() {
                         {
                             name: 'Development',
                             key: 'a32nx-dev',
-                            url: 'https://flybywiresim-packages.b-cdn.net/vmaster/A32NX-master.zip',
+                            url: 'https://cdn.flybywiresim.com/addons/a32nx/vmaster',
                             isExperimental: false,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
@@ -156,7 +156,7 @@ function App() {
                         {
                             name: 'Custom FBW',
                             key: 'a32nx-fbw',
-                            url: 'https://flybywiresim-packages.b-cdn.net/vmaster-cfbw/A32NX-master-cfbw.zip',
+                            url: 'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
                             isExperimental: true,
                             warningContent:
                                 <>
@@ -173,7 +173,7 @@ function App() {
                         {
                             name: 'Custom FBW+AP',
                             key: 'a32nx-ap',
-                            url: 'https://flybywiresim-packages.b-cdn.net/vmaster-cfbw-cap/A32NX-master-cfbw-cap.zip',
+                            url: 'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
                             isExperimental: true,
                             warningContent:
                                 <>

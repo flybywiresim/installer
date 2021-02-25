@@ -11,13 +11,15 @@ const reducer = produce((downloads: Draft<DownloadsState>, action: DownloadActio
             downloads.forEach(download => {
                 if (download.id === action.payload.id) {
                     download.progress = action.payload.progress;
+                    download.module = action.payload.module;
                 }
             });
             break;
         case actionTypes.REGISTER_NEW_DOWNLOAD:
             downloads.push({
                 id: action.payload.id,
-                progress: 0
+                progress: 0,
+                module: action.payload.module,
             });
             break;
         case actionTypes.DELETE_DOWNLOAD:
