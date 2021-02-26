@@ -13,7 +13,7 @@
   },
   "keywords": [],
   "author": "FlyByWire Simulations",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "config": {
     "forge": {
       "packagerConfig": {
