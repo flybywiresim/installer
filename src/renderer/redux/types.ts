@@ -48,6 +48,17 @@ export interface ShowWarningModalAction {
     }
 }
 
+export interface qaModeState {
+    qaMode: boolean,
+}
+
+export interface qaModeAction {
+    type: typeof actions.CALL_QA_MODE
+    payload: {
+        qaMode: boolean,
+    }
+}
+
 export type DownloadActionType = UpdateDownloadProgressAction | RegisterNewDownloadProgressAction | DeleteDownloadAction
 
 export interface RootStore {

@@ -13,12 +13,19 @@ import {
     InfoButton, ResetButton
 } from './styles';
 import { configureInitialInstallPath } from "renderer/settings";
+import { connect, useDispatch } from "react-redux";
+import { qaModeState } from "renderer/redux/types";
+import { callQAMode } from "renderer/redux/actions/qaMode.actions";
 
 const settings = new Store;
 
 type QAInstallerSettingsItemType = {
     qaInstaller: boolean,
-    setQAInstaller: CallableFunction,
+    dispatch: CallableFunction,
+}
+
+type IndexProps = {
+    qaMode: boolean,
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -41,7 +48,7 @@ function InstallPathSettingItem(props: { path: string, setPath: (path: string) =
 
 const QAInstallerSettingsItem = (props: QAInstallerSettingsItemType) => {
     async function handleClick() {
-        props.setQAInstaller(!props.qaInstaller);
+        props.dispatch(callQAMode(!props.qaInstaller));
         settings.set('mainSettings.qaInstaller', !props.qaInstaller);
     }
 
@@ -53,9 +60,10 @@ const QAInstallerSettingsItem = (props: QAInstallerSettingsItemType) => {
     );
 };
 
-function index(): JSX.Element {
+const index = (props: IndexProps) => {
+    const dispatch = useDispatch();
+
     const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
-    const [qaInstaller, setQAInstaller] = useState<boolean>(settings.get('mainSettings.qaInstaller') as boolean);
 
     const handleReset = async () => {
         settings.clear();
@@ -68,7 +76,7 @@ function index(): JSX.Element {
                 <PageTitle>General Settings</PageTitle>
                 <SettingsItems>
                     <InstallPathSettingItem path={installPath} setPath={setInstallPath} />
-                    <QAInstallerSettingsItem qaInstaller={qaInstaller} setQAInstaller={setQAInstaller} />
+                    <QAInstallerSettingsItem qaInstaller={props.qaMode} dispatch={dispatch}/>
                 </SettingsItems>
             </Container>
             <InfoContainer>
@@ -77,7 +85,7 @@ function index(): JSX.Element {
             </InfoContainer>
         </>
     );
-}
+};
 
 function showchangelog() {
     const showchangelog = true;
@@ -86,4 +94,4 @@ function showchangelog() {
     } });
 }
 
-export default index;
+export default connect((state: { qaMode: qaModeState }) => ({ ...state.qaMode, }))(index);

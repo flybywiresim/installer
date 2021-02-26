@@ -59,6 +59,19 @@ export const AircraftSubMenuItem = styled(Menu.SubMenu)`
 
 `;
 
+export const QAMenuIndicator = styled(MenuItem)`
+    position: absolute !important;
+    color: ${colors.title} !important;
+    background: #fc3a3a !important;
+    cursor: default !important;
+    bottom: 40px;
+    width: 100%;
+    
+    &:hover {
+        background: #fc3a3a !important;
+    }
+`;
+
 export const SettingsMenuItem = styled(MenuItem)`
     position: absolute !important;
     bottom: 0px;

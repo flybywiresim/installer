@@ -1,8 +1,11 @@
 import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
+import { connect } from "react-redux";
 import { shell } from "electron";
 import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
+
+import { qaModeState } from "renderer/redux/types";
 
 import Logo from 'renderer/components/LogoWithText';
 import SettingsSection from 'renderer/components/SettingsSection';
@@ -19,7 +22,8 @@ import {
     PageContent,
     PageHeader,
     PageSider,
-    SettingsMenuItem
+    SettingsMenuItem,
+    QAMenuIndicator
 } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
@@ -106,7 +110,11 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
 
 const RELEASE_CACHE_LIMIT = 3600 * 1000 * 24;
 
-function App() {
+type AppProps = {
+    qaMode: boolean,
+}
+
+const App = (props: AppProps) => {
     const mods: Mod[] = [
         {
             name: 'A32NX',
@@ -211,7 +219,7 @@ function App() {
     let sectionToShow;
     switch (selectedItem) {
         case 'settings':
-            sectionToShow = <SettingsSection/>;
+            sectionToShow = <SettingsSection />;
             break;
 
         default:
@@ -240,6 +248,11 @@ function App() {
                                             <AircraftMenuItem mod={mod} key={mod.key} disabled={!mod.enabled} />
                                         )
                                     }
+                                    {props.qaMode ?
+                                        <QAMenuIndicator key="settings">QA Installer</QAMenuIndicator>
+                                        :
+                                        <></>
+                                    }
                                     <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
                                 </Menu>
                             </PageSider>
@@ -252,6 +265,6 @@ function App() {
             </SimpleBar>
         </>
     );
-}
+};
 
-export default hot(module)(App);
+export default hot(module)(connect((state: { qaMode: qaModeState }) => ({ ...state.qaMode, }))(App));
