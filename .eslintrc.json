@@ -62,7 +62,9 @@
     ],
     "no-console": "off",
     "eol-last": ["error", "always"],
-    "no-unused-vars": "error",
+    // Fix false positives on enums
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
     "no-multiple-empty-lines": [
       "error",
       {

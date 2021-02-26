@@ -1,21 +1,23 @@
 import * as actionTypes from "../actionTypes";
 import { DeleteDownloadAction, RegisterNewDownloadProgressAction, UpdateDownloadProgressAction } from "../types";
 
-export function registerDownload(id: string): RegisterNewDownloadProgressAction {
+export function registerDownload(id: string, module: string): RegisterNewDownloadProgressAction {
     return {
         type: actionTypes.REGISTER_NEW_DOWNLOAD,
         payload: {
-            id
+            id,
+            module
         }
     };
 }
 
-export function updateDownloadProgress(id: string, progress: number): UpdateDownloadProgressAction {
+export function updateDownloadProgress(id: string, module: string, progress: number): UpdateDownloadProgressAction {
     return {
         type: actionTypes.UPDATE_DOWNLOAD_PROGRESS,
         payload: {
             id,
-            progress
+            progress,
+            module
         }
     };
 }

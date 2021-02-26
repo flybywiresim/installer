@@ -25,9 +25,8 @@ import {
     VersionHistoryContainer
 } from './styles';
 import Store from 'electron-store';
-import * as fs from "fs";
+import fs from "fs-extra";
 import net from "net";
-import Zip from 'adm-zip';
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, RootStore } from 'renderer/redux/types';
@@ -37,6 +36,8 @@ import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
+import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
+import * as path from "path";
 
 const settings = new Store;
 
@@ -46,28 +47,64 @@ type Props = {
     mod: Mod
 }
 
-let controller: AbortController;
-let signal: AbortSignal;
+let abortController: AbortController;
 
-const UpdateReasonMessages = {
-    NEW_RELEASE_AVAILABLE: "New release available",
-    VERSION_CHANGED: "New version selected",
-};
+enum InstallStatus {
+    UpToDate,
+    NeedsUpdate,
+    FreshInstall,
+    GitInstall,
+    TrackSwitch,
+    DownloadPrep,
+    Downloading,
+    DownloadDone,
+    DownloadError,
+    DownloadCanceled,
+    Unknown,
+}
+
+enum MsfsStatus {
+    Open,
+    Closed,
+    Checking,
+}
 
 const index: React.FC<Props> = (props: Props) => {
+    const getInstallDir = (): string => {
+        return path.join(settings.get('mainSettings.msfsPackagePath') as string, props.mod.targetDirectory);
+    };
+
+    const getTempDir = (): string => {
+        return path.join(settings.get('mainSettings.msfsPackagePath') as string, `${props.mod.targetDirectory}-temp`);
+    };
+
+    const findInstalledTrack = (): ModTrack => {
+        try {
+            const manifest = getCurrentInstall(getInstallDir());
+            console.log('Currently installed', manifest);
+
+            const track = _.find(props.mod.variants[0].tracks, { url: manifest.source });
+            console.log('Currently installed', track);
+
+            setInstalledTrack(track);
+            setSelectedTrack(track);
+
+            return track;
+        } catch (e) {
+            console.error(e);
+            console.log('Not installed');
+
+            setSelectedTrack(props.mod.variants[0]?.tracks[0]);
+            return props.mod.variants[0]?.tracks[0];
+        }
+    };
+
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
-    const [selectedTrack, setSelectedTrack] = useState<ModTrack>(handleFindInstalledTrack());
-    const [installedTrack, setInstalledTrack] = useState<ModTrack>(handleFindInstalledTrack());
-    const [needsUpdate, setNeedsUpdate] = useState<boolean>(false);
-    const [needsUpdateReason, setNeedsUpdateReason] = useState<string>();
-    const [changeVersion, setChangeVersion] = useState<boolean>(false);
+    const [selectedTrack, setSelectedTrack] = useState<ModTrack>();
+    const [installedTrack, setInstalledTrack] = useState<ModTrack>();
 
-    const [isInstalled, setIsInstalled] = useState<boolean>(false);
-    const [installedStateText, setInstalledStateText] = useState('');
-    const [isInstalledAsGitRepo, setIsInstalledAsGitRepo] = useState<boolean>(false);
-
-    const [msfsIsOpen, setMsfsIsOpen] = useState<boolean>(true);
-    const [hasCheckedStatus, setHasCheckedStatus] = useState<boolean>(false);
+    const [installStatus, setInstallStatus] = useState<InstallStatus>(InstallStatus.Unknown);
+    const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
     const [wait, setWait] = useState(1);
 
@@ -77,6 +114,7 @@ const index: React.FC<Props> = (props: Props) => {
         getModReleases(props.mod).then(releases => {
             setReleases(releases);
             setWait(wait => wait - 1);
+            findInstalledTrack();
         });
     }, [props.mod]);
 
@@ -92,296 +130,243 @@ const index: React.FC<Props> = (props: Props) => {
     }, []);
 
     useEffect(() => {
-        checkForUpdates();
+        getInstallStatus().then(setInstallStatus);
     }, [selectedTrack]);
 
-    function findBuildTime(installDir: string) {
-        const buildInfo = `${installDir}\\build_info.json`;
-        if (fs.existsSync(buildInfo)) {
-            const data = fs.readFileSync(`${installDir}\\build_info.json`, 'utf-8');
-            const dataObject = JSON.parse(data);
-            return dataObject.built;
-        } else {
-            return null;
+    const isGitInstall = (dir: string): boolean => {
+        console.log('Checking for git install');
+        try {
+            const symlinkPath = fs.readlinkSync(dir);
+            if (symlinkPath && fs.existsSync(path.join(symlinkPath, '/../.git'))) {
+                console.log('Is git repo');
+                return true;
+            }
+        } catch {
+            console.log('Is not git repo');
+            return false;
         }
-    }
+    };
 
-    async function checkForUpdates() {
-        const localLastTrack = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
-        const localLastUpdate = settings.get('cache.' + props.mod.key + '.lastUpdated');
-        const localLastBuildDate = settings.get('cache.' + props.mod.key + '.lastBuildTime');
+    const getInstallStatus = async (): Promise<InstallStatus> => {
+        if (!selectedTrack) {
+            return InstallStatus.Unknown;
+        }
 
-        const res = await fetch(selectedTrack.url, { method: 'HEAD' });
+        console.log('Checking install status');
 
-        const webLastUpdate = res.headers.get('Last-Modified').toString();
+        const installDir = getInstallDir();
+        if (!fs.existsSync(installDir)) {
+            fs.mkdirSync(installDir);
+        }
 
-        const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
+        if (isGitInstall(installDir)) {
+            return InstallStatus.GitInstall;
+        }
 
-        setChangeVersion(false);
+        try {
+            const updateInfo = await needsUpdate(selectedTrack.url, installDir);
+            console.log('Update info', updateInfo);
 
-        if (fs.existsSync(installDir)) {
-            setIsInstalled(true);
-            console.log('Installed');
-
-            // Check for git install
-            console.log('Checking for git install');
-            try {
-                const symlinkPath = fs.readlinkSync(installDir);
-                if (symlinkPath) {
-                    if (fs.existsSync(symlinkPath + '\\..\\.git\\')) {
-                        console.log('Is git repo');
-                        setIsInstalledAsGitRepo(true);
-                        return;
-                    }
-                }
-            } catch {
-                console.log('Is not git repo');
-                setIsInstalledAsGitRepo(false);
+            if (updateInfo.isFreshInstall) {
+                return InstallStatus.FreshInstall;
             }
 
-            console.log(`Checking for track '${selectedTrack.name}' being installed...`);
-            if (typeof localLastTrack === "string") {
-                if (localLastTrack !== selectedTrack.name) {
-                    // The installed track is not the same - require update
-
-                    setNeedsUpdate(false);
-                    setIsInstalled(false);
-                    setChangeVersion(true);
-                } else {
-                    // We are still on the same track - check the installed build
-
-                    if (typeof localLastUpdate === "string") {
-                        // There was an update before - check if that build is the latest
-
-                        if (typeof localLastBuildDate === "string") {
-                            if ((localLastUpdate === webLastUpdate) && (localLastBuildDate === findBuildTime(installDir))) {
-                                setNeedsUpdate(false);
-                                console.log("Is Updated");
-                            } else {
-                                setNeedsUpdate(true);
-                                setNeedsUpdateReason(UpdateReasonMessages.NEW_RELEASE_AVAILABLE);
-                                console.log("Is not Updated");
-                            }
-                        } else {
-                            setNeedsUpdate(true);
-                            setNeedsUpdateReason(UpdateReasonMessages.NEW_RELEASE_AVAILABLE);
-                            console.log("Needs update to register build file to cache");
-                        }
-                    } else {
-                        setIsInstalled(false);
-                        console.log("Failed");
-                    }
-                }
-            } else {
-                // Don't know if the same track is installed - assume the worst
-                setNeedsUpdate(true);
-                setNeedsUpdateReason(UpdateReasonMessages.VERSION_CHANGED);
-                console.log('Don\'t know which track');
+            if (updateInfo.needsUpdate) {
+                return InstallStatus.NeedsUpdate;
             }
 
-        } else {
-            setIsInstalled(false);
-            setNeedsUpdate(false);
-            console.log('Not installed');
+            return InstallStatus.UpToDate;
+        } catch (e) {
+            console.error(e);
+            return InstallStatus.Unknown;
         }
-    }
+    };
 
-    function checkIfMSFS() {
+    const checkIfMSFS = () => {
         const socket = net.connect(500);
 
         socket.on('connect', () => {
-            setMsfsIsOpen(true);
-            setHasCheckedStatus(true);
+            setMsfsIsOpen(MsfsStatus.Open);
             socket.destroy();
         });
         socket.on('error', () => {
-            setMsfsIsOpen(false);
-            setHasCheckedStatus(true);
+            setMsfsIsOpen(MsfsStatus.Closed);
             socket.destroy();
         });
-    }
+    };
 
-    async function downloadMod(track: ModTrack) {
-        if (!isDownloading) {
-            dispatch(registerDownload(props.mod.name));
-            controller = new AbortController();
-            signal = controller.signal;
-            console.log("Downloading Track", track);
-            const cancelCheck = new Promise((resolve) => {
-                resolve(signal);
-            });
-            const msfsPackageDir = settings.get('mainSettings.msfsPackagePath');
+    const downloadMod = async (track: ModTrack) => {
+        const installDir = getInstallDir();
+        const tempDir = getTempDir();
+        console.log('Installing into', installDir, 'using temp dir', tempDir);
 
-            const fetchResp = await fetch("https://api.flybywiresim.com/api/v1/download?url=" + track.url, { redirect: "follow" });
-            console.log("Starting Download");
+        // Prepare temporary directory
+        if (fs.existsSync(tempDir)) {
+            fs.rmdirSync(tempDir, { recursive: true });
+        }
+        fs.mkdirSync(tempDir);
 
-            const respReader = fetchResp.body.getReader();
-            const respLength = +fetchResp.headers.get('Content-Length');
-            const respUpdateTime = fetchResp.headers.get('Last-Modified');
+        // Copy current install to temporary directory
+        setInstallStatus(InstallStatus.DownloadPrep);
+        await fs.copy(installDir, tempDir);
 
-            let receivedLength = 0;
-            const chunks = [];
+        // Initialize abort controller for downloads
+        abortController = new AbortController();
+        const signal = abortController.signal;
 
-            let lastPercentFloor = 0;
+        try {
+            let lastPercent = 0;
+            setInstallStatus(InstallStatus.Downloading);
+            dispatch(registerDownload(props.mod.name, ''));
 
-            for (;;) {
-                try {
-                    const { done, value } = await respReader.read();
-                    cancelCheck.then((val: AbortSignal) => {
-                        signal = val;
-                    });
-                    if (done || signal.aborted) {
-                        break;
-                    }
-
-                    chunks.push(value);
-                    receivedLength += value.length;
-
-                    const newPercentFloor = (Math.floor((receivedLength / respLength) * 1000) / 10);
-
-                    if (lastPercentFloor !== newPercentFloor) {
-                        lastPercentFloor = newPercentFloor;
-                        dispatch(updateDownloadProgress(props.mod.name, lastPercentFloor));
-                    }
-                } catch (e) {
-                    if (e.name === 'AbortError') {
-                        console.log('User aborted download');
-                        break;
-                    } else {
-                        throw e;
-                    }
+            // Perform the fragmenter download
+            const installResult = await install(track.url, tempDir, false, progress => {
+                if (lastPercent !== progress.percent) {
+                    lastPercent = progress.percent;
+                    dispatch(updateDownloadProgress(props.mod.name, progress.module, progress.percent));
                 }
-            }
+            }, signal);
 
+            // Copy files from temp dir
+            console.log('Copying files from temp directory to install directory');
+            fs.rmdirSync(installDir, { recursive: true });
+            await fs.copy(tempDir, installDir);
+
+            dispatch(deleteDownload(props.mod.name));
+            notifyDownload();
+
+            // Flash completion text
+            setInstallStatus(InstallStatus.DownloadDone);
+            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
+
+            setInstalledTrack(track);
+            console.log(installResult);
+        } catch (e) {
             if (signal.aborted) {
-                dispatch(updateDownloadProgress(props.mod.name, 0));
+                setInstallStatus(InstallStatus.DownloadCanceled);
+                setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
                 return;
             }
 
-            const chunksAll = new Uint8Array(respLength);
-            let position = 0;
-            for (const chunk of chunks) {
-                chunksAll.set(chunk, position);
-                position += chunk.length;
-            }
+            console.error(e);
 
-            const compressedBuffer = Buffer.from(chunksAll);
+            // Flash error text
+            setInstallStatus(InstallStatus.DownloadError);
+            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
 
-            if (typeof msfsPackageDir === "string") {
-                const zipFile = new Zip(compressedBuffer);
-                const modInstallPath = `${msfsPackageDir}\\${props.mod.targetDirectory}`;
-
-                if (fs.existsSync(modInstallPath)) {
-                    fs.rmdirSync(modInstallPath, { recursive: true });
-                }
-
-                // Extract the ZIP
-                zipFile.extractAllToAsync(msfsPackageDir, true, (error) => {
-                    dispatch(deleteDownload(props.mod.name));
-
-                    if (!error) {
-                        dispatch(updateDownloadProgress(props.mod.name, 0));
-
-                        // Set states
-                        setIsInstalled(true);
-                        setInstalledTrack(track);
-                        setNeedsUpdate(false);
-
-                        // Flash completion text
-                        setInstalledStateText('Completed!');
-                        setTimeout(() => setInstalledStateText(''), 3_000);
-
-                        // Set appropriate cache keys
-                        settings.set('cache.' + props.mod.key + '.lastUpdated', respUpdateTime);
-                        settings.set('cache.' + props.mod.key + '.lastBuildTime', findBuildTime(modInstallPath));
-                        settings.set('cache.' + props.mod.key + '.lastInstalledTrack', track.name);
-
-                        console.log("Download complete!");
-                        notifyDownload();
-                    } else {
-                        setInstalledStateText('Failed');
-                        setTimeout(() => setInstalledStateText(''), 3_000);
-                    }
-                });
-            }
+            dispatch(deleteDownload(props.mod.name));
+        } finally {
+            // Clean up temp dir
+            fs.rmdirSync(tempDir, { recursive: true });
         }
-    }
+    };
 
-    async function findAndSetTrack(key: string) {
+    const selectAndSetTrack = async (key: string) => {
         if (!isDownloading) {
             const newTrack = selectedVariant.tracks.find(x => x.key === key);
             setSelectedTrack(newTrack);
         }
-    }
+    };
 
-    function handleInstall() {
-        if (settings.has('mainSettings.msfsPackagePath')) {
-            downloadMod(selectedTrack);
-        } else {
-            setupInstallPath();
+    const handleTrackSelection = (track: ModTrack) => {
+        if (!isDownloading) {
+            dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         }
-    }
+    };
 
-    function handleUpdate() {
+    const handleInstall = () => {
         if (settings.has('mainSettings.msfsPackagePath')) {
-            downloadMod(selectedTrack);
+            downloadMod(selectedTrack).then(() => console.log('Download and install complete'));
         } else {
-            setupInstallPath();
+            setupInstallPath().then();
         }
-    }
+    };
 
-    function handleCancel() {
+    const handleCancel = () => {
         if (isDownloading) {
             console.log('Cancel download');
-            controller.abort();
+            abortController.abort();
             dispatch(deleteDownload(props.mod.name));
         }
-    }
+    };
 
-    function notifyDownload() {
+    const notifyDownload = () => {
+        console.log('Requesting notification');
         Notification.requestPermission().then(function () {
+            console.log('Showing notification');
             new Notification('Download complete!', {
                 'body': "You're ready to fly",
             });
         }).catch(e => console.log(e));
-    }
+    };
 
-    function handleFindInstalledTrack() {
-        const lastInstalledTrackName = settings.get('cache.' + props.mod.key + '.lastInstalledTrack');
-
-        let lastInstalledTrack = null;
-
-        props.mod.variants[0].tracks.map(track => {
-            if (track.name === lastInstalledTrackName) {
-                lastInstalledTrack = track;
-            }
-        });
-
-        if (lastInstalledTrack) {
-            return lastInstalledTrack;
-        } else {
-            return props.mod.variants[0]?.tracks[0];
-        }
-    }
-
-    function getButtonText() {
-        if (!isInstalledAsGitRepo && !isInstalled && !isDownloading && !changeVersion) {
-            return "Install";
-        } else if (!isInstalledAsGitRepo && !isInstalled && !isDownloading && changeVersion) {
-            return "Switch version";
-        } else if (isInstalledAsGitRepo && isInstalled) {
-            return "Installed (git)";
-        } else if (!isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading) {
-            return "Installed";
-        } else if (!isInstalledAsGitRepo && needsUpdate && !isDownloading) {
-            return "Update";
-        }
-        return "";
-    }
-
-    const handleTrackSelection = (track: ModTrack) => {
-        if (!isDownloading) {
-            dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => findAndSetTrack(track.key)));
+    const getInstallButton = (): JSX.Element => {
+        switch (installStatus) {
+            case InstallStatus.UpToDate:
+                return (
+                    <ButtonContainer>
+                        <InstalledButton inGitRepo={false} />
+                    </ButtonContainer>
+                );
+            case InstallStatus.NeedsUpdate:
+                return (
+                    <ButtonContainer>
+                        <StateText>{'New release available'}</StateText>
+                        <UpdateButton onClick={handleInstall} />
+                    </ButtonContainer>
+                );
+            case InstallStatus.FreshInstall:
+                return <InstallButton onClick={handleInstall} />;
+            case InstallStatus.GitInstall:
+                return (
+                    <ButtonContainer>
+                        <InstalledButton inGitRepo={true} />
+                    </ButtonContainer>
+                );
+            case InstallStatus.TrackSwitch:
+                return <SwitchButton onClick={handleInstall} />;
+            case InstallStatus.DownloadPrep:
+                return (
+                    <ButtonContainer>
+                        <StateText>Preparing update</StateText>
+                        <DisabledButton text='Cancel'/>
+                    </ButtonContainer>
+                );
+            case InstallStatus.Downloading:
+                return (
+                    <ButtonContainer>
+                        <StateText>{download?.progress >= 99 ? 'Decompressing' : `Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
+                        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+                    </ButtonContainer>
+                );
+            case InstallStatus.DownloadDone:
+                return (
+                    <ButtonContainer>
+                        <StateText>Completed!</StateText>
+                        <InstalledButton inGitRepo={false} />
+                    </ButtonContainer>
+                );
+            case InstallStatus.DownloadError:
+                return (
+                    <ButtonContainer>
+                        <StateText>Failed to install</StateText>
+                        <DisabledButton text='Error'/>
+                    </ButtonContainer>
+                );
+            case InstallStatus.DownloadCanceled:
+                return (
+                    <ButtonContainer>
+                        <StateText>Download canceled</StateText>
+                        <DisabledButton text='Error'/>
+                    </ButtonContainer>
+                );
+            case InstallStatus.Unknown:
+                return (
+                    <ButtonContainer>
+                        <StateText>Unknown state</StateText>
+                        <DisabledButton text='Error'/>
+                    </ButtonContainer>
+                );
         }
     };
 
@@ -393,38 +378,13 @@ const index: React.FC<Props> = (props: Props) => {
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
-                    {msfsIsOpen && <>
+                    {msfsIsOpen !== MsfsStatus.Closed && <>
                         <ButtonContainer>
-                            <StateText>{hasCheckedStatus ? "Please close MSFS" : "Checking status..."}</StateText>
-                            <DisabledButton text={getButtonText()} />
+                            <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
+                            <DisabledButton text='Update' />
                         </ButtonContainer>
                     </>}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && !changeVersion && <InstallButton onClick={handleInstall} />}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && !isInstalled && !isDownloading && changeVersion && <SwitchButton onClick={handleInstall} />}
-                    {!msfsIsOpen && isInstalledAsGitRepo && isInstalled && <>
-                        <ButtonContainer>
-                            <StateText>{installedStateText}</StateText>
-                            <InstalledButton inGitRepo={true} />
-                        </ButtonContainer>
-                    </>}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && isInstalled && !needsUpdate && !isDownloading && <>
-                        <ButtonContainer>
-                            <StateText>{installedStateText}</StateText>
-                            <InstalledButton inGitRepo={false} />
-                        </ButtonContainer>
-                    </>}
-                    {!msfsIsOpen && !isInstalledAsGitRepo && needsUpdate && !isDownloading && <>
-                        <ButtonContainer>
-                            <StateText>{needsUpdateReason}</StateText>
-                            <UpdateButton onClick={handleUpdate} />
-                        </ButtonContainer>
-                    </>}
-                    {isDownloading && <>
-                        <ButtonContainer>
-                            <StateText>{(Math.floor(download?.progress) >= 99) ? "Decompressing" : `${Math.floor(download?.progress)}%`}</StateText>
-                            <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-                        </ButtonContainer>
-                    </>}
+                    {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
