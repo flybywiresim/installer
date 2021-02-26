@@ -30,9 +30,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
+import './index.css';
 import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
-import './index.css';
 import App from 'renderer/components/App';
 import store from 'renderer/redux/store';
 import Store from "electron-store";
