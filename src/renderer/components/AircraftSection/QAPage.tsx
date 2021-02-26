@@ -11,9 +11,10 @@ const QAPage = () => {
     };
 
     return (
-        <PRContainer onClick={() => RefreshPulls() }>
+        <PRContainer>
+            <button type="button" className="text-white text-left" onClick={() => RefreshPulls()}>Refresh Pulls</button>
             {pulls.map(pull =>
-                <PRItem>
+                <PRItem key={pull.number}>
                     <PRSubItem>{pull.number}</PRSubItem>
                     <PRSubItem>{pull.title}</PRSubItem>
                     <PRSubItem>{pull.author}</PRSubItem>

@@ -29,8 +29,8 @@ import fs from "fs-extra";
 import net from "net";
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, RootStore } from 'renderer/redux/types';
-import { useDispatch, useSelector } from 'react-redux';
+import { DownloadItem, qaModeState, RootStore } from 'renderer/redux/types';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
@@ -46,7 +46,8 @@ const settings = new Store;
 const { Paragraph } = Typography;
 
 type Props = {
-    mod: Mod
+    mod: Mod,
+    qaMode: boolean,
 }
 
 let abortController: AbortController;
@@ -379,83 +380,91 @@ const index: React.FC<Props> = (props: Props) => {
                     <ModelName>{props.mod.name}</ModelName>
                     <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
-                <SelectionContainer>
-                    {msfsIsOpen !== MsfsStatus.Closed && <>
-                        <ButtonContainer>
-                            <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
-                            <DisabledButton text='Update' />
-                        </ButtonContainer>
-                    </>}
-                    {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
-                </SelectionContainer>
+                {!props.qaMode ?
+                    <SelectionContainer>
+                        {msfsIsOpen !== MsfsStatus.Closed && <>
+                            <ButtonContainer>
+                                <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
+                                <DisabledButton text='Update' />
+                            </ButtonContainer>
+                        </>}
+                        {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
+                    </SelectionContainer>
+                    : <></>
+                }
             </HeaderImage>
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
             <Content>
-                <TopContainer>
-                    <div>
-                        <h5>Mainline versions</h5>
-                        <Tracks>
-                            {
-                                selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
-                                    <Track
-                                        key={track.key}
-                                        track={track}
-                                        isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack === track}
-                                        onSelected={() => handleTrackSelection(track)}
-                                    />
-                                )
-                            }
-                        </Tracks>
-                    </div>
-                    <div>
-                        <h5>Experimental versions</h5>
-                        <Tracks>
-                            {
-                                selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
-                                    <Track
-                                        key={track.key}
-                                        track={track}
-                                        isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack === track}
-                                        onSelected={() => handleTrackSelection(track)}
-                                    />
-                                )
-                            }
-                        </Tracks>
-                    </div>
-                </TopContainer>
-                <LeftContainer>
-                    <DetailsContainer>
-                        <h3>Details</h3>
-                        <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{props.mod.description}</Paragraph>
-                    </DetailsContainer>
-                    <EngineOptionsContainer>
-                        <h3>Variants</h3>
-                        {
-                            props.mod.variants.map(variant =>
-                                // TODO: Enable onClick when mod variants are available
-                                <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
-                                    <img src={variant.imageUrl} alt={variant.imageAlt} />
-                                    <span>{variant.name}</span>
-                                </EngineOption>
-                            )
-                        }
-                    </EngineOptionsContainer>
-                </LeftContainer>
-                <VersionHistoryContainer>
-                    <h3>Version history</h3>
-                    <Versions>
-                        {
-                            releases.map((version, idx) =>
-                                <Version key={idx} index={idx} version={version} />
-                            )
-                        }
-                    </Versions>
-                </VersionHistoryContainer>
+                {!props.qaMode ?
+                    <>
+                        <TopContainer>
+                            <div>
+                                <h5>Mainline versions</h5>
+                                <Tracks>
+                                    {
+                                        selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
+                                            <Track
+                                                key={track.key}
+                                                track={track}
+                                                isSelected={selectedTrack === track}
+                                                isInstalled={installedTrack === track}
+                                                onSelected={() => handleTrackSelection(track)}
+                                            />
+                                        )
+                                    }
+                                </Tracks>
+                            </div>
+                            <div>
+                                <h5>Experimental versions</h5>
+                                <Tracks>
+                                    {
+                                        selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
+                                            <Track
+                                                key={track.key}
+                                                track={track}
+                                                isSelected={selectedTrack === track}
+                                                isInstalled={installedTrack === track}
+                                                onSelected={() => handleTrackSelection(track)}
+                                            />
+                                        )
+                                    }
+                                </Tracks>
+                            </div>
+                        </TopContainer>
+                        <LeftContainer>
+                            <DetailsContainer>
+                                <h3>Details</h3>
+                                <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{props.mod.description}</Paragraph>
+                            </DetailsContainer>
+                            <EngineOptionsContainer>
+                                <h3>Variants</h3>
+                                {
+                                    props.mod.variants.map(variant =>
+                                        // TODO: Enable onClick when mod variants are available
+                                        <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
+                                            <img src={variant.imageUrl} alt={variant.imageAlt} />
+                                            <span>{variant.name}</span>
+                                        </EngineOption>
+                                    )
+                                }
+                            </EngineOptionsContainer>
+                        </LeftContainer>
+                        <VersionHistoryContainer>
+                            <h3>Version history</h3>
+                            <Versions>
+                                {
+                                    releases.map((version, idx) =>
+                                        <Version key={idx} index={idx} version={version} />
+                                    )
+                                }
+                            </Versions>
+                        </VersionHistoryContainer>
+                    </>
+                    : <QAPage />
+                }
             </Content>
         </Container>
     );
 };
 
-export default index;
+export default connect((state: { qaMode: qaModeState }) => ({ ...state.qaMode, }))(index);
