@@ -394,75 +394,73 @@ const index: React.FC<Props> = (props: Props) => {
                 }
             </HeaderImage>
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
-            <Content>
-                {!props.qaMode ?
-                    <>
-                        <TopContainer>
-                            <div>
-                                <h5>Mainline versions</h5>
-                                <Tracks>
-                                    {
-                                        selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
-                                            <Track
-                                                key={track.key}
-                                                track={track}
-                                                isSelected={selectedTrack === track}
-                                                isInstalled={installedTrack === track}
-                                                onSelected={() => handleTrackSelection(track)}
-                                            />
-                                        )
-                                    }
-                                </Tracks>
-                            </div>
-                            <div>
-                                <h5>Experimental versions</h5>
-                                <Tracks>
-                                    {
-                                        selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
-                                            <Track
-                                                key={track.key}
-                                                track={track}
-                                                isSelected={selectedTrack === track}
-                                                isInstalled={installedTrack === track}
-                                                onSelected={() => handleTrackSelection(track)}
-                                            />
-                                        )
-                                    }
-                                </Tracks>
-                            </div>
-                        </TopContainer>
-                        <LeftContainer>
-                            <DetailsContainer>
-                                <h3>Details</h3>
-                                <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{props.mod.description}</Paragraph>
-                            </DetailsContainer>
-                            <EngineOptionsContainer>
-                                <h3>Variants</h3>
+            {!props.qaMode ?
+                <Content>
+                    <TopContainer>
+                        <div>
+                            <h5>Mainline versions</h5>
+                            <Tracks>
                                 {
-                                    props.mod.variants.map(variant =>
-                                        // TODO: Enable onClick when mod variants are available
-                                        <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
-                                            <img src={variant.imageUrl} alt={variant.imageAlt} />
-                                            <span>{variant.name}</span>
-                                        </EngineOption>
+                                    selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
+                                        <Track
+                                            key={track.key}
+                                            track={track}
+                                            isSelected={selectedTrack === track}
+                                            isInstalled={installedTrack === track}
+                                            onSelected={() => handleTrackSelection(track)}
+                                        />
                                     )
                                 }
-                            </EngineOptionsContainer>
-                        </LeftContainer>
-                        <VersionHistoryContainer>
-                            <h3>Version history</h3>
-                            <Versions>
+                            </Tracks>
+                        </div>
+                        <div>
+                            <h5>Experimental versions</h5>
+                            <Tracks>
                                 {
-                                    releases.map((version, idx) =>
-                                        <Version key={idx} index={idx} version={version} />
+                                    selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
+                                        <Track
+                                            key={track.key}
+                                            track={track}
+                                            isSelected={selectedTrack === track}
+                                            isInstalled={installedTrack === track}
+                                            onSelected={() => handleTrackSelection(track)}
+                                        />
                                     )
                                 }
-                            </Versions>
-                        </VersionHistoryContainer>
-                    </>
-                    : <QAPage />
-                }
-            </Content>
+                            </Tracks>
+                        </div>
+                    </TopContainer>
+                    <LeftContainer>
+                        <DetailsContainer>
+                            <h3>Details</h3>
+                            <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{props.mod.description}</Paragraph>
+                        </DetailsContainer>
+                        <EngineOptionsContainer>
+                            <h3>Variants</h3>
+                            {
+                                props.mod.variants.map(variant =>
+                                    // TODO: Enable onClick when mod variants are available
+                                    <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
+                                        <img src={variant.imageUrl} alt={variant.imageAlt} />
+                                        <span>{variant.name}</span>
+                                    </EngineOption>
+                                )
+                            }
+                        </EngineOptionsContainer>
+                    </LeftContainer>
+                    <VersionHistoryContainer>
+                        <h3>Version history</h3>
+                        <Versions>
+                            {
+                                releases.map((version, idx) =>
+                                    <Version key={idx} index={idx} version={version} />
+                                )
+                            }
+                        </Versions>
+                    </VersionHistoryContainer>
+                </Content>
+                : <QAPage />
+            }
         </Container>
     );
 };

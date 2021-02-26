@@ -269,6 +269,10 @@ export const DisabledButton = styled(
             {...props}
         >{props.text}</InstallButtonTemplate>)``;
 
+export const PRContent = styled.div`
+  padding: 6px 24px 24px 24px;
+`;
+
 export const PRContainer = styled.div`
   display: flex;
   flex-direction: column;
