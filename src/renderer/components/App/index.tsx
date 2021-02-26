@@ -267,4 +267,4 @@ const App = (props: AppProps) => {
     );
 };
 
-export default hot(module)(connect((state: { qaMode: qaModeState }) => ({ ...state.qaMode, }))(App));
+export default connect((state: { qaMode: qaModeState }) => ({ ...state.qaMode, }))(hot(module)(App));
