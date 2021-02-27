@@ -13,5 +13,10 @@ module.exports = {
             }
         },
     },
+    variants: {
+        extend: {
+            backgroundColor: ['first']
+        }
+    },
     plugins: [require('@flybywiresim/tailwind-config')],
 };

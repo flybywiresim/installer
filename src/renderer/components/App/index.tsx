@@ -28,6 +28,7 @@ import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
 import { SetModAndTrackLatestVersionName } from "renderer/redux/types";
 import { Check, ChevronDown, Settings } from "tabler-icons-react";
+import { SidebarItem, SidebarPublisher } from "renderer/components/App/SideBar";
 
 export type Mod = {
     name: string,
@@ -267,34 +268,28 @@ function App() {
                         <div className="h-full pt-12 flex flex-row justify-start">
                             <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
                                 <div className="h-full flex flex-col divide-y divide-gray-700">
-                                    <span className="flex flex-row items-center text-lg text-white pl-3 py-3.5">
-                                        <ChevronDown className="text-gray-200" size={28} />
-                                        <img className="w-4 ml-1 mr-2" src={logo} alt="" />
-                                        <span className="text-base text-gray-100">FlyByWire Simulations</span>
-                                    </span>
-                                    {
-                                        mods.map(mod =>
-                                            <div
-                                                className={`w-full flex flex-row items-center ${selectedItem == mod.key ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} pl-5 py-4`}
-                                                onClick={() => setSelectedItem(mod.key)}
-                                            >
-                                                <div className="flex flex-col ml-3">
-                                                    <span className="text-xl text-gray-200 font-semibold" key={mod.key}>{mod.name}</span>
-                                                    <code className="text-lg text-teal-50">v0.5.3 -&gt; v0.6.0</code>
-                                                </div>
-                                                <Check className="text-green-400 ml-auto mr-4" size={28} />
-                                            </div>
-                                        )
-                                    }
-                                    <div
-                                        className={`w-full flex flex-row items-center ${selectedItem == 'settings' ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} mt-auto pl-2 py-3`}
-                                        onClick={() => setSelectedItem('settings')}
-                                    >
+                                    <SidebarPublisher name="FlyByWire Simulations" logo={logo}>
+                                        {
+                                            mods.map(mod =>
+                                                <SidebarItem iSelected={selectedItem === mod.key} onClick={() => setSelectedItem(mod.key)}>
+                                                    <div className="flex flex-col ml-3">
+                                                        <span className="text-xl text-gray-200 font-semibold" key={mod.key}>{mod.name}</span>
+                                                        <code className="text-lg text-teal-50">v0.5.3 -&gt; v0.6.0</code>
+                                                    </div>
+
+                                                    <Check className="text-green-400 ml-auto mr-4" size={28} />
+                                                </SidebarItem>
+                                            )
+                                        }
+                                    </SidebarPublisher>
+
+                                    <SidebarItem className="mt-auto" iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
                                         <Settings className="text-gray-100 ml-2 mr-3" size={24} />
+
                                         <div className="flex flex-col">
                                             <span className="text-lg text-gray-200 font-semibold">Settings</span>
                                         </div>
-                                    </div>
+                                    </SidebarItem>
                                 </div>
                             </PageSider>
                             <PageContent>

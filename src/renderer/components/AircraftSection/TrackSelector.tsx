@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { colors, smallCard } from "renderer/style/theme";
 import { ModTrack } from "renderer/components/App";
 
+import './index.css';
+
 /**
  * Container for mod tracks
  */
@@ -27,11 +29,14 @@ type TrackProps = {
 const BaseTrack: React.FC<TrackProps> = ({ isSelected, onSelected, track, latestVersionName }) =>
     (
         <div
-            className={`w-60 flex flex-col ${isSelected ? 'bg-navy-lightest' : 'bg-navy-lighter'} border ${isSelected ? 'border-teal-light-contrast' : 'border-gray-700 hover:border-gray-500'} px-5 py-2 rounded-md transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer`}
+            className={`${isSelected ? 'selected' : 'selector'} w-60 flex flex-row items-center ${isSelected ? 'bg-navy-lightest' : 'bg-navy-lighter'} ${isSelected ? 'border-teal-light-contrast' : 'border-gray-700 hover:border-gray-500'} rounded-md transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer`}
             onClick={() => onSelected(track)}
         >
-            <span className="text-xl text-gray-50">{track.name}</span>
-            <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
+            <div className={`${isSelected ? 'bg-teal' : 'bg-gray-700'} w-1 h-12 rounded-r-xl transition transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`} />
+            <div className="flex flex-col px-5 py-2">
+                <span className="text-xl text-gray-50">{track.name}</span>
+                <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
+            </div>
         </div>
     );
 
