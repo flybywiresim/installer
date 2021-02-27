@@ -8,6 +8,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  font-size: 14px;
+}
+
 body {
   margin: 0;
   font-family: 'Nunito Sans', sans-serif;
