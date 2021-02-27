@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { colors, noPadding, smallCard } from "renderer/style/theme";
+import { colors, smallCard } from "renderer/style/theme";
 import { ModTrack } from "renderer/components/App";
 
 /**
@@ -24,11 +24,14 @@ type TrackProps = {
     onSelected(track: ModTrack): void,
 };
 
-const BaseTrack: React.FC<TrackProps> = ({ className, track, latestVersionName, onSelected }) =>
+const BaseTrack: React.FC<TrackProps> = ({ isSelected, onSelected, track, latestVersionName }) =>
     (
-        <div className={className} onClick={() => onSelected(track)}>
-            <TrackTitle>{track.name}</TrackTitle>
-            <TrackState><code>{latestVersionName}</code></TrackState>
+        <div
+            className={`w-60 flex flex-col ${isSelected ? 'bg-navy-lightest' : 'bg-navy-lighter'} border ${isSelected ? 'border-teal-light-contrast' : 'border-gray-700 hover:border-gray-500'} px-5 py-2 rounded-md transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer`}
+            onClick={() => onSelected(track)}
+        >
+            <span className="text-xl text-gray-50">{track.name}</span>
+            <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
         </div>
     );
 
@@ -37,7 +40,7 @@ const BaseTrack: React.FC<TrackProps> = ({ className, track, latestVersionName, 
  */
 export const Track = styled(BaseTrack)`
   ${smallCard};
-  
+
   width: 13em;
 
   display: flex;
@@ -46,7 +49,7 @@ export const Track = styled(BaseTrack)`
   align-items: flex-start;
 
   cursor: pointer;
-  
+
   :after {
     content:'';
     position: absolute;
@@ -60,24 +63,9 @@ export const Track = styled(BaseTrack)`
     transition-property: height, top;
     transition-duration: .1s;
   }
-  
+
   &:hover:after {
     top: calc(50% - 10px);
     height: 20px;
   }
-`;
-
-const TrackTitle = styled.h5`
-  color: ${colors.titleContrast} !important;
-
-  ${noPadding};
-`;
-
-const TrackState = styled.span`
-  font-size: 1.1em;
-  color: ${colors.title} !important;
-
-  ${noPadding};
-
-  margin-top: -.3em;
 `;

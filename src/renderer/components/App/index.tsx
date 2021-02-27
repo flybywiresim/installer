@@ -1,9 +1,9 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
 import { shell } from "electron";
-import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
 
+import logo from 'renderer/assets/FBW-Tail.svg';
 import Logo from 'renderer/components/LogoWithText';
 import SettingsSection from 'renderer/components/SettingsSection';
 import AircraftSection from 'renderer/components/AircraftSection';
@@ -13,23 +13,21 @@ import A380NoseSVG from 'renderer/assets/a380x_nose.svg';
 import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
 
 import {
-    AircraftMenuItem,
     Container,
     DragRegion,
     MainLayout,
     PageContent,
     PageHeader,
     PageSider,
-    SettingsMenuItem
 } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
-
 import { DataCache } from '../../utils/DataCache';
 import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
 import { SetModAndTrackLatestVersionName } from "renderer/redux/types";
+import { Check, ChevronDown, Settings } from "tabler-icons-react";
 
 export type Mod = {
     name: string,
@@ -260,29 +258,49 @@ function App() {
             <WarningModal />
             <SimpleBar>
                 <Container>
-                    <MainLayout>
-                        <PageHeader>
-                            <DragRegion/>
+                    <MainLayout className="overflow-hidden">
+                        <PageHeader className="absolute w-full h-12 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
                             <Logo/>
                             <WindowActionButtons/>
                         </PageHeader>
 
-                        <Layout className="site-layout">
-                            <PageSider>
-                                <Menu theme="dark" mode="inline" defaultSelectedKeys={[selectedItem]}
-                                    onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
+                        <div className="h-full pt-12 flex flex-row justify-start">
+                            <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
+                                <div className="h-full flex flex-col divide-y divide-gray-700">
+                                    <span className="flex flex-row items-center text-lg text-white pl-3 py-3.5">
+                                        <ChevronDown className="text-gray-200" size={28} />
+                                        <img className="w-4 ml-1 mr-2" src={logo} alt="" />
+                                        <span className="text-base text-gray-100">FlyByWire Simulations</span>
+                                    </span>
                                     {
                                         mods.map(mod =>
-                                            <AircraftMenuItem mod={mod} key={mod.key} disabled={!mod.enabled} />
+                                            <div
+                                                className={`w-full flex flex-row items-center ${selectedItem == mod.key ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} pl-5 py-4`}
+                                                onClick={() => setSelectedItem(mod.key)}
+                                            >
+                                                <div className="flex flex-col ml-3">
+                                                    <span className="text-xl text-gray-200 font-semibold" key={mod.key}>{mod.name}</span>
+                                                    <code className="text-lg text-teal-50">v0.5.3 -&gt; v0.6.0</code>
+                                                </div>
+                                                <Check className="text-green-400 ml-auto mr-4" size={28} />
+                                            </div>
                                         )
                                     }
-                                    <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
-                                </Menu>
+                                    <div
+                                        className={`w-full flex flex-row items-center ${selectedItem == 'settings' ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} mt-auto pl-2 py-3`}
+                                        onClick={() => setSelectedItem('settings')}
+                                    >
+                                        <Settings className="text-gray-100 ml-2 mr-3" size={24} />
+                                        <div className="flex flex-col">
+                                            <span className="text-lg text-gray-200 font-semibold">Settings</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </PageSider>
                             <PageContent>
                                 {sectionToShow}
                             </PageContent>
-                        </Layout>
+                        </div>
                     </MainLayout>
                 </Container>
             </SimpleBar>

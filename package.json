@@ -103,6 +103,7 @@
     "url-loader": "^4.1.1"
   },
   "dependencies": {
+    "tabler-icons-react": "~1.33.0",
     "@ant-design/icons": "^4.4.0",
     "@flybywiresim/fragmenter": "^0.2.1",
     "antd": "^4.12.2",

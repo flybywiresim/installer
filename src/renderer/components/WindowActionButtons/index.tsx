@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { BorderOutlined, CloseOutlined, MinusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Container } from './styles';
+import { Container } from './styles';
 import InstallerUpdate from '../InstallerUpdate';
 import { shell } from 'electron';
+
+export type ButtonProps = { id?: string, className?: string, onClick?: () => void, isClose?: boolean }
+
+export const Button: React.FC<ButtonProps> = ({ id, className, onClick, isClose, children }: PropsWithChildren<ButtonProps>) => {
+    return (
+        <button onClick={onClick ?? (() => {})} id={id} className={`w-12 h-12 flex flex-row justify-center items-center text-gray-200 ${isClose ? 'hover:bg-red-500' : 'hover:bg-gray-700'} ${className}`}>{children}</button>
+    );
+};
 
 function index(): JSX.Element {
 

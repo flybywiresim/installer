@@ -9,7 +9,8 @@ export const Container = styled.div`
 `;
 
 interface ButtonProps {
-    isClose?: boolean
+    isClose?: boolean,
+    className?: string
 }
 
 export const Button = styled.div<ButtonProps>`

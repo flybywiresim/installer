@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Typography } from 'antd';
 import {
     ButtonContainer,
     ButtonsContainer as SelectionContainer,
     CancelButton,
-    Container,
     Content,
     DetailsContainer,
     DisabledButton,
@@ -44,7 +42,6 @@ import * as actionTypes from '../../redux/actionTypes';
 
 const settings = new Store;
 
-const { Paragraph } = Typography;
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -488,7 +485,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     return (
-        <Container wait={wait}>
+        <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
             <HeaderImage>
                 <ModelInformationContainer>
                     <ModelName>{props.mod.name}</ModelName>
@@ -508,7 +505,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             <Content>
                 <TopContainer>
                     <div>
-                        <h5>Mainline versions</h5>
+                        <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
@@ -525,7 +522,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         </Tracks>
                     </div>
                     <div>
-                        <h5>Experimental versions</h5>
+                        <h5 className="text-base text-teal-50 uppercase">Experimental versions</h5>
                         <Tracks>
                             {
                                 selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
@@ -544,13 +541,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 </TopContainer>
                 <LeftContainer>
                     <DetailsContainer>
-                        <h3>Version Info</h3>
-                        <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{selectedTrack ? selectedTrack.description : ''}</Paragraph>
-                        <h3>Details</h3>
-                        <Paragraph style={{ color: '#858585', fontSize: '16px' }}>{props.mod.description}</Paragraph>
+                        <h3 className="font-semibold text-teal-50">Details</h3>
+                        <p className="text-base text-gray-300">{selectedTrack?.description ?? ''}</p>
+                        <h3 className="font-semibold text-teal-50">Details</h3>
+                        <p className="text-base text-gray-300">{props.mod.description}</p>
                     </DetailsContainer>
                     <EngineOptionsContainer>
-                        <h3>Variants</h3>
+                        <h3 className="font-semibold text-teal-50">Variants</h3>
                         {
                             props.mod.variants.map(variant =>
                                 // TODO: Enable onClick when mod variants are available
@@ -563,7 +560,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </EngineOptionsContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>
-                    <h3>Version history</h3>
+                    <h3 className="font-semibold text-teal-50">Release History</h3>
                     <Versions>
                         {
                             releases.map((version, idx) =>
@@ -573,7 +570,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </Versions>
                 </VersionHistoryContainer>
             </Content>
-        </Container>
+        </div>
     );
 };
 
