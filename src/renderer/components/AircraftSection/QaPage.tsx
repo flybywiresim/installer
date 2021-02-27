@@ -23,40 +23,37 @@ const PrLabel: React.FC<{label: PullLabel}> = ({ label }) => {
 
 const PrItem = (props: PrItemProps) =>
     (
-        <>
-            <div
-                className="flex flex-row rounded-md mb-2 bg-card-bg border-card-bg"
-                key={props.pull.number}
-                onClick={() => props.setSelectedPull()}
-            >
-                {props.isSelected ?
-                    <div className="w-1 bg-card-active rounded-l-md"/>
-                    :
-                    <div className="w-1 bg-card-inactive rounded-l-md"/>
-                }
-                <div className="flex flex-col">
-                    <div className="flex flex-row pt-1 pl-1 mb-1">
-                        <span className="ml-1 text-text-muted">{`#${props.pull.number}`}</span>
-                        <span className="ml-2 text-text-normal">{props.pull.title}</span>
-                    </div>
-                    <div className="flex flex-row mb-1.5">
-                        {props.pull.labels.length > 0 ?
-                            props.pull.labels.map(label =>
-                                <PrLabel label={label}/>
-                            )
-                            : <span className="px-2 py-0.5 text-text-muted text-sm">No Labels</span>
-                        }
-                    </div>
+        <div
+            className="flex flex-row rounded-md mb-2 bg-card-bg border-card-bg"
+            key={props.pull.number}
+            onClick={() => props.setSelectedPull()}
+        >
+            {props.isSelected ?
+                <div className="w-1 bg-card-active rounded-l-md"/>
+                :
+                <div className="w-1 bg-card-inactive rounded-l-md"/>
+            }
+            <div className="flex flex-col">
+                <div className="flex flex-row pt-1 pl-1 mb-1">
+                    <span className="ml-1 text-text-muted">{`#${props.pull.number}`}</span>
+                    <span className="ml-2 text-text-normal">{props.pull.title}</span>
                 </div>
-                {props.isSelected ?
-                    <div className="flex bg-card-active w-20 rounded-r-md ml-auto items-center">
-                        <p className="flex-grow mb-0 text-center text-lg text-text-normal">Install</p>
-                    </div>
-                    : <></>
-                }
+                <div className="flex flex-row mb-1.5">
+                    {props.pull.labels.length > 0 ?
+                        props.pull.labels.map(label =>
+                            <PrLabel label={label}/>
+                        )
+                        : <span className="px-2 py-0.5 text-text-muted text-sm">No Labels</span>
+                    }
+                </div>
             </div>
-
-        </>
+            {props.isSelected ?
+                <div className="flex bg-card-active w-20 rounded-r-md ml-auto items-center">
+                    <p className="flex-grow mb-0 text-center text-lg text-text-normal">Install</p>
+                </div>
+                : <></>
+            }
+        </div>
     );
 
 const QaPage: React.FC<{mod: Mod}> = ({ mod }) => {
