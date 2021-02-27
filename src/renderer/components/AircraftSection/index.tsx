@@ -39,7 +39,7 @@ import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from "path";
 
-import QAPage from "./QAPage";
+import QaPage from "./QaPage";
 
 const settings = new Store;
 
@@ -459,7 +459,7 @@ const index: React.FC<Props> = (props: Props) => {
                         </Versions>
                     </VersionHistoryContainer>
                 </Content>
-                : <QAPage />
+                : <QaPage mod={props.mod} />
             }
         </Container>
     );

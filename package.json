@@ -70,6 +70,7 @@
     "@svgr/webpack": "^5.5.0",
     "@tailwindcss/postcss7-compat": "~2.0.3",
     "@types/adm-zip": "^0.4.33",
+    "@types/color": "^3.0.1",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.1",
