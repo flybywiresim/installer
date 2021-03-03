@@ -43,6 +43,7 @@ import { LiveryConversionDialog } from "renderer/components/AircraftSection/Live
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useTranslation } from "react-i18next";
 
 const settings = new Store;
 
@@ -87,6 +88,8 @@ enum MsfsStatus {
 }
 
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
+    const { t } = useTranslation();
+
     const findInstalledTrack = (): ModTrack => {
         if (!Directories.isFragmenterInstall(props.mod)) {
             console.log('Not installed');
@@ -386,7 +389,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             case InstallStatus.NeedsUpdate:
                 return (
                     <ButtonContainer>
-                        <StateText>{'New release available'}</StateText>
+                        <StateText>{t('AircraftSection.NewReleaseAvailable')}</StateText>
                         <UpdateButton onClick={handleInstall} />
                     </ButtonContainer>
                 );
@@ -403,64 +406,64 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             case InstallStatus.DownloadPrep:
                 return (
                     <ButtonContainer>
-                        <StateText>Preparing update</StateText>
-                        <DisabledButton text='Cancel'/>
+                        <StateText>{t('AircraftSection.PreparingUpdate')}</StateText>
+                        <DisabledButton text={t('AircraftSection.Cancel')}/>
                     </ButtonContainer>
                 );
             case InstallStatus.Downloading:
                 return (
                     <ButtonContainer>
-                        <StateText>{`Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
-                        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+                        <StateText>{t('AircraftSection.Downloading') + ` ` + `${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
+                        <CancelButton onClick={handleCancel}>{t('AircraftSection.Cancel')}</CancelButton>
                     </ButtonContainer>
                 );
             case InstallStatus.Decompressing:
                 return (
                     <ButtonContainer>
-                        <StateText>Decompressing</StateText>
-                        <DisabledButton text='Cancel'/>
+                        <StateText>{t('AircraftSection.Decompressing')}</StateText>
+                        <DisabledButton text={t('AircraftSection.Cancel')}/>
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadEnding:
                 return (
                     <ButtonContainer>
-                        <StateText>Finishing update</StateText>
-                        <DisabledButton text='Cancel'/>
+                        <StateText>{t('AircraftSection.FinishingUpdate')}</StateText>
+                        <DisabledButton text={t('AircraftSection.Cancel')}/>
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadDone:
                 return (
                     <ButtonContainer>
-                        <StateText>Completed!</StateText>
+                        <StateText>{t('AircraftSection.Completed')}</StateText>
                         <InstalledButton inGitRepo={false} />
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadRetry:
                 return (
                     <ButtonContainer>
-                        <StateText>Retrying {download?.module.toLowerCase()} module</StateText>
-                        <DisabledButton text='Error'/>
+                        <StateText>{t('AircraftSection.Retrying')} {download?.module.toLowerCase()} {t('AircraftSection.Module')}</StateText>
+                        <DisabledButton text={t('AircraftSection.Error')}/>
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadError:
                 return (
                     <ButtonContainer>
-                        <StateText>Failed to install</StateText>
-                        <DisabledButton text='Error'/>
+                        <StateText>{t('AircraftSection.FailedToInstall')}</StateText>
+                        <DisabledButton text={t('AircraftSection.Error')}/>
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadCanceled:
                 return (
                     <ButtonContainer>
-                        <StateText>Download canceled</StateText>
-                        <DisabledButton text='Error'/>
+                        <StateText>{t('AircraftSection.DownloadCanceled')}</StateText>
+                        <DisabledButton text={t('AircraftSection.Error')}/>
                     </ButtonContainer>
                 );
             case InstallStatus.Unknown:
                 return (
                     <ButtonContainer>
-                        <StateText>Unknown state</StateText>
-                        <DisabledButton text='Error'/>
+                        <StateText>{t('AircraftSection.UnknownState')}</StateText>
+                        <DisabledButton text={t('AircraftSection.Error')}/>
                     </ButtonContainer>
                 );
         }
@@ -475,13 +478,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             <HeaderImage>
                 <ModelInformationContainer>
                     <ModelName>{props.mod.name}</ModelName>
-                    <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
+                    <ModelSmallDesc>{props.mod?.shortDescription ?? ''}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
                     {msfsIsOpen !== MsfsStatus.Closed && <>
                         <ButtonContainer>
-                            <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
-                            <DisabledButton text='Update' />
+                            <StateText>{msfsIsOpen === MsfsStatus.Open ? t('AircraftSection.PleaseCloseMSFS') : t('AircraftSection.CheckingStatus')}</StateText>
+                            <DisabledButton text={t('AircraftSection.Update')} />
                         </ButtonContainer>
                     </>}
                     {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
@@ -496,7 +499,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 }
                 <TopContainer className={liveries.length > 0 ? 'mt-0' : '-mt-5'}>
                     <div>
-                        <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
+                        <h5 className="text-base text-teal-50 uppercase">{t('AircraftSection.MainlineVersions')}</h5>
                         <Tracks>
                             {
                                 props.mod.tracks.filter((track) => !track.isExperimental).map(track =>
@@ -513,7 +516,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         </Tracks>
                     </div>
                     <div>
-                        <h5 className="text-base text-teal-50 uppercase">Experimental versions</h5>
+                        <h5 className="text-base text-teal-50 uppercase">{t('AircraftSection.ExperimentalVersions')}</h5>
                         <Tracks>
                             {
                                 props.mod.tracks.filter((track) => track.isExperimental).map(track =>
@@ -532,19 +535,19 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 </TopContainer>
                 <LeftContainer>
                     <DetailsContainer>
-                        <h3 className="font-semibold text-teal-50">About This Version</h3>
+                        <h3 className="font-semibold text-teal-50">{t('AircraftSection.AboutThisVersion')}</h3>
                         <ReactMarkdown
                             className="text-lg text-gray-300"
                             children={selectedTrack?.description ?? ''}
                             remarkPlugins={[remarkGfm]}
                             linkTarget={"_blank"}
                         />
-                        <h3 className="font-semibold text-teal-50">Details</h3>
-                        <p className="text-lg text-gray-300">{props.mod.description}</p>
+                        <h3 className="font-semibold text-teal-50">{t('AircraftSection.Details')}</h3>
+                        <p className="text-lg text-gray-300">{props.mod?.description ?? ''}</p>
                     </DetailsContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>
-                    <h3 className="font-semibold text-teal-50">Release History</h3>
+                    <h3 className="font-semibold text-teal-50">{t('AircraftSection.ReleaseHistory')}</h3>
                     <Versions>
                         {
                             releases.map((version, idx) =>

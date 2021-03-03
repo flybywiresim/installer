@@ -1,0 +1,166 @@
+{
+  "AircraftSection": {
+    "A32NX": {
+      "Desc": "Der A320neo (New Engine Option / neue Triebwerksoption) ist eins von vielen Upgrades von Airbus, um die Position der A320-Produktlinie als weltweit fortschrittlichste und kraftstoffeffizienteste Single-Aisle-Flugzeugfamilie zu erhalten. Der Basis-A320neo verfügt über die Auswahl von zwei Triebwerken der neuen Generation (das PurePower PW1100G-JM von Pratt und Whitney und das LEAP-1A von CFM International) und weist große, treibstoffsparende Tragflächenspitzen vor, bekannt sind diese als Sharklets.",
+      "ShortDesc": "Airbus A320neo Familie",
+      "Variants": {
+        "Leap": {
+          "Name": "Neo (CFM LEAP-1A)"
+        }
+      },
+      "Versions": {
+        "Development": {
+          "Desc": "Development wird die neuesten Funktionen haben, die in die nächste Stable kommen werden. Fehler sind zu erwarten. Es wird immer dann aktualisiert, wenn etwas zur „Master“ -Branch auf Github hinzugefügt wird. Für Unterstützung besuchen Sie bitte unseren Discord.",
+          "Name": "Development"
+        },
+        "Experimental": {
+          "Desc": "Die experimentelle Version ähnelt der Development Version, enthält jedoch benutzerdefinierte Systeme (einschließlich Fly-by-Wire, Autopilot, FADEC usw.). Diese Version wird immer dann aktualisiert, wenn die „Autopilot“ -Branch auf GitHub aktualisiert wird, was etwa alle 12 Stunden passiert.",
+          "Name": "Experimentell",
+          "WarningContent": {
+            "Desc": "Die experimentelle Version enthält angepasste Systeme, die dem realen Verhalten eines A320neo besser entsprechen. Diese befinden sich in der Entwicklung und Fehler sind zu erwarten.",
+            "NoSupport": "Bitte beachte, dass über unsere Discord-Hilfskanäle kein Support angeboten wird.",
+            "PleaseRead": "Um zu verstehen, worauf Sie sich einlassen und welche potenziellen Probleme Sie möglicherweise haben werden, lesen Sie bitte",
+            "ThisGuide": "diesen Leitfaden"
+          }
+        },
+        "Name": "Versionen",
+        "Stable": {
+          "Desc": "Stable ist unsere Variante mit den wenigsten Fehlern und der besten Performance. Diese Version wird nicht immer auf dem neuesten Stand sein, aber wir garantieren, dass sie mit jedem größeren Patch von MSFS kompatibel ist.",
+          "Name": "Stable"
+        }
+      }
+    },
+    "A380X": {
+      "Desc": "",
+      "ShortDesc": "Airbus A380-800"
+    },
+    "AboutThisVersion": "Über diese Version",
+    "Cancel": "Abbrechen",
+    "CheckingStatus": "Status wird überprüft...",
+    "Completed": "Abgeschlossen",
+    "Decompressing": "Dekomprimiere",
+    "Details": "Details",
+    "DownloadCanceled": "Download abgebrochen",
+    "Downloading": "Lädt herunter:",
+    "Error": "Fehler",
+    "ExperimentalVersions": "Experimentelle Versionen",
+    "FailedToInstall": "Installation fehlgeschlagen",
+    "FinishingUpdate": "Stelle Update fertig",
+    "Install": "Installieren",
+    "Installed": "Installiert",
+    "InstalledGit": "Installiert (Git)",
+    "MainlineVersions": "Hauptversionen",
+    "MajorVersion": "Hauptversion",
+    "MinorVersion": "Nebenversion",
+    "Module": "Modul",
+    "NewReleaseAvailable": "Neue Version verfügbar",
+    "PatchVersion": "Fehlerbehebungen",
+    "PleaseCloseMSFS": "Bitte schließen Sie MSFS",
+    "PreparingUpdate": "Update wird vorbereitet",
+    "ReleaseHistory": "Veröffentlichungsverlauf",
+    "Retrying": "Versuche erneut",
+    "SwitchVersion": "Version wechseln",
+    "UnknownState": "Unbekannter Status",
+    "Update": "Aktualisieren",
+    "Variants": "Varianten"
+  },
+  "HomeSection": {
+    "Desc": "FlyByWire Simulations ist eine von der Gemeinschaft betriebene Gruppe, die sich derzeit darauf konzentriert, zwei Freeware-Flugzeuge zu erstellen, den A32NX (eine Überarbeitung des Standard A320neo in MSFS) und den A380."
+  },
+  "InstallerUpdate": {
+    "DownloadingUpdate": "Update wird heruntergeladen",
+    "ErrorUpdate": "Aktualisierungsfehler",
+    "RestartToUpdate": "Zum Aktualisieren neu starten"
+  },
+  "Languages": {
+    "af": "Afrikaans",
+    "ar": "Arabisch",
+    "ca": "Katalanisch",
+    "cs": "Tschechisch",
+    "de": "Deutsch",
+    "el": "Griechisch",
+    "en": "Englisch",
+    "es": "Spanisch",
+    "fi": "Finnisch",
+    "fr": "Französisch",
+    "id": "Indonesisch",
+    "it": "Italienisch",
+    "ko": "Koreanisch",
+    "nb": "Norwegisch",
+    "nl": "Niederländisch",
+    "pl": "Polnisch",
+    "pt_BR": "Brasilianisches Portugiesisch",
+    "pt_PL": "Europäisches Portugiesisch",
+    "ru": "Russisch",
+    "sv": "Schwedisch",
+    "zh": {
+      "Hans": "Vereinfachtes Chinesisch",
+      "Hant": "Traditionelles Chinesisch"
+    }
+  },
+  "NoInternetModal": {
+    "OfflineText": "Es scheint, als bist du offline"
+  },
+  "Notification": {
+    "DownloadComplete": "Download abgeschlossen!",
+    "DownloadFailed": "Download fehlgeschlagen!",
+    "ReadyToFly": "Bereit zum Abheben",
+    "SomethingWentWrong": "Ups! Da ist etwas schiefgelaufen."
+  },
+  "QA": {
+    "NoLabels": "Keine Labels",
+    "OpenedPullRequests": "Offene Pull Requests",
+    "PullRequests": "Pull Requests",
+    "QATesting": "QA Tests",
+    "SearchPullRequest": "Pull Request suchen"
+  },
+  "SettingsSection": {
+    "DownloadSettings": {
+      "AutomaticInstallerUpdates": "Automatische Installer-Updates",
+      "AutomaticModUpdates": "Automatische Mod-Updates",
+      "InstallDirectory": "Installationsverzeichnis",
+      "Name": "Download-Einstellungen",
+      "UseCDN": "CDN verwenden (Schnellere Downloads)"
+    },
+    "General": "Allgemein",
+    "GeneralSettings": {
+      "AlwaysOnTop": "Immer im Vordergrund",
+      "CheckForUpdates": "Nach Updates suchen",
+      "CurrentVersion": "Aktuelle Version",
+      "DisableVersionWarnings": "Versionswarnungen deaktivieren",
+      "Information": "Informationen",
+      "Language": "Sprache",
+      "LaunchOnStartup": "Beim Hochfahren öffnen",
+      "MinimizeOnClose": "Installer beim Schließen minimieren",
+      "Name": "Allgemeine Einstellungen",
+      "ReceiveNotifications": "Benachrichtigungen erhalten",
+      "ResetToDefault": "Einstellungen zurücksetzen"
+    },
+    "InstallerSettings": "Installer-Einstellungen",
+    "Settings": "Einstellungen",
+    "UserSettings": {
+      "Authorize": "Autorisieren",
+      "Connections": "Verbindungen",
+      "Name": "Benutzer-Einstellungen"
+    }
+  },
+  "SideBar": {
+    "Installed": "Installiert",
+    "Installing": "Wird installiert…",
+    "NotAvailable": "Nicht verfügbar",
+    "NotInstalled": "Nicht installiert",
+    "QATesting": "QA Tests",
+    "Settings": "Einstellungen",
+    "UpdateAvailable": "Update verfügbar"
+  },
+  "TopBar": {
+    "Installer": "Installer"
+  },
+  "WarningModal": {
+    "Cancel": "Abbrechen",
+    "Caution": "Vorsicht!",
+    "DoNotShowAgain": "Nicht mehr anzeigen",
+    "Select": "Auswählen",
+    "Warning": "Warnung!"
+  }
+}

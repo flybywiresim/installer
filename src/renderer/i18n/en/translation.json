@@ -1,0 +1,166 @@
+{
+  "TopBar": {
+    "Installer": "Installer"
+  },
+  "SideBar": {
+    "Installed": "Installed",
+    "Installing": "Installing...",
+    "NotAvailable": "Not Available",
+    "NotInstalled": "Not Installed",
+    "Settings": "Settings",
+    "UpdateAvailable": "Update Available",
+    "QATesting": "QA Testing"
+  },
+  "HomeSection": {
+    "Desc": "FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft, the A32NX (a modification of the default A320neo in MSFS), and the A380."
+  },
+  "AircraftSection": {
+    "A32NX": {
+      "ShortDesc": "Airbus A320neo Series",
+      "Desc": "The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines (the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) and features large, fuel-saving wingtip devices known as Sharklets.",
+      "Variants": {
+        "Leap": {
+          "Name": "Neo (CFM LEAP-1A)"
+        }
+      },
+      "Versions": {
+        "Name": "Versions",
+        "Stable": {
+          "Name": "Stable",
+          "Desc": "Stable is our variant that has the least bugs and best performance. This version will not always be up to date but we guarantee it's compatibility with each major patch from MSFS."
+        },
+        "Development": {
+          "Name": "Development",
+          "Desc": "Development will have the latest features that will end up in the next stable. Bugs are to be expected. It updates whenever something is added to the 'master' branch on Github. Please visit our discord for support."
+        },
+        "Experimental": {
+          "Name": "Experimental",
+          "Desc": "The experimental version is similar to the development branch, but contains custom systems (including fly-by-wire, autopilot, FADEC, etc.). This version is updated whenever the 'experimental' branch on GitHub is updated, which is around every 12 hours.",
+          "WarningContent": {
+            "Desc": "The experimental version contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.",
+            "PleaseRead": "To understand what you are getting into and the potential issues you might experience, please read",
+            "ThisGuide": "this guide",
+            "NoSupport": "Please be aware that no support will be offered via Discord help channels."
+          }
+        }
+      }
+    },
+    "A380X": {
+      "ShortDesc": "Airbus A380-800",
+      "Desc": ""
+    },
+    "AboutThisVersion": "About This Version",
+    "Cancel": "Cancel",
+    "CheckingStatus": "Checking status...",
+    "Completed": "Completed",
+    "Decompressing": "Decompressing",
+    "Details": "Details",
+    "DownloadCanceled": "Download canceled",
+    "Downloading": "Downloading",
+    "Error": "Error",
+    "ExperimentalVersions": "Experimental versions",
+    "FailedToInstall": "Failed to install",
+    "FinishingUpdate": "Finishing Update",
+    "Install": "Install",
+    "Installed": "Installed",
+    "InstalledGit": "Installed (git)",
+    "MainlineVersions": "Mainline versions",
+    "MajorVersion": "major version",
+    "MinorVersion": "minor version",
+    "Module": "module",
+    "NewReleaseAvailable": "New release available",
+    "PatchVersion": "patch version",
+    "PleaseCloseMSFS": "Please close MSFS",
+    "PreparingUpdate": "Preparing Update",
+    "ReleaseHistory": "Release History",
+    "Retrying": "Retrying",
+    "SwitchVersion": "Switch version",
+    "UnknownState": "Unknown state",
+    "Update": "Update",
+    "Variants": "Variants"
+  },
+  "SettingsSection": {
+    "Settings": "Settings",
+    "InstallerSettings": "Installer Settings",
+    "General": "General",
+    "GeneralSettings": {
+      "Name": "General Settings",
+      "AlwaysOnTop": "Always on Top",
+      "CheckForUpdates": "Check for Updates",
+      "CurrentVersion": "Current version",
+      "DisableVersionWarnings": "Disable Version Warnings",
+      "Information": "Information",
+      "LaunchOnStartup": "Launch on Startup",
+      "Language": "Language",
+      "MinimizeOnClose": "Minimize Installer on close",
+      "ReceiveNotifications": "Receive Notifications",
+      "ResetToDefault": "Reset settings to default"
+    },
+    "DownloadSettings": {
+      "Name": "Download Settings",
+      "AutomaticInstallerUpdates": "Automatic Installer Updates",
+      "AutomaticModUpdates": "Automatic Mod Updates",
+      "InstallDirectory": "Install Directory",
+      "UseCDN": "Use CDN (Faster Downloads)"
+    },
+    "UserSettings": {
+      "Name": "User Settings",
+      "Authorize": "Authorize",
+      "Connections": "Connections"
+    }
+  },
+  "InstallerUpdate": {
+    "DownloadingUpdate": "Downloading update",
+    "ErrorUpdate": "Update error",
+    "RestartToUpdate": "Restart to update"
+  },
+  "NoInternetModal": {
+    "OfflineText": "It seems you're offline"
+  },
+  "WarningModal": {
+    "Cancel": "Cancel",
+    "Caution": "Caution!",
+    "DoNotShowAgain": "Don't show me this again",
+    "Select": "Select",
+    "Warning": "Warning!"
+  },
+  "Notification": {
+    "DownloadComplete": "Download complete!",
+    "DownloadFailed": "Download failed!",
+    "ReadyToFly": "You're ready to fly",
+    "SomethingWentWrong": "Oops, something went wrong"
+  },
+  "QA": {
+    "NoLabels": "No Labels",
+    "OpenedPullRequests": "Opened Pull Requests",
+    "PullRequests": "Pull Requests",
+    "QATesting": "QA Testing",
+    "SearchPullRequest": "Search Pull Request"
+  },
+  "Languages": {
+    "af": "Afrikaans",
+    "ar": "Arabic",
+    "ca": "Catalan",
+    "cs": "Czech",
+    "de": "German",
+    "el": "Greek",
+    "en": "English",
+    "es": "Spanish",
+    "fi": "Finnish",
+    "fr": "French",
+    "id": "Indonesian",
+    "it": "Italian",
+    "ko": "Korean",
+    "nb": "Norwegian",
+    "nl": "Dutch",
+    "pl": "Polish",
+    "pt_BR": "Brazilian Portuguese",
+    "pt_PL": "European Portuguese",
+    "ru": "Russian",
+    "sv": "Swedish",
+    "zh": {
+      "Hans": "Simplified Chinese",
+      "Hant": "Traditional Chinese"
+    }
+  }
+}

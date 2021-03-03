@@ -100,3 +100,6 @@ dist/
 
 # VSCode
 .vscode/
+
+# Localazy
+localazy.json

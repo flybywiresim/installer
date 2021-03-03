@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { DownloadOutlined } from '@ant-design/icons';
 import { colors, dropShadow, fontSizes } from "renderer/style/theme";
 import headerBackground from "renderer/assets/a32nx-background.png";
+import i18n from "i18next";
 
 export const Container = styled.div<{ wait: number }>`
     visibility: ${props => props.wait ? 'hidden' : 'visible'};
@@ -176,7 +177,7 @@ export const InstallButton = styled(props =>
             borderColor: colors.positive
         }}
         {...props}
-    >Install</InstallButtonTemplate>)``;
+    >{i18n.t('AircraftSection.Install')}</InstallButtonTemplate>)``;
 
 export const ButtonContainer = styled.div`
   display: flex;
@@ -200,7 +201,7 @@ export const UpdateButton = styled(
                 borderColor: "#fa8c16"
             }}
             {...props}
-        >Update</InstallButtonTemplate>)``;
+        >{i18n.t('AircraftSection.Update')}</InstallButtonTemplate>)``;
 
 export const SwitchButton = styled(
     props =>
@@ -210,7 +211,7 @@ export const SwitchButton = styled(
                 borderColor: "#BC05E1"
             }}
             {...props}
-        >Switch version</InstallButtonTemplate>)``;
+        >{i18n.t('AircraftSection.SwitchVersion')}</InstallButtonTemplate>)``;
 
 export const CancelButton = styled(
     props =>
@@ -234,7 +235,7 @@ export const InstalledButton = styled(
                 pointerEvents: "none"
             }}
             {...props}
-        >{props.inGitRepo ? 'Installed (git)' : 'Installed'}</InstallButtonTemplate>)``;
+        >{props.inGitRepo ? i18n.t('AircraftSection.InstalledGit') : i18n.t('AircraftSection.Installed')}</InstallButtonTemplate>)``;
 
 export const DisabledButton = styled(
     (props: { text: string }) =>
