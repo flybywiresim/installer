@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import homeBackground from "renderer/assets/a32nx-background-2.png";
+import homeBackground from "renderer/assets/a32nx-background-2.jpg";
 
 export const Container = styled.div`
   height: 100%;
