@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import homeBackground from "renderer/assets/a32nx-background-2.jpg";
 
 export const Container = styled.div`
   height: 100%;
@@ -8,7 +9,7 @@ export const Container = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a32nx-background-2.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${homeBackground});
   background-color: #1C1C1C;
   background-size: cover;
   padding-left: 60px;

@@ -15,10 +15,11 @@
 1. [UI] Fix button styling in settings menu - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add report issue button at top right corner of installer - @Armankir (Arman#5297)
 1. [UI] Changed the scrollbar color for eased visibility - @Armankir (Arman#5297)
-2. [UI] New version selector UI - @marcsoler @ZigZag
-3. [VERSIONS] Add Custom FBW+AP version to installer - @ZigTag
-4. [UX] Add warning message for Custom FBW and Custom FBW+AP - @ZigTag
-5. [LOGIC] Implement modular download - @nistei (nistei#1362)
+1. [UI] New version selector UI - @marcsoler @ZigZag
+1. [VERSIONS] Add Custom FBW+AP version to installer - @ZigTag
+1. [UX] Add warning message for Custom FBW and Custom FBW+AP - @ZigTag
+1. [LOGIC] Implement modular download - @nistei (nistei#1362)
+1. [UI] Fix background image remaining black - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 
 ## 1.0.3
 

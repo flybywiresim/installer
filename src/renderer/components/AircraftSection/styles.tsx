@@ -3,6 +3,7 @@ import { Select, Progress } from 'antd';
 import styled from 'styled-components';
 import { DownloadOutlined } from '@ant-design/icons';
 import { colors, dropShadow, fontSizes } from "renderer/style/theme";
+import headerBackground from "renderer/assets/a32nx-background.png";
 
 export const Container = styled.div<{ wait: number }>`
     visibility: ${props => props.wait ? 'hidden' : 'visible'};
@@ -11,7 +12,7 @@ export const Container = styled.div<{ wait: number }>`
 export const HeaderImage = styled.div`
     height: 35vh;
     max-height: 400px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/installer/a32nx-background.png');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${headerBackground});
     background-size: cover;
     background-position: center;
     color: white;

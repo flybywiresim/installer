@@ -50,4 +50,8 @@ module.exports = [
       test: /\.md$/i,
       use: 'raw-loader'
     },
+    {
+      test: /\.(png|jpg|gif)$/i,
+      use: 'url-loader'
+    },
 ];
