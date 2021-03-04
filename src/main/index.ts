@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as readLine from 'readline';
 import Store from 'electron-store';
 import walk from 'walkdir';
+import * as packageInfo from '../../package.json';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: never;
 
@@ -145,6 +146,14 @@ app.on('second-instance', () => {
 // code. You can also put them in separate files and import them here.
 
 function configureSettings(app: App) {
+    // Store the current version
+    const version = packageInfo.version;
+    settings.set('metaInfo.currentVersion', version);
+    if (!settings.has('metaInfo.oldVersion') || (settings.get('metaInfo.currentVersion') != settings.get('metaInfo.oldVersion'))) {
+        settings.set('metaInfo.versionChanged', true);
+        settings.set('metaInfo.oldVersion', version);
+    }
+
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
 
