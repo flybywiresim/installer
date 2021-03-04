@@ -20,6 +20,7 @@ export const WarningModalBase = styled(Modal)`
       font-size: 1.85em;
       font-weight: 700;
       color: ${colors.title};
+      margin-top: 8px;
     }
     
     .ant-modal-close {
@@ -35,6 +36,11 @@ export const WarningModalBase = styled(Modal)`
       color: ${colors.title};
       background: ${colors.cardBackground};
       border: none;
+      
+      a {
+        font-weight: 500;
+        color: ${colors.cardSelected};
+      }
     }
     
     .ant-modal-footer {
