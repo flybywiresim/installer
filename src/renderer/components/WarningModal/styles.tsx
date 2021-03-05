@@ -26,6 +26,7 @@ export const WarningModalBase = styled(Modal)`
     .ant-modal-close {
       color: ${colors.title};
       font-size: 1.25rem;
+      outline: none;
       
       &:hover {
         color: #fa3516;
@@ -51,6 +52,7 @@ export const WarningModalBase = styled(Modal)`
       .ant-btn {
         border-radius: 5px;
         font-size: 1.25em;
+        outline: none;
         
         span {
           display: block;
@@ -63,6 +65,7 @@ export const WarningModalBase = styled(Modal)`
       .ant-btn-primary {
         background: ${colors.positive};
         border-color: ${colors.positive};
+        outline: none;
       }
     }
 `;
