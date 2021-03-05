@@ -28,7 +28,7 @@
             "description": "FlyByWire Simulations Installer",
             "setupIcon": "./src/main/icons/icon.ico",
             "setupExe": "setup.exe",
-            "iconUrl": "https://raw.githubusercontent.com/flybywiresim/installer/master/src/main/icons/icn.ico",
+            "iconUrl": "https://cdn.flybywiresim.com/assets/installer/icon.ico",
             "loadingGif": "./src/main/icons/loading.gif",
             "remoteReleases": "https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer"
           }
