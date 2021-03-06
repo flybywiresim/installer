@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import store from '../../redux/store';
 import Store from 'electron-store';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
+import * as packageInfo from '../../../../package.json';
 import {
     Container,
     PageTitle,
@@ -39,6 +40,8 @@ function index(): JSX.Element {
 
     const handleReset = async () => {
         settings.clear();
+        const version = packageInfo.version;
+        settings.set('metaInfo.currentVersion', version);
         setInstallPath(await configureInitialInstallPath());
     };
 
