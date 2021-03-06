@@ -20,6 +20,7 @@
 1. [UX] Add warning message for Custom FBW and Custom FBW+AP - @ZigTag
 1. [LOGIC] Implement modular download - @nistei (nistei#1362)
 1. [UI] Fix background image remaining black - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UI] Fix window icon on hover - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 
 ## 1.0.3
 

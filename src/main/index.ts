@@ -29,7 +29,7 @@ const createWindow = (): void => {
         minWidth: 1000,
         minHeight: 700,
         frame: false,
-        icon: 'src/main/icons/icn.ico',
+        icon: 'src/main/icons/icon.ico',
         backgroundColor: '#1C1C1C',
         show: false,
         webPreferences: {

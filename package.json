@@ -17,7 +17,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./src/main/icons/icn.ico"
+        "icon": "src/main/icons/icon.ico"
       },
       "makers": [
         {
@@ -26,9 +26,9 @@
             "name": "fbw_installer",
             "authors": "FlyByWire Simulations",
             "description": "FlyByWire Simulations Installer",
-            "setupIcon": "./src/main/icons/icn.ico",
+            "setupIcon": "./src/main/icons/icon.ico",
             "setupExe": "setup.exe",
-            "iconUrl": "https://flybywiresim-packages.nyc3.cdn.digitaloceanspaces.com/assets/FBW-Tail.ico",
+            "iconUrl": "https://cdn.flybywiresim.com/assets/installer/icon.ico",
             "loadingGif": "./src/main/icons/loading.gif",
             "remoteReleases": "https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer"
           }
