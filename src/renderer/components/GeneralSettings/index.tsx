@@ -40,8 +40,6 @@ function index(): JSX.Element {
 
     const handleReset = async () => {
         settings.clear();
-        const version = packageInfo.version;
-        settings.set('metaInfo.currentVersion', version);
         setInstallPath(await configureInitialInstallPath());
     };
 
@@ -54,7 +52,7 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoButton onClick={showchangelog}>{settings.get('metaInfo.currentVersion')}</InfoButton>
+                <InfoButton onClick={showchangelog}>{packageInfo.version}</InfoButton>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>
