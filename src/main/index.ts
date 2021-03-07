@@ -26,7 +26,7 @@ const createWindow = (): void => {
     mainWindow = new BrowserWindow({
         height: 1000,
         width: 1400,
-        minWidth: 1000,
+        minWidth: 1050,
         minHeight: 700,
         frame: false,
         icon: 'src/main/icons/icon.ico',
@@ -52,9 +52,15 @@ const createWindow = (): void => {
     const lastX = settings.get('cache.main.lastWindowX');
     const lastY = settings.get('cache.main.lastWindowY');
 
-    if ((typeof lastX === "number") && (typeof lastY === "number")) {
-        mainWindow.setSize(lastX, lastY);
+    if ((typeof lastX === "number") && (typeof lastY === "number") && !settings.get('cache.main.maximized')) {
+        mainWindow.setBounds({
+            width: lastX,
+            height: lastY
+        });
+    } else if (settings.get('cache.main.maximized')) {
+        mainWindow.maximize();
     }
+    mainWindow.center();
 
     // and load the index.html of the app.
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
