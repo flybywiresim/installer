@@ -244,21 +244,17 @@ const index: React.FC<Props> = (props: Props) => {
         } catch (e) {
             if (signal.aborted) {
                 setInstallStatus(InstallStatus.DownloadCanceled);
-                setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
-                return;
+            } else {
+                console.error(e);
+                setInstallStatus(InstallStatus.DownloadError);
             }
-
-            console.error(e);
-
-            // Flash error text
-            setInstallStatus(InstallStatus.DownloadError);
-            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
-
-            dispatch(deleteDownload(props.mod.name));
-        } finally {
-            // Clean up temp dir
-            fs.rmdirSync(tempDir, { recursive: true });
         }
+
+        setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
+        dispatch(deleteDownload(props.mod.name));
+
+        // Clean up temp dir
+        fs.rmdirSync(tempDir, { recursive: true });
     };
 
     const selectAndSetTrack = async (key: string) => {
