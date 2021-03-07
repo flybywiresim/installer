@@ -19,7 +19,8 @@ import {
     PageContent,
     PageHeader,
     PageSider,
-    SettingsMenuItem
+    SettingsMenuItem,
+    DragRegion
 } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
@@ -227,6 +228,7 @@ function App() {
                 <Container>
                     <MainLayout>
                         <PageHeader>
+                            <DragRegion/>
                             <Logo/>
                             <WindowActionButtons/>
                         </PageHeader>

@@ -23,6 +23,13 @@ export const PageHeader = styled(Header)`
     height: 50px;
     padding-left: 18px;
     background-color: #232323;
+`;
+export const DragRegion = styled.div`
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    height: 45px;
+    width: calc(100% - 10px);
     -webkit-app-region: drag;
 `;
 
