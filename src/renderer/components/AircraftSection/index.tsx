@@ -167,6 +167,9 @@ const index: React.FC<Props> = (props: Props) => {
             const updateInfo = await needsUpdate(selectedTrack.url, installDir);
             console.log('Update info', updateInfo);
 
+            if (selectedTrack != installedTrack && installedTrack != null) {
+                return InstallStatus.TrackSwitch;
+            }
             if (updateInfo.isFreshInstall) {
                 return InstallStatus.FreshInstall;
             }
