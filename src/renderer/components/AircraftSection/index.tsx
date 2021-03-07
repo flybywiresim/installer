@@ -262,14 +262,14 @@ const index: React.FC<Props> = (props: Props) => {
     };
 
     const selectAndSetTrack = async (key: string) => {
-        if (!isDownloading) {
+        if (!isDownloading && installStatus != InstallStatus.DownloadPrep) {
             const newTrack = selectedVariant.tracks.find(x => x.key === key);
             setSelectedTrack(newTrack);
         }
     };
 
     const handleTrackSelection = (track: ModTrack) => {
-        if (!isDownloading) {
+        if (!isDownloading && installStatus != InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         }
     };
