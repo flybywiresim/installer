@@ -73,6 +73,7 @@ function handleWindowControls() {
     });
 
     document.getElementById('close-button').addEventListener("click", () => {
+        settings.set('cache.main.maximized', win.isMaximized());
         const winSize = win.getSize();
 
         settings.set('cache.main.lastWindowX', winSize[0]);
