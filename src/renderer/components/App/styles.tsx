@@ -12,6 +12,9 @@ const { Header, Content, Sider } = Layout;
 
 export const Container = styled.div`
     height: 100vh;
+    button {
+        outline: none;
+    }
 `;
 
 export const PageHeader = styled(Header)`
