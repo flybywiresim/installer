@@ -167,7 +167,7 @@ const index: React.FC<Props> = (props: Props) => {
             const updateInfo = await needsUpdate(selectedTrack.url, installDir);
             console.log('Update info', updateInfo);
 
-            if (selectedTrack != installedTrack && installedTrack != null) {
+            if (selectedTrack !== installedTrack && installedTrack !== null) {
                 return InstallStatus.TrackSwitch;
             }
             if (updateInfo.isFreshInstall) {
@@ -265,14 +265,14 @@ const index: React.FC<Props> = (props: Props) => {
     };
 
     const selectAndSetTrack = async (key: string) => {
-        if (!isDownloading && installStatus != InstallStatus.DownloadPrep) {
+        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             const newTrack = selectedVariant.tracks.find(x => x.key === key);
             setSelectedTrack(newTrack);
         }
     };
 
     const handleTrackSelection = (track: ModTrack) => {
-        if (!isDownloading && installStatus != InstallStatus.DownloadPrep) {
+        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         }
     };
