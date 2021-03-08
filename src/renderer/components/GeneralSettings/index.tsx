@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import store from '../../redux/store';
 import Store from 'electron-store';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
+import * as packageInfo from '../../../../package.json';
 import {
     Container,
     PageTitle,
@@ -51,7 +52,7 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoButton onClick={showchangelog}>{settings.get('metaInfo.currentVersion')}</InfoButton>
+                <InfoButton onClick={showchangelog}>{packageInfo.version}</InfoButton>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>
