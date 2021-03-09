@@ -38,7 +38,7 @@ import { Version, Versions } from "renderer/components/AircraftSection/VersionHi
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from 'path';
-import { remote } from 'electron';
+import os from 'os';
 
 const settings = new Store;
 
@@ -76,7 +76,7 @@ const index: React.FC<Props> = (props: Props) => {
     };
 
     const getTempDir = (): string => {
-        return path.join(remote.app.getPath('temp'), 'flybywire_installer');
+        return path.join(os.tmpdir(), 'flybywire_installer');
     };
 
     const findInstalledTrack = (): ModTrack => {
