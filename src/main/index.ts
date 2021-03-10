@@ -149,7 +149,7 @@ function configureSettings(app: App) {
     // Store the current version
     const version = packageInfo.version;
     settings.set('metaInfo.currentVersion', version);
-    if (!settings.has('metaInfo.oldVersion') || (settings.get('metaInfo.currentVersion') != settings.get('metaInfo.oldVersion'))) {
+    if (!settings.has('metaInfo.oldVersion') || (settings.get('metaInfo.currentVersion') !== settings.get('metaInfo.oldVersion'))) {
         settings.set('metaInfo.versionChanged', true);
         settings.set('metaInfo.oldVersion', version);
     }
