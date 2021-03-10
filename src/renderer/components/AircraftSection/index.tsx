@@ -30,7 +30,7 @@ import net from "net";
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, RootStore } from 'renderer/redux/types';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
@@ -39,18 +39,27 @@ import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from 'path';
 import os from 'os';
+import store from '../../redux/store';
 
 const settings = new Store;
 
 const { Paragraph } = Typography;
 
 type Props = {
-    mod: Mod
+    mod: Mod,
+}
+
+type propTypes = {
+    mod: Mod,
+    selectedtrack: ModTrack,
+    installstatus : {
+        state: InstallStatus,
+    },
 }
 
 let abortController: AbortController;
 
-enum InstallStatus {
+export enum InstallStatus {
     UpToDate,
     NeedsUpdate,
     FreshInstall,
@@ -70,7 +79,7 @@ enum MsfsStatus {
     Checking,
 }
 
-const index: React.FC<Props> = (props: Props) => {
+const index: React.FC<Props> = (props: propTypes) => {
     const getInstallDir = (): string => {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, props.mod.targetDirectory);
     };
@@ -86,25 +95,31 @@ const index: React.FC<Props> = (props: Props) => {
 
             const track = _.find(props.mod.variants[0].tracks, { url: manifest.source });
             console.log('Currently installed', track);
-
             setInstalledTrack(track);
             setSelectedTrack(track);
-
             return track;
         } catch (e) {
             console.error(e);
             console.log('Not installed');
-
             setSelectedTrack(props.mod.variants[0]?.tracks[0]);
             return props.mod.variants[0]?.tracks[0];
         }
     };
 
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
-    const [selectedTrack, setSelectedTrack] = useState<ModTrack>();
-    const [installedTrack, setInstalledTrack] = useState<ModTrack>();
 
-    const [installStatus, setInstallStatus] = useState<InstallStatus>(InstallStatus.Unknown);
+    const [installedTrack, setInstalledTrack] = useState<ModTrack>();
+    const selectedTrack = props.selectedtrack;
+    const setSelectedTrack = (new_track: ModTrack) => {
+        store.dispatch({ type: 'SELECT_TRACK', payload: new_track });
+    };
+
+    const installStatus = props.installstatus.state;
+    const setInstallStatus = (new_state: InstallStatus) => {
+        store.dispatch({ type: 'UPDATE_INSTALL_STATE', payload: {
+            state: new_state
+        } });
+    };
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
     const [wait, setWait] = useState(1);
@@ -125,13 +140,22 @@ const index: React.FC<Props> = (props: Props) => {
     const isDownloading = download?.progress >= 0;
 
     useEffect(() => {
+        const oldSelectedTrack = store.getState().selectedtrack;
         const checkMsfsInterval = setInterval(checkIfMSFS, 500);
 
-        return () => clearInterval(checkMsfsInterval);
+        return () => {
+            clearInterval(checkMsfsInterval);
+            console.log(oldSelectedTrack);
+            if (oldSelectedTrack !== null) {
+                setSelectedTrack(oldSelectedTrack);
+            }
+        };
     }, []);
 
     useEffect(() => {
-        getInstallStatus().then(setInstallStatus);
+        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+            getInstallStatus().then(setInstallStatus);
+        }
     }, [selectedTrack]);
 
     const isGitInstall = (dir: string): boolean => {
@@ -168,7 +192,7 @@ const index: React.FC<Props> = (props: Props) => {
             const updateInfo = await needsUpdate(selectedTrack.url, installDir);
             console.log('Update info', updateInfo);
 
-            if (selectedTrack !== installedTrack && installedTrack !== null) {
+            if (selectedTrack !== installedTrack && installedTrack !== undefined) {
                 return InstallStatus.TrackSwitch;
             }
             if (updateInfo.isFreshInstall) {
@@ -458,4 +482,10 @@ const index: React.FC<Props> = (props: Props) => {
     );
 };
 
-export default index;
+const mapStateToProps = (state: any) => {
+    return {
+        ...state
+    };
+};
+
+export default connect(mapStateToProps) (index);

@@ -1,5 +1,6 @@
 import * as actions from './actionTypes';
 import { ModTrack } from "renderer/components/App";
+import { InstallStatus } from 'renderer/components/AircraftSection';
 
 export interface DownloadItem {
     id: string
@@ -45,6 +46,33 @@ export interface ShowWarningModalAction {
         showWarningModal: boolean,
         track: null | ModTrack,
         trackHandler: null | CallableFunction,
+    }
+}
+
+export interface InstallStatusState {
+    state: InstallStatus,
+}
+
+export interface InstallAction {
+    type: typeof actions.UPDATE_INSTALL_STATE
+    payload: {
+        state: InstallStatus
+    }
+}
+
+export interface SelectedTrackAction {
+    type: typeof actions.SELECT_TRACK
+    payload: ModTrack
+}
+
+export interface ChangelogState {
+    showchangelog: boolean
+}
+
+export interface ChangelogAction {
+    type: typeof actions.CHANGELOG
+    payload: {
+        showchangelog: boolean
     }
 }
 
