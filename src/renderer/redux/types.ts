@@ -64,6 +64,10 @@ export interface SelectedTrackAction {
     type: typeof actions.SELECT_TRACK
     payload: ModTrack
 }
+export interface InstalledTrackAction {
+    type: typeof actions.INSTALLED_TRACK
+    payload: ModTrack
+}
 
 export interface ChangelogState {
     showchangelog: boolean

@@ -52,6 +52,7 @@ type Props = {
 type propTypes = {
     mod: Mod,
     selectedtrack: ModTrack,
+    installedtrack: ModTrack,
     installstatus : {
         state: InstallStatus,
     },
@@ -96,19 +97,32 @@ const index: React.FC<Props> = (props: propTypes) => {
             const track = _.find(props.mod.variants[0].tracks, { url: manifest.source });
             console.log('Currently installed', track);
             setInstalledTrack(track);
-            setSelectedTrack(track);
-            return track;
+            if (selectedTrack === null) {
+                setSelectedTrack(track);
+                return track;
+            } else {
+                selectAndSetTrack(props.selectedtrack.key);
+                return selectedTrack;
+            }
         } catch (e) {
             console.error(e);
             console.log('Not installed');
-            setSelectedTrack(props.mod.variants[0]?.tracks[0]);
-            return props.mod.variants[0]?.tracks[0];
+            if (selectedTrack === null) {
+                setSelectedTrack(props.mod.variants[0]?.tracks[0]);
+                return props.mod.variants[0]?.tracks[0];
+            } else {
+                selectAndSetTrack(props.selectedtrack.key);
+                return selectedTrack;
+            }
         }
     };
 
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
 
-    const [installedTrack, setInstalledTrack] = useState<ModTrack>();
+    const installedTrack = props.installedtrack;
+    const setInstalledTrack = (new_installed_track: ModTrack) => {
+        store.dispatch({ type: 'INSTALLED_TRACK', payload: new_installed_track });
+    };
     const selectedTrack = props.selectedtrack;
     const setSelectedTrack = (new_track: ModTrack) => {
         store.dispatch({ type: 'SELECT_TRACK', payload: new_track });
@@ -140,15 +154,10 @@ const index: React.FC<Props> = (props: propTypes) => {
     const isDownloading = download?.progress >= 0;
 
     useEffect(() => {
-        const oldSelectedTrack = store.getState().selectedtrack;
         const checkMsfsInterval = setInterval(checkIfMSFS, 500);
 
         return () => {
             clearInterval(checkMsfsInterval);
-            console.log(oldSelectedTrack);
-            if (oldSelectedTrack !== null) {
-                setSelectedTrack(oldSelectedTrack);
-            }
         };
     }, []);
 
@@ -180,8 +189,9 @@ const index: React.FC<Props> = (props: propTypes) => {
         console.log('Checking install status');
 
         const installDir = getInstallDir();
+
         if (!fs.existsSync(installDir)) {
-            fs.mkdirSync(installDir);
+            return InstallStatus.FreshInstall;
         }
 
         if (isGitInstall(installDir)) {
@@ -192,7 +202,7 @@ const index: React.FC<Props> = (props: propTypes) => {
             const updateInfo = await needsUpdate(selectedTrack.url, installDir);
             console.log('Update info', updateInfo);
 
-            if (selectedTrack !== installedTrack && installedTrack !== undefined) {
+            if (selectedTrack !== installedTrack && installedTrack !== null) {
                 return InstallStatus.TrackSwitch;
             }
             if (updateInfo.isFreshInstall) {
@@ -235,8 +245,11 @@ const index: React.FC<Props> = (props: propTypes) => {
         fs.mkdirSync(tempDir);
 
         // Copy current install to temporary directory
-        setInstallStatus(InstallStatus.DownloadPrep);
-        await fs.copy(installDir, tempDir);
+
+        if (fs.existsSync(installDir)) {
+            setInstallStatus(InstallStatus.DownloadPrep);
+            await fs.copy(installDir, tempDir);
+        }
 
         // Initialize abort controller for downloads
         abortController = new AbortController();
@@ -256,6 +269,9 @@ const index: React.FC<Props> = (props: propTypes) => {
             }, signal);
 
             // Copy files from temp dir
+            if (!fs.existsSync(installDir)) {
+                fs.mkdirSync(installDir);
+            }
             console.log('Copying files from temp directory to install directory');
             fs.rmdirSync(installDir, { recursive: true });
             await fs.copy(tempDir, installDir);
@@ -283,18 +299,19 @@ const index: React.FC<Props> = (props: propTypes) => {
 
         // Clean up temp dir
         fs.rmdirSync(tempDir, { recursive: true });
+
     };
 
     const selectAndSetTrack = async (key: string) => {
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
-            const newTrack = selectedVariant.tracks.find(x => x.key === key);
-            setSelectedTrack(newTrack);
-        }
+        const newTrack = selectedVariant.tracks.find(x => x.key === key);
+        setSelectedTrack(newTrack);
     };
 
     const handleTrackSelection = (track: ModTrack) => {
         if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
+        } else {
+            selectAndSetTrack(props.selectedtrack.key);
         }
     };
 
@@ -423,7 +440,7 @@ const index: React.FC<Props> = (props: propTypes) => {
                                         key={track.key}
                                         track={track}
                                         isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack === track}
+                                        isInstalled={props.installedtrack === track}
                                         onSelected={() => handleTrackSelection(track)}
                                     />
                                 )
@@ -482,6 +499,8 @@ const index: React.FC<Props> = (props: propTypes) => {
     );
 };
 
+//Defining the state types raises errors with mod: Mod in /App/index
+// @ts-ignore
 const mapStateToProps = (state: any) => {
     return {
         ...state
