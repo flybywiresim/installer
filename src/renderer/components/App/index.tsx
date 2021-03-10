@@ -147,7 +147,7 @@ function App() {
                         {
                             name: 'Development',
                             key: 'a32nx-dev',
-                            url: 'https://cdn.flybywiresim.com/addons/a32nx/vmaster',
+                            url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
                             isExperimental: false,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
