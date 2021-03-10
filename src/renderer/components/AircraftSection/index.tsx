@@ -440,7 +440,7 @@ const index: React.FC<Props> = (props: propTypes) => {
                                         key={track.key}
                                         track={track}
                                         isSelected={selectedTrack === track}
-                                        isInstalled={props.installedtrack === track}
+                                        isInstalled={installedTrack === track}
                                         onSelected={() => handleTrackSelection(track)}
                                     />
                                 )
