@@ -37,7 +37,8 @@ import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
-import * as path from "path";
+import * as path from 'path';
+import os from 'os';
 
 const settings = new Store;
 
@@ -75,7 +76,7 @@ const index: React.FC<Props> = (props: Props) => {
     };
 
     const getTempDir = (): string => {
-        return path.join(settings.get('mainSettings.msfsPackagePath') as string, `${props.mod.targetDirectory}-temp`);
+        return path.join(os.tmpdir(), 'flybywire_installer');
     };
 
     const findInstalledTrack = (): ModTrack => {
