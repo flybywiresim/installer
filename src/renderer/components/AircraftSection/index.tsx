@@ -277,7 +277,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             await fs.copy(tempDir, installDir);
 
             dispatch(deleteDownload(props.mod.name));
-            notifyDownload();
+            notifyDownload(true);
 
             // Flash completion text
             setInstalledTrack(track);
@@ -290,6 +290,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             } else {
                 console.error(e);
                 setInstallStatus(InstallStatus.DownloadError);
+                notifyDownload(false);
             }
             setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
         }
@@ -330,13 +331,19 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
-    const notifyDownload = () => {
+    const notifyDownload = (successful: boolean) => {
         console.log('Requesting notification');
         Notification.requestPermission().then(function () {
             console.log('Showing notification');
-            new Notification('Download complete!', {
-                'body': "You're ready to fly",
-            });
+            if (successful) {
+                new Notification('Download complete!', {
+                    'body': "You're ready to fly",
+                });
+            } else {
+                new Notification('Download failed!', {
+                    'body': "Oops, something went wrong",
+                });
+            }
         }).catch(e => console.log(e));
     };
 
