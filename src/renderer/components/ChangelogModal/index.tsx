@@ -10,7 +10,7 @@ import changelog from '../../../../.github/CHANGELOG.md';
 type ChangelogProps = {
     showchangelog: boolean
 }
-function showchangelog(props: ChangelogProps) {
+const showchangelog: React.FC<null> = (props: ChangelogProps) => {
     if (props.showchangelog) {
         const marked = require("marked");
         const html = marked(changelog);
@@ -28,7 +28,7 @@ function showchangelog(props: ChangelogProps) {
         return (<></>);
     }
 
-}
+};
 
 function hidechangelog() {
     const showchangelog = false;
