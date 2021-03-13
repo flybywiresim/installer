@@ -30,7 +30,7 @@
             "setupExe": "setup.exe",
             "iconUrl": "https://cdn.flybywiresim.com/assets/installer/icon.ico",
             "loadingGif": "./src/main/icons/loading.gif",
-            "remoteReleases": "https://flybywiresim-packages.nyc3.digitaloceanspaces.com/installer"
+            "remoteReleases": "https://cdn.flybywiresim.com/installer/stable"
           }
         }
       ],

@@ -46,7 +46,13 @@ jobs:
           asset_name: ${{ env.ASSET_NAME }}
           asset_content_type: application/x-msdos-program
 
-      - name: Upload to CDN
+      - name: Upload to Bunny CDN
+        env:
+          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
+          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
+        run: ./scripts/cdn.sh out/make/squirrel.windows/x64 installer/stable
+
+      - name: Upload to DigitalOcean CDN
         run: |
           mkdir -p ~/.aws
           touch ~/.aws/credentials
