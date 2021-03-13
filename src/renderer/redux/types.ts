@@ -49,15 +49,9 @@ export interface ShowWarningModalAction {
     }
 }
 
-export interface InstallStatusState {
-    state: InstallStatus,
-}
-
 export interface InstallAction {
     type: typeof actions.UPDATE_INSTALL_STATE
-    payload: {
-        state: InstallStatus
-    }
+    payload: InstallStatus
 }
 
 export interface SelectedTrackAction {

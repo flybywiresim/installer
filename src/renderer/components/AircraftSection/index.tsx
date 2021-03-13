@@ -45,17 +45,17 @@ const settings = new Store;
 
 const { Paragraph } = Typography;
 
-type Props = {
+//props coming from renderer/components/App
+type TransferredProps = {
     mod: Mod,
 }
 
-type propTypes = {
+//all props
+type AircraftSectionProps = {
     mod: Mod,
     selectedtrack: ModTrack,
     installedtrack: ModTrack,
-    installstatus : {
-        state: InstallStatus,
-    },
+    installstatus : InstallStatus,
 }
 
 let abortController: AbortController;
@@ -80,7 +80,7 @@ enum MsfsStatus {
     Checking,
 }
 
-const index: React.FC<Props> = (props: propTypes) => {
+const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const getInstallDir = (): string => {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, props.mod.targetDirectory);
     };
@@ -128,11 +128,9 @@ const index: React.FC<Props> = (props: propTypes) => {
         store.dispatch({ type: 'SELECT_TRACK', payload: new_track });
     };
 
-    const installStatus = props.installstatus.state;
+    const installStatus = props.installstatus;
     const setInstallStatus = (new_state: InstallStatus) => {
-        store.dispatch({ type: 'UPDATE_INSTALL_STATE', payload: {
-            state: new_state
-        } });
+        store.dispatch({ type: 'UPDATE_INSTALL_STATE', payload: new_state });
     };
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
@@ -162,10 +160,11 @@ const index: React.FC<Props> = (props: propTypes) => {
     }, []);
 
     useEffect(() => {
+        findInstalledTrack();
         if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             getInstallStatus().then(setInstallStatus);
         }
-    }, [selectedTrack]);
+    }, [selectedTrack, installedTrack]);
 
     const isGitInstall = (dir: string): boolean => {
         console.log('Checking for git install');
@@ -280,10 +279,9 @@ const index: React.FC<Props> = (props: propTypes) => {
             notifyDownload();
 
             // Flash completion text
-            setInstallStatus(InstallStatus.DownloadDone);
-            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
-
             setInstalledTrack(track);
+            setInstallStatus(InstallStatus.DownloadDone);
+
             console.log(installResult);
         } catch (e) {
             if (signal.aborted) {
@@ -292,9 +290,9 @@ const index: React.FC<Props> = (props: propTypes) => {
                 console.error(e);
                 setInstallStatus(InstallStatus.DownloadError);
             }
+            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
         }
 
-        setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
         dispatch(deleteDownload(props.mod.name));
 
         // Clean up temp dir

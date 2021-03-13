@@ -7,7 +7,10 @@ import ReactHtmlParser from 'react-html-parser';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import changelog from '../../../../.github/CHANGELOG.md';
 
-function showchangelog(props: any) {
+type ChangelogProps = {
+    showchangelog: boolean
+}
+function showchangelog(props: ChangelogProps) {
     if (props.showchangelog) {
         const marked = require("marked");
         const html = marked(changelog);

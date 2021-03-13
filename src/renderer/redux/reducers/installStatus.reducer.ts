@@ -1,12 +1,10 @@
-import { InstallAction, InstallStatusState } from "../types";
+import { InstallAction } from "../types";
 import * as actionTypes from '../actionTypes';
 import { InstallStatus } from "renderer/components/AircraftSection";
 
-const initialState = {
-    state: InstallStatus.Unknown
-};
+const initialState : InstallStatus = InstallStatus.Unknown;
 
-const reducer = (state = initialState, action: InstallAction) :InstallStatusState => {
+const reducer = (state = initialState, action: InstallAction) :InstallStatus => {
     switch (action.type) {
         case actionTypes.UPDATE_INSTALL_STATE:
             return action.payload;
