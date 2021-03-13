@@ -61,6 +61,7 @@ type BaseModTrack = {
     name: string,
     key: string,
     url: string,
+    description: JSX.Element,
     latestVersionName: Promise<ModVersion | string>
 }
 
@@ -138,6 +139,13 @@ function App() {
                             name: 'Stable',
                             key: 'a32nx-stable',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
+                            description:
+                                <>
+                                    <p>
+                                        Stable is our variant that has the least bugs and best performance. This version will not
+                                        always be up to date but we guarantee it's compatibility with each major patch from MSFS.
+                                    </p>
+                                </>,
                             isExperimental: false,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_stable', RELEASE_CACHE_LIMIT)
@@ -148,6 +156,14 @@ function App() {
                             name: 'Development',
                             key: 'a32nx-dev',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
+                            description:
+                                <>
+                                    <p>
+                                        Development will have the latest features that will end up in the next stable.
+                                        Bugs are to be expected. It updates whenever something is added to the 'master' branch on Github.
+                                        Please visit our discord for support.
+                                    </p>
+                                </>,
                             isExperimental: false,
                             get latestVersionName() {
                                 return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
@@ -158,6 +174,13 @@ function App() {
                             name: 'Custom FBW',
                             key: 'a32nx-fbw',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
+                            description:
+                                <>
+                                    <p>
+                                        The Custom FBW version is exactly the same as Development but it contains our own Custom Fly-By-Wire system.
+                                        This version is updated whenever the 'fbw' branch on Github is updated, which is around every 12 hours.
+                                    </p>
+                                </>,
                             isExperimental: true,
                             warningContent:
                                 <>
