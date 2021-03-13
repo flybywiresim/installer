@@ -176,6 +176,10 @@ const index: React.FC<Props> = (props: Props) => {
             }
 
             if (updateInfo.needsUpdate) {
+                if (settings.get('mainSettings.autoUpdateMods') as boolean) {
+                    handleInstall();
+                }
+
                 return InstallStatus.NeedsUpdate;
             }
 
