@@ -61,5 +61,11 @@ export const WarningModalBase = styled(Modal)`
           font-weight: 700;
         }
       }
+
+      .ant-btn-primary {
+        background: ${colors.positive};
+        border-color: ${colors.positive};
+        outline: none;
+      }
     }
 `;
