@@ -6,6 +6,7 @@ export const Container = styled.div`
     padding-right: 1rem;
     margin-right: 2rem;
     background: ${colors.positive};
+    height: 50%;
 `;
 
 export const UpdateText = styled.h6`
