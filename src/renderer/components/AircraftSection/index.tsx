@@ -117,6 +117,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
+    // TODO: Switch to Redux when variants are available
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
 
     const installedTrack = props.installedtrack;
