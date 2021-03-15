@@ -142,6 +142,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const setInstallStatus = (new_state: InstallStatus) => {
         store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
     };
+
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
     const [wait, setWait] = useState(1);
