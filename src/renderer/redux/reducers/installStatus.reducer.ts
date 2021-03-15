@@ -6,7 +6,7 @@ const initialState : InstallStatus = InstallStatus.Unknown;
 
 const reducer = (state = initialState, action: InstallAction) :InstallStatus => {
     switch (action.type) {
-        case actionTypes.UPDATE_INSTALL_STATE:
+        case actionTypes.SET_INSTALL_STATUS:
             return action.payload;
         default:
             return state;

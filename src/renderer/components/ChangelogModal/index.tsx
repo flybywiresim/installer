@@ -6,11 +6,13 @@ import { Container, InnerContainer, Modal, Close } from './styles';
 import ReactHtmlParser from 'react-html-parser';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import changelog from '../../../../.github/CHANGELOG.md';
+import * as actionTypes from '../../redux/actionTypes';
 
 type ChangelogProps = {
     showchangelog: boolean
 }
-const showchangelog: React.FC<null> = (props: ChangelogProps) => {
+
+const ShowChangelog = (props: ChangelogProps) => {
     if (props.showchangelog) {
         const marked = require("marked");
         const html = marked(changelog);
@@ -30,17 +32,16 @@ const showchangelog: React.FC<null> = (props: ChangelogProps) => {
 
 };
 
-function hidechangelog() {
-    const showchangelog = false;
-    store.dispatch({ type: 'CHANGELOG', payload: {
-        showchangelog
+const hidechangelog = () => {
+    store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
+        showchangelog: false,
     } });
-}
+};
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: { changelog: ChangelogProps }) => {
     return {
         ...state.changelog,
     };
-}
+};
 
-export default connect(mapStateToProps)(showchangelog);
+export default connect(mapStateToProps)(ShowChangelog);

@@ -40,17 +40,25 @@ import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmente
 import * as path from 'path';
 import os from 'os';
 import store from '../../redux/store';
+import * as actionTypes from '../../redux/actionTypes';
 
 const settings = new Store;
 
 const { Paragraph } = Typography;
 
-//props coming from renderer/components/App
+// Props coming from renderer/components/App
 type TransferredProps = {
     mod: Mod,
 }
 
-//all props
+// Props coming from Redux' connect function
+type ConnectedAircraftSectionProps = {
+    selectedtrack: ModTrack,
+    installedtrack: ModTrack,
+    installstatus : InstallStatus,
+}
+
+// All props
 type AircraftSectionProps = {
     mod: Mod,
     selectedtrack: ModTrack,
@@ -122,16 +130,17 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const installedTrack = props.installedtrack;
     const setInstalledTrack = (new_installed_track: ModTrack) => {
-        store.dispatch({ type: 'INSTALLED_TRACK', payload: new_installed_track });
+        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: new_installed_track });
     };
+
     const selectedTrack = props.selectedtrack;
     const setSelectedTrack = (new_track: ModTrack) => {
-        store.dispatch({ type: 'SELECT_TRACK', payload: new_track });
+        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, payload: new_track });
     };
 
     const installStatus = props.installstatus;
     const setInstallStatus = (new_state: InstallStatus) => {
-        store.dispatch({ type: 'UPDATE_INSTALL_STATE', payload: new_state });
+        store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
     };
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
@@ -155,9 +164,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     useEffect(() => {
         const checkMsfsInterval = setInterval(checkIfMSFS, 500);
 
-        return () => {
-            clearInterval(checkMsfsInterval);
-        };
+        return () => clearInterval(checkMsfsInterval);
     }, []);
 
     useEffect(() => {
@@ -505,9 +512,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     );
 };
 
-//Defining the state types raises errors with mod: Mod in /App/index
-// @ts-ignore
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: ConnectedAircraftSectionProps) => {
     return {
         ...state
     };

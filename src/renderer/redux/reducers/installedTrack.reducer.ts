@@ -6,7 +6,7 @@ const initialState : ModTrack = null;
 
 const reducer = (state = initialState, action: InstalledTrackAction) :ModTrack => {
     switch (action.type) {
-        case actionTypes.INSTALLED_TRACK:
+        case actionTypes.SET_INSTALLED_TRACK:
             return action.payload;
         default:
             return state;
