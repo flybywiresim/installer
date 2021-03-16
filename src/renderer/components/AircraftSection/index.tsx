@@ -29,7 +29,7 @@ import fs from "fs-extra";
 import net from "net";
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, RootStore } from 'renderer/redux/types';
+import { DownloadItem, ModAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
@@ -55,16 +55,11 @@ type TransferredProps = {
 type ConnectedAircraftSectionProps = {
     selectedtrack: ModTrack,
     installedtrack: ModTrack,
-    installstatus : InstallStatus,
+    installstatus: InstallStatus,
+    latestVersionNames: ModAndTrackLatestVersionNamesState
 }
 
-// All props
-type AircraftSectionProps = {
-    mod: Mod,
-    selectedtrack: ModTrack,
-    installedtrack: ModTrack,
-    installstatus : InstallStatus,
-}
+type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps
 
 let abortController: AbortController;
 
@@ -141,6 +136,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const installStatus = props.installstatus;
     const setInstallStatus = (new_state: InstallStatus) => {
         store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
+    };
+
+    const latestVersionNameForTrack = (mod: Mod, track: ModTrack) => {
+        return props.latestVersionNames.find((info) => info.modKey === mod.key && info.trackKey === track.key)?.name;
     };
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
@@ -453,6 +452,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                     <Track
                                         key={track.key}
                                         track={track}
+                                        latestVersionName={latestVersionNameForTrack(props.mod, track)}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
                                         onSelected={() => handleTrackSelection(track)}
@@ -469,6 +469,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                     <Track
                                         key={track.key}
                                         track={track}
+                                        latestVersionName={latestVersionNameForTrack(props.mod, track)}
                                         isSelected={selectedTrack === track}
                                         isInstalled={installedTrack === track}
                                         onSelected={() => handleTrackSelection(track)}
