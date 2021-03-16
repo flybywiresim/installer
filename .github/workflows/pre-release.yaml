@@ -2,8 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
-      - '!v*-rc*'
+      - 'v*-rc*'
 
 jobs:
   build:
@@ -35,7 +34,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
-          prerelease: false
+          prerelease: true
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -47,22 +46,3 @@ jobs:
           asset_path: ${{ env.ASSET_PATH }}
           asset_name: ${{ env.ASSET_NAME }}
           asset_content_type: application/x-msdos-program
-
-      - name: Upload to Bunny CDN
-        env:
-          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
-          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
-        run: ./scripts/cdn.sh out/make/squirrel.windows/x64 installer/stable
-
-      - name: Upload to DigitalOcean CDN
-        run: |
-          mkdir -p ~/.aws
-          touch ~/.aws/credentials
-
-          echo "[default]
-          aws_access_key_id = ${{ secrets.CDN_SPACE_ACCESS_KEY_ID }}
-          aws_secret_access_key = ${{ secrets.CDN_SPACE_SECRET_ACCESS_KEY }}" > ~/.aws/credentials
-
-          aws s3 sync ${{ env.ASSET_DIRECTORY }} s3://${{ secrets.CDN_SPACE_NAME }}/installer \
-                      --follow-symlinks \
-                      --endpoint https://${{ secrets.CDN_SPACE_REGION }}.digitaloceanspaces.com --acl public-read
