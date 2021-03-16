@@ -6,3 +6,4 @@ export const SET_INSTALL_STATUS = 'setInstallStatus';
 export const CALL_CHANGELOG = 'callChangelog';
 export const SET_SELECTED_TRACK = 'setSelectedTrack';
 export const SET_INSTALLED_TRACK = 'setInstalledTrack';
+export const SET_MOD_AND_TRACK_LATEST_VERSION_NAME = 'setModReleaseInfo';

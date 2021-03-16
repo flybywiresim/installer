@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { colors, noPadding, smallCard } from "renderer/style/theme";
 import { ModTrack } from "renderer/components/App";
@@ -17,28 +17,20 @@ export const Tracks = styled.div`
 type TrackProps = {
     className?: string,
     track: ModTrack,
+    latestVersionName: string,
     isSelected: boolean,
     isInstalled: boolean,
     // eslint-disable-next-line no-unused-vars
     onSelected(track: ModTrack): void,
 };
 
-const BaseTrack: React.FC<TrackProps> = (props) => {
-    const [latestVersionName, setLatestVersionName] = useState('');
-
-    useEffect(() => {
-        props.track.latestVersionName.then(name => {
-            typeof name === 'string' ? setLatestVersionName(name) : setLatestVersionName(name.title);
-        });
-    });
-
-    return (
-        <div className={props.className} onClick={() => props.onSelected(props.track)}>
-            <TrackTitle>{props.track.name}</TrackTitle>
+const BaseTrack: React.FC<TrackProps> = ({ className, track, latestVersionName, onSelected }) =>
+    (
+        <div className={className} onClick={() => onSelected(track)}>
+            <TrackTitle>{track.name}</TrackTitle>
             <TrackState><code>{latestVersionName}</code></TrackState>
         </div>
     );
-};
 
 /**
  * Visually displays of a mod track

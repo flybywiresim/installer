@@ -58,9 +58,19 @@ export interface SelectedTrackAction {
     type: typeof actions.SET_SELECTED_TRACK
     payload: ModTrack
 }
+
 export interface InstalledTrackAction {
     type: typeof actions.SET_INSTALLED_TRACK
     payload: ModTrack
+}
+
+export interface SetModAndTrackLatestVersionName {
+    type: typeof actions.SET_MOD_AND_TRACK_LATEST_VERSION_NAME
+    payload: {
+        modKey: string,
+        trackKey: string,
+        name: string
+    }
 }
 
 export interface ChangelogState {

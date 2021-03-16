@@ -15,18 +15,21 @@ import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
 import {
     AircraftMenuItem,
     Container,
+    DragRegion,
     MainLayout,
     PageContent,
     PageHeader,
     PageSider,
-    SettingsMenuItem,
-    DragRegion
+    SettingsMenuItem
 } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
 
 import { DataCache } from '../../utils/DataCache';
+import * as actionTypes from '../../redux/actionTypes';
+import store from '../../redux/store';
+import { SetModAndTrackLatestVersionName } from "renderer/redux/types";
 
 export type Mod = {
     name: string,
@@ -62,7 +65,7 @@ type BaseModTrack = {
     key: string,
     url: string,
     description: JSX.Element,
-    latestVersionName: Promise<ModVersion | string>
+    fetchLatestVersionName: () => Promise<string>
 }
 
 export type MainlineModTrack = BaseModTrack & { isExperimental: false }
@@ -106,6 +109,21 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
     return releases;
 };
 
+export const fetchLatestVersionNames = async (mod: Mod) => {
+    if (mod.variants.length > 0) {
+        mod.variants[0].tracks.forEach(async (track) => {
+            store.dispatch<SetModAndTrackLatestVersionName>({
+                type: actionTypes.SET_MOD_AND_TRACK_LATEST_VERSION_NAME,
+                payload: {
+                    modKey: mod.key,
+                    trackKey: track.key,
+                    name: await track.fetchLatestVersionName()
+                }
+            });
+        });
+    }
+};
+
 const RELEASE_CACHE_LIMIT = 3600 * 1000 * 24;
 
 function App() {
@@ -147,7 +165,7 @@ function App() {
                                     </p>
                                 </>,
                             isExperimental: false,
-                            get latestVersionName() {
+                            fetchLatestVersionName() {
                                 return DataCache.from<string>('latest_version_stable', RELEASE_CACHE_LIMIT)
                                     .fetchOrCompute(async () => (await GitVersions.getReleases('flybywiresim', 'a32nx'))[0].name);
                             },
@@ -165,7 +183,7 @@ function App() {
                                     </p>
                                 </>,
                             isExperimental: false,
-                            get latestVersionName() {
+                            fetchLatestVersionName() {
                                 return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
                                     .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'master')).sha.substring(0, 7));
                             }
@@ -189,7 +207,7 @@ function App() {
 
                                     <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
                                 </>,
-                            get latestVersionName() {
+                            fetchLatestVersionName() {
                                 return DataCache.from<string>('latest_version_fbw', RELEASE_CACHE_LIMIT)
                                     .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'fbw')).sha.substring(0, 7));
                             },
@@ -212,6 +230,8 @@ function App() {
             variants: [],
         }
     ];
+
+    mods.forEach(fetchLatestVersionNames);
 
     const [selectedItem, setSelectedItem] = useState<string>(mods[0].key);
 
