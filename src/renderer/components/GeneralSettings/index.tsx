@@ -13,6 +13,7 @@ import {
     InfoButton, ResetButton
 } from './styles';
 import { configureInitialInstallPath } from "renderer/settings";
+import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
 
 const settings = new Store;
@@ -76,7 +77,7 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoButton onClick={showChangelog}>{settings.get('metaInfo.currentVersion')}</InfoButton>
+                <InfoButton onClick={showChangelog}>{packageInfo.version}</InfoButton>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>
