@@ -1,11 +1,9 @@
 import * as actionTypes from '../actionTypes';
-import { SetModAndTrackLatestVersionName } from '../types';
+import { ModAndTrackLatestVersionNamesState, SetModAndTrackLatestVersionName } from '../types';
 
-export type ModAndTrackLatestVersionNames = { modKey: string, trackKey: string, name: string }[]
+const initialState: ModAndTrackLatestVersionNamesState = [];
 
-const initialState: ModAndTrackLatestVersionNames = [];
-
-const reducer = (state = initialState, action: SetModAndTrackLatestVersionName): ModAndTrackLatestVersionNames => {
+const reducer = (state = initialState, action: SetModAndTrackLatestVersionName): ModAndTrackLatestVersionNamesState => {
     switch (action.type) {
         case actionTypes.SET_MOD_AND_TRACK_LATEST_VERSION_NAME:
             return [...state, action.payload];

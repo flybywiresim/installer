@@ -64,6 +64,8 @@ export interface InstalledTrackAction {
     payload: ModTrack
 }
 
+export type ModAndTrackLatestVersionNamesState = { modKey: string, trackKey: string, name: string }[]
+
 export interface SetModAndTrackLatestVersionName {
     type: typeof actions.SET_MOD_AND_TRACK_LATEST_VERSION_NAME
     payload: {

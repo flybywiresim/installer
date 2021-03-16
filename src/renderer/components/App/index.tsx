@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { shell } from "electron";
 import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
@@ -109,7 +109,7 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
     return releases;
 };
 
-export const fetchLatestVersionNames = async (mod: Mod) => {
+export const fetchLatestVersionNames = async (mod: Mod): Promise<void> => {
     if (mod.variants.length > 0) {
         mod.variants[0].tracks.forEach(async (track) => {
             store.dispatch<SetModAndTrackLatestVersionName>({
@@ -231,7 +231,9 @@ function App() {
         }
     ];
 
-    mods.forEach(fetchLatestVersionNames);
+    useEffect(() => {
+        mods.forEach(fetchLatestVersionNames);
+    }, []);
 
     const [selectedItem, setSelectedItem] = useState<string>(mods[0].key);
 

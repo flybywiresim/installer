@@ -29,7 +29,7 @@ import fs from "fs-extra";
 import net from "net";
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, RootStore } from 'renderer/redux/types';
+import { DownloadItem, ModAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
@@ -41,7 +41,6 @@ import * as path from 'path';
 import os from 'os';
 import store from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
-import { ModAndTrackLatestVersionNames } from "renderer/redux/reducers/latestVersionNames.reducer";
 
 const settings = new Store;
 
@@ -57,16 +56,10 @@ type ConnectedAircraftSectionProps = {
     selectedtrack: ModTrack,
     installedtrack: ModTrack,
     installstatus: InstallStatus,
+    latestVersionNames: ModAndTrackLatestVersionNamesState
 }
 
-// All props
-type AircraftSectionProps = {
-    mod: Mod,
-    selectedtrack: ModTrack,
-    installedtrack: ModTrack,
-    installstatus : InstallStatus
-    latestVersionNames: ModAndTrackLatestVersionNames
-}
+type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps
 
 let abortController: AbortController;
 
