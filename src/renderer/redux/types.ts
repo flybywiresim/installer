@@ -50,16 +50,16 @@ export interface ShowWarningModalAction {
 }
 
 export interface InstallAction {
-    type: typeof actions.UPDATE_INSTALL_STATE
+    type: typeof actions.SET_INSTALL_STATUS
     payload: InstallStatus
 }
 
 export interface SelectedTrackAction {
-    type: typeof actions.SELECT_TRACK
+    type: typeof actions.SET_SELECTED_TRACK
     payload: ModTrack
 }
 export interface InstalledTrackAction {
-    type: typeof actions.INSTALLED_TRACK
+    type: typeof actions.SET_INSTALLED_TRACK
     payload: ModTrack
 }
 
@@ -68,7 +68,7 @@ export interface ChangelogState {
 }
 
 export interface ChangelogAction {
-    type: typeof actions.CHANGELOG
+    type: typeof actions.CALL_CHANGELOG
     payload: {
         showchangelog: boolean
     }
