@@ -45,7 +45,7 @@ const hideChangelog = () => {
 const didVersionChange = () => {
     if (settings.get('metaInfo.versionChanged')) {
         settings.set('metaInfo.versionChanged', false);
-        store.dispatch({ type: 'CHANGELOG', payload: {
+        store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
             showchangelog: true
         } });
     }
