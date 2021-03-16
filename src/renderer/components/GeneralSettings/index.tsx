@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import store from '../../redux/store';
 import Store from 'electron-store';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import * as packageInfo from '../../../../package.json';
 import {
     Container,
     PageTitle,
@@ -14,6 +13,7 @@ import {
     InfoButton, ResetButton
 } from './styles';
 import { configureInitialInstallPath } from "renderer/settings";
+import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
 
 const settings = new Store;
@@ -77,14 +77,14 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoButton onClick={showchangelog}>{packageInfo.version}</InfoButton>
+                <InfoButton onClick={showChangelog}>{packageInfo.version}</InfoButton>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>
     );
 }
 
-const showchangelog = () => {
+const showChangelog = () => {
     store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
         showchangelog: true
     } });

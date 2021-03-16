@@ -17,9 +17,8 @@ export const Container = styled.div`
     user-select: none;
 `;
 export const InnerContainer = styled.div`
-    background-color: #313131;
     height: 100%;
-    width: 96%;
+    width: 94.5%;
     margin: auto;
     margin-left: 0px;
     display: flex;
@@ -41,7 +40,7 @@ export const Modal = styled.div`
     border-radius: 10px;
     color: #fff;
     overflow: scroll;
-    padding: 10px;
+    padding: 20px;
 
     img {
         height: 200px;
@@ -70,7 +69,7 @@ export const Close = styled.div`
     align-self: flex-start;
     align-items: center;
     position:fixed;
-    margin-left: 650px;
+    margin-left: 635px;
     width: 30px;
     height: 30px;
     overflow: hidden;
