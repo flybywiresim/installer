@@ -14,6 +14,7 @@ import {
     InfoButton, ResetButton
 } from './styles';
 import { configureInitialInstallPath } from "renderer/settings";
+import * as actionTypes from '../../redux/actionTypes';
 
 const settings = new Store;
 
@@ -83,11 +84,10 @@ function index(): JSX.Element {
     );
 }
 
-function showchangelog() {
-    const showchangelog = true;
-    store.dispatch({ type: 'CHANGELOG', payload: {
-        showchangelog
+const showchangelog = () => {
+    store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
+        showchangelog: true
     } });
-}
+};
 
 export default index;

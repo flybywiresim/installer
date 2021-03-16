@@ -30,7 +30,7 @@ import net from "net";
 import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, RootStore } from 'renderer/redux/types';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
@@ -39,18 +39,36 @@ import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from 'path';
 import os from 'os';
+import store from '../../redux/store';
+import * as actionTypes from '../../redux/actionTypes';
 
 const settings = new Store;
 
 const { Paragraph } = Typography;
 
-type Props = {
-    mod: Mod
+// Props coming from renderer/components/App
+type TransferredProps = {
+    mod: Mod,
+}
+
+// Props coming from Redux' connect function
+type ConnectedAircraftSectionProps = {
+    selectedtrack: ModTrack,
+    installedtrack: ModTrack,
+    installstatus : InstallStatus,
+}
+
+// All props
+type AircraftSectionProps = {
+    mod: Mod,
+    selectedtrack: ModTrack,
+    installedtrack: ModTrack,
+    installstatus : InstallStatus,
 }
 
 let abortController: AbortController;
 
-enum InstallStatus {
+export enum InstallStatus {
     UpToDate,
     NeedsUpdate,
     FreshInstall,
@@ -70,7 +88,7 @@ enum MsfsStatus {
     Checking,
 }
 
-const index: React.FC<Props> = (props: Props) => {
+const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const getInstallDir = (): string => {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, props.mod.targetDirectory);
     };
@@ -86,25 +104,45 @@ const index: React.FC<Props> = (props: Props) => {
 
             const track = _.find(props.mod.variants[0].tracks, { url: manifest.source });
             console.log('Currently installed', track);
-
             setInstalledTrack(track);
-            setSelectedTrack(track);
-
-            return track;
+            if (selectedTrack === null) {
+                setSelectedTrack(track);
+                return track;
+            } else {
+                selectAndSetTrack(props.selectedtrack.key);
+                return selectedTrack;
+            }
         } catch (e) {
             console.error(e);
             console.log('Not installed');
-
-            setSelectedTrack(props.mod.variants[0]?.tracks[0]);
-            return props.mod.variants[0]?.tracks[0];
+            if (selectedTrack === null) {
+                setSelectedTrack(props.mod.variants[0]?.tracks[0]);
+                return props.mod.variants[0]?.tracks[0];
+            } else {
+                selectAndSetTrack(props.selectedtrack.key);
+                return selectedTrack;
+            }
         }
     };
 
+    // TODO: Switch to Redux when variants are available
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
-    const [selectedTrack, setSelectedTrack] = useState<ModTrack>();
-    const [installedTrack, setInstalledTrack] = useState<ModTrack>();
 
-    const [installStatus, setInstallStatus] = useState<InstallStatus>(InstallStatus.Unknown);
+    const installedTrack = props.installedtrack;
+    const setInstalledTrack = (new_installed_track: ModTrack) => {
+        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: new_installed_track });
+    };
+
+    const selectedTrack = props.selectedtrack;
+    const setSelectedTrack = (new_track: ModTrack) => {
+        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, payload: new_track });
+    };
+
+    const installStatus = props.installstatus;
+    const setInstallStatus = (new_state: InstallStatus) => {
+        store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
+    };
+
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
     const [wait, setWait] = useState(1);
@@ -131,8 +169,11 @@ const index: React.FC<Props> = (props: Props) => {
     }, []);
 
     useEffect(() => {
-        getInstallStatus().then(setInstallStatus);
-    }, [selectedTrack]);
+        findInstalledTrack();
+        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+            getInstallStatus().then(setInstallStatus);
+        }
+    }, [selectedTrack, installedTrack]);
 
     const isGitInstall = (dir: string): boolean => {
         console.log('Checking for git install');
@@ -156,8 +197,9 @@ const index: React.FC<Props> = (props: Props) => {
         console.log('Checking install status');
 
         const installDir = getInstallDir();
+
         if (!fs.existsSync(installDir)) {
-            fs.mkdirSync(installDir);
+            return InstallStatus.FreshInstall;
         }
 
         if (isGitInstall(installDir)) {
@@ -211,8 +253,11 @@ const index: React.FC<Props> = (props: Props) => {
         fs.mkdirSync(tempDir);
 
         // Copy current install to temporary directory
-        setInstallStatus(InstallStatus.DownloadPrep);
-        await fs.copy(installDir, tempDir);
+
+        if (fs.existsSync(installDir)) {
+            setInstallStatus(InstallStatus.DownloadPrep);
+            await fs.copy(installDir, tempDir);
+        }
 
         // Initialize abort controller for downloads
         abortController = new AbortController();
@@ -232,18 +277,20 @@ const index: React.FC<Props> = (props: Props) => {
             }, signal);
 
             // Copy files from temp dir
+            if (!fs.existsSync(installDir)) {
+                fs.mkdirSync(installDir);
+            }
             console.log('Copying files from temp directory to install directory');
             fs.rmdirSync(installDir, { recursive: true });
             await fs.copy(tempDir, installDir);
 
             dispatch(deleteDownload(props.mod.name));
-            notifyDownload();
+            notifyDownload(true);
 
             // Flash completion text
-            setInstallStatus(InstallStatus.DownloadDone);
-            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
-
             setInstalledTrack(track);
+            setInstallStatus(InstallStatus.DownloadDone);
+
             console.log(installResult);
         } catch (e) {
             if (signal.aborted) {
@@ -251,26 +298,28 @@ const index: React.FC<Props> = (props: Props) => {
             } else {
                 console.error(e);
                 setInstallStatus(InstallStatus.DownloadError);
+                notifyDownload(false);
             }
+            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
         }
 
-        setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
         dispatch(deleteDownload(props.mod.name));
 
         // Clean up temp dir
         fs.rmdirSync(tempDir, { recursive: true });
+
     };
 
     const selectAndSetTrack = async (key: string) => {
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
-            const newTrack = selectedVariant.tracks.find(x => x.key === key);
-            setSelectedTrack(newTrack);
-        }
+        const newTrack = selectedVariant.tracks.find(x => x.key === key);
+        setSelectedTrack(newTrack);
     };
 
     const handleTrackSelection = (track: ModTrack) => {
         if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
+        } else {
+            selectAndSetTrack(props.selectedtrack.key);
         }
     };
 
@@ -290,13 +339,19 @@ const index: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const notifyDownload = () => {
+    const notifyDownload = (successful: boolean) => {
         console.log('Requesting notification');
         Notification.requestPermission().then(function () {
             console.log('Showing notification');
-            new Notification('Download complete!', {
-                'body': "You're ready to fly",
-            });
+            if (successful) {
+                new Notification('Download complete!', {
+                    'body': "You're ready to fly",
+                });
+            } else {
+                new Notification('Download failed!', {
+                    'body': "Oops, something went wrong",
+                });
+            }
         }).catch(e => console.log(e));
     };
 
@@ -458,4 +513,10 @@ const index: React.FC<Props> = (props: Props) => {
     );
 };
 
-export default index;
+const mapStateToProps = (state: ConnectedAircraftSectionProps) => {
+    return {
+        ...state
+    };
+};
+
+export default connect(mapStateToProps) (index);

@@ -20,6 +20,7 @@
 1. [LOGIC] Implement modular download - @nistei (nistei#1362)
 1. [UI] Fix background image remaining black - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UI] Fix window icon on hover - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [LOGIC] Fix unknown download state after switching tabs - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 
 ## 1.0.3
 
