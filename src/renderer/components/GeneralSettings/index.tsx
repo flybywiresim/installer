@@ -76,7 +76,7 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoButton onClick={showChangelog}>{packageInfo.version}</InfoButton>
+                <InfoButton onClick={showChangelog}>{settings.get('metaInfo.currentVersion')}</InfoButton>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>
