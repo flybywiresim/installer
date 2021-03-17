@@ -53,9 +53,9 @@ type TransferredProps = {
 
 // Props coming from Redux' connect function
 type ConnectedAircraftSectionProps = {
-    selectedtrack: ModTrack,
-    installedtrack: ModTrack,
-    installstatus: InstallStatus,
+    selectedTrack: ModTrack,
+    installedTrack: ModTrack,
+    installStatus: InstallStatus,
     latestVersionNames: ModAndTrackLatestVersionNamesState
 }
 
@@ -104,7 +104,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 setSelectedTrack(track);
                 return track;
             } else {
-                selectAndSetTrack(props.selectedtrack.key);
+                selectAndSetTrack(props.selectedTrack.key);
                 return selectedTrack;
             }
         } catch (e) {
@@ -114,7 +114,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 setSelectedTrack(props.mod.variants[0]?.tracks[0]);
                 return props.mod.variants[0]?.tracks[0];
             } else {
-                selectAndSetTrack(props.selectedtrack.key);
+                selectAndSetTrack(props.selectedTrack.key);
                 return selectedTrack;
             }
         }
@@ -123,17 +123,17 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     // TODO: Switch to Redux when variants are available
     const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
 
-    const installedTrack = props.installedtrack;
-    const setInstalledTrack = (new_installed_track: ModTrack) => {
-        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: new_installed_track });
+    const installedTrack = props.installedTrack;
+    const setInstalledTrack = (newInstalledTrack: ModTrack) => {
+        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: newInstalledTrack });
     };
 
-    const selectedTrack = props.selectedtrack;
-    const setSelectedTrack = (new_track: ModTrack) => {
-        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, payload: new_track });
+    const selectedTrack = props.selectedTrack;
+    const setSelectedTrack = (newSelectedTrack: ModTrack) => {
+        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, payload: newSelectedTrack });
     };
 
-    const installStatus = props.installstatus;
+    const installStatus = props.installStatus;
     const setInstallStatus = (new_state: InstallStatus) => {
         store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
     };
@@ -318,7 +318,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         } else {
-            selectAndSetTrack(props.selectedtrack.key);
+            selectAndSetTrack(props.selectedTrack.key);
         }
     };
 

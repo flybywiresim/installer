@@ -2,7 +2,7 @@ import * as actionTypes from '../actionTypes';
 import { ChangelogAction, ChangelogState } from "../types";
 
 const initialState = {
-    showchangelog: false
+    showChangelog: false
 };
 
 const reducer = (state = initialState, action: ChangelogAction) : ChangelogState => {

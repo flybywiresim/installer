@@ -39,7 +39,7 @@ const ShowChangelog = (props: ChangelogProps) => {
 
 const hideChangelog = () => {
     store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
-        showchangelog: false,
+        showChangelog: false,
     } });
 };
 

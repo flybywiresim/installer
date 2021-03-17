@@ -11,9 +11,9 @@ const rootReducer = combineReducers({
     downloads: downloadsReducer,
     changelog: changelogReducer,
     warningModal: warningModalReducer,
-    installstatus: installStatusReducer,
-    selectedtrack: selectedTrackReducer,
-    installedtrack: installedTrackReducer,
+    installStatus: installStatusReducer,
+    selectedTrack: selectedTrackReducer,
+    installedTrack: installedTrackReducer,
     latestVersionNames: latestVersionNamesReducer,
 });
 
