@@ -11,14 +11,14 @@ import changelog from '../../../../.github/CHANGELOG.md';
 import * as actionTypes from '../../redux/actionTypes';
 
 type ChangelogProps = {
-    showchangelog: boolean
+    showChangelog: boolean
 }
 
 const settings = new Store;
 
 const ShowChangelog = (props: ChangelogProps) => {
     didVersionChange();
-    if (props.showchangelog) {
+    if (props.showChangelog) {
         const marked = require("marked");
         const html = marked(changelog);
         return (
@@ -47,7 +47,7 @@ const didVersionChange = () => {
     if (!settings.has('metaInfo.lastVersion') || (packageInfo.version !== settings.get('metaInfo.lastVersion'))) {
         settings.set('metaInfo.lastVersion', packageInfo.version);
         store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
-            showchangelog: true
+            showChangelog: true
         } });
     }
 };
