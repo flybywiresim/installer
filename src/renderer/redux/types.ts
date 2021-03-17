@@ -76,13 +76,13 @@ export interface SetModAndTrackLatestVersionName {
 }
 
 export interface ChangelogState {
-    showchangelog: boolean
+    showChangelog: boolean
 }
 
 export interface ChangelogAction {
     type: typeof actions.CALL_CHANGELOG
     payload: {
-        showchangelog: boolean
+        showChangelog: boolean
     }
 }
 

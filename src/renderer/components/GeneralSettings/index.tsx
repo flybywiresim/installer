@@ -86,7 +86,7 @@ function index(): JSX.Element {
 
 const showChangelog = () => {
     store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
-        showchangelog: true
+        showChangelog: true
     } });
 };
 
