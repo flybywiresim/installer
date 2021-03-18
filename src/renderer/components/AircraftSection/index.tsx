@@ -84,8 +84,26 @@ enum MsfsStatus {
 }
 
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
-    const getInstallDir = (): string => {
-        return path.join(settings.get('mainSettings.msfsPackagePath') as string, props.mod.targetDirectory);
+    const getInstallDir = (targetDir: string): string => {
+        return path.join(settings.get('mainSettings.msfsPackagePath') as string, targetDir);
+    };
+
+    const findExistingInstallDir = (): string => {
+        let installDir: string;
+
+        props.mod.alternativeNames?.forEach(altName => {
+            const altDir = getInstallDir(altName);
+
+            if (fs.existsSync(altDir)) {
+                installDir = altDir;
+            }
+        });
+
+        if (!installDir) {
+            installDir = getInstallDir(props.mod.targetDirectory);
+        }
+
+        return installDir;
     };
 
     const getTempDir = (): string => {
@@ -94,7 +112,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const findInstalledTrack = (): ModTrack => {
         try {
-            const manifest = getCurrentInstall(getInstallDir());
+            const manifest = getCurrentInstall(findExistingInstallDir());
             console.log('Currently installed', manifest);
 
             const track = _.find(props.mod.variants[0].tracks, { url: manifest.source });
@@ -195,7 +213,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
         console.log('Checking install status');
 
-        const installDir = getInstallDir();
+        const installDir = findExistingInstallDir();
 
         if (!fs.existsSync(installDir)) {
             return InstallStatus.FreshInstall;
@@ -241,7 +259,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const downloadMod = async (track: ModTrack) => {
-        const installDir = getInstallDir();
+        const installDir = getInstallDir(props.mod.targetDirectory);
         const tempDir = getTempDir();
         console.log('Installing into', installDir, 'using temp dir', tempDir);
 
@@ -253,9 +271,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
         // Copy current install to temporary directory
 
-        if (fs.existsSync(installDir)) {
+        const existingInstall = findExistingInstallDir();
+        if (fs.existsSync(existingInstall)) {
             setInstallStatus(InstallStatus.DownloadPrep);
-            await fs.copy(installDir, tempDir);
+            await fs.copy(existingInstall, tempDir);
         }
 
         // Initialize abort controller for downloads
@@ -282,6 +301,15 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             console.log('Copying files from temp directory to install directory');
             fs.rmdirSync(installDir, { recursive: true });
             await fs.copy(tempDir, installDir);
+
+            // Remove installs existing under alternative names
+            props.mod.alternativeNames?.forEach(altName => {
+                const altDir = getInstallDir(altName);
+
+                if (fs.existsSync(altDir)) {
+                    fs.rmdirSync(altDir, { recursive: true });
+                }
+            });
 
             dispatch(deleteDownload(props.mod.name));
             notifyDownload(true);

@@ -41,6 +41,7 @@ export type Mod = {
     description: string,
     menuIconUrl: string,
     targetDirectory: string,
+    alternativeNames?: string[],
     variants: ModVariant[],
     enabled: boolean,
 }
@@ -144,7 +145,10 @@ function App() {
                 'aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines ' +
                 '(the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) ' +
                 'and features large, fuel-saving wingtip devices known as Sharklets.',
-            targetDirectory: 'A32NX',
+            targetDirectory: 'flybywire-aircraft-a320-neo',
+            alternativeNames: [
+                'A32NX',
+            ],
             variants: [
                 {
                     name: 'Neo (CFM LEAP-1A)',
