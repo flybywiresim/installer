@@ -125,7 +125,8 @@ export const fetchLatestVersionNames = async (mod: Mod): Promise<void> => {
     }
 };
 
-const RELEASE_CACHE_LIMIT = 3600 * 1000 * 24;
+// 5 mins
+const RELEASE_CACHE_LIMIT = 5 * 60 * 1000;
 
 function App() {
     const mods: Mod[] = [
