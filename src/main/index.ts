@@ -145,6 +145,9 @@ app.on('second-instance', () => {
 // code. You can also put them in separate files and import them here.
 
 function configureSettings(app: App) {
+    if (!settings.has('mainSettings.disableExperimentalWarning')) {
+        settings.set('mainSettings.disableExperimentalWarning', false);
+    }
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
 
