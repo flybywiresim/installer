@@ -24,7 +24,7 @@
 
 ## 1.0.5
 
-1. [UX] Disable Offline Modal due to issues @ZigTag
+1. [UX] Disable offline modal due to issues @ZigTag
 
 ## 1.0.4
 
