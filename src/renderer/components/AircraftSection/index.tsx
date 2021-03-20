@@ -418,7 +418,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 return (
                     <ButtonContainer>
                         <StateText>{download?.progress >= 99 ? 'Decompressing' : `Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
-                        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+                        {
+                            download?.progress >= 99 ?
+                                <DisabledButton text='Cancel'/> :
+                                <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+                        }
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadDone:
