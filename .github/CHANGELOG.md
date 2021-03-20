@@ -7,11 +7,11 @@
 
 ## 1.1.0
 
-1. [UI] Do not allow text selection - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
-1. [UI] Do not allow image dragging - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
-1. [LOGIC] Do not allow preselecting different version while downloading - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UI] Prevent text selection - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UI] Prevent image dragging - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [LOGIC] Disable preselecting different versions while downloading - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add Windows notification when download complete - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
-1. [UX] Add changelog for installer - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UX] Add changelog for the installer - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UI] Fix button styling in settings menu - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UX] Add report issue button at top right corner of installer - @Armankir (Arman#5297)
 1. [UI] Changed the scrollbar color for eased visibility - @Armankir (Arman#5297)
@@ -21,6 +21,14 @@
 1. [UI] Fix background image remaining black - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [UI] Fix window icon on hover - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [LOGIC] Fix unknown download state after switching tabs - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+
+## 1.0.5
+
+1. [UX] Disable Offline Modal due to issues @ZigTag
+
+## 1.0.4
+
+1. [LOGIC] Change CDN (download server) @ZigTag
 
 ## 1.0.3
 
