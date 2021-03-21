@@ -149,6 +149,7 @@ function App() {
             targetDirectory: 'flybywire-aircraft-a320-neo',
             alternativeNames: [
                 'A32NX',
+                'a32nx'
             ],
             variants: [
                 {
