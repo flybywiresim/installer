@@ -292,7 +292,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 fs.rmdirSync(installDir, { recursive: true });
             }
             console.log('Copying files from temp directory to install directory');
-            await fs.copy(tempDir, installDir);
+            await fs.copy(tempDir, installDir, { recursive: true });
 
             // Remove installs existing under alternative names
             console.log('Removing installs existing under alternative names');
