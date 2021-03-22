@@ -67,11 +67,15 @@ const createWindow = (): void => {
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.
         mainWindow.webContents.openDevTools();
-
-        globalShortcut.register('f5', () => {
-            mainWindow.reload();
-        });
     }
+
+    globalShortcut.register('CmdOrCtrl+F5', () => {
+        mainWindow.isFocused() && mainWindow.reload();
+    });
+
+    globalShortcut.register('CmdOrCtrl+F12', () => {
+        mainWindow.isFocused() && mainWindow.webContents.toggleDevTools();
+    });
 
     // Auto updater
     if (process.env.NODE_ENV !== 'development') {

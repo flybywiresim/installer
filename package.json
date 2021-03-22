@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "1.2.0-dev",
+  "version": "1.1.2-dev",
   "description": "Desktop application to install and customize FlyByWire mods",
   "main": ".webpack/main",
   "scripts": {
@@ -104,7 +104,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.4.0",
-    "@flybywiresim/fragmenter": "^0.1.8",
+    "@flybywiresim/fragmenter": "^0.1.9",
     "antd": "^4.12.2",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^6.0.1",

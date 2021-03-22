@@ -71,6 +71,7 @@ export enum InstallStatus {
     TrackSwitch,
     DownloadPrep,
     Downloading,
+    DownloadEnding,
     DownloadDone,
     DownloadError,
     DownloadCanceled,
@@ -255,6 +256,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const downloadMod = async (track: ModTrack) => {
         const installDir = getInstallDir(props.mod.targetDirectory);
         const tempDir = getTempDir();
+        console.log('Installing', track);
         console.log('Installing into', installDir, 'using temp dir', tempDir);
 
         // Prepare temporary directory
@@ -264,9 +266,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         fs.mkdirSync(tempDir);
 
         // Copy current install to temporary directory
+        console.log('Checking for existing install');
         if (fs.existsSync(installDir) && fs.existsSync(path.join(installDir, 'install.json'))) {
             setInstallStatus(InstallStatus.DownloadPrep);
+            console.log('Found existing install at', installDir);
+            console.log('Copying existing install to', tempDir);
             await fs.copy(installDir, tempDir);
+            console.log('Finished copying');
         }
 
         // Initialize abort controller for downloads
@@ -279,20 +285,24 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             dispatch(registerDownload(props.mod.name, ''));
 
             // Perform the fragmenter download
+            console.log('Starting fragmenter download for URL', track.url);
             const installResult = await install(track.url, tempDir, false, progress => {
                 if (lastPercent !== progress.percent) {
                     lastPercent = progress.percent;
                     dispatch(updateDownloadProgress(props.mod.name, progress.module, progress.percent));
                 }
             }, signal);
+            console.log('Fragmenter download finished for URL', track.url);
 
             // Copy files from temp dir
+            setInstallStatus(InstallStatus.DownloadEnding);
             if (fs.existsSync(installDir)) {
                 console.log('Removing previous install');
                 fs.rmdirSync(installDir, { recursive: true });
             }
-            console.log('Copying files from temp directory to install directory');
+            console.log('Copying files from', tempDir, 'to', installDir);
             await fs.copy(tempDir, installDir, { recursive: true });
+            console.log('Finished copying files from', tempDir, 'to', installDir);
 
             // Remove installs existing under alternative names
             console.log('Removing installs existing under alternative names');
@@ -304,6 +314,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     fs.rmdirSync(altDir, { recursive: true });
                 }
             });
+            console.log('Finished removing installs existing under alternative names');
 
             dispatch(deleteDownload(props.mod.name));
             notifyDownload(true);
@@ -312,7 +323,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             setInstalledTrack(track);
             setInstallStatus(InstallStatus.DownloadDone);
 
-            console.log(installResult);
+            console.log('Finished download', installResult);
         } catch (e) {
             if (signal.aborted) {
                 setInstallStatus(InstallStatus.DownloadCanceled);
@@ -327,8 +338,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         dispatch(deleteDownload(props.mod.name));
 
         // Clean up temp dir
+        console.log('Cleaning up temporary directory', tempDir);
         fs.rmdirSync(tempDir, { recursive: true });
-
     };
 
     const selectAndSetTrack = async (key: string) => {
@@ -417,6 +428,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                 <DisabledButton text='Cancel'/> :
                                 <CancelButton onClick={handleCancel}>Cancel</CancelButton>
                         }
+                    </ButtonContainer>
+                );
+            case InstallStatus.DownloadEnding:
+                return (
+                    <ButtonContainer>
+                        <StateText>Finishing update</StateText>
+                        <DisabledButton text='Cancel'/>
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadDone:
