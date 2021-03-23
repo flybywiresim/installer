@@ -5,7 +5,9 @@ import { InstallStatus } from 'renderer/components/AircraftSection';
 export interface DownloadItem {
     id: string
     progress: number
-    module: string
+    module: string,
+    retryCount: number,
+    retryWait: number,
 }
 
 export type DownloadsState = DownloadItem[];
@@ -16,6 +18,8 @@ export interface UpdateDownloadProgressAction {
         id: string
         progress: number
         module: string
+        retryCount: number,
+        retryWait: number,
     }
 }
 

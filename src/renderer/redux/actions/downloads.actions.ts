@@ -11,13 +11,15 @@ export function registerDownload(id: string, module: string): RegisterNewDownloa
     };
 }
 
-export function updateDownloadProgress(id: string, module: string, progress: number): UpdateDownloadProgressAction {
+export function updateDownloadProgress(id: string, module: string, progress: number, retryCount: number, retryWait: number): UpdateDownloadProgressAction {
     return {
         type: actionTypes.UPDATE_DOWNLOAD_PROGRESS,
         payload: {
             id,
             progress,
-            module
+            module,
+            retryCount,
+            retryWait
         }
     };
 }

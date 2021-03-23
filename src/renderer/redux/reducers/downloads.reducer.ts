@@ -20,6 +20,8 @@ const reducer = produce((downloads: Draft<DownloadsState>, action: DownloadActio
                 id: action.payload.id,
                 progress: 0,
                 module: action.payload.module,
+                retryCount: 0,
+                retryWait: 0,
             });
             break;
         case actionTypes.DELETE_DOWNLOAD:
