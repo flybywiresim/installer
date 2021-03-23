@@ -73,6 +73,7 @@ export enum InstallStatus {
     Downloading,
     DownloadEnding,
     DownloadDone,
+    DownloadRetry,
     DownloadError,
     DownloadCanceled,
     Unknown,
@@ -219,7 +220,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
 
         try {
-            const updateInfo = await needsUpdate(selectedTrack.url, installDir);
+            const updateInfo = await needsUpdate(selectedTrack.url, installDir, {
+                forceCacheBust: !(settings.get('mainSettings.useCdnCache') as boolean)
+            });
             console.log('Update info', updateInfo);
 
             if (selectedTrack !== installedTrack && installedTrack !== null) {
@@ -286,12 +289,21 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
             // Perform the fragmenter download
             console.log('Starting fragmenter download for URL', track.url);
-            const installResult = await install(track.url, tempDir, false, progress => {
+            const installResult = await install(track.url, tempDir, progress => {
                 if (lastPercent !== progress.percent) {
                     lastPercent = progress.percent;
-                    dispatch(updateDownloadProgress(props.mod.name, progress.module, progress.percent));
+                    dispatch(updateDownloadProgress(props.mod.name, progress.module, progress.percent, progress.retryCount, progress.retryWait));
                 }
-            }, signal);
+
+                if (progress.retryWait) {
+                    setInstallStatus(InstallStatus.DownloadRetry);
+                } else {
+                    setInstallStatus(InstallStatus.Downloading);
+                }
+            }, signal, {
+                forceCacheBust: !(settings.get('mainSettings.useCdnCache') as boolean),
+                forceFreshInstall: false
+            });
             console.log('Fragmenter download finished for URL', track.url);
 
             // Copy files from temp dir
@@ -442,6 +454,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     <ButtonContainer>
                         <StateText>Completed!</StateText>
                         <InstalledButton inGitRepo={false} />
+                    </ButtonContainer>
+                );
+            case InstallStatus.DownloadRetry:
+                return (
+                    <ButtonContainer>
+                        <StateText>Retrying {download?.module.toLowerCase()} module</StateText>
+                        <DisabledButton text='Error'/>
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadError:
