@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { ChevronDown, Circle } from "tabler-icons-react";
+import { Check, ChevronDown, Download, Refresh } from "tabler-icons-react";
 import { Mod } from "renderer/components/App/index";
 import { useSelector, } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { InstallStatus } from "renderer/components/AircraftSection";
 
-export type SidebarItemProps = { iSelected: boolean, onClick: () => void, className?: string }
+export type SidebarItemProps = { enabled?: boolean, iSelected: boolean, onClick: () => void, className?: string }
 
-export const SidebarItem: React.FC<SidebarItemProps> = ({ iSelected, onClick, children, className }) => {
+export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, iSelected, onClick, children, className }) => {
     return (
         <div
-            className={`w-full flex flex-row items-center transition-all duration-200 ${iSelected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} hover:bg-navy-lightest pl-5 py-4 cursor-pointer ${className}`}
+            className={`w-full flex flex-row items-center transition-all duration-200 ${iSelected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} ${enabled ? 'hover:bg-navy-lightest' : ''} pl-5 py-4 ${enabled ? 'cursor-pointer' : ''} ${className}`}
             onClick={onClick}
         >{children}</div>
     );
@@ -36,36 +36,65 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
 type SidebarModProps = { mod: Mod, isSelected: boolean, setSelectedItem: (key: string) => void }
 
 export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, setSelectedItem }) => {
-    const [downloadState, setDownloadState] = useState('');
+    const [downloadState, setStatusText] = useState('');
+    const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
     const modDownloadState = useSelector<InstallerStore>(state => state.installStatus);
 
     useEffect(() => {
-        switch (modDownloadState) {
-            case InstallStatus.FreshInstall:
-                setDownloadState('Not installed');
-                break;
-            case InstallStatus.NeedsUpdate:
-                setDownloadState('Update Available');
-                break;
-            case InstallStatus.DownloadPrep:
-            case InstallStatus.Downloading:
-            case InstallStatus.DownloadEnding:
-                setDownloadState('Installing...');
-                break;
-            default:
-                setDownloadState('Installed');
-                break;
+        if (mod.enabled) {
+            switch (modDownloadState) {
+                case InstallStatus.FreshInstall:
+                    setStatusText('Not Installed');
+                    setIcon('install');
+                    break;
+                case InstallStatus.NeedsUpdate:
+                    setStatusText('Update Available');
+                    setIcon('update');
+                    break;
+                case InstallStatus.DownloadPrep:
+                case InstallStatus.Downloading:
+                case InstallStatus.DownloadEnding:
+                    setStatusText('Installing...');
+                    setIcon('installing');
+                    break;
+                default:
+                    setStatusText('Installed');
+                    setIcon('installed');
+                    break;
+            }
+        } else {
+            setStatusText('Not Available');
+            setIcon('notAvailable');
         }
     }, [modDownloadState]);
 
+    const renderIcon = () => {
+        switch (icon) {
+            case 'notAvailable':
+                return <Download className="text-gray-700 ml-auto mr-4" size={28} />;
+            case 'install':
+                return <Download className="text-gray-400 ml-auto mr-4" size={28} />;
+            case 'installing':
+                return <Refresh className="text-yellow-400 ml-auto mr-4" size={28} />;
+            case 'installed':
+                return <Check className="text-green-400 ml-auto mr-4" size={28} />;
+            case 'update':
+                return <Download className="text-yellow ml-auto mr-4" size={28} />;
+        }
+    };
+
     return (
-        <SidebarItem iSelected={isSelected} onClick={() => setSelectedItem(mod.key)}>
-            <div className="flex flex-col ml-3">
+        <SidebarItem enabled={mod.enabled} iSelected={isSelected} onClick={() => {
+            if (mod.enabled) {
+                setSelectedItem(mod.key);
+            }
+        }}>
+            <div className={`flex flex-col ml-3 ${mod.enabled ? 'opacity-100' : 'opacity-60'}`}>
                 <span className="text-xl text-gray-200 font-semibold" key={mod.key}>{mod.name}</span>
                 <code className="text-lg text-teal-50">{downloadState}</code>
             </div>
 
-            <Circle className="text-green-400 ml-auto mr-4" size={28} />
+            {renderIcon()}
         </SidebarItem>
     );
 };
