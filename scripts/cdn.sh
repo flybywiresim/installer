@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CDN_URL="storage.bunnycdn.com/flybywiresim"
+CDN_URL="storage.bunnycdn.com/flybywiresim-cdn"
 CDN_PURGE_LINK="https://bunnycdn.com/api/purge?url=http://flybywiresim.b-cdn.net"
 FILES=${1}
 CDN_DIR=${2:-"installer/test"}
