@@ -28,7 +28,7 @@ const VersionBase: React.FC<VersionProps> = (props) => {
         const height = ref.current.clientHeight;
 
         setVersionContainerHeight(height);
-    }, [ref]);
+    }, [ref.current?.clientHeight]);
 
     const openReleasePage = () => shell.openExternal(GITHUB_RELEASE_BASE_URL + props.version.title);
 

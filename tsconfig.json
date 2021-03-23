@@ -10,12 +10,13 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "lib": ["ESNext", "DOM"],
     "target": "ES6",
     "paths": {
       "*": ["node_modules/*"],
       "common/*": ["./src/common/*"],
       "renderer/*": ["./src/renderer/*"],
-      "main/*": ["./src/main/*"],
+      "main/*": ["./src/main/*"]
     },
     "jsx": "react"
   },

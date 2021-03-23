@@ -1,5 +1,9 @@
-import React, { useState } from "react";
-import { ChevronDown } from "tabler-icons-react";
+import React, { useEffect, useState } from "react";
+import { ChevronDown, Circle } from "tabler-icons-react";
+import { Mod } from "renderer/components/App/index";
+import { useSelector, } from "react-redux";
+import { InstallerStore } from "renderer/redux/store";
+import { InstallStatus } from "renderer/components/AircraftSection";
 
 export type SidebarItemProps = { iSelected: boolean, onClick: () => void, className?: string }
 
@@ -26,5 +30,42 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
             </span>
             {expanded && children}
         </>
+    );
+};
+
+type SidebarModProps = { mod: Mod, isSelected: boolean, setSelectedItem: (key: string) => void }
+
+export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, setSelectedItem }) => {
+    const [downloadState, setDownloadState] = useState('');
+    const modDownloadState = useSelector<InstallerStore>(state => state.installStatus);
+
+    useEffect(() => {
+        switch (modDownloadState) {
+            case InstallStatus.FreshInstall:
+                setDownloadState('Not installed');
+                break;
+            case InstallStatus.NeedsUpdate:
+                setDownloadState('Update Available');
+                break;
+            case InstallStatus.DownloadPrep:
+            case InstallStatus.Downloading:
+            case InstallStatus.DownloadEnding:
+                setDownloadState('Installing...');
+                break;
+            default:
+                setDownloadState('Installed');
+                break;
+        }
+    }, [modDownloadState]);
+
+    return (
+        <SidebarItem iSelected={isSelected} onClick={() => setSelectedItem(mod.key)}>
+            <div className="flex flex-col ml-3">
+                <span className="text-xl text-gray-200 font-semibold" key={mod.key}>{mod.name}</span>
+                <code className="text-lg text-teal-50">{downloadState}</code>
+            </div>
+
+            <Circle className="text-green-400 ml-auto mr-4" size={28} />
+        </SidebarItem>
     );
 };

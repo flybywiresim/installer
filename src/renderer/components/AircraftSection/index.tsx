@@ -42,7 +42,6 @@ import * as actionTypes from '../../redux/actionTypes';
 
 const settings = new Store;
 
-
 // Props coming from renderer/components/App
 type TransferredProps = {
     mod: Mod,

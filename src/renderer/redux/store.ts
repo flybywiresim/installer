@@ -1,5 +1,13 @@
 import { createStore } from 'redux';
 import rootReducer from './reducers';
+import {
+    ChangelogState,
+    DownloadsState,
+    ModAndTrackLatestVersionNamesState,
+    ShowWarningModalState
+} from "renderer/redux/types";
+import { InstallStatus } from "renderer/components/AircraftSection";
+import { ModTrack } from "renderer/components/App";
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 
@@ -11,5 +19,15 @@ if (module.hot) {
         store.replaceReducer(nextRootReducer);
     });
 }
+
+export type InstallerStore = {
+    downloads: DownloadsState,
+    changelog: ChangelogState,
+    warningModal: ShowWarningModalState,
+    installStatus: InstallStatus,
+    selectedTrack: ModTrack,
+    installedTrack: ModTrack,
+    latestVersionNames: ModAndTrackLatestVersionNamesState,
+};
 
 export default store;

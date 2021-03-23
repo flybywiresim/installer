@@ -4,17 +4,15 @@ import { shell } from "electron";
 import SimpleBar from 'simplebar-react';
 
 import logo from 'renderer/assets/FBW-Tail.svg';
-import Logo from 'renderer/components/LogoWithText';
+import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
 import AircraftSection from 'renderer/components/AircraftSection';
-import WindowActionButtons from 'renderer/components/WindowActionButtons';
 import A320NoseSVG from 'renderer/assets/a32nx_nose.svg';
 import A380NoseSVG from 'renderer/assets/a380x_nose.svg';
 import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
 
 import {
     Container,
-    DragRegion,
     MainLayout,
     PageContent,
     PageHeader,
@@ -27,8 +25,10 @@ import { DataCache } from '../../utils/DataCache';
 import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
 import { SetModAndTrackLatestVersionName } from "renderer/redux/types";
-import { Check, ChevronDown, Settings } from "tabler-icons-react";
-import { SidebarItem, SidebarPublisher } from "renderer/components/App/SideBar";
+import { Settings } from "tabler-icons-react";
+import { SidebarItem, SidebarMod, SidebarPublisher } from "renderer/components/App/SideBar";
+import InstallerUpdate from "renderer/components/InstallerUpdate";
+import { WindowButtons } from "renderer/components/WindowActionButtons";
 
 export type Mod = {
     name: string,
@@ -260,26 +260,21 @@ function App() {
             <SimpleBar>
                 <Container>
                     <MainLayout className="overflow-hidden">
-                        <PageHeader className="absolute w-full h-12 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
-                            <Logo/>
-                            <WindowActionButtons/>
-                        </PageHeader>
+                        <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
+                            <PageHeader className="h-full flex-1 flex flex-row items-stretch">
+                                <Logo />
+                                <InstallerUpdate />
+                            </PageHeader>
 
-                        <div className="h-full pt-12 flex flex-row justify-start">
+                            <WindowButtons />
+                        </div>
+
+                        <div className="h-full pt-14 flex flex-row justify-start">
                             <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
                                 <div className="h-full flex flex-col divide-y divide-gray-700">
                                     <SidebarPublisher name="FlyByWire Simulations" logo={logo}>
                                         {
-                                            mods.map(mod =>
-                                                <SidebarItem iSelected={selectedItem === mod.key} onClick={() => setSelectedItem(mod.key)}>
-                                                    <div className="flex flex-col ml-3">
-                                                        <span className="text-xl text-gray-200 font-semibold" key={mod.key}>{mod.name}</span>
-                                                        <code className="text-lg text-teal-50">v0.5.3 -&gt; v0.6.0</code>
-                                                    </div>
-
-                                                    <Check className="text-green-400 ml-auto mr-4" size={28} />
-                                                </SidebarItem>
-                                            )
+                                            mods.map(mod => <SidebarMod key={mod.key} mod={mod} isSelected={selectedItem === mod.key} setSelectedItem={() => setSelectedItem(mod.key)} />)
                                         }
                                     </SidebarPublisher>
 
