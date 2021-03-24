@@ -25,8 +25,8 @@ export const HeaderImage = styled.div`
 `;
 
 export const ModelName = styled.span`
-    font-size: 32px;
-    font-weight: 800;
+    font-size: 36px;
+    font-weight: 700;
     line-height: 30px;
 `;
 
@@ -118,9 +118,6 @@ export const Content = styled.div`
     grid-template-rows: auto auto;
     grid-gap: 1.32em;
     padding: 6px 24px 24px 24px;
-    h3 {
-        color: #FFFFFF;
-    }
 `;
 
 export const TopContainer = styled.div`

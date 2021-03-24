@@ -122,6 +122,7 @@
     "redux": "^4.0.5",
     "simplebar-react": "^2.3.0",
     "styled-components": "^5.2.1",
+    "tabler-icons-react": "~1.33.0",
     "walkdir": "^0.4.1"
   },
   "husky": {

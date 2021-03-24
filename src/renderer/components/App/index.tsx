@@ -1,35 +1,34 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
 import { shell } from "electron";
-import { Layout, Menu, } from 'antd';
 import SimpleBar from 'simplebar-react';
 
-import Logo from 'renderer/components/LogoWithText';
+import logo from 'renderer/assets/FBW-Tail.svg';
+import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
 import AircraftSection from 'renderer/components/AircraftSection';
-import WindowActionButtons from 'renderer/components/WindowActionButtons';
 import A320NoseSVG from 'renderer/assets/a32nx_nose.svg';
 import A380NoseSVG from 'renderer/assets/a380x_nose.svg';
 import CFMLeap1SVG from 'renderer/assets/cfm_leap1-a.svg';
 
 import {
-    AircraftMenuItem,
     Container,
-    DragRegion,
     MainLayout,
     PageContent,
     PageHeader,
     PageSider,
-    SettingsMenuItem
 } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
-
 import { DataCache } from '../../utils/DataCache';
 import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
 import { SetModAndTrackLatestVersionName } from "renderer/redux/types";
+import { Settings } from "tabler-icons-react";
+import { SidebarItem, SidebarMod, SidebarPublisher } from "renderer/components/App/SideBar";
+import InstallerUpdate from "renderer/components/InstallerUpdate";
+import { WindowButtons } from "renderer/components/WindowActionButtons";
 
 export type Mod = {
     name: string,
@@ -260,29 +259,38 @@ function App() {
             <WarningModal />
             <SimpleBar>
                 <Container>
-                    <MainLayout>
-                        <PageHeader>
-                            <DragRegion/>
-                            <Logo/>
-                            <WindowActionButtons/>
-                        </PageHeader>
+                    <MainLayout className="overflow-hidden">
+                        <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
+                            <PageHeader className="h-full flex-1 flex flex-row items-stretch">
+                                <Logo />
+                                <InstallerUpdate />
+                            </PageHeader>
 
-                        <Layout className="site-layout">
-                            <PageSider>
-                                <Menu theme="dark" mode="inline" defaultSelectedKeys={[selectedItem]}
-                                    onSelect={selectInfo => setSelectedItem(selectInfo.key.toString())}>
-                                    {
-                                        mods.map(mod =>
-                                            <AircraftMenuItem mod={mod} key={mod.key} disabled={!mod.enabled} />
-                                        )
-                                    }
-                                    <SettingsMenuItem key="settings">Settings</SettingsMenuItem>
-                                </Menu>
+                            <WindowButtons />
+                        </div>
+
+                        <div className="h-full pt-14 flex flex-row justify-start">
+                            <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
+                                <div className="h-full flex flex-col divide-y divide-gray-700">
+                                    <SidebarPublisher name="FlyByWire Simulations" logo={logo}>
+                                        {
+                                            mods.map(mod => <SidebarMod key={mod.key} mod={mod} isSelected={selectedItem === mod.key} setSelectedItem={() => setSelectedItem(mod.key)} />)
+                                        }
+                                    </SidebarPublisher>
+
+                                    <SidebarItem className="mt-auto" iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
+                                        <Settings className="text-gray-100 ml-2 mr-3" size={24} />
+
+                                        <div className="flex flex-col">
+                                            <span className="text-lg text-gray-200 font-semibold">Settings</span>
+                                        </div>
+                                    </SidebarItem>
+                                </div>
                             </PageSider>
                             <PageContent>
                                 {sectionToShow}
                             </PageContent>
-                        </Layout>
+                        </div>
                     </MainLayout>
                 </Container>
             </SimpleBar>

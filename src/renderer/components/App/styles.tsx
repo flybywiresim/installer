@@ -8,7 +8,7 @@ import * as fs from "fs";
 
 const settings = new Store<{ [p: string]: string }>({ watch: true });
 
-const { Header, Content, Sider } = Layout;
+const { Content } = Layout;
 
 export const Container = styled.div`
     height: 100vh;
@@ -17,20 +17,8 @@ export const Container = styled.div`
     }
 `;
 
-export const PageHeader = styled(Header)`
-    display: flex;
-    align-items: center;
-    height: 50px;
-    padding-left: 18px;
-    background-color: #232323;
-`;
-export const DragRegion = styled.div`
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    height: 45px;
-    width: calc(100% - 10px);
-    -webkit-app-region: drag;
+export const PageHeader = styled.div`
+  -webkit-app-region: drag;
 `;
 
 export const PageContent = styled(Content)`
@@ -69,21 +57,13 @@ export const AircraftSubMenuItem = styled(Menu.SubMenu)`
 
 `;
 
-export const SettingsMenuItem = styled(MenuItem)`
-    position: absolute !important;
-    bottom: 0px;
-    width: 100%;
-`;
-
 export const HomeMenuItem = styled(MenuItem)`
     img {
         height: 13px !important;
     }
 `;
 
-export const PageSider = styled(Sider)`
-  background-color: #313131;
-
+export const PageSider = styled.div`
   .ant-layout-sider-children {
     display: flex;
     flex-direction: column;

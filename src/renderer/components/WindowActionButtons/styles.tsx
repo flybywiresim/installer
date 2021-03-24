@@ -9,12 +9,13 @@ export const Container = styled.div`
 `;
 
 interface ButtonProps {
-    isClose?: boolean
+    isClose?: boolean,
+    className?: string
 }
 
 export const Button = styled.div<ButtonProps>`
-    height: 50px;
     width: 40px;
+    height: 100%;
     color: #B9BBBE;
     display: flex;
     justify-content: center;
