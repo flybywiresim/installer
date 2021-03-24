@@ -148,10 +148,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
     };
 
-    const latestVersionNameForTrack = (mod: Mod, track: ModTrack) => {
-        return props.latestVersionNames.find((info) => info.modKey === mod.key && info.trackKey === track.key)?.name;
-    };
-
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
     const [wait, setWait] = useState(1);
@@ -509,12 +505,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                             {
                                 selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
                                     <Track
+                                        mod={props.mod}
                                         key={track.key}
                                         track={track}
-                                        latestVersionName={latestVersionNameForTrack(props.mod, track)}
                                         isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack === track}
-                                        onSelected={() => handleTrackSelection(track)}
+                                        isInstalled={installedTrack?.key === track.key}
+                                        handleSelected={() => handleTrackSelection(track)}
                                     />
                                 )
                             }
@@ -526,12 +522,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                             {
                                 selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
                                     <Track
+                                        mod={props.mod}
                                         key={track.key}
                                         track={track}
-                                        latestVersionName={latestVersionNameForTrack(props.mod, track)}
                                         isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack === track}
-                                        onSelected={() => handleTrackSelection(track)}
+                                        isInstalled={installedTrack?.key === track.key}
+                                        handleSelected={() => handleTrackSelection(track)}
                                     />
                                 )
                             }
