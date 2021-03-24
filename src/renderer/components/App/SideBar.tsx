@@ -68,7 +68,7 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, setSele
         }
     }, [modDownloadState]);
 
-    const renderIcon = () => {
+    const RenderIcon = () => {
         switch (icon) {
             case 'notAvailable':
                 return <Download className="text-gray-700 ml-auto mr-4" size={28} />;
@@ -94,7 +94,7 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, setSele
                 <code className="text-lg text-teal-50">{downloadState}</code>
             </div>
 
-            {renderIcon()}
+            <RenderIcon />
         </SidebarItem>
     );
 };

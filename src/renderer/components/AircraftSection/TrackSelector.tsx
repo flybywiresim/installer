@@ -1,76 +1,56 @@
 import React from "react";
-import styled from "styled-components";
-import { colors, smallCard } from "renderer/style/theme";
-import { ModTrack } from "renderer/components/App";
+import { useSelector } from "react-redux";
+import { InstallerStore } from "renderer/redux/store";
+import { Mod, ModTrack } from "renderer/components/App";
 
 import './index.css';
 
-/**
- * Container for mod tracks
- */
-export const Tracks = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: stretch;
-  column-gap: 1em;
-`;
+export const Tracks: React.FC = ({ children }) => (
+    <div className="flex flex-row justify-start items-stretch gap-2">
+        {children}
+    </div>
+);
 
 type TrackProps = {
     className?: string,
+    mod: Mod,
     track: ModTrack,
-    latestVersionName: string,
     isSelected: boolean,
     isInstalled: boolean,
     // eslint-disable-next-line no-unused-vars
-    onSelected(track: ModTrack): void,
+    handleSelected(track: ModTrack): void,
 };
 
-const BaseTrack: React.FC<TrackProps> = ({ isSelected, onSelected, track, latestVersionName }) =>
-    (
+export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, mod, track }) => {
+    const latestVersionName = useSelector<InstallerStore, string>(state => {
+        return state.latestVersionNames
+            .find((entry) => entry.modKey === mod.key && entry.trackKey === track.key)
+            ?.name ?? '<unknown>';
+    });
+
+    const makeBorderStyle = () => {
+        if (isInstalled) {
+            return 'bg-green-600';
+        } else {
+            if (isSelected) {
+                return 'bg-teal-light-contrast';
+            } else {
+                return 'bg-gray-600';
+            }
+        }
+    };
+
+    return (
         <div
-            className={`${isSelected ? 'selected' : 'selector'} w-60 flex flex-row items-center ${isSelected ? 'bg-navy-lightest' : 'bg-navy-lighter'} ${isSelected ? 'border-teal-light-contrast' : 'border-gray-700 hover:border-gray-500'} rounded-md transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer`}
-            onClick={() => onSelected(track)}
+            className={`${isSelected ? 'selected' : 'selector'} ${isInstalled ? 'installed' : ''} w-60 flex flex-row items-center ${isSelected ? 'bg-navy-lightest' : 'bg-navy-lighter'} rounded-md transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer`}
+            onClick={() => handleSelected(track)}
         >
-            <div className={`${isSelected ? 'bg-teal' : 'bg-gray-700'} w-1 h-12 rounded-r-xl transition transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`} />
+            <div
+                className={`${makeBorderStyle()} w-1 h-12 rounded-r-xl transition transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
             <div className="flex flex-col px-5 py-2">
                 <span className="text-xl text-gray-50">{track.name}</span>
                 <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
             </div>
         </div>
     );
-
-/**
- * Visually displays of a mod track
- */
-export const Track = styled(BaseTrack)`
-  ${smallCard};
-
-  width: 13em;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-
-  cursor: pointer;
-
-  :after {
-    content:'';
-    position: absolute;
-    top: ${props => props.isSelected ? '0% !important' : 'calc(50% - 5px)'};
-    left: 0;
-    width: ${props => props.isSelected ? '10px' : '5px'};
-    height: ${props => props.isSelected ? '100% !important' : '10px'};
-    border-left: 5px solid;
-    border-color: ${props => props.isInstalled ? colors.cardInstalled : props.isSelected ? colors.cardSelected : colors.mutedTextDark};
-    border-radius: 5px;
-    transition-property: height, top;
-    transition-duration: .1s;
-  }
-
-  &:hover:after {
-    top: calc(50% - 10px);
-    height: 20px;
-  }
-`;
+};
