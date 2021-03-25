@@ -536,7 +536,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 </TopContainer>
                 <LeftContainer>
                     <DetailsContainer>
-                        <h3 className="font-semibold text-teal-50">Details</h3>
+                        <h3 className="font-semibold text-teal-50">About This Version</h3>
                         <p className="text-base text-gray-300">{selectedTrack?.description ?? ''}</p>
                         <h3 className="font-semibold text-teal-50">Details</h3>
                         <p className="text-base text-gray-300">{props.mod.description}</p>
