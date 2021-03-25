@@ -1,6 +1,5 @@
 import Store from "electron-store";
 import path from "path";
-import os from "os";
 
 const settings = new Store;
 
