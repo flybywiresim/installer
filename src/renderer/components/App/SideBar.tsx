@@ -53,6 +53,8 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, setSele
                     break;
                 case InstallStatus.DownloadPrep:
                 case InstallStatus.Downloading:
+                case InstallStatus.Decompressing:
+                case InstallStatus.DownloadRetry:
                 case InstallStatus.DownloadEnding:
                     setStatusText('Installing...');
                     setIcon('installing');
