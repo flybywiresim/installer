@@ -5,6 +5,10 @@
 <!-- Use the following format below -->
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
+## 1.2.0
+
+1. [LOGIC] Fix downloads failing in encrypted directories - @nistei (nistei#1362)
+
 ## 1.1.1
 
 1. [LOGIC] Fix full downloads broken for some users - @nistei (nistei#1362)
