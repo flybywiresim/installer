@@ -36,9 +36,9 @@ import { Version, Versions } from "renderer/components/AircraftSection/VersionHi
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from 'path';
-import os from 'os';
 import store from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
+import { Directories } from "renderer/utils/Directories";
 
 const settings = new Store;
 
@@ -82,16 +82,8 @@ enum MsfsStatus {
 }
 
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
-    const getInstallDir = (targetDir: string): string => {
-        return path.join(settings.get('mainSettings.msfsPackagePath') as string, targetDir);
-    };
-
-    const getTempDir = (): string => {
-        return path.join(os.tmpdir(), 'flybywire_installer');
-    };
-
     const findInstalledTrack = (): ModTrack => {
-        const targetDir = getInstallDir(props.mod.targetDirectory);
+        const targetDir = Directories.inCommunity(props.mod.targetDirectory);
         if (!fs.existsSync(path.join(targetDir, 'install.json'))) {
             console.log('Not installed');
             if (selectedTrack === null) {
@@ -201,7 +193,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
         console.log('Checking install status');
 
-        const installDir = getInstallDir(props.mod.targetDirectory);
+        const installDir = Directories.inCommunity(props.mod.targetDirectory);
 
         if (!fs.existsSync(installDir)) {
             return InstallStatus.FreshInstall;
@@ -249,8 +241,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const downloadMod = async (track: ModTrack) => {
-        const installDir = getInstallDir(props.mod.targetDirectory);
-        const tempDir = getTempDir();
+        const installDir = Directories.inCommunity(props.mod.targetDirectory);
+        const tempDir = Directories.temp();
+
         console.log('Installing', track);
         console.log('Installing into', installDir, 'using temp dir', tempDir);
 
@@ -311,7 +304,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             // Remove installs existing under alternative names
             console.log('Removing installs existing under alternative names');
             props.mod.alternativeNames?.forEach(altName => {
-                const altDir = getInstallDir(altName);
+                const altDir = Directories.inCommunity(altName);
 
                 if (fs.existsSync(altDir)) {
                     console.log('Removing alternative', altDir);
