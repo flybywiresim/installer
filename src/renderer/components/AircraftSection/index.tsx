@@ -36,7 +36,6 @@ import { Version, Versions } from "renderer/components/AircraftSection/VersionHi
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from 'path';
-import os from 'os';
 import store from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
 
@@ -87,7 +86,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const getTempDir = (): string => {
-        return path.join(os.tmpdir(), 'flybywire_installer');
+        return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
     };
 
     const findInstalledTrack = (): ModTrack => {
