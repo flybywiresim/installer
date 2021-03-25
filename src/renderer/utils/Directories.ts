@@ -10,7 +10,7 @@ export class Directories {
     }
 
     static temp(): string {
-        return path.join(os.tmpdir(), 'flybywire_installer');
+        return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
     }
 
 }
