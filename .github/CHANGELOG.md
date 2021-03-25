@@ -9,6 +9,7 @@
 
 1. [LOGIC] Fix downloads failing in encrypted directories - @nistei (nistei#1362)
 1. [LOGIC] Add retries for failed installs - @nistei (nistei#1362)
+1. [ADDONS] Add "Experimental" version for A32NX - @Benjozork (Benjamin Dupont)
 
 ## 1.1.1
 
