@@ -34,7 +34,7 @@ import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
-import { install, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
+import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import * as path from 'path';
 import store from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
@@ -67,6 +67,7 @@ export enum InstallStatus {
     TrackSwitch,
     DownloadPrep,
     Downloading,
+    Decompressing,
     DownloadEnding,
     DownloadDone,
     DownloadRetry,
@@ -273,19 +274,38 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             dispatch(registerDownload(props.mod.name, ''));
 
             // Perform the fragmenter download
-            console.log('Starting fragmenter download for URL', track.url);
-            const installResult = await install(track.url, tempDir, progress => {
+            const installer = new FragmenterInstaller(track.url, tempDir);
+
+            installer.on('downloadStarted', module => {
+                console.log('Downloading started for module', module.name);
+                setInstallStatus(InstallStatus.Downloading);
+            });
+            installer.on('downloadProgress', (module, progress) => {
                 if (lastPercent !== progress.percent) {
                     lastPercent = progress.percent;
-                    dispatch(updateDownloadProgress(props.mod.name, progress.module, progress.percent, progress.retryCount, progress.retryWait));
+                    dispatch(updateDownloadProgress(props.mod.name, module.name, progress.percent));
                 }
+            });
+            installer.on('unzipStarted', module => {
+                console.log('Started unzipping module', module.name);
+                setInstallStatus(InstallStatus.Decompressing);
+            });
+            installer.on('retryScheduled', (module, retryCount, waitSeconds) => {
+                console.log('Scheduling a retry for module', module.name);
+                console.log('Retry count', retryCount);
+                console.log('Waiting for', waitSeconds, 'seconds');
 
-                if (progress.retryWait) {
-                    setInstallStatus(InstallStatus.DownloadRetry);
-                } else {
-                    setInstallStatus(InstallStatus.Downloading);
-                }
-            }, signal, {
+                setInstallStatus(InstallStatus.DownloadRetry);
+            });
+            installer.on('retryStarted', (module, retryCount) => {
+                console.log('Starting a retry for module', module.name);
+                console.log('Retry count', retryCount);
+
+                setInstallStatus(InstallStatus.Downloading);
+            });
+
+            console.log('Starting fragmenter download for URL', track.url);
+            const installResult = await installer.install(signal, {
                 forceCacheBust: !(settings.get('mainSettings.useCdnCache') as boolean),
                 forceFreshInstall: false
             });
@@ -419,12 +439,15 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             case InstallStatus.Downloading:
                 return (
                     <ButtonContainer>
-                        <StateText>{download?.progress >= 99 ? 'Decompressing' : `Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
-                        {
-                            download?.progress >= 99 ?
-                                <DisabledButton text='Cancel'/> :
-                                <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-                        }
+                        <StateText>{`Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
+                        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+                    </ButtonContainer>
+                );
+            case InstallStatus.Decompressing:
+                return (
+                    <ButtonContainer>
+                        <StateText>Decompressing</StateText>
+                        <DisabledButton text='Cancel'/>
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadEnding:
