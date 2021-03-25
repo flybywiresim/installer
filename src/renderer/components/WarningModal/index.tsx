@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import { WarningModalBase } from "./styles";
-import { ExperimentalModTrack } from "renderer/components/App";
 import Store from "electron-store";
+import { ExperimentalModTrack } from "renderer/utils/InstallerConfiguration";
 
 type WarningModalProps = {
     track: ExperimentalModTrack,

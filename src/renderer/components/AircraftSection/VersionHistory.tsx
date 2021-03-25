@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from "styled-components";
 import { shell } from "electron";
-import { ModVersion } from "renderer/components/App";
+import { ModVersion } from "renderer/utils/InstallerConfiguration";
 
 /**
  * Container for versions

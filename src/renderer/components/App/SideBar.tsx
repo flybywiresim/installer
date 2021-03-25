@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Check, ChevronDown, Download, Refresh } from "tabler-icons-react";
-import { Mod } from "renderer/components/App/index";
 import { useSelector, } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { InstallStatus } from "renderer/components/AircraftSection";
+import { Mod } from "renderer/utils/InstallerConfiguration";
 
 export type SidebarItemProps = { enabled?: boolean, iSelected: boolean, onClick: () => void, className?: string }
 
@@ -33,9 +33,9 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
     );
 };
 
-type SidebarModProps = { mod: Mod, isSelected: boolean, setSelectedItem: (key: string) => void }
+type SidebarModProps = { mod: Mod, isSelected: boolean, handleSelected: (key: string) => void }
 
-export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, setSelectedItem }) => {
+export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleSelected }) => {
     const [downloadState, setStatusText] = useState('');
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
     const modDownloadState = useSelector<InstallerStore>(state => state.installStatus);
@@ -88,7 +88,7 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, setSele
     return (
         <SidebarItem enabled={mod.enabled} iSelected={isSelected} onClick={() => {
             if (mod.enabled) {
-                setSelectedItem(mod.key);
+                handleSelected(mod.key);
             }
         }}>
             <div className={`flex flex-col ml-3 ${mod.enabled ? 'opacity-100' : 'opacity-60'}`}>

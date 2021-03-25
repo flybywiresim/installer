@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
-import { Mod, ModTrack } from "renderer/components/App";
 
 import './index.css';
+import { Mod, ModTrack } from "renderer/utils/InstallerConfiguration";
 
 export const Tracks: React.FC = ({ children }) => (
     <div className="flex flex-row justify-start items-stretch gap-2">

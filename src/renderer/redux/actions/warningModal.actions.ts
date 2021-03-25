@@ -1,6 +1,6 @@
 import * as actionTypes from "../actionTypes";
 import { ShowWarningModalAction } from "../types";
-import { ModTrack } from "renderer/components/App";
+import { ModTrack } from "renderer/utils/InstallerConfiguration";
 
 export function callWarningModal(show: boolean, track?: ModTrack, setTrack?: boolean, acceptedCallback?: CallableFunction): ShowWarningModalAction {
     let trackHandler: CallableFunction = null;
