@@ -57,18 +57,16 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
 };
 
 export const fetchLatestVersionNames = async (mod: Mod): Promise<void> => {
-    if (mod.variants.length > 0) {
-        mod.variants[0].tracks.forEach(async (track) => {
-            store.dispatch<SetModAndTrackLatestVersionName>({
-                type: actionTypes.SET_MOD_AND_TRACK_LATEST_VERSION_NAME,
-                payload: {
-                    modKey: mod.key,
-                    trackKey: track.key,
-                    name: await track.fetchLatestVersionName()
-                }
-            });
+    mod.tracks.forEach(async (track) => {
+        store.dispatch<SetModAndTrackLatestVersionName>({
+            type: actionTypes.SET_MOD_AND_TRACK_LATEST_VERSION_NAME,
+            payload: {
+                modKey: mod.key,
+                trackKey: track.key,
+                name: await track.fetchLatestVersionName()
+            }
         });
-    }
+    });
 };
 
 const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {

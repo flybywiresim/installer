@@ -7,8 +7,6 @@ import {
     DetailsContainer,
     DisabledButton,
     DownloadProgress,
-    EngineOption,
-    EngineOptionsContainer,
     HeaderImage,
     InstallButton,
     InstalledButton,
@@ -38,7 +36,7 @@ import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywires
 import * as path from 'path';
 import store from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
-import { Mod, ModTrack, ModVariant, ModVersion } from "renderer/utils/InstallerConfiguration";
+import { Mod, ModTrack, ModVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 
 const settings = new Store;
@@ -89,8 +87,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         if (!fs.existsSync(path.join(targetDir, 'install.json'))) {
             console.log('Not installed');
             if (selectedTrack === null) {
-                setSelectedTrack(props.mod.variants[0]?.tracks[0]);
-                return props.mod.variants[0]?.tracks[0];
+                setSelectedTrack(props.mod.tracks[0]);
+                return props.mod.tracks[0];
             } else {
                 selectAndSetTrack(props.selectedTrack.key);
                 return selectedTrack;
@@ -101,7 +99,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             const manifest = getCurrentInstall(targetDir);
             console.log('Currently installed', manifest);
 
-            const track = _.find(props.mod.variants[0].tracks, { url: manifest.source });
+            const track = _.find(props.mod.tracks, { url: manifest.source });
             console.log('Currently installed', track);
             setInstalledTrack(track);
             if (selectedTrack === null) {
@@ -115,17 +113,14 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             console.error(e);
             console.log('Not installed');
             if (selectedTrack === null) {
-                setSelectedTrack(props.mod.variants[0]?.tracks[0]);
-                return props.mod.variants[0]?.tracks[0];
+                setSelectedTrack(props.mod.tracks[0]);
+                return props.mod.tracks[0];
             } else {
                 selectAndSetTrack(props.selectedTrack.key);
                 return selectedTrack;
             }
         }
     };
-
-    // TODO: Switch to Redux when variants are available
-    const [selectedVariant] = useState<ModVariant>(props.mod.variants[0]);
 
     const installedTrack = props.installedTrack;
     const setInstalledTrack = (newInstalledTrack: ModTrack) => {
@@ -361,7 +356,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const selectAndSetTrack = async (key: string) => {
-        const newTrack = selectedVariant.tracks.find(x => x.key === key);
+        const newTrack = props.mod.tracks.find(x => x.key === key);
         setSelectedTrack(newTrack);
     };
 
@@ -520,7 +515,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
                         <Tracks>
                             {
-                                selectedVariant.tracks.filter(track => !track.isExperimental).map(track =>
+                                props.mod.tracks.filter((track) => !track.isExperimental).map(track =>
                                     <Track
                                         mod={props.mod}
                                         key={track.key}
@@ -537,7 +532,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h5 className="text-base text-teal-50 uppercase">Experimental versions</h5>
                         <Tracks>
                             {
-                                selectedVariant.tracks.filter(track => track.isExperimental).map(track =>
+                                props.mod.tracks.filter((track) => track.isExperimental).map(track =>
                                     <Track
                                         mod={props.mod}
                                         key={track.key}
@@ -558,18 +553,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h3 className="font-semibold text-teal-50">Details</h3>
                         <p className="text-base text-gray-300">{props.mod.description}</p>
                     </DetailsContainer>
-                    <EngineOptionsContainer>
-                        <h3 className="font-semibold text-teal-50">Variants</h3>
-                        {
-                            props.mod.variants.map(variant =>
-                                // TODO: Enable onClick when mod variants are available
-                                <EngineOption key={variant.key} aria-disabled={!variant.enabled}>
-                                    <img src={variant.imageUrl} alt={variant.imageAlt} />
-                                    <span>{variant.name}</span>
-                                </EngineOption>
-                            )
-                        }
-                    </EngineOptionsContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>
                     <h3 className="font-semibold text-teal-50">Release History</h3>
