@@ -1,6 +1,6 @@
 import * as actions from './actionTypes';
-import { ModTrack } from "renderer/components/App";
 import { InstallStatus } from 'renderer/components/AircraftSection';
+import { ModTrack } from "renderer/utils/InstallerConfiguration";
 
 export interface DownloadItem {
     id: string

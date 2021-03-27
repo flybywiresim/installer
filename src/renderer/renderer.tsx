@@ -29,24 +29,29 @@ import { remote } from 'electron';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import App from 'renderer/components/App';
+import store from 'renderer/redux/store';
+import Store from 'electron-store';
+import { InstallerConfiguration, Configuration } from 'renderer/utils/InstallerConfiguration';
 
 import './index.css';
 import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
-import App from 'renderer/components/App';
-import store from 'renderer/redux/store';
-import Store from "electron-store";
 
 const settings = new Store;
 
 const win = remote.getCurrentWindow();
 
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('root')
-);
+InstallerConfiguration.obtain().then((config: Configuration) => {
+    console.log(config);
+
+    ReactDOM.render(
+        <Provider store={store}>
+            <App configuration={config} />
+        </Provider>,
+        document.getElementById('root')
+    );
+});
 
 // When document has loaded, initialize
 document.onreadystatechange = () => {

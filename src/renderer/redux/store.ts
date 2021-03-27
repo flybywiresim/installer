@@ -7,7 +7,7 @@ import {
     ShowWarningModalState
 } from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
-import { ModTrack } from "renderer/components/App";
+import { ModTrack } from "renderer/utils/InstallerConfiguration";
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 

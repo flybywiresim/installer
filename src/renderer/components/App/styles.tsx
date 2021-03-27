@@ -2,9 +2,9 @@ import styled, { css } from 'styled-components';
 import { Layout, Menu } from 'antd';
 import { colors } from "renderer/style/theme";
 import React, { useEffect, useState } from "react";
-import { Mod } from "renderer/components/App/index";
 import Store from "electron-store";
 import * as fs from "fs";
+import { Mod } from "renderer/utils/InstallerConfiguration";
 
 const settings = new Store<{ [p: string]: string }>({ watch: true });
 

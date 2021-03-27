@@ -25,7 +25,7 @@ import {
 import Store from 'electron-store';
 import fs from "fs-extra";
 import net from "net";
-import { getModReleases, Mod, ModTrack, ModVariant, ModVersion } from "renderer/components/App";
+import { getModReleases } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, ModAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
 import { connect, useDispatch, useSelector } from 'react-redux';
@@ -38,6 +38,7 @@ import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywires
 import * as path from 'path';
 import store from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
+import { Mod, ModTrack, ModVariant, ModVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 
 const settings = new Store;

@@ -1,6 +1,6 @@
 import * as actionTypes from '../actionTypes';
-import { ModTrack } from "renderer/components/App";
 import { SelectedTrackAction } from '../types';
+import { ModTrack } from "renderer/utils/InstallerConfiguration";
 
 const initialState : ModTrack = null;
 
