@@ -142,29 +142,6 @@ export const VersionHistoryContainer = styled.div`
   grid-row: 2 / span 2;
 `;
 
-export const EngineOptionsContainer = styled.div``;
-
-export const EngineOption = styled.div`
-    width: 215px;
-    border-radius: 8px;
-    background-size: cover;
-    padding: 12px 12px 4px 12px;
-    font-size: 14px;
-    margin-right: 20px;
-    border: 1px solid #d9d9d9;
-    color: #d9d9d9;
-
-    #selected-icon {
-        font-size: 50px;
-        position: absolute;
-    }
-
-    img {
-        margin-bottom: 5px;
-    }
-
-`;
-
 export const DownloadProgress = styled(Progress)`
   top: -10px;
 

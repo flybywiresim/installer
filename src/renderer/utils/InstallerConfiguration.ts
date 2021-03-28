@@ -6,15 +6,6 @@ export type ModVersion = {
     type: 'major' | 'minor' | 'patch'
 }
 
-export type ModVariant = {
-    name: string,
-    key: string,
-    imageUrl: string,
-    imageAlt: string,
-    enabled: boolean,
-    tracks: ModTrack[],
-}
-
 type BaseModTrack = {
     name: string,
     key: string,
@@ -40,7 +31,7 @@ export type Mod = {
     menuIconUrl: string,
     targetDirectory: string,
     alternativeNames?: string[],
-    variants: ModVariant[],
+    tracks: ModTrack[],
     enabled: boolean,
 }
 
