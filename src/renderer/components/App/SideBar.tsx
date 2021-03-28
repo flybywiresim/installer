@@ -81,7 +81,7 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
             case 'installed':
                 return <Check className="text-green-400 ml-auto mr-4" size={28} />;
             case 'update':
-                return <Download className="text-yellow ml-auto mr-4" size={28} />;
+                return <Download className="text-yellow-400 ml-auto mr-4" size={28} />;
         }
     };
 
