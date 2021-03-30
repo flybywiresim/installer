@@ -1,0 +1,17 @@
+{
+    "whiteListedModules": [
+        "antd",
+        "@ant-design/icons",
+        "styled-components",
+        "react",
+        "react-dom",
+        "react-redux"
+    ],
+    "main": {
+        "webpackConfig": "webpack.main.config.js"
+    },
+    "renderer": {
+        "webpackConfig": "webpack.renderer.config.js",
+        "template": "src/renderer/index.html"
+    }
+}
