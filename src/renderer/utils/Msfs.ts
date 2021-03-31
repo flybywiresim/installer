@@ -1,6 +1,7 @@
 import net from "net";
 
 export class Msfs {
+
     static async isRunning(): Promise<boolean> {
         return new Promise((resolve) => {
             const socket = net.connect(500);
