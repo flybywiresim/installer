@@ -4,7 +4,6 @@ import * as readLine from 'readline';
 import Store from 'electron-store';
 import walk from 'walkdir';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-declare const MAIN_WINDOW_WEBPACK_ENTRY: never;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -61,8 +60,10 @@ const createWindow = (): void => {
     }
     mainWindow.center();
 
+    mainWindow.webContents.toggleDevTools();
+
     // and load the index.html of the app.
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    mainWindow.loadFile('index.html');
 
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.

@@ -153,7 +153,9 @@ export const AircraftMenuItem = (props: AircraftMenuItemProps): JSX.Element => {
 
     const [installationStatus, setInstallationStatus] = useState<string>(() => getInstallText(isInstalled));
 
-    useEffect(() => settings.onDidChange(`cache.${props.mod.key}.lastUpdated`, () => setInstallationStatus(getInstallText(true))));
+    useEffect(() => {
+        settings.onDidChange(`cache.${props.mod.key}.lastUpdated`, () => setInstallationStatus(getInstallText(true)));
+    });
 
     return (
         <AircraftMenuItemBase {...props}>

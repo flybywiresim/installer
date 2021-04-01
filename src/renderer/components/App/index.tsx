@@ -1,6 +1,5 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
-import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
 import AircraftSection from 'renderer/components/AircraftSection';
@@ -91,52 +90,50 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         <>
             <ChangelogModal />
             <WarningModal />
-            <SimpleBar>
-                <Container>
-                    <MainLayout className="overflow-hidden">
-                        <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
-                            <PageHeader className="h-full flex-1 flex flex-row items-stretch">
-                                <Logo />
-                                <InstallerUpdate />
-                            </PageHeader>
+            <Container>
+                <MainLayout className="overflow-hidden">
+                    <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
+                        <PageHeader className="h-full flex-1 flex flex-row items-stretch">
+                            <Logo />
+                            <InstallerUpdate />
+                        </PageHeader>
 
-                            <WindowButtons />
-                        </div>
+                        <WindowButtons />
+                    </div>
 
-                        <div className="h-full pt-14 flex flex-row justify-start">
-                            <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
-                                <div className="h-full flex flex-col divide-y divide-gray-700">
-                                    <SidebarPublisher name="FlyByWire Simulations" logo={logo}>
-                                        {
-                                            configuration.mods.map(mod => {
-                                                return (
-                                                    <SidebarMod
-                                                        key={mod.key}
-                                                        mod={mod}
-                                                        isSelected={selectedItem === mod.key}
-                                                        handleSelected={() => setSelectedItem(mod.key)}
-                                                    />
-                                                );
-                                            })
-                                        }
-                                    </SidebarPublisher>
+                    <div className="h-full pt-14 flex flex-row justify-start">
+                        <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
+                            <div className="h-full flex flex-col divide-y divide-gray-700">
+                                <SidebarPublisher name="FlyByWire Simulations" logo={logo}>
+                                    {
+                                        configuration.mods.map(mod => {
+                                            return (
+                                                <SidebarMod
+                                                    key={mod.key}
+                                                    mod={mod}
+                                                    isSelected={selectedItem === mod.key}
+                                                    handleSelected={() => setSelectedItem(mod.key)}
+                                                />
+                                            );
+                                        })
+                                    }
+                                </SidebarPublisher>
 
-                                    <SidebarItem className="mt-auto" iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
-                                        <Settings className="text-gray-100 ml-2 mr-3" size={24} />
+                                <SidebarItem className="mt-auto" iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
+                                    <Settings className="text-gray-100 ml-2 mr-3" size={24} />
 
-                                        <div className="flex flex-col">
-                                            <span className="text-lg text-gray-200 font-semibold">Settings</span>
-                                        </div>
-                                    </SidebarItem>
-                                </div>
-                            </PageSider>
-                            <PageContent>
-                                {sectionToShow}
-                            </PageContent>
-                        </div>
-                    </MainLayout>
-                </Container>
-            </SimpleBar>
+                                    <div className="flex flex-col">
+                                        <span className="text-lg text-gray-200 font-semibold">Settings</span>
+                                    </div>
+                                </SidebarItem>
+                            </div>
+                        </PageSider>
+                        <PageContent>
+                            {sectionToShow}
+                        </PageContent>
+                    </div>
+                </MainLayout>
+            </Container>
         </>
     );
 };

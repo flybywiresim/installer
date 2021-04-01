@@ -36,11 +36,15 @@ import { InstallerConfiguration, Configuration } from 'renderer/utils/InstallerC
 
 import './index.css';
 import 'antd/dist/antd.less';
-import 'simplebar/dist/simplebar.min.css';
 
 const settings = new Store;
 
 const win = remote.getCurrentWindow();
+
+// @ts-ignore
+window.React2 = React;
+// @ts-ignore
+console.log(window.React1 === window.React2);
 
 InstallerConfiguration.obtain().then((config: Configuration) => {
     console.log(config);
@@ -49,7 +53,7 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
         <Provider store={store}>
             <App configuration={config} />
         </Provider>,
-        document.getElementById('root')
+        document.body
     );
 }).catch((error: Error) => {
     ReactDOM.render(
