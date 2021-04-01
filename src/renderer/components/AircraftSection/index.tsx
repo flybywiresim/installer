@@ -214,7 +214,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
         try {
             const updateInfo = await needsUpdate(selectedTrack.url, installDir, {
-                forceCacheBust: !(settings.get('mainSettings.useCdnCache') as boolean)
+                forceCacheBust: true
             });
             console.log('Update info', updateInfo);
 
@@ -315,7 +315,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             console.log('Starting fragmenter download for URL', track.url);
             const installResult = await installer.install(signal, {
                 forceCacheBust: !(settings.get('mainSettings.useCdnCache') as boolean),
-                forceFreshInstall: false
+                forceFreshInstall: false,
+                forceManifestCacheBust: true,
             });
             console.log('Fragmenter download finished for URL', track.url);
 
