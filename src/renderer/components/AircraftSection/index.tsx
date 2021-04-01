@@ -22,7 +22,6 @@ import {
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
-import net from "net";
 import { getModReleases } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, ModAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
@@ -33,11 +32,11 @@ import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
-import * as path from 'path';
 import store from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
 import { Mod, ModTrack, ModVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
+import { Msfs } from "renderer/utils/Msfs";
 
 const settings = new Store;
 
@@ -83,8 +82,7 @@ enum MsfsStatus {
 
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const findInstalledTrack = (): ModTrack => {
-        const targetDir = Directories.inCommunity(props.mod.targetDirectory);
-        if (!fs.existsSync(path.join(targetDir, 'install.json'))) {
+        if (!Directories.isFragmenterInstall(props.mod)) {
             console.log('Not installed');
             if (selectedTrack === null) {
                 setSelectedTrack(props.mod.tracks[0]);
@@ -96,7 +94,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
 
         try {
-            const manifest = getCurrentInstall(targetDir);
+            const manifest = getCurrentInstall(Directories.inCommunity(props.mod.targetDirectory));
             console.log('Currently installed', manifest);
 
             const track = _.find(props.mod.tracks, { url: manifest.source });
@@ -157,7 +155,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const isDownloading = download?.progress >= 0;
 
     useEffect(() => {
-        const checkMsfsInterval = setInterval(checkIfMSFS, 500);
+        const checkMsfsInterval = setInterval(async () => {
+            setMsfsIsOpen(await Msfs.isRunning() ? MsfsStatus.Open : MsfsStatus.Closed);
+        }, 500);
 
         return () => clearInterval(checkMsfsInterval);
     }, []);
@@ -168,20 +168,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             getInstallStatus().then(setInstallStatus);
         }
     }, [selectedTrack, installedTrack]);
-
-    const isGitInstall = (dir: string): boolean => {
-        console.log('Checking for git install');
-        try {
-            const symlinkPath = fs.readlinkSync(dir);
-            if (symlinkPath && fs.existsSync(path.join(symlinkPath, '/../.git'))) {
-                console.log('Is git repo');
-                return true;
-            }
-        } catch {
-            console.log('Is not git repo');
-            return false;
-        }
-    };
 
     const getInstallStatus = async (): Promise<InstallStatus> => {
         if (!selectedTrack) {
@@ -196,7 +182,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             return InstallStatus.FreshInstall;
         }
 
-        if (isGitInstall(installDir)) {
+        console.log('Checking for git install');
+        if (Directories.isGitInstall(installDir)) {
             return InstallStatus.GitInstall;
         }
 
@@ -224,19 +211,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
-    const checkIfMSFS = () => {
-        const socket = net.connect(500);
-
-        socket.on('connect', () => {
-            setMsfsIsOpen(MsfsStatus.Open);
-            socket.destroy();
-        });
-        socket.on('error', () => {
-            setMsfsIsOpen(MsfsStatus.Closed);
-            socket.destroy();
-        });
-    };
-
     const downloadMod = async (track: ModTrack) => {
         const installDir = Directories.inCommunity(props.mod.targetDirectory);
         const tempDir = Directories.temp();
@@ -252,7 +226,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
         // Copy current install to temporary directory
         console.log('Checking for existing install');
-        if (fs.existsSync(installDir) && fs.existsSync(path.join(installDir, 'install.json'))) {
+        if (Directories.isFragmenterInstall(installDir)) {
             setInstallStatus(InstallStatus.DownloadPrep);
             console.log('Found existing install at', installDir);
             console.log('Copying existing install to', tempDir);
@@ -310,24 +284,14 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
             // Copy files from temp dir
             setInstallStatus(InstallStatus.DownloadEnding);
-            if (fs.existsSync(installDir)) {
-                console.log('Removing previous install');
-                fs.rmdirSync(installDir, { recursive: true });
-            }
+            Directories.removeTargetForMod(props.mod);
             console.log('Copying files from', tempDir, 'to', installDir);
             await fs.copy(tempDir, installDir, { recursive: true });
             console.log('Finished copying files from', tempDir, 'to', installDir);
 
             // Remove installs existing under alternative names
             console.log('Removing installs existing under alternative names');
-            props.mod.alternativeNames?.forEach(altName => {
-                const altDir = Directories.inCommunity(altName);
-
-                if (fs.existsSync(altDir)) {
-                    console.log('Removing alternative', altDir);
-                    fs.rmdirSync(altDir, { recursive: true });
-                }
-            });
+            Directories.removeAlternativesForMod(props.mod);
             console.log('Finished removing installs existing under alternative names');
 
             dispatch(deleteDownload(props.mod.name));
