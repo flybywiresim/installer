@@ -8,6 +8,8 @@
 ## 1.2.0
 
 1. [LOGIC] Fix downloads failing in encrypted directories - @nistei (nistei#1362)
+1. [LOGIC] Improved error prevention while downloading an update - @nistei (nistei#1362)
+1. [LOGIC] Fix click on cancel causing a retry - @nistei (nistei#1362)
 
 ## 1.1.1
 
