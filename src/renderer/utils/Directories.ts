@@ -54,6 +54,6 @@ export class Directories {
             console.log('Is not git repo', targetDir);
             return false;
         }
-        
+
     }
 }
