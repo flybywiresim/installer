@@ -1,13 +1,9 @@
 import React from "react";
 import { shell } from "electron";
-import { DataCache } from "renderer/utils/DataCache";
-import { GitVersions } from "@flybywiresim/api-client";
 import { Configuration } from "./utils/InstallerConfiguration";
 
 import A320NoseSVG from "renderer/assets/a32nx_nose.svg";
 import A380NoseSVG from "renderer/assets/a380x_nose.svg";
-
-const RELEASE_CACHE_LIMIT = 5 * 60 * 1000;
 
 export const defaultConfiguration: Configuration = {
     mods: [
@@ -47,9 +43,8 @@ export const defaultConfiguration: Configuration = {
                             </p>
                         </>,
                     isExperimental: false,
-                    fetchLatestVersionName() {
-                        return DataCache.from<string>('latest_version_stable', RELEASE_CACHE_LIMIT)
-                            .fetchOrCompute(async () => (await GitVersions.getReleases('flybywiresim', 'a32nx'))[0].name);
+                    releaseModel: {
+                        type: 'githubRelease',
                     },
                 },
                 {
@@ -66,10 +61,10 @@ export const defaultConfiguration: Configuration = {
                             </p>
                         </>,
                     isExperimental: false,
-                    fetchLatestVersionName() {
-                        return DataCache.from<string>('latest_version_dev', RELEASE_CACHE_LIMIT)
-                            .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'master')).sha.substring(0, 7));
-                    }
+                    releaseModel: {
+                        type: 'githubBranch',
+                        branch: 'master',
+                    },
                 },
                 {
                     name: 'Experimental',
@@ -90,9 +85,9 @@ export const defaultConfiguration: Configuration = {
 
                             <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
                         </>,
-                    fetchLatestVersionName() {
-                        return DataCache.from<string>('latest_version_experimental', RELEASE_CACHE_LIMIT)
-                            .fetchOrCompute(async () => (await GitVersions.getNewestCommit('flybywiresim', 'a32nx', 'autopilot')).sha.substring(0, 7));
+                    releaseModel: {
+                        type: 'githubBranch',
+                        branch: 'autopilot',
                     },
                 },
             ],

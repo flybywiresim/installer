@@ -14,12 +14,13 @@ import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
 import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
-import { SetModAndTrackLatestVersionName } from "renderer/redux/types";
+import { SetModAndTrackLatestReleaseInfo } from "renderer/redux/types";
 import { Settings } from "tabler-icons-react";
 import { SidebarItem, SidebarMod, SidebarPublisher } from "renderer/components/App/SideBar";
 import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Mod, ModVersion } from "renderer/utils/InstallerConfiguration";
+import { AddonData } from "renderer/utils/AddonData";
 
 const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -58,12 +59,14 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
 
 export const fetchLatestVersionNames = async (mod: Mod): Promise<void> => {
     mod.tracks.forEach(async (track) => {
-        store.dispatch<SetModAndTrackLatestVersionName>({
-            type: actionTypes.SET_MOD_AND_TRACK_LATEST_VERSION_NAME,
+        const trackLatestVersionName = await AddonData.latestVersionForTrack(mod, track);
+
+        store.dispatch<SetModAndTrackLatestReleaseInfo>({
+            type: actionTypes.SET_MOD_AND_TRACK_LATEST_RELEASE_INFO,
             payload: {
                 modKey: mod.key,
                 trackKey: track.key,
-                name: await track.fetchLatestVersionName()
+                info: trackLatestVersionName,
             }
         });
     });

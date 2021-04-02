@@ -6,12 +6,23 @@ export type ModVersion = {
     type: 'major' | 'minor' | 'patch'
 }
 
+export type GithubReleaseReleaseModel = {
+    type: 'githubRelease',
+}
+
+export type GithubBranchReleaseModel = {
+    type: 'githubBranch',
+    branch: string,
+}
+
+export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel
+
 type BaseModTrack = {
     name: string,
     key: string,
     url: string,
     description: JSX.Element,
-    fetchLatestVersionName: () => Promise<string>
+    releaseModel: ReleaseModel,
 }
 
 export type MainlineModTrack = BaseModTrack & { isExperimental: false }

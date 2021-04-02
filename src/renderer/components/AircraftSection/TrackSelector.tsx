@@ -25,7 +25,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
     const latestVersionName = useSelector<InstallerStore, string>(state => {
         return state.latestVersionNames
             .find((entry) => entry.modKey === mod.key && entry.trackKey === track.key)
-            ?.name ?? '<unknown>';
+            ?.info.name ?? '<unknown>';
     });
 
     const makeBorderStyle = () => {
