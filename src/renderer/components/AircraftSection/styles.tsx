@@ -120,9 +120,14 @@ export const Content = styled.div`
     padding: 6px 24px 24px 24px;
 `;
 
-export const TopContainer = styled.div`
+export const ModalContainer = styled.div`
   grid-column: start / end;
   grid-row: 1;
+`;
+
+export const TopContainer = styled.div`
+  grid-column: start / end;
+  grid-row: 2;
   
   display: flex;
   flex-direction: row;
@@ -133,13 +138,13 @@ export const TopContainer = styled.div`
 
 export const LeftContainer = styled.div`
   grid-column: start / middle;
-  grid-row: 2;
+  grid-row: 3;
 `;
 
 export const DetailsContainer = styled.div``;
 
 export const VersionHistoryContainer = styled.div`
-  grid-row: 2 / span 2;
+  grid-row: 3 / span 2;
 `;
 
 export const DownloadProgress = styled(Progress)`

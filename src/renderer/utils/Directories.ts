@@ -7,6 +7,10 @@ const settings = new Store;
 
 export class Directories {
 
+    static community(): string {
+        return settings.get('mainSettings.msfsPackagePath') as string;
+    }
+
     static inCommunity(targetDir: string): string {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, targetDir);
     }

@@ -8,6 +8,7 @@ import {
 } from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { ModTrack } from "renderer/utils/InstallerConfiguration";
+import { LiveriesState } from "renderer/redux/reducers/liveries.reducer";
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 
@@ -28,6 +29,7 @@ export type InstallerStore = {
     selectedTrack: ModTrack,
     installedTrack: ModTrack,
     latestVersionNames: ModAndTrackLatestVersionNamesState,
+    liveries: LiveriesState,
 };
 
 export default store;

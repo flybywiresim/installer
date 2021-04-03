@@ -7,3 +7,5 @@ export const CALL_CHANGELOG = 'callChangelog';
 export const SET_SELECTED_TRACK = 'setSelectedTrack';
 export const SET_INSTALLED_TRACK = 'setInstalledTrack';
 export const SET_MOD_AND_TRACK_LATEST_RELEASE_INFO = 'setModReleaseInfo';
+export const SET_LIVERY_STATE = 'setLiveryState';
+export const CLEAR_LIVERIES_STATE = 'clearLiveriesState';

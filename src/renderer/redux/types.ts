@@ -2,6 +2,7 @@ import * as actions from './actionTypes';
 import { InstallStatus } from 'renderer/components/AircraftSection';
 import { ModTrack } from "renderer/utils/InstallerConfiguration";
 import { ReleaseInfo } from "renderer/utils/AddonData";
+import { LiveryStateEntry } from "renderer/redux/reducers/liveries.reducer";
 
 export interface DownloadItem {
     id: string
@@ -64,6 +65,17 @@ export interface InstalledTrackAction {
     type: typeof actions.SET_INSTALLED_TRACK
     payload: ModTrack
 }
+
+export interface SetLiveryStateAction {
+    type: typeof actions.SET_LIVERY_STATE,
+    payload: LiveryStateEntry,
+}
+
+export interface ClearLiveriesStateAction {
+    type: typeof actions.CLEAR_LIVERIES_STATE,
+}
+
+export type LiveryAction = SetLiveryStateAction | ClearLiveriesStateAction;
 
 export type ModAndTrackLatestVersionNamesState = { modKey: string, trackKey: string, info: ReleaseInfo }[]
 
