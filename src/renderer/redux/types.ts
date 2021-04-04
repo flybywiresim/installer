@@ -1,6 +1,7 @@
 import * as actions from './actionTypes';
 import { InstallStatus } from 'renderer/components/AircraftSection';
 import { ModTrack } from "renderer/utils/InstallerConfiguration";
+import { ReleaseInfo } from "renderer/utils/AddonData";
 
 export interface DownloadItem {
     id: string
@@ -64,14 +65,14 @@ export interface InstalledTrackAction {
     payload: ModTrack
 }
 
-export type ModAndTrackLatestVersionNamesState = { modKey: string, trackKey: string, name: string }[]
+export type ModAndTrackLatestVersionNamesState = { modKey: string, trackKey: string, info: ReleaseInfo }[]
 
-export interface SetModAndTrackLatestVersionName {
-    type: typeof actions.SET_MOD_AND_TRACK_LATEST_VERSION_NAME
+export interface SetModAndTrackLatestReleaseInfo {
+    type: typeof actions.SET_MOD_AND_TRACK_LATEST_RELEASE_INFO
     payload: {
         modKey: string,
         trackKey: string,
-        name: string
+        info: ReleaseInfo,
     }
 }
 
