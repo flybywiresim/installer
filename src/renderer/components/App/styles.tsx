@@ -8,7 +8,7 @@ import { Mod } from "renderer/utils/InstallerConfiguration";
 
 const settings = new Store<{ [p: string]: string }>({ watch: true });
 
-const { Content } = Layout;
+export const { Content } = Layout;
 
 export const Container = styled.div`
     height: 100vh;
@@ -19,12 +19,8 @@ export const Container = styled.div`
 
 export const PageHeader = styled.div`
   -webkit-app-region: drag;
-`;
-
-export const PageContent = styled(Content)`
-    overflow-y: scroll;
-    background-color: #1C1C1C;
-    margin: 0 !important;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const menuItemCss = css`

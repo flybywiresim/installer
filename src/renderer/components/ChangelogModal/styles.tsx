@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { colors } from 'renderer/style/theme';
 
 export const Container = styled.div`
     display: flex;
@@ -24,7 +25,6 @@ export const InnerContainer = styled.div`
     display: flex;
     flex-direction: column;
     border-radius: 10px;
-    color: #fff;
     overflow: scroll;
     ::-webkit-scrollbar {
         width: 0px;
@@ -32,13 +32,13 @@ export const InnerContainer = styled.div`
 `;
 
 export const Modal = styled.div`
-    background-color: #313131;
+    background-color: ${colors.navyLighter};
     height: 450px;
     width: 700px;
     display: flex;
     flex-direction: column;
     border-radius: 10px;
-    color: #fff;
+    color: ${colors.teal50};
     overflow: scroll;
     padding: 20px;
 
@@ -47,13 +47,14 @@ export const Modal = styled.div`
     }
     .text {
         margin: auto;
-        color: #fff;
     }
     h1 {
-        margin-left: auto
+        margin-left: auto;
+        color: ${colors.gray50};
     }
     h2 {
-        margin-left: auto
+        margin-left: auto;
+        color: ${colors.gray50};
     }
     p {
         margin-left: auto;
@@ -74,7 +75,7 @@ export const Close = styled.div`
     height: 30px;
     overflow: hidden;
     user-select: none;
-    color: white;
+    color: ${colors.gray50};
     font-size: 20px;
     cursor: pointer;
     :hover { color: red;}

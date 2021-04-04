@@ -15,7 +15,7 @@ export const Title = styled.span`
   line-height: 26px;
   border-left: 1px solid ${colors.mutedTextDark};
   
-  color: ${colors.title};
+  color: ${colors.gray50};
   
   margin-left: 1.1em;
   padding-left: 1.1em;

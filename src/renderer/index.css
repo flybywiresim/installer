@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
 
 * {
-  font-family: "Nunito Sans", sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 @tailwind base;
@@ -15,7 +15,7 @@ html {
 body {
   margin: 0;
   font-family: 'Nunito Sans', sans-serif;
-  letter-spacing: .35px;
+  letter-spacing: 0.35px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-touch-callout: none;
@@ -27,7 +27,7 @@ body {
 }
 
 img {
- -webkit-user-drag: none;
+  -webkit-user-drag: none;
 }
 
 code {
@@ -40,14 +40,19 @@ code {
 }
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background: #1C1C1C;
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: #474747;
+  @apply bg-navy-lightest;
 }
 
-h1, h2, h3, h4, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h4,
+h5,
+h6 {
   font-weight: 600;
 }
 

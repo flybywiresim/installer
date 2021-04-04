@@ -7,6 +7,8 @@ export const Container = styled.div`
     margin-right: 2rem;
     background: ${colors.positive};
     height: 50%;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
 `;
 
 export const UpdateText = styled.h6`

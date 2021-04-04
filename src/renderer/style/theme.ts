@@ -20,7 +20,16 @@ export const colors = {
     cardBackgroundHover: '#3b3b3b',
     cardForeground: '#FFFFFFDD',
     cardSelected: '#00C2CB',
-    cardInstalled: '#2E995E'
+    cardInstalled: '#2E995E',
+
+    gray50: '#f9fafb',
+    navy: '#1b2434',
+    navyLightest: '#273347',
+    navyLighter: '#222c3d',
+    navy400: '#1f2633',
+    teal50: '#c2cbcc',
+    tealLight: '#00c2cc',
+    tealLightContrast: '#00afb7'
 };
 
 export const dropShadow = css`

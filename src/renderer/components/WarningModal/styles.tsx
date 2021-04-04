@@ -4,27 +4,27 @@ import { colors } from "renderer/style/theme";
 
 export const WarningModalBase = styled(Modal)`
     .ant-modal-content {
-      background: ${colors.cardBackground};
+      background: ${colors.navyLighter};
       border: 5px solid;
-      border-color: ${colors.cardBackground};
+      border-color: ${colors.navyLighter};
       border-radius: 5px;
     }
 
     .ant-modal-header {
-      color: ${colors.title};
-      background: ${colors.cardBackground};
+      color: ${colors.teal50};
+      background: ${colors.navyLighter};
       border: none;
     }
     
     .ant-modal-title {
       font-size: 1.85em;
       font-weight: 700;
-      color: ${colors.title};
+      color: ${colors.gray50};
       margin-top: 8px;
     }
     
     .ant-modal-close {
-      color: ${colors.title};
+      color: ${colors.gray50};
       font-size: 1.25rem;
       outline: none;
       
@@ -34,19 +34,19 @@ export const WarningModalBase = styled(Modal)`
     }
     
     .ant-modal-body {
-      color: ${colors.title};
-      background: ${colors.cardBackground};
+      color: ${colors.teal50};
+      background: ${colors.navyLighter};
       border: none;
       
       a {
         font-weight: 500;
-        color: ${colors.cardSelected};
+        color: ${colors.tealLight};
       }
     }
     
     .ant-modal-footer {
-      color: ${colors.title};
-      background: ${colors.cardBackground};
+      color: ${colors.teal50};
+      background: ${colors.navyLighter};
       border: none;
 
       .ant-btn {

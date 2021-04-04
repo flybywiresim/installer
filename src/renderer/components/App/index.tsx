@@ -7,7 +7,7 @@ import AircraftSection from 'renderer/components/AircraftSection';
 
 import logo from 'renderer/assets/FBW-Tail.svg';
 
-import { Container, MainLayout, PageContent, PageHeader, PageSider, } from './styles';
+import { Container, MainLayout, Content, PageHeader, PageSider, } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
@@ -130,9 +130,9 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                     </SidebarItem>
                                 </div>
                             </PageSider>
-                            <PageContent>
+                            <Content className="overflow-y-scroll bg-navy m-0">
                                 {sectionToShow}
-                            </PageContent>
+                            </Content>
                         </div>
                     </MainLayout>
                 </Container>

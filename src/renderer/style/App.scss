@@ -3,8 +3,8 @@
 .App {
   display: grid;
   grid-template-areas:
-    "logo       top-bar"
-    "side-bar   content";
+    'logo       top-bar'
+    'side-bar   content';
   grid-template-columns: 8% 92%;
   grid-template-rows: 8% 92%;
   height: 100vh;
@@ -13,15 +13,13 @@
   #top-bar {
     grid-area: top-bar;
     display: flex;
-    background: #232323;
-    color: #FFFFFF;
+    color: #ffffff;
     font-family: 'Nunito Sans', sans-serif;
     align-items: center;
   }
 
   #side-bar {
     grid-area: side-bar;
-    background: #313131;
     display: flex;
     flex-direction: column;
   }
@@ -35,7 +33,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #232323;
 
     #fbw-logo {
       grid-area: logo;
