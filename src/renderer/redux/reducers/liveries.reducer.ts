@@ -7,12 +7,21 @@ export enum LiveryState {
     DETECTED,
     TO_BE_CONVERTED,
     CONVERTED,
+    ERROR_DURING_CONVERSION,
 }
 
-export type LiveryStateEntry = {
+export type RegularLiveryStateEntry = {
     livery: LiveryDefinition,
-    state: LiveryState,
+    state: LiveryState.DETECTED | LiveryState.TO_BE_CONVERTED | LiveryState.CONVERTED,
 }
+
+export type ErrorLiveryStateEntry = {
+    livery: LiveryDefinition,
+    state: LiveryState.ERROR_DURING_CONVERSION,
+    error: Error,
+}
+
+export type LiveryStateEntry = RegularLiveryStateEntry | ErrorLiveryStateEntry
 
 export type LiveriesState = LiveryStateEntry[];
 

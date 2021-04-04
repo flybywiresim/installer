@@ -4,10 +4,6 @@ import { Directories } from "renderer/utils/Directories";
 import * as path from "path";
 import { copy, rename } from "fs-extra";
 import { ConfigIniParser } from "config-ini-parser";
-import store from "renderer/redux/store";
-import * as actionTypes from "renderer/redux/actionTypes";
-import { LiveryState } from "renderer/redux/reducers/liveries.reducer";
-import { LiveryAction } from "renderer/redux/types";
 
 export type LiveryDefinition = {
     packageName: string,
@@ -150,14 +146,6 @@ export class LiveryConversion {
         );
 
         console.log(`[LCU/Conversion] Converted texture.cfg in '${newSimObjectName}'...`);
-
-        store.dispatch<LiveryAction>({
-            type: actionTypes.SET_LIVERY_STATE,
-            payload: {
-                livery,
-                state: LiveryState.CONVERTED,
-            },
-        });
 
         console.log(`[LCU/Conversion] Done converting '${newSimObjectName}'.`);
 
