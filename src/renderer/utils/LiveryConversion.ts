@@ -28,10 +28,12 @@ export class LiveryConversion {
 
                 console.log(`[LCU] Package ${packageFolder} has a valid manifest.`);
 
-                const conversionFilePath = path.join(packageFolder, '.fbwlcu');
-                const conversionFileExists = fs.existsSync(conversionFilePath);
+                // Check if a converted package already exists for this livery
 
-                if (conversionFileExists) {
+                const convertedPackagePath = Directories.inCommunity(folder + '_a32nx');
+                const convertedPackageExists = fs.existsSync(convertedPackagePath);
+
+                if (convertedPackageExists) {
                     return null;
                 }
 
@@ -116,10 +118,6 @@ export class LiveryConversion {
             newSimObjectName = livery.simObjectName + '+_A32NX_LCU';
         }
 
-        await this.addConversionFile(newPackageFolder);
-
-        console.log(`[LCU/Conversion] Added conversion file to '${livery.simObjectName}'...`);
-
         await this.convertPackageManifest(newPackageFolder);
 
         console.log(`[LCU/Conversion] Converted manifest in '${livery.simObjectName}'...`);
@@ -149,17 +147,7 @@ export class LiveryConversion {
 
         console.log(`[LCU/Conversion] Done converting '${newSimObjectName}'.`);
 
-        await this.addConversionFile(packageFolder);
-
-        console.log(`[LCU/Conversion] Added conversion file to old '${livery.simObjectName}'...`);
-
         return true;
-    }
-
-    private static async addConversionFile(packageFolder: string): Promise<void> {
-        const conversionFilePath = path.join(packageFolder, '.fbwlcu');
-
-        await promisify(fs.writeFile)(conversionFilePath, '');
     }
 
     private static async convertPackageManifest(packageFolder: string): Promise<void> {
