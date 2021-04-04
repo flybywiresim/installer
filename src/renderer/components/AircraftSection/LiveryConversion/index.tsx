@@ -103,7 +103,7 @@ export const LiveryConversionModal: React.FC = () => {
                         <SelectAll />
 
                         {liveries.map((livery) =>
-                            <LiveryEntry livery={livery} />
+                            <LiveryEntry key={livery.packageName} livery={livery} />
                         )}
                     </div>
                 </>
@@ -113,12 +113,16 @@ export const LiveryConversionModal: React.FC = () => {
 };
 
 const ConversionProgress: React.FC = () => {
+    const conversionsToPerform = useSelector<InstallerStore, number>((state) => {
+        return state.liveries.filter((entry) => entry.state === LiveryState.TO_BE_CONVERTED).length;
+    });
+
     const completedConversions = useSelector<InstallerStore, number>((state) => {
         return state.liveries.filter((entry) => entry.state === LiveryState.CONVERTED).length;
     });
 
     return (
-        <Progress className="w-full" showInfo={false} percent={(completedConversions / 2) * 100} trailColor="#ef4444" strokeColor="white" />
+        <Progress className="w-full" showInfo={false} percent={(completedConversions / (conversionsToPerform + completedConversions)) * 100} trailColor="#ef4444" strokeColor="white" />
     );
 };
 
@@ -208,10 +212,13 @@ const LiveryEntry: React.FC<LiveryEntryProps> = ({ livery }) => {
                 {entry.state !== LiveryState.DETECTED &&
                     <div className="flex flex-row items-center">
                         {entry.state === LiveryState.CONVERTED &&
-                            <span className="text-2xl text-white font-semibold mr-3">Converted</span>
+                            <>
+                                <span className="text-2xl text-white font-semibold mr-3">Converted</span>
+                                <Check className="text-white" size={32} />
+                            </>
                         }
                         {entry.state === LiveryState.TO_BE_CONVERTED &&
-                           <Check className="text-white" size={32} />
+                            <Check className="text-white" size={32} />
                         }
                         {entry.state === LiveryState.ERROR_DURING_CONVERSION &&
                             <AlertTriangle className="text-white" size={32} />
