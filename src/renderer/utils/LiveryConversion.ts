@@ -161,6 +161,10 @@ export class LiveryConversion {
 
         console.log(`[LCU/Conversion] Done converting '${newSimObjectName}'.`);
 
+        await this.addConversionFile(packageFolder);
+
+        console.log(`[LCU/Conversion] Added conversion file to old '${livery.simObjectName}'...`);
+
         return true;
     }
 
