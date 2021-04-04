@@ -7,14 +7,8 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #313131;
   margin: 30px;
   padding: 20px 0 20px 0;
-`;
-
-export const Content = styled(Layout.Content)`
-  background-color: #313131;
-  padding-left: 90px;
 `;
 
 export const Menu = styled(AntdMenu)`
@@ -22,7 +16,7 @@ export const Menu = styled(AntdMenu)`
 `;
 
 export const PageSider = styled(Layout.Sider)`
-    background-color: #313131;
+    background-color: #222c3d;
     
     .ant-layout-sider-trigger {
         height: 40px;

@@ -148,7 +148,7 @@ export const DownloadProgress = styled(Progress)`
   .ant-progress-inner {
     border: none;
     height: 3px;
-    background-color: #1C1C1C;
+    background-color: ${colors.navy};
   }
 
   .ant-progress-bg {
