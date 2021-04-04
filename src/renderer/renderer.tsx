@@ -46,15 +46,23 @@ const settings = new Store;
 
 const win = remote.getCurrentWindow();
 
-LiveryConversion.getIncompatibleLiveries().then((liveries) => {
-    liveries.forEach((livery) => store.dispatch<LiveryAction>({
-        type: actionTypes.SET_LIVERY_STATE,
-        payload: {
-            livery,
-            state: LiveryState.DETECTED,
-        },
-    }));
-});
+// Check for A32NX incompatible liveries if not disabled
+
+const disableLiveryWarningSetting = settings.get('mainSettings.disabledIncompatibleLiveriesWarning');
+
+if (!disableLiveryWarningSetting) {
+    LiveryConversion.getIncompatibleLiveries().then((liveries) => {
+        liveries.forEach((livery) => store.dispatch<LiveryAction>({
+            type: actionTypes.SET_LIVERY_STATE,
+            payload: {
+                livery,
+                state: LiveryState.DETECTED,
+            },
+        }));
+    });
+}
+
+// Obtain configuration and use it
 
 InstallerConfiguration.obtain().then((config: Configuration) => {
     console.log(config);

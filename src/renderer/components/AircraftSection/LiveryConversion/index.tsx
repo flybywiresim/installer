@@ -7,6 +7,9 @@ import { AlertTriangle, Check } from "tabler-icons-react";
 import { Progress } from "antd";
 import { LiveryState, LiveryStateEntry } from "renderer/redux/reducers/liveries.reducer";
 import { LiveryAction, SetLiveryStateAction } from "renderer/redux/types";
+import Store from "electron-store";
+
+const settings = new Store();
 
 export const LiveryConversionModal: React.FC = () => {
     const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
@@ -27,17 +30,21 @@ export const LiveryConversionModal: React.FC = () => {
         return showList && selectedLiveries.length == 0;
     };
 
-    const handleConvert = () => setShowList(true);
+    const handleDontAskAgain = () => {
+        settings.set('mainSettings.disabledIncompatibleLiveriesWarning', true);
 
-    const handleDone = () => {
         store.dispatch({
             type: actionTypes.CLEAR_LIVERIES_STATE,
         });
     };
 
-    const handleCancel = () => {
-        setShowList(false);
-    };
+    const handleConvert = () => setShowList(true);
+
+    const handleDone = () => store.dispatch({
+        type: actionTypes.CLEAR_LIVERIES_STATE,
+    });
+
+    const handleCancel = () => setShowList(false);
 
     const handleConfirm = () => {
         selectedLiveries.forEach((livery) => {
@@ -84,6 +91,11 @@ export const LiveryConversionModal: React.FC = () => {
                         >
                             {allLiveriesConverted ? 'Done' : 'Cancel'}
                         </button>
+                    }
+                    {!showList &&
+                        <a className="text-xl text-white font-semibold mr-3.5" onClick={handleDontAskAgain}>
+                            Don't Ask Again
+                        </a>
                     }
                     <button
                         disabled={buttonDisabled()}
