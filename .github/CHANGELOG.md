@@ -7,7 +7,7 @@
 
 ## 1.2.0
 
-1. [UI] Complete redesign of the installer - @Benjozork (Benjamin Dupont) @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+1. [UI] Complete redesign of the installer - @Benjozork (Benjamin Dupont), @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [LOGIC] Add livery conversion tool - @Benjozork (Benjamin Dupont)
 
 ## 1.1.4
