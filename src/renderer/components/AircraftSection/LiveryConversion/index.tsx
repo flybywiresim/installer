@@ -240,7 +240,9 @@ const LiveryEntry: React.FC<LiveryEntryProps> = ({ livery }) => {
             </div>
 
             {entry.state === LiveryState.ERROR_DURING_CONVERSION &&
-                <span className="w-full bg-red-400 mt-5 px-5 py-2 text-white text-lg font-mono rounded-lg break-all">{entry.error.message}</span>
+                <span className="w-full bg-red-400 mt-5 px-5 py-2 text-white text-lg font-mono rounded-lg break-all">
+                    {(typeof entry.error === 'string') ? entry.error : entry.error.message}
+                </span>
             }
         </div>
     );
