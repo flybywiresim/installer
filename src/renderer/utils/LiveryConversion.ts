@@ -133,7 +133,7 @@ export class LiveryConversion {
 
         console.log(`[LCU/Conversion] Converted layout in '${newSimObjectName}'...`);
 
-        const { textureFolderName } = await this.convertAircraftCfg(newPackageFolder, newSimObjectName).catch((error: string) =>
+        const { textureFolderName, modelFolderName } = await this.convertAircraftCfg(newPackageFolder, newSimObjectName).catch((error: string) =>
             Promise.reject(`aircraft.cfg invalid (${error})`)
         );
 
@@ -144,6 +144,12 @@ export class LiveryConversion {
         );
 
         console.log(`[LCU/Conversion] Converted texture.cfg in '${newSimObjectName}'...`);
+
+        await this.convertModelCfg(newPackageFolder, newSimObjectName, modelFolderName).catch((error: string) =>
+            Promise.reject(`MODEL.${modelFolderName}/model.cfg invalid (${error})`)
+        );
+
+        console.log(`[LCU/Conversion] Converted model.cfg in '${newSimObjectName}'...`);
 
         console.log(`[LCU/Conversion] Done converting '${newSimObjectName}'.`);
 
@@ -167,7 +173,7 @@ export class LiveryConversion {
         await promisify(fs.writeFile)(layoutPath, layoutContents.replaceAll(oldSimObjectName, newSimObjectName));
     }
 
-    private static async convertAircraftCfg(packageFolder: string, simObjectName: string): Promise<{ textureFolderName: string }> {
+    private static async convertAircraftCfg(packageFolder: string, simObjectName: string): Promise<{ textureFolderName: string, modelFolderName: string }> {
         const parser = new ConfigIniParser();
 
         const aircraftCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, 'aircraft.cfg');
@@ -189,6 +195,7 @@ export class LiveryConversion {
         );
 
         let textureFolderName: string;
+        let modelFolderName: string;
 
         // Edit titles
 
@@ -222,9 +229,28 @@ export class LiveryConversion {
             return Promise.reject('No [FLTSIM.0] section found. Only [FLTSIM.0] is currently supported');
         }
 
+        // Find model folder name
+
+        if (aircraftCfg.sections().includes('FLTSIM.0')) {
+            if (aircraftCfg.isHaveOption('FLTSIM.0', 'model')) {
+                modelFolderName = (aircraftCfg.get(
+                    'FLTSIM.0',
+                    'model',
+                ) as string).replace(/ ?;.*/, '').replaceAll('"', '');
+
+                if (modelFolderName === '') {
+                    return Promise.reject('Livery does not have a \'model\' folder');
+                }
+            } else {
+                return Promise.reject('No \'model\' option found in [FLTSIM.0] section');
+            }
+        } else {
+            return Promise.reject('No [FLTSIM.0] section found. Only [FLTSIM.0] is currently supported');
+        }
+
         await promisify(fs.writeFile)(aircraftCfgPath, aircraftCfg.stringify());
 
-        return { textureFolderName };
+        return { textureFolderName, modelFolderName };
     }
 
     private static async convertTextureCfg(packageFolder: string, simObjectName: string, textureFolderName: string): Promise<void> {
@@ -251,6 +277,42 @@ export class LiveryConversion {
         }
 
         await promisify(fs.writeFile)(textureCfgPath, textureCfg.stringify());
+    }
+
+    private static async convertModelCfg(packageFolder: string, simObjectName: string, modelFolderName: string): Promise<void> {
+        const parser = new ConfigIniParser();
+
+        const modelCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, `MODEL.${modelFolderName}`, 'model.cfg');
+        const modelCfgContents = (await promisify(fs.readFile)(modelCfgPath)).toString();
+
+        const modelCfg = parser.parse(modelCfgContents);
+
+        if (!modelCfg.sections().includes('models')) {
+            return Promise.reject('No [models] section found');
+        }
+
+        for (const option of modelCfg.options('models')) {
+            if (option === 'exterior') {
+                const originalValue = modelCfg.get('models', 'exterior');
+
+                modelCfg.set(
+                    'models',
+                    'exterior',
+                    originalValue.replaceAll('Asobo_A320_NEO', 'FlyByWire_A320_NEO')
+                );
+            }
+            if (option === 'interior') {
+                const originalValue = modelCfg.get('models', 'interior');
+
+                modelCfg.set(
+                    'models',
+                    'interior',
+                    originalValue.replaceAll('Asobo_A320_NEO', 'FlyByWire_A320_NEO')
+                );
+            }
+        }
+
+        await promisify(fs.writeFile)(modelCfgPath, modelCfg.stringify());
     }
 
 }
