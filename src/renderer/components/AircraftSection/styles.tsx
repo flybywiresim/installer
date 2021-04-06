@@ -120,7 +120,7 @@ export const Content = styled.div`
     padding: 6px 24px 24px 24px;
 `;
 
-export const ModalContainer = styled.div`
+export const DialogContainer = styled.div`
   grid-column: start / end;
   grid-row: 1;
 `;

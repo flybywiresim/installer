@@ -11,7 +11,7 @@ import {
     InstallButton,
     InstalledButton,
     LeftContainer,
-    ModalContainer,
+    DialogContainer,
     ModelInformationContainer,
     ModelName,
     ModelSmallDesc,
@@ -38,7 +38,7 @@ import * as actionTypes from '../../redux/actionTypes';
 import { Mod, ModTrack, ModVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
-import { LiveryConversionModal } from "renderer/components/AircraftSection/LiveryConversion";
+import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 
 const settings = new Store;
@@ -483,9 +483,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
             <Content>
                 {liveries.length > 0 &&
-                    <ModalContainer>
-                        <LiveryConversionModal />
-                    </ModalContainer>
+                    <DialogContainer>
+                        <LiveryConversionDialog />
+                    </DialogContainer>
                 }
                 <TopContainer className={liveries.length > 0 ? 'mt-0' : '-mt-5'}>
                     <div>

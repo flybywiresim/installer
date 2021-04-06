@@ -11,7 +11,7 @@ import Store from "electron-store";
 
 const settings = new Store();
 
-export const LiveryConversionModal: React.FC = () => {
+export const LiveryConversionDialog: React.FC = () => {
     const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
         return state.liveries.map((entry) => entry.livery);
     });
