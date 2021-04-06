@@ -473,7 +473,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
                 </SelectionContainer>
             </HeaderImage>
-            <DownloadProgress percent={download?.progress} showInfo={false} status="active" />
+            <DownloadProgress percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" />
             <Content>
                 <TopContainer>
                     <div>
