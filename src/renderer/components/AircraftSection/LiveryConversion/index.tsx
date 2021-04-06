@@ -149,27 +149,15 @@ const SelectAll: React.FC = () => {
         // if all entries are selected we make all un-errored entries DETECTED
         // Otherwise, we make all un-errored entries TO_BE_CONVERTED.
 
-        if (allLiveriesSelected) {
-            entries
-                .filter((entry) => entry.state !== LiveryState.ERROR_DURING_CONVERSION)
-                .forEach((entry) => store.dispatch<SetLiveryStateAction>({
-                    type: actionTypes.SET_LIVERY_STATE,
-                    payload: {
-                        livery: entry.livery,
-                        state: LiveryState.DETECTED,
-                    },
-                }));
-        } else {
-            entries
-                .filter((entry) => entry.state !== LiveryState.ERROR_DURING_CONVERSION)
-                .forEach((entry) => store.dispatch<SetLiveryStateAction>({
-                    type: actionTypes.SET_LIVERY_STATE,
-                    payload: {
-                        livery: entry.livery,
-                        state: LiveryState.TO_BE_CONVERTED,
-                    },
-                }));
-        }
+        entries
+            .filter((entry) => entry.state !== LiveryState.ERROR_DURING_CONVERSION)
+            .forEach((entry) => store.dispatch<SetLiveryStateAction>({
+                type: actionTypes.SET_LIVERY_STATE,
+                payload: {
+                    livery: entry.livery,
+                    state: allLiveriesSelected ? LiveryState.DETECTED : LiveryState.TO_BE_CONVERTED,
+                },
+            }));
     };
 
     const backgroundColor = () => allLiveriesSelected ? 'bg-red-700' : 'bg-red-500';
