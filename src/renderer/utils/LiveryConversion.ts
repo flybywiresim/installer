@@ -1,8 +1,6 @@
-import * as fs from "fs";
-import { promisify } from "util";
 import { Directories } from "renderer/utils/Directories";
 import * as path from "path";
-import { copy, rename } from "fs-extra";
+import { copy, existsSync, readdir, readdirSync, readFile, readFileSync, rename, writeFile } from "fs-extra";
 import { ConfigIniParser } from "config-ini-parser";
 
 export type LiveryDefinition = {
@@ -14,13 +12,13 @@ export type LiveryDefinition = {
 export class LiveryConversion {
 
     static async getIncompatibleLiveries(): Promise<LiveryDefinition[]> {
-        return (promisify(fs.readdir)(Directories.community()))
+        return readdir(Directories.community())
             .then((folders) => folders.map<LiveryDefinition>((folder) => {
                 const packageFolder = path.join(Directories.community(), folder);
 
                 console.log(`[LCU] Checking package '${packageFolder}'...`);
 
-                const folderIsValidPackage = fs.existsSync(`${packageFolder}/manifest.json`);
+                const folderIsValidPackage = existsSync(`${packageFolder}/manifest.json`);
 
                 if (!folderIsValidPackage) {
                     return null;
@@ -31,20 +29,20 @@ export class LiveryConversion {
                 // Check if a converted package already exists for this livery
 
                 const convertedPackagePath = Directories.inCommunity(folder + '_a32nx');
-                const convertedPackageExists = fs.existsSync(convertedPackagePath);
+                const convertedPackageExists = existsSync(convertedPackagePath);
 
                 if (convertedPackageExists) {
                     return null;
                 }
 
                 const packageSimObjectsPath = path.join(packageFolder, 'SimObjects', 'AirPlanes');
-                const packageHasSimObjects = fs.existsSync(packageSimObjectsPath);
+                const packageHasSimObjects = existsSync(packageSimObjectsPath);
 
                 if (!packageHasSimObjects) {
                     return null;
                 }
 
-                const packageSimObjects = fs.readdirSync(packageSimObjectsPath);
+                const packageSimObjects = readdirSync(packageSimObjectsPath);
                 const packageContainsSimObject = packageSimObjects.length == 1;
 
                 if (!packageContainsSimObject) {
@@ -54,7 +52,7 @@ export class LiveryConversion {
                 console.log(`[LCU] Package ${packageFolder} has a valid SimObject.`);
 
                 const simObjectAircraftCfgPath = path.join(packageSimObjectsPath, packageSimObjects[0], `aircraft.cfg`);
-                const simObjectContainsAircraftCfg = fs.existsSync(simObjectAircraftCfgPath);
+                const simObjectContainsAircraftCfg = existsSync(simObjectAircraftCfgPath);
 
                 if (!simObjectContainsAircraftCfg) {
                     return null;
@@ -62,7 +60,7 @@ export class LiveryConversion {
 
                 console.log(`[LCU] SimObject ${packageSimObjects[0]} has an aircraft.cfg.`);
 
-                const aircraftCfgContents = fs.readFileSync(simObjectAircraftCfgPath).toString();
+                const aircraftCfgContents = readFileSync(simObjectAircraftCfgPath).toString();
 
                 const simObjectIsOldLivery = aircraftCfgContents.match(/base_container ?= ?"\.\.\\Asobo_A320_NEO"/)?.length > 0;
 
@@ -84,7 +82,7 @@ export class LiveryConversion {
         const parser = new ConfigIniParser();
 
         const aircraftCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, 'aircraft.cfg');
-        const aircraftCfgContents = fs.readFileSync(aircraftCfgPath).toString();
+        const aircraftCfgContents = readFileSync(aircraftCfgPath).toString();
 
         const aircraftCfg = parser.parse(aircraftCfgContents);
 
@@ -158,26 +156,26 @@ export class LiveryConversion {
 
     private static async convertPackageManifest(packageFolder: string): Promise<void> {
         const manifestPath = path.join(packageFolder, 'manifest.json');
-        const manifestContents = (await promisify(fs.readFile)(manifestPath)).toString();
+        const manifestContents = (await readFile(manifestPath)).toString();
 
         const manifest = JSON.parse(manifestContents);
         manifest['title'] = `${manifest['title']} (A32NX Converted)`;
 
-        await promisify(fs.writeFile)(manifestPath, JSON.stringify(manifest));
+        await writeFile(manifestPath, JSON.stringify(manifest));
     }
 
     private static async convertPackageLayout(packageFolder: string, oldSimObjectName: string, newSimObjectName: string): Promise<void> {
         const layoutPath = path.join(packageFolder, 'layout.json');
-        const layoutContents = (await promisify(fs.readFile)(layoutPath)).toString();
+        const layoutContents = (await readFile(layoutPath)).toString();
 
-        await promisify(fs.writeFile)(layoutPath, layoutContents.replaceAll(oldSimObjectName, newSimObjectName));
+        await writeFile(layoutPath, layoutContents.replaceAll(oldSimObjectName, newSimObjectName));
     }
 
     private static async convertAircraftCfg(packageFolder: string, simObjectName: string): Promise<{ textureFolderName: string, modelFolderName: string }> {
         const parser = new ConfigIniParser();
 
         const aircraftCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, 'aircraft.cfg');
-        const aircraftCfgContents = (await promisify(fs.readFile)(aircraftCfgPath)).toString();
+        const aircraftCfgContents = (await readFile(aircraftCfgPath)).toString();
 
         const aircraftCfg = parser.parse(aircraftCfgContents);
 
@@ -248,7 +246,7 @@ export class LiveryConversion {
             return Promise.reject('No [FLTSIM.0] section found. Only [FLTSIM.0] is currently supported');
         }
 
-        await promisify(fs.writeFile)(aircraftCfgPath, aircraftCfg.stringify());
+        await writeFile(aircraftCfgPath, aircraftCfg.stringify());
 
         return { textureFolderName, modelFolderName };
     }
@@ -257,7 +255,7 @@ export class LiveryConversion {
         const parser = new ConfigIniParser();
 
         const textureCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, `TEXTURE.${textureFolderName}`, 'texture.cfg');
-        const textureCfgContents = (await promisify(fs.readFile)(textureCfgPath)).toString();
+        const textureCfgContents = (await readFile(textureCfgPath)).toString();
 
         const textureCfg = parser.parse(textureCfgContents);
 
@@ -276,14 +274,14 @@ export class LiveryConversion {
             }
         }
 
-        await promisify(fs.writeFile)(textureCfgPath, textureCfg.stringify());
+        await writeFile(textureCfgPath, textureCfg.stringify());
     }
 
     private static async convertModelCfg(packageFolder: string, simObjectName: string, modelFolderName: string): Promise<void> {
         const parser = new ConfigIniParser();
 
         const modelCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, `MODEL.${modelFolderName}`, 'model.cfg');
-        const modelCfgContents = (await promisify(fs.readFile)(modelCfgPath)).toString();
+        const modelCfgContents = (await readFile(modelCfgPath)).toString();
 
         const modelCfg = parser.parse(modelCfgContents);
 
@@ -321,7 +319,7 @@ export class LiveryConversion {
             }
         }
 
-        await promisify(fs.writeFile)(modelCfgPath, modelCfg.stringify());
+        await writeFile(modelCfgPath, modelCfg.stringify());
     }
 
 }
