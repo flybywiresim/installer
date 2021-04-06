@@ -301,6 +301,15 @@ export class LiveryConversion {
                     originalValue.replaceAll('Asobo_A320_NEO', 'FlyByWire_A320_NEO')
                 );
             }
+            if (option === 'normal') {
+                const originalValue = modelCfg.get('models', 'normal');
+
+                modelCfg.set(
+                    'models',
+                    'normal',
+                    originalValue.replaceAll('Asobo_A320_NEO/model/', 'FlyByWire_A320_NEO/model/')
+                );
+            }
             if (option === 'interior') {
                 const originalValue = modelCfg.get('models', 'interior');
 
