@@ -102,7 +102,7 @@ export const LiveryConversionDialog: React.FC = () => {
                         className={`w-40 bg-red-500 transition-colors duration-200 hover:bg-red-700 px-6 py-2 text-2xl rounded-lg text-white ` + (buttonDisabled() ? 'pointer-events-none opacity-60' : '')}
                         onClick={showList ? handleConfirm : handleConvert}
                     >
-                        {showList ? 'Confirm' : 'Convert...'}
+                        {showList ? 'Confirm' : 'Convert'}
                     </button>
                 </div>
             </div>
