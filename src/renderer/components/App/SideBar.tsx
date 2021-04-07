@@ -70,14 +70,14 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
         }
     }, [modDownloadState]);
 
-    const RenderIcon = () => {
+    const Icon = () => {
         switch (icon) {
             case 'notAvailable':
                 return <Download className="text-gray-700 ml-auto mr-4" size={28} />;
             case 'install':
                 return <Download className="text-gray-400 ml-auto mr-4" size={28} />;
             case 'installing':
-                return <Refresh className="text-yellow-400 ml-auto mr-4" size={28} />;
+                return <Refresh className="text-yellow-400 ml-auto mr-4 animate-spin-reverse" size={28} />;
             case 'installed':
                 return <Check className="text-green-400 ml-auto mr-4" size={28} />;
             case 'update':
@@ -96,7 +96,7 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
                 <code className="text-lg text-teal-50">{downloadState}</code>
             </div>
 
-            <RenderIcon />
+            <Icon />
         </SidebarItem>
     );
 };

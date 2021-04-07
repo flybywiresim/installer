@@ -10,7 +10,10 @@ module.exports = {
             },
             boxShadow: {
                 'inner-sm': 'inset 0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-            }
+            },
+            animation: {
+                'spin-reverse': 'spin 1s linear infinite reverse',
+            },
         },
     },
     variants: {
