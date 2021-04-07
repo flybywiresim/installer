@@ -56,6 +56,26 @@ const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWa
     );
 };
 
+const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWarning: CallableFunction}) => {
+    const handleClick = () => {
+        const newState = !props.disableWarning;
+        props.setDisableWarning(newState);
+        settings.set('mainSettings.disabledIncompatibleLiveriesWarning', newState);
+    };
+
+    return (
+        <div className="flex items-center mb-2 mt-2">
+            <span className="text-base">Disable Incompatible Livery Warnings</span>
+            <input
+                type="checkbox"
+                checked={props.disableWarning}
+                onChange={handleClick}
+                className="ml-auto mr-2 w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
+            />
+        </div>
+    );
+};
+
 const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: CallableFunction}) => {
     const handleClick = () => {
         const newState = !props.useCdnCache;
@@ -78,7 +98,8 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
 
 function index(): JSX.Element {
     const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
-    const [disableWarning, setDisableWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
+    const [disableVersionWarning, setDisableVersionWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
+    const [disableLiveryWarning, setDisableLiveryWarning] = useState<boolean>(settings.get('mainSettings.disabledIncompatibleLiveriesWarning') as boolean);
     const [useCdnCache, setUseCdnCache] = useState<boolean>(settings.get('mainSettings.useCdnCache') as boolean);
 
     const handleReset = async () => {
@@ -86,7 +107,7 @@ function index(): JSX.Element {
         setInstallPath(await configureInitialInstallPath());
         settings.set('mainSettings.disableExperimentalWarning', false);
         settings.set('mainSettings.useCdnCache', true);
-        setDisableWarning(false);
+        setDisableVersionWarning(false);
     };
 
     return (
@@ -95,7 +116,8 @@ function index(): JSX.Element {
                 <PageTitle>General Settings</PageTitle>
                 <SettingsItems>
                     <InstallPathSettingItem path={installPath} setPath={setInstallPath} />
-                    <DisableWarningSettingItem disableWarning={disableWarning} setDisableWarning={setDisableWarning} />
+                    <DisableWarningSettingItem disableWarning={disableVersionWarning} setDisableWarning={setDisableVersionWarning} />
+                    <DisableLiveryWarningItem disableWarning={disableLiveryWarning} setDisableWarning={setDisableLiveryWarning} />
                     <UseCdnSettingItem useCdnCache={useCdnCache} setUseCdnCache={setUseCdnCache} />
                 </SettingsItems>
             </Container>

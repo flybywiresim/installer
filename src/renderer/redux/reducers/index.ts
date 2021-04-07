@@ -6,6 +6,7 @@ import installStatusReducer from 'renderer/redux/reducers/installStatus.reducer'
 import selectedTrackReducer from 'renderer/redux/reducers/selectedTrack.reducer';
 import installedTrackReducer from 'renderer/redux/reducers/installedTrack.reducer';
 import latestVersionNamesReducer from 'renderer/redux/reducers/latestVersionNames.reducer';
+import liveriesReducer from 'renderer/redux/reducers/liveries.reducer';
 
 const rootReducer = combineReducers({
     downloads: downloadsReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     selectedTrack: selectedTrackReducer,
     installedTrack: installedTrackReducer,
     latestVersionNames: latestVersionNamesReducer,
+    liveries: liveriesReducer
 });
 
 export default rootReducer;

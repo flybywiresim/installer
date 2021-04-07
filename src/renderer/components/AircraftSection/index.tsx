@@ -11,6 +11,7 @@ import {
     InstallButton,
     InstalledButton,
     LeftContainer,
+    DialogContainer,
     ModelInformationContainer,
     ModelName,
     ModelSmallDesc,
@@ -32,11 +33,13 @@ import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
-import store from '../../redux/store';
+import store, { InstallerStore } from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
 import { Mod, ModTrack, ModVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
+import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
+import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 
 const settings = new Store;
 
@@ -456,6 +459,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
+    const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
+        return state.liveries.map((entry) => entry.livery);
+    });
+
     return (
         <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
             <HeaderImage>
@@ -475,7 +482,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             </HeaderImage>
             <DownloadProgress percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" />
             <Content>
-                <TopContainer>
+                {liveries.length > 0 &&
+                    <DialogContainer>
+                        <LiveryConversionDialog />
+                    </DialogContainer>
+                }
+                <TopContainer className={liveries.length > 0 ? 'mt-0' : '-mt-5'}>
                     <div>
                         <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
                         <Tracks>

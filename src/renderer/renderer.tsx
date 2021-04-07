@@ -32,15 +32,37 @@ import { Provider } from 'react-redux';
 import App from 'renderer/components/App';
 import store from 'renderer/redux/store';
 import Store from 'electron-store';
-import { InstallerConfiguration, Configuration } from 'renderer/utils/InstallerConfiguration';
+import { Configuration, InstallerConfiguration } from 'renderer/utils/InstallerConfiguration';
 
 import './index.css';
 import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
+import { LiveryConversion } from "renderer/utils/LiveryConversion";
+import * as actionTypes from "renderer/redux/actionTypes";
+import { LiveryAction } from "renderer/redux/types";
+import { LiveryState } from "renderer/redux/reducers/liveries.reducer";
 
 const settings = new Store;
 
 const win = remote.getCurrentWindow();
+
+// Check for A32NX incompatible liveries if not disabled
+
+const disableLiveryWarningSetting = settings.get('mainSettings.disabledIncompatibleLiveriesWarning');
+
+if (!disableLiveryWarningSetting) {
+    LiveryConversion.getIncompatibleLiveries().then((liveries) => {
+        liveries.forEach((livery) => store.dispatch<LiveryAction>({
+            type: actionTypes.SET_LIVERY_STATE,
+            payload: {
+                livery,
+                state: LiveryState.DETECTED,
+            },
+        }));
+    });
+}
+
+// Obtain configuration and use it
 
 InstallerConfiguration.obtain().then((config: Configuration) => {
     console.log(config);
