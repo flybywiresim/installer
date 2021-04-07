@@ -72,6 +72,7 @@ export const defaultConfiguration: Configuration = {
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
                     alternativeUrls: [
                         'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
                     ],
                     description:
                         <>
