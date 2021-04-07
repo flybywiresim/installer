@@ -235,10 +235,6 @@ export class LiveryConversion {
                     'FLTSIM.0',
                     'model',
                 ) as string).replace(/ ?;.*/, '').replaceAll('"', '');
-
-                if (modelFolderName === '') {
-                    return Promise.reject('Livery does not have a \'model\' folder');
-                }
             } else {
                 return Promise.reject('No \'model\' option found in [FLTSIM.0] section');
             }
@@ -281,6 +277,9 @@ export class LiveryConversion {
         const parser = new ConfigIniParser();
 
         const modelCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, `MODEL.${modelFolderName}`, 'model.cfg');
+        if (!existsSync(modelCfgPath)) {
+            return null;
+        }
         const modelCfgContents = (await readFile(modelCfgPath)).toString();
 
         const modelCfg = parser.parse(modelCfgContents);
