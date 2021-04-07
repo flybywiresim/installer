@@ -319,8 +319,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         dispatch(deleteDownload(props.mod.name));
 
         // Clean up temp dir
-        console.log('Cleaning up temporary directory', tempDir);
-        fs.rmdirSync(tempDir, { recursive: true });
+        Directories.removeAllTemp();
     };
 
     const selectAndSetTrack = async (key: string) => {

@@ -9,6 +9,7 @@
 
 1. [UI] Complete redesign of the installer - @Benjozork (Benjamin Dupont), @FoxtrotSierra6829 (Foxtrot Sierra#6420)
 1. [LOGIC] Add livery conversion tool - @Benjozork (Benjamin Dupont)
+1. [LOGIC] Cleanup of old temporary directories on installer close and startup - @nistei (nistei#1362)
 
 ## 1.1.4
 
