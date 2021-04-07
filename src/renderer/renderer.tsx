@@ -41,6 +41,7 @@ import { LiveryConversion } from "renderer/utils/LiveryConversion";
 import * as actionTypes from "renderer/redux/actionTypes";
 import { LiveryAction } from "renderer/redux/types";
 import { LiveryState } from "renderer/redux/reducers/liveries.reducer";
+import { Directories } from "renderer/utils/Directories";
 
 const settings = new Store;
 
@@ -66,6 +67,7 @@ if (!disableLiveryWarningSetting) {
 
 InstallerConfiguration.obtain().then((config: Configuration) => {
     console.log(config);
+    Directories.removeAllTemp();
 
     ReactDOM.render(
         <Provider store={store}>
@@ -110,6 +112,8 @@ function handleWindowControls() {
     });
 
     document.getElementById('close-button')?.addEventListener("click", () => {
+        Directories.removeAllTemp();
+
         settings.set('cache.main.maximized', win.isMaximized());
         const winSize = win.getSize();
 

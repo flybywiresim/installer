@@ -19,6 +19,27 @@ export class Directories {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
     }
 
+    static removeAllTemp(): void {
+        console.log('[CLEANUP] Removing all temp directories');
+
+        if (!settings.has('mainSettings.msfsPackagePath')) {
+            console.warn('[CLEANUP] Install directory is not set. Aborting');
+            return;
+        }
+
+        fs.readdirSync(Directories.community(), { withFileTypes: true })
+            .filter(dirEnt => dirEnt.isDirectory())
+            .filter(dirEnt => dirEnt.name.startsWith('flybywire_current_install_'))
+            .forEach(dir => {
+                const fullPath = Directories.inCommunity(dir.name);
+
+                console.log('[CLEANUP] Removing', fullPath);
+                fs.rmdirSync(fullPath, { recursive: true });
+                console.log('[CLEANUP] Removed', fullPath);
+            });
+        console.log('[CLEANUP] Finished removing all temp directories');
+    }
+
     static removeAlternativesForMod(mod: Mod): void {
         mod.alternativeNames?.forEach(altName => {
             const altDir = Directories.inCommunity(altName);
