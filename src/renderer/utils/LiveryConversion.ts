@@ -212,6 +212,34 @@ export class LiveryConversion {
             aircraftCfg.set(section, 'title', `"${newTitle}"`);
         }
 
+        // Edit ui_manufacturer
+        for (const section of aircraftCfg.sections()) {
+            if (!section.startsWith('FLTSIM')) {
+                continue;
+            }
+
+            if (!aircraftCfg.isHaveOption(section, 'ui_manufacturer')) {
+                continue;
+            }
+            const newUIManufacturer = `TT:AIRCRAFT.UI_MANUFACTURER`;
+
+            aircraftCfg.set(section, 'ui_manufacturer', `"${newUIManufacturer}" ; e.g. Boeing, Cessna`);
+        }
+
+        // Edit ui_type
+        for (const section of aircraftCfg.sections()) {
+            if (!section.startsWith('FLTSIM')) {
+                continue;
+            }
+
+            if (!aircraftCfg.isHaveOption(section, 'ui_type')) {
+                continue;
+            }
+            const newUIType = `TT:AIRCRAFT.UI_MODEL`;
+
+            aircraftCfg.set(section, 'ui_type', `"${newUIType}" ; e.g. 747-400, 172`);
+        }
+
         // Find texture folder name
 
         if (aircraftCfg.sections().includes('FLTSIM.0')) {
