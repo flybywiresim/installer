@@ -278,7 +278,8 @@ export class LiveryConversion {
 
         const modelCfgPath = path.join(packageFolder, 'SimObjects', 'AirPlanes', simObjectName, `MODEL.${modelFolderName}`, 'model.cfg');
         if (!existsSync(modelCfgPath)) {
-            return null;
+            console.log(`[LCU/Conversion] '${simObjectName}' does not have a 'model' folder`);
+            return;
         }
         const modelCfgContents = (await readFile(modelCfgPath)).toString();
 
