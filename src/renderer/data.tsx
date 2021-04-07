@@ -70,6 +70,9 @@ export const defaultConfiguration: Configuration = {
                     name: 'Experimental',
                     key: 'experimental',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
+                    alternativeUrls: [
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
+                    ],
                     description:
                         <>
                             <p>

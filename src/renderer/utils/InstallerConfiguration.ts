@@ -21,6 +21,7 @@ type BaseModTrack = {
     name: string,
     key: string,
     url: string,
+    alternativeUrls?: string[],
     description: JSX.Element,
     releaseModel: ReleaseModel,
 }
