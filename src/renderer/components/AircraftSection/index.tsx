@@ -101,7 +101,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             console.log('Currently installed', manifest);
 
             let track = _.find(props.mod.tracks, { url: manifest.source });
-            if (track === undefined) {
+            if (!track) {
                 track = _.find(props.mod.tracks, { alternativeUrls: [manifest.source] });
             }
             console.log('Currently installed', track);
