@@ -184,14 +184,14 @@ const LanguageSettingsItem = () => {
     };
 
     return (
-        <div className="flex flex-row justify-between my-1 mr-2">
+        <div className="flex flex-row justify-between mt-1 mb-2 mr-2">
             <SettingItemName>{t('SettingsSection.GeneralSettings.Language')}</SettingItemName>
             <select
                 value={i18n.language}
                 onChange={event => handleSelect(event.currentTarget.value)}
                 name="Language"
                 id="language-list"
-                className="text-base text-black w-40 outline-none"
+                className="text-base text-white w-40 outline-none bg-navy border-2 border-navy px-2"
             >
                 {languages.map(language =>
                     <option value={language.value} key={language.value}>{language.name}</option>)
