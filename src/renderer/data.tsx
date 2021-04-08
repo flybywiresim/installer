@@ -69,25 +69,29 @@ export const defaultConfiguration: Configuration = {
                 {
                     name: 'Experimental',
                     key: 'experimental',
-                    url: 'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
+                    url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
+                    alternativeUrls: [
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
+                    ],
                     description:
                         <>
                             <p>
                                 The experimental version is similar to the development branch, but contains custom systems (including fly-by-wire, autopilot, FADEC, etc.).
-                                This version is updated whenever the 'autopilot' branch on GitHub is updated, which is around every 12 hours.
+                                This version is updated whenever the 'experimental' branch on GitHub is updated, which is around every 12 hours.
                             </p>
                         </>,
                     isExperimental: true,
                     warningContent:
                         <>
                             <p>The experimental version contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.</p>
-                            <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/autopilot/docs/README.md")}>this guide</a>.</p>
+                            <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/experimental/docs/README.md")}>this guide</a>.</p>
 
                             <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
                         </>,
                     releaseModel: {
                         type: 'githubBranch',
-                        branch: 'autopilot',
+                        branch: 'experimental',
                     },
                 },
             ],
