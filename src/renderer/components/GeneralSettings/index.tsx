@@ -19,9 +19,9 @@ import * as actionTypes from '../../redux/actionTypes';
 const settings = new Store;
 
 // eslint-disable-next-line no-unused-vars
-function InstallPathSettingItem(props: { path: string, setPath: (path: string) => void }): JSX.Element {
+const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
-        const path = await setupInstallPath();
+        const path = await setupInstallPath('aircraft');
 
         if (path) {
             props.setPath(path);
@@ -34,7 +34,45 @@ function InstallPathSettingItem(props: { path: string, setPath: (path: string) =
             <SettingItemContent onClick={handleClick}>{props.path}</SettingItemContent>
         </SettingsItem>
     );
-}
+};
+
+const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
+    async function handleClick() {
+        const path = await setupInstallPath('liveries');
+
+        if (path) {
+            props.setPath(path);
+        }
+    }
+
+    return (
+        <SettingsItem>
+            <SettingItemContent onClick={handleClick}>{props.path}</SettingItemContent>
+        </SettingsItem>
+    );
+};
+
+const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, setSeperateLiveriesPath: CallableFunction, setLiveriesPath: CallableFunction}) => {
+    const handleClick = () => {
+        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
+        props.setLiveriesPath(settings.get('mainSettings.msfsPackagePath'));
+        const newState = !props.separateLiveriesPath;
+        props.setSeperateLiveriesPath(newState);
+        settings.set('mainSettings.separateLiveriesPath', newState);
+    };
+
+    return (
+        <div className="flex items-center mb-2 mt-2">
+            <span className="text-base">Separate Liveries Directory</span>
+            <input
+                type="checkbox"
+                checked={props.separateLiveriesPath}
+                onChange={handleClick}
+                className="ml-auto mr-2 w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
+            />
+        </div>
+    );
+};
 
 const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWarning: CallableFunction}) => {
     const handleClick = () => {
@@ -98,16 +136,24 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
 
 function index(): JSX.Element {
     const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
+    const [separateLiveriesPath, setSeparateLiveriesPath] = useState<boolean>(settings.get('mainSettings.separateLiveriesPath') as boolean);
+    const [liveriesPath, setLiveriesPath] = useState<string>(settings.get('mainSettings.liveriesPath') as string);
     const [disableVersionWarning, setDisableVersionWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
     const [disableLiveryWarning, setDisableLiveryWarning] = useState<boolean>(settings.get('mainSettings.disabledIncompatibleLiveriesWarning') as boolean);
     const [useCdnCache, setUseCdnCache] = useState<boolean>(settings.get('mainSettings.useCdnCache') as boolean);
 
     const handleReset = async () => {
         settings.clear();
-        setInstallPath(await configureInitialInstallPath());
-        settings.set('mainSettings.disableExperimentalWarning', false);
-        settings.set('mainSettings.useCdnCache', true);
+        setInstallPath(await configureInitialInstallPath('aircraft'));
+        setLiveriesPath(await configureInitialInstallPath('liveries'));
+        setSeparateLiveriesPath(false);
+        settings.set('mainSettings.separateLiveriesPath', false);
         setDisableVersionWarning(false);
+        settings.set('mainSettings.disableExperimentalWarning', false);
+        setDisableLiveryWarning(false);
+        settings.set('mainSettings.disabledIncompatibleLiveriesWarning', false);
+        setUseCdnCache(true);
+        settings.set('mainSettings.useCdnCache', true);
     };
 
     return (
@@ -116,6 +162,8 @@ function index(): JSX.Element {
                 <PageTitle>General Settings</PageTitle>
                 <SettingsItems>
                     <InstallPathSettingItem path={installPath} setPath={setInstallPath} />
+                    <SeparateLiveriesPathSettingItem separateLiveriesPath={separateLiveriesPath} setSeperateLiveriesPath={setSeparateLiveriesPath} setLiveriesPath={setLiveriesPath} />
+                    {separateLiveriesPath ? (<LiveriesPathSettingItem path={liveriesPath} setPath={setLiveriesPath} />) : (<></>)}
                     <DisableWarningSettingItem disableWarning={disableVersionWarning} setDisableWarning={setDisableVersionWarning} />
                     <DisableLiveryWarningItem disableWarning={disableLiveryWarning} setDisableWarning={setDisableLiveryWarning} />
                     <UseCdnSettingItem useCdnCache={useCdnCache} setUseCdnCache={setUseCdnCache} />
