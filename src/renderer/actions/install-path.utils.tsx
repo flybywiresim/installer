@@ -19,6 +19,9 @@ export async function setupInstallPath(target: string): Promise<string> {
     if (path.filePaths[0]) {
         if (target === 'aircraft') {
             settings.set('mainSettings.msfsPackagePath', path.filePaths[0]);
+            if (!settings.get('mainSettings.separateLiveriesPath')) {
+                settings.set('mainSettings.liveriesPath', path.filePaths[0]);
+            }
         } else if (target === 'liveries') {
             settings.set('mainSettings.liveriesPath', path.filePaths[0]);
         }

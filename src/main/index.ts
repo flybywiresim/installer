@@ -193,5 +193,7 @@ function configureSettings(app: App) {
                 }
             });
         }
+    } else if (!settings.has('mainSettings.liveriesPath')) {
+        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
     }
 }
