@@ -342,7 +342,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         if (settings.has('mainSettings.msfsPackagePath')) {
             downloadMod(selectedTrack).then(() => console.log('Download and install complete'));
         } else {
-            setupInstallPath('aircraft').then();
+            setupInstallPath().then();
         }
     };
 

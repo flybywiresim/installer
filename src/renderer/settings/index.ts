@@ -7,7 +7,7 @@ import Store from "electron-store";
 const { app } = remote;
 const settings = new Store;
 
-export async function configureInitialInstallPath(target: string): Promise<string> {
+export async function configureInitialInstallPath(): Promise<string> {
     let userPath = null;
 
     const steamMsfsPath = app.getPath('appData') + "\\Microsoft Flight Simulator\\UserCfg.opt";
@@ -36,11 +36,8 @@ export async function configureInitialInstallPath(target: string): Promise<strin
                     const dir = combineSplit.replaceAll('"', '');
                     const msfs_community_path = dir + "\\Community\\";
 
-                    if (target === 'aircraft') {
-                        settings.set('mainSettings.msfsPackagePath', msfs_community_path);
-                    } else if (target === 'liveries') {
-                        settings.set('mainSettings.liveriesPath', msfs_community_path);
-                    }
+                    settings.set('mainSettings.msfsPackagePath', msfs_community_path);
+                    settings.set('mainSettings.liveriesPath', msfs_community_path);
 
                     resolve(msfs_community_path);
                 }

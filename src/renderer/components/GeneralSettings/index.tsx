@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import store from '../../redux/store';
 import Store from 'electron-store';
-import { setupInstallPath } from 'renderer/actions/install-path.utils';
+import { setupInstallPath, setupLiveriesPath } from 'renderer/actions/install-path.utils';
 import {
     Container,
     PageTitle,
@@ -22,7 +22,7 @@ const settings = new Store;
 // eslint-disable-next-line no-unused-vars
 const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
-        const path = await setupInstallPath('aircraft');
+        const path = await setupInstallPath();
 
         if (path) {
             props.setPath(path);
@@ -42,7 +42,7 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
 const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
-        const path = await setupInstallPath('liveries');
+        const path = await setupLiveriesPath();
 
         if (path) {
             props.setPath(path);
@@ -155,8 +155,8 @@ function index(): JSX.Element {
 
     const handleReset = async () => {
         settings.clear();
-        setInstallPath(await configureInitialInstallPath('aircraft'));
-        setLiveriesPath(await configureInitialInstallPath('liveries'));
+        setInstallPath(await configureInitialInstallPath());
+        setLiveriesPath(installPath);
         setSeparateLiveriesPath(false);
         settings.set('mainSettings.separateLiveriesPath', false);
         setDisableVersionWarning(false);
