@@ -11,7 +11,7 @@ import Store from "electron-store";
 
 const settings = new Store();
 
-export const reloadLiveries = () => {
+export const reloadLiveries = (): void => {
     store.dispatch({
         type: actionTypes.CLEAR_LIVERIES_STATE,
     });
@@ -26,7 +26,7 @@ export const reloadLiveries = () => {
     });
 };
 
-export const clearLiveries = () => {
+export const clearLiveries = (): void => {
     store.dispatch({
         type: actionTypes.CLEAR_LIVERIES_STATE,
     });
