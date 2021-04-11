@@ -15,6 +15,7 @@ import {
 import { configureInitialInstallPath } from "renderer/settings";
 import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
+import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
 
 const settings = new Store;
 
@@ -25,6 +26,9 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
         if (path) {
             props.setPath(path);
+            if (!settings.get('mainSettings.separateLiveriesPath')) {
+                reloadLiveries();
+            }
         }
     }
 
@@ -42,6 +46,7 @@ const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) 
 
         if (path) {
             props.setPath(path);
+            reloadLiveries();
         }
     }
 
@@ -59,6 +64,7 @@ const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, 
         const newState = !props.separateLiveriesPath;
         props.setSeperateLiveriesPath(newState);
         settings.set('mainSettings.separateLiveriesPath', newState);
+        reloadLiveries();
     };
 
     return (
@@ -99,6 +105,11 @@ const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWar
         const newState = !props.disableWarning;
         props.setDisableWarning(newState);
         settings.set('mainSettings.disabledIncompatibleLiveriesWarning', newState);
+        if (!newState) {
+            reloadLiveries();
+        } else {
+            clearLiveries();
+        }
     };
 
     return (
@@ -154,6 +165,7 @@ function index(): JSX.Element {
         settings.set('mainSettings.disabledIncompatibleLiveriesWarning', false);
         setUseCdnCache(true);
         settings.set('mainSettings.useCdnCache', true);
+        reloadLiveries();
     };
 
     return (

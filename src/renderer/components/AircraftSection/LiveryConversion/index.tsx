@@ -11,6 +11,27 @@ import Store from "electron-store";
 
 const settings = new Store();
 
+export const reloadLiveries = () => {
+    store.dispatch({
+        type: actionTypes.CLEAR_LIVERIES_STATE,
+    });
+    LiveryConversion.getIncompatibleLiveries().then((liveries) => {
+        liveries.forEach((livery) => store.dispatch<LiveryAction>({
+            type: actionTypes.SET_LIVERY_STATE,
+            payload: {
+                livery,
+                state: LiveryState.DETECTED,
+            },
+        }));
+    });
+};
+
+export const clearLiveries = () => {
+    store.dispatch({
+        type: actionTypes.CLEAR_LIVERIES_STATE,
+    });
+};
+
 export const LiveryConversionDialog: React.FC = () => {
     const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
         return state.liveries.map((entry) => entry.livery);
@@ -33,16 +54,14 @@ export const LiveryConversionDialog: React.FC = () => {
     const handleDontAskAgain = () => {
         settings.set('mainSettings.disabledIncompatibleLiveriesWarning', true);
 
-        store.dispatch({
-            type: actionTypes.CLEAR_LIVERIES_STATE,
-        });
+        clearLiveries();
     };
 
     const handleConvert = () => setShowList(true);
 
-    const handleDone = () => store.dispatch({
-        type: actionTypes.CLEAR_LIVERIES_STATE,
-    });
+    const handleDone = () => {
+        clearLiveries();
+    };
 
     const handleCancel = () => setShowList(false);
 
