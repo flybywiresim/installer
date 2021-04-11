@@ -59,9 +59,7 @@ export const LiveryConversionDialog: React.FC = () => {
 
     const handleConvert = () => setShowList(true);
 
-    const handleDone = () => {
-        clearLiveries();
-    };
+    const handleDone = () => clearLiveries();
 
     const handleCancel = () => setShowList(false);
 
