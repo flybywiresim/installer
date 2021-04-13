@@ -27,7 +27,7 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
         if (path) {
             props.setPath(path);
-            if (!settings.get('mainSettings.separateLiveriesPath')) {
+            if (!settings.get('mainSettings.separateLiveriesPath') && !settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
                 reloadLiveries();
             }
         }
@@ -47,7 +47,9 @@ const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) 
 
         if (path) {
             props.setPath(path);
-            reloadLiveries();
+            if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
+                reloadLiveries();
+            }
         }
     }
 
@@ -65,7 +67,9 @@ const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, 
         const newState = !props.separateLiveriesPath;
         props.setSeperateLiveriesPath(newState);
         settings.set('mainSettings.separateLiveriesPath', newState);
-        reloadLiveries();
+        if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
+            reloadLiveries();
+        }
     };
 
     return (
@@ -169,6 +173,7 @@ function index(): JSX.Element {
 
     const handleReset = async () => {
         settings.clear();
+        settings.set('metaInfo.lastVersion', packageInfo.version);
         setInstallPath(await configureInitialInstallPath());
         setLiveriesPath(installPath);
         setSeparateLiveriesPath(false);
