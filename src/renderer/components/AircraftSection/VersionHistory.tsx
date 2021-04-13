@@ -44,7 +44,7 @@ const VersionBase: React.FC<VersionProps> = (props) => {
 
             <VersionTitle>{props.version.title}</VersionTitle>
             <VersionDate>{displayDate(props.version.date as unknown as string)}</VersionDate>
-            <VersionType>{props.version.type} version</VersionType>
+            <VersionType>{props.version.type}</VersionType>
         </div>
     );
 };

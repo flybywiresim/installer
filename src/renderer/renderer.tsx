@@ -43,6 +43,8 @@ import { LiveryAction } from "renderer/redux/types";
 import { LiveryState } from "renderer/redux/reducers/liveries.reducer";
 import { Directories } from "renderer/utils/Directories";
 
+import './i18n/config';
+
 const settings = new Store;
 
 const win = remote.getCurrentWindow();

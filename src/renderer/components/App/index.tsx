@@ -1,5 +1,7 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from "i18next";
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
@@ -44,13 +46,13 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
                 : releases[index + 1].title;
 
             if (currentVersionTitle[1] !== otherVersionTitle[1]) {
-                releases[index].type = 'major';
+                releases[index].type = i18n.t('AircraftSection.MajorVersion');
             } else if (currentVersionTitle[3] !== otherVersionTitle[3]) {
-                releases[index].type = 'minor';
+                releases[index].type = i18n.t('AircraftSection.MinorVersion');
             } else if (currentVersionTitle[5] !== otherVersionTitle[5] && index === releases.length - 1) {
-                releases[index].type = "minor";
+                releases[index].type = i18n.t('AircraftSection.MinorVersion');
             } else if (currentVersionTitle[5] !== otherVersionTitle[5]) {
-                releases[index].type = 'patch';
+                releases[index].type = i18n.t('AircraftSection.PatchVersion');
             }
         });
 
@@ -78,6 +80,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     }, []);
 
     const [selectedItem, setSelectedItem] = useState<string>(configuration.mods[0].key);
+    const { t } = useTranslation();
 
     let sectionToShow;
     switch (selectedItem) {
@@ -128,7 +131,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                         <Settings className="text-gray-100 ml-2 mr-3" size={24} />
 
                                         <div className="flex flex-col">
-                                            <span className="text-lg text-gray-200 font-semibold">Settings</span>
+                                            <span className="text-lg text-gray-200 font-semibold">{t('SideBar.Settings')}</span>
                                         </div>
                                     </SidebarItem>
                                 </div>

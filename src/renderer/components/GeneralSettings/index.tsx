@@ -16,11 +16,15 @@ import { configureInitialInstallPath } from "renderer/settings";
 import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
 import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
+import { useTranslation } from "react-i18next";
+import { supportedLanguages } from '../../i18n/config';
 
 const settings = new Store;
 
 // eslint-disable-next-line no-unused-vars
 const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
+    const { t } = useTranslation();
+
     async function handleClick() {
         const path = await setupInstallPath();
 
@@ -34,7 +38,7 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
     return (
         <SettingsItem>
-            <SettingItemName>Install Directory</SettingItemName>
+            <SettingItemName>{t('SettingsSection.DownloadSettings.InstallDirectory')}</SettingItemName>
             <SettingItemContent onClick={handleClick}>{props.path}</SettingItemContent>
         </SettingsItem>
     );
@@ -58,6 +62,7 @@ const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) 
 };
 
 const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, setSeperateLiveriesPath: CallableFunction, setLiveriesPath: CallableFunction}) => {
+    const { t } = useTranslation();
     const handleClick = () => {
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
         props.setLiveriesPath(settings.get('mainSettings.msfsPackagePath'));
@@ -69,7 +74,7 @@ const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, 
 
     return (
         <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Separate Liveries Directory</span>
+            <span className="text-base">{t('SettingsSection.DownloadSettings.SeparateLiveriesDirectory')}</span>
             <input
                 type="checkbox"
                 checked={props.separateLiveriesPath}
@@ -81,6 +86,7 @@ const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, 
 };
 
 const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWarning: CallableFunction}) => {
+    const { t } = useTranslation();
     const handleClick = () => {
         const newState = !props.disableWarning;
         props.setDisableWarning(newState);
@@ -89,7 +95,7 @@ const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWa
 
     return (
         <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Disable Version Warnings</span>
+            <span className="text-base">{t('SettingsSection.GeneralSettings.DisableVersionWarnings')}</span>
             <input
                 type="checkbox"
                 checked={props.disableWarning}
@@ -101,6 +107,7 @@ const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWa
 };
 
 const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWarning: CallableFunction}) => {
+    const { t } = useTranslation();
     const handleClick = () => {
         const newState = !props.disableWarning;
         props.setDisableWarning(newState);
@@ -114,7 +121,7 @@ const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWar
 
     return (
         <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Disable Incompatible Livery Warnings</span>
+            <span className="text-base">{t('SettingsSection.GeneralSettings.DisableIncompatibleLiveryWarnings')}</span>
             <input
                 type="checkbox"
                 checked={props.disableWarning}
@@ -126,6 +133,7 @@ const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWar
 };
 
 const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: CallableFunction}) => {
+    const { t } = useTranslation();
     const handleClick = () => {
         const newState = !props.useCdnCache;
         props.setUseCdnCache(newState);
@@ -134,7 +142,7 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
 
     return (
         <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Use CDN (Faster Downloads)</span>
+            <span className="text-base">{t('SettingsSection.DownloadSettings.UseCDN')}</span>
             <input
                 type="checkbox"
                 checked={props.useCdnCache}
@@ -145,7 +153,38 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
     );
 };
 
+const LanguageSettingsItem = () => {
+    const { t, i18n } = useTranslation();
+
+    const languages: {value: string, name: string}[] = [];
+    supportedLanguages.forEach(element => languages.push({ value: element, name: t('Languages.' + element) }));
+
+    const handleSelect = (language: string) => {
+        i18n.changeLanguage(language);
+        settings.set('mainSettings.lang', language);
+    };
+
+    return (
+        <div className="flex flex-row justify-between mt-1 mb-2 mr-2">
+            <SettingItemName>{t('SettingsSection.GeneralSettings.Language')}</SettingItemName>
+            <select
+                value={i18n.language}
+                onChange={event => handleSelect(event.currentTarget.value)}
+                name="Language"
+                id="language-list"
+                className="text-base text-white w-40 outline-none bg-navy border-2 border-navy px-2"
+            >
+                {languages.map(language =>
+                    <option value={language.value} key={language.value}>{language.name}</option>)
+                }
+            </select>
+        </div>
+    );
+};
+
 function index(): JSX.Element {
+    const { t, i18n } = useTranslation();
+
     const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
     const [separateLiveriesPath, setSeparateLiveriesPath] = useState<boolean>(settings.get('mainSettings.separateLiveriesPath') as boolean);
     const [liveriesPath, setLiveriesPath] = useState<string>(settings.get('mainSettings.liveriesPath') as string);
@@ -155,6 +194,7 @@ function index(): JSX.Element {
 
     const handleReset = async () => {
         settings.clear();
+        await i18n.changeLanguage('en');
         setInstallPath(await configureInitialInstallPath());
         setLiveriesPath(installPath);
         setSeparateLiveriesPath(false);
@@ -171,7 +211,7 @@ function index(): JSX.Element {
     return (
         <>
             <Container>
-                <PageTitle>General Settings</PageTitle>
+                <PageTitle>{t('SettingsSection.GeneralSettings.Name')}</PageTitle>
                 <SettingsItems>
                     <InstallPathSettingItem path={installPath} setPath={setInstallPath} />
                     <SeparateLiveriesPathSettingItem separateLiveriesPath={separateLiveriesPath} setSeperateLiveriesPath={setSeparateLiveriesPath} setLiveriesPath={setLiveriesPath} />
@@ -179,11 +219,12 @@ function index(): JSX.Element {
                     <DisableWarningSettingItem disableWarning={disableVersionWarning} setDisableWarning={setDisableVersionWarning} />
                     <DisableLiveryWarningItem disableWarning={disableLiveryWarning} setDisableWarning={setDisableLiveryWarning} />
                     <UseCdnSettingItem useCdnCache={useCdnCache} setUseCdnCache={setUseCdnCache} />
+                    <LanguageSettingsItem />
                 </SettingsItems>
             </Container>
             <InfoContainer>
                 <InfoButton onClick={showChangelog}>{packageInfo.version}</InfoButton>
-                <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
+                <ResetButton onClick={handleReset}>{t('SettingsSection.GeneralSettings.ResetToDefault')}</ResetButton>
             </InfoContainer>
         </>
     );

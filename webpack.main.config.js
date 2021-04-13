@@ -1,19 +1,19 @@
 const path = require('path');
 module.exports = {
-  /**
+    /**
    * This is the main entry point for your application, it's the first file
    * that runs in the main process.
    */
-  entry: './src/main/index.ts',
-  // Put your normal webpack config below here
-  module: {
-    rules: require('./webpack.rules'),
-  },
-  resolve: {
-    alias: {
-      'main': path.resolve(__dirname, './src/main'),
-      'common': path.resolve(__dirname, './src/common'),
+    entry: './src/main/index.ts',
+    // Put your normal webpack config below here
+    module: {
+        rules: require('./webpack.rules'),
     },
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
-  },
+    resolve: {
+        alias: {
+            'main': path.resolve(__dirname, './src/main'),
+            'common': path.resolve(__dirname, './src/common'),
+        },
+        extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
+    },
 };

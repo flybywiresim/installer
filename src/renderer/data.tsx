@@ -1,4 +1,5 @@
 import React from "react";
+import { Translation } from 'react-i18next';
 import { shell } from "electron";
 import { Configuration } from "./utils/InstallerConfiguration";
 
@@ -17,12 +18,18 @@ export const defaultConfiguration: Configuration = {
             backgroundImageUrls: [
                 'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'
             ],
-            shortDescription: 'Airbus A320neo Series',
-            description: 'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
-                'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +
-                'aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines ' +
-                '(the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) ' +
-                'and features large, fuel-saving wingtip devices known as Sharklets.',
+            shortDescription:
+                <Translation>
+                    {
+                        (t) => <p>{t('AircraftSection.A32NX.ShortDesc')}</p>
+                    }
+                </Translation>,
+            description:
+                <Translation>
+                    {
+                        (t) => <p>{t('AircraftSection.A32NX.Desc')}</p>
+                    }
+                </Translation>,
             targetDirectory: 'flybywire-aircraft-a320-neo',
             alternativeNames: [
                 'A32NX',
@@ -34,14 +41,11 @@ export const defaultConfiguration: Configuration = {
                     key: 'a32nx-stable',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
                     description:
-                        <>
-                            <p>
-                                Stable is our variant that has the least bugs and best performance. This version
-                                will not
-                                always be up to date but we guarantee it's compatibility with each major patch
-                                from MSFS.
-                            </p>
-                        </>,
+                        <Translation>
+                            {
+                                (t) => <p>{t('AircraftSection.A32NX.Versions.Stable.Desc')}</p>
+                            }
+                        </Translation>,
                     isExperimental: false,
                     releaseModel: {
                         type: 'githubRelease',
@@ -52,14 +56,11 @@ export const defaultConfiguration: Configuration = {
                     key: 'a32nx-dev',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
                     description:
-                        <>
-                            <p>
-                                Development will have the latest features that will end up in the next stable.
-                                Bugs are to be expected. It updates whenever something is added to the 'master'
-                                branch on Github.
-                                Please visit our discord for support.
-                            </p>
-                        </>,
+                        <Translation>
+                            {
+                                (t) => <p>{t('AircraftSection.A32NX.Versions.Development.Desc')}</p>
+                            }
+                        </Translation>,
                     isExperimental: false,
                     releaseModel: {
                         type: 'githubBranch',
@@ -75,20 +76,23 @@ export const defaultConfiguration: Configuration = {
                         'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
                     ],
                     description:
-                        <>
-                            <p>
-                                The experimental version is similar to the development branch, but contains custom systems (including fly-by-wire, autopilot, FADEC, etc.).
-                                This version is updated whenever the 'experimental' branch on GitHub is updated, which is around every 12 hours.
-                            </p>
-                        </>,
+                        <Translation>
+                            {
+                                (t) => <p>{t('AircraftSection.A32NX.Versions.Experimental.Desc')}</p>
+                            }
+                        </Translation>,
                     isExperimental: true,
                     warningContent:
-                        <>
-                            <p>The experimental version contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.</p>
-                            <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/experimental/docs/README.md")}>this guide</a>.</p>
+                        <Translation>
+                            {
+                                (t) => <>
+                                    <p>{t('AircraftSection.A32NX.Versions.Experimental.WarningContent.Desc')}</p>
+                                    <p>{t('AircraftSection.A32NX.Versions.Experimental.WarningContent.PleaseRead')} <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/experimental/docs/README.md")}>{t('AircraftSection.A32NX.Versions.Experimental.WarningContent.ThisGuide')}</a>.</p>
 
-                            <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord help channels.</p>
-                        </>,
+                                    <p className="mt-1 font-bold">{t('AircraftSection.A32NX.Versions.Experimental.WarningContent.NoSupport')}</p>
+                                </>
+                            }
+                        </Translation>,
                     releaseModel: {
                         type: 'githubBranch',
                         branch: 'experimental',
@@ -104,8 +108,18 @@ export const defaultConfiguration: Configuration = {
             enabled: false,
             menuIconUrl: A380NoseSVG,
             backgroundImageUrls: [],
-            shortDescription: 'Airbus A380-800',
-            description: '',
+            shortDescription:
+                <Translation>
+                    {
+                        (t) => <p>{t('AircraftSection.A380X.ShortDesc')}</p>
+                    }
+                </Translation>,
+            description:
+                <Translation>
+                    {
+                        (t) => <p>{t('AircraftSection.A380X.Desc')}</p>
+                    }
+                </Translation>,
             targetDirectory: 'A380',
             tracks: [],
         },

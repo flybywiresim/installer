@@ -1,0 +1,166 @@
+{
+  "AircraftSection": {
+    "A32NX": {
+      "Desc": "A320neo (nytt motoralternativ) er en av mange oppgraderinger introdusert av Airbus for å opprettholde A320-produktlinjen sin posisjon som verdens mest avanserte og drivstoffeffektive enkeltgangsflyfamilie. Familien A320neo jetliner har et utvalg av to nye generasjons motorer (PurePower PW1100G-JM fra Pratt og Whitney og LEAP-1A fra CFM International) og har store, drivstoffbesparende vingespissinnretninger kjent som Sharklets.",
+      "ShortDesc": "Airbus A320neo Series",
+      "Variants": {
+        "Leap": {
+          "Name": "Neo (CFM LEAP-1A)"
+        }
+      },
+      "Versions": {
+        "Development": {
+          "Desc": "Utvikling vil ha de nyeste funksjonene som vil havne i neste stall. Feil kan forventes. Den oppdateres når noe blir lagt til 'master'-grenen på Github. Vennligst besøk discorden vår for hjelp.",
+          "Name": "Utvikling"
+        },
+        "Experimental": {
+          "Desc": "Den eksperimentelle versjonen ligner utviklingsgrenen, men inneholder tilpassede systemer (inkludert fly-by-wire, autopilot, FADEC, etc.). Denne versjonen oppdateres når 'autopilot'-grenen på GitHub oppdateres, som er rundt hver 12. time.",
+          "Name": "Eksperimental",
+          "WarningContent": {
+            "Desc": "Den eksperimentelle versjonen inneholder tilpassede systemer som bedre samsvarer med den virkelige oppførselen til en A320neo. De er under utvikling, og feil kan forekomme.",
+            "NoSupport": "Vær oppmerksom på at ingen støtte vil bli tilbudt via Discord hjelpekanaler.",
+            "PleaseRead": "For å forstå hva du går inn i og potensielle problemer du kan oppleve, kan du lese",
+            "ThisGuide": "Denne guiden"
+          }
+        },
+        "Name": "Versjoner",
+        "Stable": {
+          "Desc": "Stable er vår variant som har minst feil og best ytelse. Denne versjonen vil ikke alltid være oppdatert, men vi garanterer at den er kompatibel med hver større oppdatering fra MSFS.",
+          "Name": "Stabil"
+        }
+      }
+    },
+    "A380X": {
+      "Desc": "",
+      "ShortDesc": "Airbus A380-800"
+    },
+    "AboutThisVersion": "Om denne versjonen",
+    "Cancel": "Avbryt",
+    "CheckingStatus": "Sjekker status...",
+    "Completed": "Fullført",
+    "Decompressing": "Komprimering",
+    "Details": "Detaljer",
+    "DownloadCanceled": "Nedlastning kanselert",
+    "Downloading": "Laster ned",
+    "Error": "Feil",
+    "ExperimentalVersions": "Eksperimentale versjoner",
+    "FailedToInstall": "Kan ikke innstallere",
+    "FinishingUpdate": "Fullfører oppdatering",
+    "Install": "Installer",
+    "Installed": "Installert",
+    "InstalledGit": "Installert",
+    "MainlineVersions": "Hoved versjoner",
+    "MajorVersion": "Hovedversjon",
+    "MinorVersion": "Mindre versjon",
+    "Module": "Modul",
+    "NewReleaseAvailable": "Ny versjon tilgjengelig",
+    "PatchVersion": "Fix-versjon",
+    "PleaseCloseMSFS": "Vennligst lukk MSFS",
+    "PreparingUpdate": "Prepper oppdateringen",
+    "ReleaseHistory": "Versjonslogg",
+    "Retrying": "Prøver på nytt",
+    "SwitchVersion": "Bytt versjon",
+    "UnknownState": "Ukjent tilstand",
+    "Update": "Oppdater",
+    "Variants": "Varianter"
+  },
+  "HomeSection": {
+    "Desc": "FlyByWire Simulations er en samfunnsdrevet gruppe som for tiden fokuserer på å lage to gratisfly, A32NX (en modifisering av standard A320neo i MSFS), og A380."
+  },
+  "InstallerUpdate": {
+    "DownloadingUpdate": "Laster ned oppdateringen …",
+    "ErrorUpdate": "Oppdatering feil",
+    "RestartToUpdate": "Omstart for og oppdatere"
+  },
+  "Languages": {
+    "af": "Afrikansk",
+    "ar": "Arabisk",
+    "ca": "Katalansk",
+    "cs": "Tsjekkisk",
+    "de": "Tysk",
+    "el": "Gresk",
+    "en": "Engelsk",
+    "es": "Spansk",
+    "fi": "Finsk",
+    "fr": "Fransk",
+    "id": "Indonesisk",
+    "it": "Italiensk",
+    "ko": "Koreansk",
+    "nb": "Norsk",
+    "nl": "Nederlandsk",
+    "pl": "Polsk",
+    "pt_BR": "Portugisisk (Brasil)",
+    "pt_PL": "Europeisk portugisisk",
+    "ru": "Russisk",
+    "sv": "Svensk",
+    "zh": {
+      "Hans": "Forenklet kinesisk",
+      "Hant": "kinesisk (tradisjonell)"
+    }
+  },
+  "NoInternetModal": {
+    "OfflineText": "Det ser ut til at du er frakoblet"
+  },
+  "Notification": {
+    "DownloadComplete": "Nedlasting fullført",
+    "DownloadFailed": "Nedlastingen mislyktes!",
+    "ReadyToFly": "Du er klar til og fly",
+    "SomethingWentWrong": "Å, nei! Noe gikk galt."
+  },
+  "QA": {
+    "NoLabels": "Ingen etiketter",
+    "OpenedPullRequests": "Åpne trekkforespørsler",
+    "PullRequests": "Trekk forespørsler",
+    "QATesting": "Kvalitet-testing",
+    "SearchPullRequest": "Søk Pull forespørsel"
+  },
+  "SettingsSection": {
+    "DownloadSettings": {
+      "AutomaticInstallerUpdates": "Automatiske installatør-oppdateringer",
+      "AutomaticModUpdates": "Automatiske modoppdateringer",
+      "InstallDirectory": "Installerings mappe",
+      "Name": "Nedlastningsinnstillinger",
+      "UseCDN": "Bruk CDN (raskere nedlastinger)"
+    },
+    "General": "Generelt",
+    "GeneralSettings": {
+      "AlwaysOnTop": "Alltid øverst",
+      "CheckForUpdates": "Se etter oppdateringer",
+      "CurrentVersion": "Gjeldende versjon",
+      "DisableVersionWarnings": "Deaktiver versjonsadvarsler",
+      "Information": "Informasjon",
+      "Language": "Språk",
+      "LaunchOnStartup": "Start ved oppstart",
+      "MinimizeOnClose": "Minimer installatøren på nært hold",
+      "Name": "Generelle innstillinger",
+      "ReceiveNotifications": "Motta varsler",
+      "ResetToDefault": "Tilbakestill innstillingene"
+    },
+    "InstallerSettings": "Installatørinnstillinger",
+    "Settings": "Innstillinger",
+    "UserSettings": {
+      "Authorize": "Autorisere",
+      "Connections": "Forbindelser",
+      "Name": "Brukerinnstillinger"
+    }
+  },
+  "SideBar": {
+    "Installed": "Installert",
+    "Installing": "Installerer…",
+    "NotAvailable": "Ikke tilgjengelig",
+    "NotInstalled": "Ikke installert",
+    "QATesting": "Kvalitets testing",
+    "Settings": "Innstillinger",
+    "UpdateAvailable": "Oppdatering tilgjengelig"
+  },
+  "TopBar": {
+    "Installer": "Installatør"
+  },
+  "WarningModal": {
+    "Cancel": "Avbryt",
+    "Caution": "Forsiktig!",
+    "DoNotShowAgain": "Ikke vis dette igjen",
+    "Select": "Velg",
+    "Warning": "Advarsel!"
+  }
+}

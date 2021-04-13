@@ -57,7 +57,7 @@ export const WarningModalBase = styled(Modal)`
         span {
           display: block;
           margin-top: -1px;
-          padding: 0 .75em;
+          padding: 0 .5em;
           font-weight: 700;
         }
       }

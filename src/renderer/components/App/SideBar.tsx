@@ -4,6 +4,7 @@ import { useSelector, } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { Mod } from "renderer/utils/InstallerConfiguration";
+import { useTranslation } from "react-i18next";
 
 export type SidebarItemProps = { enabled?: boolean, iSelected: boolean, onClick: () => void, className?: string }
 
@@ -36,6 +37,7 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
 type SidebarModProps = { mod: Mod, isSelected: boolean, handleSelected: (key: string) => void }
 
 export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleSelected }) => {
+    const { t } = useTranslation();
     const [downloadState, setStatusText] = useState('');
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
     const modDownloadState = useSelector<InstallerStore>(state => state.installStatus);
@@ -44,11 +46,11 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
         if (mod.enabled) {
             switch (modDownloadState) {
                 case InstallStatus.FreshInstall:
-                    setStatusText('Not Installed');
+                    setStatusText(t('SideBar.NotInstalled'));
                     setIcon('install');
                     break;
                 case InstallStatus.NeedsUpdate:
-                    setStatusText('Update Available');
+                    setStatusText(t('SideBar.UpdateAvailable'));
                     setIcon('update');
                     break;
                 case InstallStatus.DownloadPrep:
@@ -56,19 +58,19 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
                 case InstallStatus.Decompressing:
                 case InstallStatus.DownloadRetry:
                 case InstallStatus.DownloadEnding:
-                    setStatusText('Installing...');
+                    setStatusText(t('SideBar.Installing'));
                     setIcon('installing');
                     break;
                 default:
-                    setStatusText('Installed');
+                    setStatusText(t('SideBar.Installed'));
                     setIcon('installed');
                     break;
             }
         } else {
-            setStatusText('Not Available');
+            setStatusText(t('SideBar.NotAvailable'));
             setIcon('notAvailable');
         }
-    }, [modDownloadState]);
+    }, [modDownloadState, t]);
 
     const Icon = () => {
         switch (icon) {

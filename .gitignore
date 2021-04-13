@@ -96,3 +96,6 @@ out/
 
 # VSCode
 .vscode/
+
+# Localazy
+localazy.json

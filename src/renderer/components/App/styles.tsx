@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import Store from "electron-store";
 import * as fs from "fs";
 import { Mod } from "renderer/utils/InstallerConfiguration";
+import i18n from "i18next";
 
 const settings = new Store<{ [p: string]: string }>({ watch: true });
 
@@ -128,8 +129,8 @@ const AircraftMenuItemBase = styled(MenuItem)`
 `;
 
 const InstallationStates = {
-    INSTALLED: 'installed',
-    NOT_INSTALLED: 'not installed'
+    INSTALLED: i18n.t('SideBar.Installed'),
+    NOT_INSTALLED: i18n.t('SideBar.NotInstalled')
 };
 
 type AircraftMenuItemProps = { mod: Mod, disabled: boolean };
@@ -156,7 +157,7 @@ export const AircraftMenuItem = (props: AircraftMenuItemProps): JSX.Element => {
             <AircraftDetailsContainer>
                 <AircraftInfo>
                     <AircraftName>{props.mod.name}</AircraftName>
-                    <AircraftInstalledVersion>{props.mod.enabled ? installationStatus : "not available"}</AircraftInstalledVersion>
+                    <AircraftInstalledVersion>{props.mod.enabled ? installationStatus : i18n.t('SideBar.NotAvailable')}</AircraftInstalledVersion>
                 </AircraftInfo>
                 <img id={`icon-${props.mod.key}`} src={props.mod.menuIconUrl} alt={props.mod.aircraftName}/>
             </AircraftDetailsContainer>
