@@ -37,6 +37,7 @@ export async function configureInitialInstallPath(): Promise<string> {
                     const msfs_community_path = dir + "\\Community\\";
 
                     settings.set('mainSettings.msfsPackagePath', msfs_community_path);
+                    settings.set('mainSettings.liveriesPath', msfs_community_path);
 
                     resolve(msfs_community_path);
                 }
