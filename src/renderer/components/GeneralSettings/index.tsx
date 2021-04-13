@@ -16,6 +16,7 @@ import { configureInitialInstallPath } from "renderer/settings";
 import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
 import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
+import { Toggle } from '@flybywiresim/react-components';
 
 const settings = new Store;
 
@@ -68,15 +69,18 @@ const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, 
     };
 
     return (
-        <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Separate Liveries Directory</span>
-            <input
-                type="checkbox"
-                checked={props.separateLiveriesPath}
-                onChange={handleClick}
-                className="ml-auto mr-2 w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
-            />
-        </div>
+        <>
+            <div className="h-0.5 bg-gray-700"></div>
+            <div className="flex items-center mb-3.5 mt-3.5">
+                <span className="text-base">Separate Liveries Directory</span>
+                <div className="ml-auto">
+                    <Toggle
+                        value={props.separateLiveriesPath}
+                        onToggle={handleClick}
+                    />
+                </div>
+            </div>
+        </>
     );
 };
 
@@ -88,15 +92,18 @@ const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWa
     };
 
     return (
-        <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Disable Version Warnings</span>
-            <input
-                type="checkbox"
-                checked={props.disableWarning}
-                onChange={handleClick}
-                className="ml-auto mr-2 w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
-            />
-        </div>
+        <>
+            <div className="h-0.5 bg-gray-700"></div>
+            <div className="flex items-center mb-3.5 mt-3.5">
+                <span className="text-base">Disable Version Warnings</span>
+                <div className="ml-auto">
+                    <Toggle
+                        value={props.disableWarning}
+                        onToggle={handleClick}
+                    />
+                </div>
+            </div>
+        </>
     );
 };
 
@@ -113,15 +120,18 @@ const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWar
     };
 
     return (
-        <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Disable Incompatible Livery Warnings</span>
-            <input
-                type="checkbox"
-                checked={props.disableWarning}
-                onChange={handleClick}
-                className="ml-auto mr-2 w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
-            />
-        </div>
+        <>
+            <div className="h-0.5 bg-gray-700"></div>
+            <div className="flex items-center mb-3.5 mt-3.5">
+                <span className="text-base">Disable Incompatible Livery Warnings</span>
+                <div className="ml-auto">
+                    <Toggle
+                        value={props.disableWarning}
+                        onToggle={handleClick}
+                    />
+                </div>
+            </div>
+        </>
     );
 };
 
@@ -133,15 +143,19 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
     };
 
     return (
-        <div className="flex items-center mb-2 mt-2">
-            <span className="text-base">Use CDN (Faster Downloads)</span>
-            <input
-                type="checkbox"
-                checked={props.useCdnCache}
-                onChange={handleClick}
-                className="ml-auto mr-2 w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
-            />
-        </div>
+        <>
+            <div className="h-0.5 bg-gray-700"></div>
+            <div className="flex items-center mb-3.5 mt-3.5">
+                <span className="text-base">Use CDN (Faster Downloads)</span>
+                <div className="ml-auto">
+                    <Toggle
+                        value={props.useCdnCache}
+                        onToggle={handleClick}
+                    />
+                </div>
+            </div>
+        </>
+
     );
 };
 

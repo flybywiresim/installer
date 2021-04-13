@@ -1,4 +1,17 @@
+'use strict';
+
+const reactComponentsSafeList = require('@flybywiresim/react-components/build/usedCSSClasses.json');
+
 module.exports = {
+    purge: {
+        enabled: true,
+        options: { safelist: [...reactComponentsSafeList] },
+        content: [
+            './src/**/*.html',
+            './src/**/*.jsx',
+            './src/**/*.tsx',
+        ],
+    },
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
