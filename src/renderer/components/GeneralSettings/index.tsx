@@ -68,6 +68,7 @@ const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) 
 };
 
 const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, setSeperateLiveriesPath: CallableFunction, setLiveriesPath: CallableFunction}) => {
+    const { t } = useTranslation();
     const handleClick = () => {
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
         props.setLiveriesPath(settings.get('mainSettings.msfsPackagePath'));
@@ -83,7 +84,7 @@ const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, 
         <>
             <div className="h-0.5 bg-gray-700"></div>
             <div className="flex items-center mb-3.5 mt-3.5">
-                <span className="text-base">Separate Liveries Directory</span>
+                <span className="text-base">{t('SettingsSection.DownloadSettings.SeparateLiveriesDirectory')}</span>
                 <div className="ml-auto">
                     <Toggle
                         value={props.separateLiveriesPath}
@@ -120,6 +121,7 @@ const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWa
 };
 
 const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWarning: CallableFunction}) => {
+    const { t } = useTranslation();
     const handleClick = () => {
         const newState = !props.disableWarning;
         props.setDisableWarning(newState);
@@ -135,7 +137,7 @@ const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWar
         <>
             <div className="h-0.5 bg-gray-700"></div>
             <div className="flex items-center mb-3.5 mt-3.5">
-                <span className="text-base">Disable Incompatible Livery Warnings</span>
+                <span className="text-base">{t('SettingsSection.GeneralSettings.DisableIncompatibleLiveryWarnings')}</span>
                 <div className="ml-auto">
                     <Toggle
                         value={props.disableWarning}

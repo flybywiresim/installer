@@ -89,6 +89,7 @@
       "CheckForUpdates": "Check for Updates",
       "CurrentVersion": "Current version",
       "DisableVersionWarnings": "Disable Version Warnings",
+      "DisableIncompatibleLiveryWarnings": "Disable Incompatible Livery Warnings",
       "Information": "Information",
       "LaunchOnStartup": "Launch on Startup",
       "Language": "Language",
@@ -101,6 +102,7 @@
       "AutomaticInstallerUpdates": "Automatic Installer Updates",
       "AutomaticModUpdates": "Automatic Mod Updates",
       "InstallDirectory": "Install Directory",
+      "SeparateLiveriesDirectory": "Separate Liveries Directory",
       "UseCDN": "Use CDN (Faster Downloads)"
     },
     "UserSettings": {
