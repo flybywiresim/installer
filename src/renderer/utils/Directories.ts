@@ -15,6 +15,14 @@ export class Directories {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, targetDir);
     }
 
+    static liveries(): string {
+        return settings.get('mainSettings.liveriesPath') as string;
+    }
+
+    static inLiveries(targetDir: string): string {
+        return path.join(settings.get('mainSettings.liveriesPath') as string, targetDir);
+    }
+
     static temp(): string {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
     }

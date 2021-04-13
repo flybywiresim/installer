@@ -149,6 +149,9 @@ app.on('second-instance', () => {
 // code. You can also put them in separate files and import them here.
 
 function configureSettings(app: App) {
+    if (!settings.has('mainSettings.separateLiveriesPath')) {
+        settings.set('mainSettings.separateLiveriesPath', false);
+    }
     if (!settings.has('mainSettings.disableExperimentalWarning')) {
         settings.set('mainSettings.disableExperimentalWarning', false);
     }
@@ -184,8 +187,13 @@ function configureSettings(app: App) {
                     const msfs_community_path = dir + "\\Community\\";
 
                     settings.set('mainSettings.msfsPackagePath', msfs_community_path);
+                    if (!settings.has('mainSettings.liveriesPath')) {
+                        settings.set('mainSettings.liveriesPath', msfs_community_path);
+                    }
                 }
             });
         }
+    } else if (!settings.has('mainSettings.liveriesPath')) {
+        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
     }
 }

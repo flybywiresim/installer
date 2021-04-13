@@ -12,9 +12,9 @@ export type LiveryDefinition = {
 export class LiveryConversion {
 
     static async getIncompatibleLiveries(): Promise<LiveryDefinition[]> {
-        return readdir(Directories.community())
+        return readdir(Directories.liveries())
             .then((folders) => folders.map<LiveryDefinition>((folder) => {
-                const packageFolder = path.join(Directories.community(), folder);
+                const packageFolder = path.join(Directories.liveries(), folder);
 
                 console.log(`[LCU] Checking package '${packageFolder}'...`);
 
@@ -28,7 +28,7 @@ export class LiveryConversion {
 
                 // Check if a converted package already exists for this livery
 
-                const convertedPackagePath = Directories.inCommunity(folder + '_a32nx');
+                const convertedPackagePath = Directories.inLiveries(folder + '_a32nx');
                 const convertedPackageExists = existsSync(convertedPackagePath);
 
                 if (convertedPackageExists) {
@@ -102,7 +102,7 @@ export class LiveryConversion {
     }
 
     static async convertLivery(livery: LiveryDefinition): Promise<boolean> {
-        const packageFolder = Directories.inCommunity(livery.packageName);
+        const packageFolder = Directories.inLiveries(livery.packageName);
         const newPackageFolder = packageFolder + '_a32nx';
 
         await copy(packageFolder, newPackageFolder);
