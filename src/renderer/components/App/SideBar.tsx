@@ -44,6 +44,7 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
         if (mod.enabled) {
             switch (modDownloadState) {
                 case InstallStatus.FreshInstall:
+                case InstallStatus.Unknown:
                     setStatusText('Not Installed');
                     setIcon('install');
                     break;
@@ -55,6 +56,8 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
                 case InstallStatus.Downloading:
                 case InstallStatus.Decompressing:
                 case InstallStatus.DownloadRetry:
+                case InstallStatus.DownloadCanceled:
+                case InstallStatus.DownloadError:
                 case InstallStatus.DownloadEnding:
                     setStatusText('Installing...');
                     setIcon('installing');
