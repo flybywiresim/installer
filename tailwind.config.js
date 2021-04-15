@@ -4,7 +4,6 @@ const reactComponentsSafeList = require('@flybywiresim/react-components/build/us
 
 module.exports = {
     purge: {
-        enabled: true,
         options: { safelist: [...reactComponentsSafeList] },
         content: [
             './src/**/*.html',

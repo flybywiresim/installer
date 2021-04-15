@@ -151,7 +151,13 @@ const ConversionProgress: React.FC = () => {
     });
 
     return (
-        <Progress className="w-full" showInfo={false} percent={(completedConversions / (conversionsToPerform + completedConversions)) * 100} trailColor="#ef4444" strokeColor="white" />
+        <div className="flex flex-row gap-x-2 items-center">
+            <Progress className="w-full" showInfo={false} percent={(completedConversions / (conversionsToPerform + completedConversions)) * 100} trailColor="#ef4444" strokeColor="white" />
+
+            <span className=" w-16 text-xl text-white text-right">
+                {(completedConversions || conversionsToPerform) ? completedConversions / (conversionsToPerform + completedConversions) * 100 + '%' : '0%'}
+            </span>
+        </div>
     );
 };
 
