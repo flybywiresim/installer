@@ -201,7 +201,7 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoButton onClick={showChangelog}>{packageInfo.version}</InfoButton>
+                <InfoButton onClick={showChangelog}>v{packageInfo.version}</InfoButton>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>
