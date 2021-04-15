@@ -155,7 +155,7 @@ const ConversionProgress: React.FC = () => {
             <Progress className="w-full" showInfo={false} percent={(completedConversions / (conversionsToPerform + completedConversions)) * 100} trailColor="#ef4444" strokeColor="white" />
 
             <span className=" w-16 text-xl text-white text-right">
-                {(completedConversions || conversionsToPerform) ? completedConversions / (conversionsToPerform + completedConversions) * 100 + '%' : '0%'}
+                {(completedConversions || conversionsToPerform) ? Math.floor(completedConversions / (conversionsToPerform + completedConversions) * 100) + '%' : '0%'}
             </span>
         </div>
     );
