@@ -82,6 +82,9 @@ export const LiveryConversionDialog: React.FC = () => {
                         error
                     },
                 });
+
+                console.log(`[LCU] Removing failed package '${livery.packageName}_a32nx'...`);
+                LiveryConversion.removeLivery(livery.packageName + '_a32nx');
             });
         });
     };
