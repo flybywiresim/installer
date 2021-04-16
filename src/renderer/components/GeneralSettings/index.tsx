@@ -150,7 +150,7 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
         <>
             <div className="h-0.5 bg-gray-700"></div>
             <div className="flex items-center mb-3.5 mt-3.5">
-                <span className="text-base">Use CDN (Faster Downloads)</span>
+                <span className="text-base">Use CDN Cache (Faster Downloads)</span>
                 <div className="ml-auto">
                     <Toggle
                         value={props.useCdnCache}
