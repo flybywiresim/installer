@@ -1,6 +1,16 @@
 import { Directories } from "renderer/utils/Directories";
 import * as path from "path";
-import { copy, existsSync, readdir, readdirSync, readFile, readFileSync, rename, writeFile } from "fs-extra";
+import {
+    copy,
+    existsSync,
+    readdir,
+    readdirSync,
+    readFile,
+    readFileSync,
+    remove,
+    rename,
+    writeFile
+} from "fs-extra";
 import { ConfigIniParser } from "config-ini-parser";
 
 export type LiveryDefinition = {
@@ -348,6 +358,10 @@ export class LiveryConversion {
         }
 
         await writeFile(modelCfgPath, modelCfg.stringify());
+    }
+
+    static async removeLivery(packageName: string): Promise<void> {
+        return remove(Directories.inLiveries(packageName));
     }
 
 }
