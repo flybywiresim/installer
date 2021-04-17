@@ -14,6 +14,9 @@ module.exports = {
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
+            height: {
+                '450px': '450px',
+              },
             width: {
                 '520px': '520px',
                 '700px': '700px',

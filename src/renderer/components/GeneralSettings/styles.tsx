@@ -81,6 +81,11 @@ export const ResetButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   font-size: 15px;
+
+  :hover {
+    background: ${colors.redDarker};
+    border-color: ${colors.redDarker};
+  }
 `;
 
 export const SettingButton = styled((props) => <Button type="link" style={{ color: '#41a4ff' }} {...props}>{props.children}</Button>)``;
