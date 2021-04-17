@@ -21,6 +21,7 @@ import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Mod, ModVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
+import { ErrorModal } from '../ErrorModal';
 
 const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -92,6 +93,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
 
     return (
         <>
+            <ErrorModal/>
             <ChangelogModal />
             <WarningModal />
             <SimpleBar>

@@ -84,3 +84,7 @@ a {
   color: #bbb;
   text-decoration: underline;
 }
+
+button:focus {
+  outline: none;
+}

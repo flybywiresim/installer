@@ -75,9 +75,9 @@ export const ResetButton = styled.button`
   padding: 0.2em 0.5em 0.2em 0.5em;
   margin-top: 1.5em;
   color: white !important;
-  background: #fc3a3a;
+  background: ${colors.red};
   border: 2px solid;
-  border-color: #fc3a3a;
+  border-color: ${colors.red};
   border-radius: 5px;
   cursor: pointer;
   font-size: 15px;

@@ -27,6 +27,9 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
         if (path) {
             props.setPath(path);
+            if (settings.has('mainSettings.pathError')) {
+                settings.delete('mainSettings.pathError');
+            }
             if (!settings.get('mainSettings.separateLiveriesPath') && !settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
                 reloadLiveries();
             }
