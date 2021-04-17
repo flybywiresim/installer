@@ -22,8 +22,8 @@ const ShowChangelog = (props: ChangelogProps) => {
         const marked = require("marked");
         const html = marked(changelog);
         return (
-            <Container>
-                <Modal >
+            <Container className="z-20">
+                <Modal>
                     <Close onClick={hideChangelog}>X</Close>
                     <InnerContainer>
                         <div className='text'> { ReactHtmlParser (html) } </div>
