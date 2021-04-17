@@ -197,8 +197,13 @@ function configureSettings(app: App) {
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
     }
     if (!fs.existsSync(settings.get('mainSettings.msfsPackagePath') as string)) {
+        settings.set('mainSettings.pathError', settings.get('mainSettings.msfsPackagePath') as string);
         settings.set('mainSettings.msfsPackagePath', 'C:\\');
         settings.set('mainSettings.liveriesPath', 'C:\\');
-        settings.set('mainSettings.pathError', true);
+
+    } else if (!fs.existsSync(settings.get('mainSettings.liveriesPath') as string)) {
+        settings.set('mainSettings.liveriesPathError', settings.get('mainSettings.liveriesPath') as string);
+        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
+        settings.set('mainSettings.separateLiveriesPath', false);
     }
 }

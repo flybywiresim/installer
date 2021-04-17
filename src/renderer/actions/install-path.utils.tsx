@@ -26,7 +26,7 @@ export async function setupLiveriesPath(): Promise<string> {
     const currentPath = settings.get<string>('mainSettings.liveriesPath');
 
     const path = await remote.dialog.showOpenDialog({
-        title: 'Select your community directory',
+        title: 'Select your liveries directory',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
         properties: ['openDirectory']
     });
