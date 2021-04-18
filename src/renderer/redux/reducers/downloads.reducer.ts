@@ -11,7 +11,9 @@ const reducer = produce((downloads: Draft<DownloadsState>, action: DownloadActio
             downloads.forEach(download => {
                 if (download.id === action.payload.id) {
                     download.progress = action.payload.progress;
-                    download.module = action.payload.module;
+                    download.infoText = action.payload.infoText;
+                    download.buttonText = action.payload.buttonText;
+                    download.canCancel = action.payload.canCancel;
                 }
             });
             break;
@@ -19,7 +21,9 @@ const reducer = produce((downloads: Draft<DownloadsState>, action: DownloadActio
             downloads.push({
                 id: action.payload.id,
                 progress: 0,
-                module: action.payload.module,
+                infoText: action.payload.infoText,
+                buttonText: 'Cancel',
+                canCancel: false,
             });
             break;
         case actionTypes.DELETE_DOWNLOAD:

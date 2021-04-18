@@ -32,7 +32,7 @@ import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
-import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
+import { needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import store, { InstallerStore } from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
 import { Mod, ModTrack, ModVersion } from "renderer/utils/InstallerConfiguration";
@@ -40,6 +40,7 @@ import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
+import { Fragmenter } from "renderer/installMethods/Fragmenter";
 
 const settings = new Store;
 
@@ -66,14 +67,7 @@ export enum InstallStatus {
     FreshInstall,
     GitInstall,
     TrackSwitch,
-    DownloadPrep,
     Downloading,
-    Decompressing,
-    DownloadEnding,
-    DownloadDone,
-    DownloadRetry,
-    DownloadError,
-    DownloadCanceled,
     Unknown,
 }
 
@@ -126,8 +120,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
-    const installedTrack = props.installedTrack;
+    let installedTrack = props.installedTrack;
     const setInstalledTrack = (newInstalledTrack: ModTrack) => {
+        installedTrack = newInstalledTrack;
         store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: newInstalledTrack });
     };
 
@@ -158,7 +153,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name }));
     const dispatch = useDispatch();
 
-    const isDownloading = download?.progress >= 0;
+    const isDownloading = !!download;
 
     useEffect(() => {
         const checkMsfsInterval = setInterval(async () => {
@@ -170,7 +165,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     useEffect(() => {
         findInstalledTrack();
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+        if (!isDownloading) {
             getInstallStatus().then(setInstallStatus);
         }
     }, [selectedTrack, installedTrack]);
@@ -218,111 +213,39 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const downloadMod = async (track: ModTrack) => {
-        const installDir = Directories.inCommunity(props.mod.targetDirectory);
-        const tempDir = Directories.temp();
-
-        console.log('Installing', track);
-        console.log('Installing into', installDir, 'using temp dir', tempDir);
-
-        // Prepare temporary directory
-        if (fs.existsSync(tempDir)) {
-            fs.rmdirSync(tempDir, { recursive: true });
-        }
-        fs.mkdirSync(tempDir);
-
-        // Copy current install to temporary directory
-        console.log('Checking for existing install');
-        if (Directories.isFragmenterInstall(installDir)) {
-            setInstallStatus(InstallStatus.DownloadPrep);
-            console.log('Found existing install at', installDir);
-            console.log('Copying existing install to', tempDir);
-            await fs.copy(installDir, tempDir);
-            console.log('Finished copying');
-        }
-
         // Initialize abort controller for downloads
         abortController = new AbortController();
         const signal = abortController.signal;
 
+        setInstallStatus(InstallStatus.Downloading);
+        dispatch(registerDownload(props.mod.name, `Downloading ${props.mod.name}`));
+
+        const installMethod = new Fragmenter();
+        installMethod.on('progress', progress => {
+            dispatch(updateDownloadProgress(props.mod.name, progress.infoText, progress.buttonText, progress.canCancel, progress.percent));
+        });
+
         try {
-            let lastPercent = 0;
-            setInstallStatus(InstallStatus.Downloading);
-            dispatch(registerDownload(props.mod.name, ''));
-
-            // Perform the fragmenter download
-            const installer = new FragmenterInstaller(track.url, tempDir);
-
-            installer.on('downloadStarted', module => {
-                console.log('Downloading started for module', module.name);
-                setInstallStatus(InstallStatus.Downloading);
-            });
-            installer.on('downloadProgress', (module, progress) => {
-                if (lastPercent !== progress.percent) {
-                    lastPercent = progress.percent;
-                    dispatch(updateDownloadProgress(props.mod.name, module.name, progress.percent));
-                }
-            });
-            installer.on('unzipStarted', module => {
-                console.log('Started unzipping module', module.name);
-                setInstallStatus(InstallStatus.Decompressing);
-            });
-            installer.on('retryScheduled', (module, retryCount, waitSeconds) => {
-                console.log('Scheduling a retry for module', module.name);
-                console.log('Retry count', retryCount);
-                console.log('Waiting for', waitSeconds, 'seconds');
-
-                setInstallStatus(InstallStatus.DownloadRetry);
-            });
-            installer.on('retryStarted', (module, retryCount) => {
-                console.log('Starting a retry for module', module.name);
-                console.log('Retry count', retryCount);
-
-                setInstallStatus(InstallStatus.Downloading);
-            });
-
-            console.log('Starting fragmenter download for URL', track.url);
-            const installResult = await installer.install(signal, {
+            const result = await installMethod.install(props.mod, track, signal, {
                 forceCacheBust: !(settings.get('mainSettings.useCdnCache') as boolean),
                 forceFreshInstall: false,
-                forceManifestCacheBust: true,
             });
-            console.log('Fragmenter download finished for URL', track.url);
+            console.log('[INSTALL] Finished download', result);
 
-            // Copy files from temp dir
-            setInstallStatus(InstallStatus.DownloadEnding);
-            Directories.removeTargetForMod(props.mod);
-            console.log('Copying files from', tempDir, 'to', installDir);
-            await fs.copy(tempDir, installDir, { recursive: true });
-            console.log('Finished copying files from', tempDir, 'to', installDir);
-
-            // Remove installs existing under alternative names
-            console.log('Removing installs existing under alternative names');
-            Directories.removeAlternativesForMod(props.mod);
-            console.log('Finished removing installs existing under alternative names');
-
-            dispatch(deleteDownload(props.mod.name));
-            notifyDownload(true);
-
-            // Flash completion text
-            setInstalledTrack(track);
-            setInstallStatus(InstallStatus.DownloadDone);
-
-            console.log('Finished download', installResult);
-        } catch (e) {
-            if (signal.aborted) {
-                setInstallStatus(InstallStatus.DownloadCanceled);
-            } else {
-                console.error(e);
-                setInstallStatus(InstallStatus.DownloadError);
-                notifyDownload(false);
+            if (!result.aborted) {
+                notifyDownload(true);
+                setSelectedTrack(track);
+                setInstalledTrack(track);
             }
-            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
+        } catch (e) {
+            console.error(e);
+            notifyDownload(false);
+        } finally {
+            setTimeout(async () => {
+                dispatch(deleteDownload(props.mod.name));
+                setInstallStatus(await getInstallStatus());
+            }, 3_000);
         }
-
-        dispatch(deleteDownload(props.mod.name));
-
-        // Clean up temp dir
-        Directories.removeAllTemp();
     };
 
     const selectAndSetTrack = async (key: string) => {
@@ -331,7 +254,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const handleTrackSelection = (track: ModTrack) => {
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+        if (!isDownloading) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         } else {
             selectAndSetTrack(props.selectedTrack.key);
@@ -395,62 +318,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 );
             case InstallStatus.TrackSwitch:
                 return <SwitchButton onClick={handleInstall} />;
-            case InstallStatus.DownloadPrep:
-                return (
-                    <ButtonContainer>
-                        <StateText>Preparing update</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.Downloading:
-                return (
-                    <ButtonContainer>
-                        <StateText>{`Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
-                        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-                    </ButtonContainer>
-                );
-            case InstallStatus.Decompressing:
-                return (
-                    <ButtonContainer>
-                        <StateText>Decompressing</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadEnding:
-                return (
-                    <ButtonContainer>
-                        <StateText>Finishing update</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadDone:
-                return (
-                    <ButtonContainer>
-                        <StateText>Completed!</StateText>
-                        <InstalledButton inGitRepo={false} />
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadRetry:
-                return (
-                    <ButtonContainer>
-                        <StateText>Retrying {download?.module.toLowerCase()} module</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadError:
-                return (
-                    <ButtonContainer>
-                        <StateText>Failed to install</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadCanceled:
-                return (
-                    <ButtonContainer>
-                        <StateText>Download canceled</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
-                );
             case InstallStatus.Unknown:
                 return (
                     <ButtonContainer>
@@ -479,7 +346,14 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                             <DisabledButton text='Update' />
                         </ButtonContainer>
                     </>}
-                    {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
+                    {msfsIsOpen === MsfsStatus.Closed && isDownloading && <>
+                        <ButtonContainer>
+                            <StateText>{download.infoText}</StateText>
+                            {download.canCancel ? <CancelButton onClick={handleCancel}>{download.buttonText}</CancelButton>
+                                : <DisabledButton text={download.buttonText}/>}
+                        </ButtonContainer>
+                    </>}
+                    {msfsIsOpen === MsfsStatus.Closed && !isDownloading && getInstallButton()}
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" />
