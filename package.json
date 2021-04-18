@@ -34,6 +34,7 @@
     "@types/react-redux": "^7.1.16",
     "@types/styled-components": "^5.1.7",
     "@types/webpack": "^4.41.26",
+    "@types/webpack-dev-server": "^3.11.3",
     "@types/webpack-env": "^1.16.0",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
