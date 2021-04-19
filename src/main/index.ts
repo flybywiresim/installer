@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, globalShortcut, App, autoUpdater } from 'electron';
-import * as fs from 'fs';
+import fs from "fs-extra";
 import * as readLine from 'readline';
 import Store from 'electron-store';
 import walk from 'walkdir';
@@ -195,5 +195,15 @@ function configureSettings(app: App) {
         }
     } else if (!settings.has('mainSettings.liveriesPath')) {
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
+    }
+    if (!fs.existsSync(settings.get('mainSettings.msfsPackagePath') as string)) {
+        settings.set('mainSettings.pathError', settings.get('mainSettings.msfsPackagePath') as string);
+        settings.set('mainSettings.msfsPackagePath', 'C:\\');
+        settings.set('mainSettings.liveriesPath', 'C:\\');
+
+    } else if (!fs.existsSync(settings.get('mainSettings.liveriesPath') as string)) {
+        settings.set('mainSettings.liveriesPathError', settings.get('mainSettings.liveriesPath') as string);
+        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
+        settings.set('mainSettings.separateLiveriesPath', false);
     }
 }

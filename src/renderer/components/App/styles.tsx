@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd';
 import { colors } from "renderer/style/theme";
 import React, { useEffect, useState } from "react";
 import Store from "electron-store";
-import * as fs from "fs";
+import fs from "fs-extra";
 import { Mod } from "renderer/utils/InstallerConfiguration";
 
 const settings = new Store<{ [p: string]: string }>({ watch: true });

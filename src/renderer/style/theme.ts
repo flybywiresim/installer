@@ -6,6 +6,10 @@ export const fontSizes = {
 
 export const colors = {
     positive: '#00b853',
+    red: '#fc3a3a',
+    redDark: '#F70404',
+    redDarker: '#E40303',
+    redDarkest: "#D10303",
 
     title: '#FFFFFFDD',
     titleContrast: '#FFFFFF',
