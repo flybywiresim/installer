@@ -7,7 +7,9 @@ import { LiveryStateEntry } from "renderer/redux/reducers/liveries.reducer";
 export interface DownloadItem {
     id: string
     progress: number
-    module: string,
+    infoText: string
+    buttonText: string
+    canCancel: boolean
 }
 
 export type DownloadsState = DownloadItem[];
@@ -17,7 +19,9 @@ export interface UpdateDownloadProgressAction {
     payload: {
         id: string
         progress: number
-        module: string
+        infoText: string
+        buttonText: string
+        canCancel: boolean
     }
 }
 
@@ -25,7 +29,7 @@ export interface RegisterNewDownloadProgressAction {
     type: typeof actions.REGISTER_NEW_DOWNLOAD
     payload: {
         id: string
-        module: string
+        infoText: string
     }
 }
 
