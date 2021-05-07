@@ -79,7 +79,7 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
     ReactDOM.render(
         <div className="h-screen flex flex-col gap-y-5 justify-center items-center bg-navy text-gray-100">
             <span className="text-5xl font-semibold">Something went very wrong.</span>
-            <span className="w-3/5 text-center text-2xl">We could not configure your installer. Please seek support on the Discord #help channel or on GitHub and provide a screenshot of the following information:</span>
+            <span className="w-3/5 text-center text-2xl">We could not configure your installer. Please seek support on the Discord #support channel or on GitHub and provide a screenshot of the following information:</span>
             <pre className="w-3/5 bg-gray-700 text-2xl font-mono px-6 py-2.5 mb-0 rounded-lg">{error.stack}</pre>
             <button className="bg-navy-lightest hover:bg-navy-lighter px-5 py-2 text-lg font-semibold rounded-lg" onClick={() => remote.app.quit()}>Close the Installer</button>
         </div>,
