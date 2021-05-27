@@ -8,7 +8,7 @@
     "compile:main": "webpack --config webpack.main.config.js",
     "compile:renderer": "webpack --config webpack.renderer.config.js",
     "compile": "npm run compile:main && npm run compile:renderer",
-    "start": "electron dist/main/main.js",
+    "start": "npm run compile && electron dist/main/main.js",
     "package": "npm run compile && electron-builder",
     "make": "electron-forge make -p win32",
     "lint": "eslint --ext .ts,.tsx .",
