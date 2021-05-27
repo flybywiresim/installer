@@ -31,6 +31,7 @@ module.exports = {
     entry: './src/renderer/index.tsx',
     output: {
         path: path.resolve(__dirname, 'dist/renderer/'),
+        filename: 'renderer.js',
     },
     target: 'electron-renderer',
     module: {
@@ -38,7 +39,9 @@ module.exports = {
     },
     plugins: [
         ...plugins,
-        new HtmlWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            template: 'index.html',
+        }),
     ],
     resolve: {
         alias: {
