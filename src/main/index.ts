@@ -58,7 +58,7 @@ const createWindow = (): void => {
     mainWindow.webContents.toggleDevTools();
 
     // and load the index.html of the app.
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile('../renderer/index.html');
 
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.
