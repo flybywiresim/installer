@@ -32,6 +32,12 @@ module.exports = {
                     'darker': '#E40303',
                     'darkest': "#D10303",
                 },
+                green: {
+                    'DEFAULT': '#00b853',
+                    'dark': '#00a44a',
+                    'darker': '#009141',
+                    'darkest': "#007d38",
+                },
             },
             boxShadow: {
                 'inner-sm': 'inset 0 1px 2px 0 rgba(0, 0, 0, 0.05)'

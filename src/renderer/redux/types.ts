@@ -42,6 +42,21 @@ export interface ShowWarningModalState {
     trackHandler: null | CallableFunction,
 }
 
+export interface CustomWarningModal {
+    active: boolean,
+    id: null | string,
+    targetDirectory: null | string,
+}
+
+export interface CustomWarningModalAction {
+    type: typeof actions.CALL_CUSTOM_WARNING_MODAL
+    payload: {
+        active: boolean,
+        id: null | string,
+        targetDirectory: null | string,
+    }
+}
+
 export interface ShowWarningModalAction {
     type: typeof actions.CALL_WARNING_MODAL
     payload: {

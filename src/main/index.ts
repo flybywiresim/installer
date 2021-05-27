@@ -159,7 +159,7 @@ function configureSettings(app: App) {
         settings.set('mainSettings.useCdnCache', true);
     }
 
-    if (!settings.has('mainSettings.msfsPackagePath')) {
+    if (!settings.has('mainSettings.msfsMainPath') || !settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
 
         const steamMsfsPath = app.getPath('appData') + "\\Microsoft Flight Simulator\\UserCfg.opt";
@@ -184,11 +184,14 @@ function configureSettings(app: App) {
                     const splitLine = line.split(" ");
                     const combineSplit = splitLine.slice(1).join(" ");
                     const dir = combineSplit.replaceAll('"', '');
-                    const msfs_community_path = dir + "\\Community\\";
+                    settings.set('mainSettings.msfsMainPath', dir);
 
-                    settings.set('mainSettings.msfsPackagePath', msfs_community_path);
-                    if (!settings.has('mainSettings.liveriesPath')) {
-                        settings.set('mainSettings.liveriesPath', msfs_community_path);
+                    if (!settings.has('mainSettings.msfsPackagePath')) {
+                        const msfs_community_path = dir + "\\Community\\";
+                        settings.set('mainSettings.msfsPackagePath', msfs_community_path);
+                        if (!settings.has('mainSettings.liveriesPath')) {
+                            settings.set('mainSettings.liveriesPath', msfs_community_path);
+                        }
                     }
                 }
             });
@@ -198,6 +201,7 @@ function configureSettings(app: App) {
     }
     if (!fs.existsSync(settings.get('mainSettings.msfsPackagePath') as string)) {
         settings.set('mainSettings.pathError', settings.get('mainSettings.msfsPackagePath') as string);
+        settings.set('mainSettings.msfsMainPath', 'C:\\');
         settings.set('mainSettings.msfsPackagePath', 'C:\\');
         settings.set('mainSettings.liveriesPath', 'C:\\');
 

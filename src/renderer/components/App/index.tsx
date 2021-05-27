@@ -22,6 +22,7 @@ import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Mod, ModVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
+import { CustomWarningModal } from '../CustomWarningModal';
 
 const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -96,6 +97,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             <ErrorModal/>
             <ChangelogModal />
             <WarningModal />
+            <CustomWarningModal />
             <SimpleBar>
                 <Container>
                     <MainLayout className="overflow-hidden">

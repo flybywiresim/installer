@@ -40,6 +40,7 @@ import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
+import { callCustomWarningModal } from 'renderer/redux/actions/customWarningModal.actions';
 
 const settings = new Store;
 
@@ -172,6 +173,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         findInstalledTrack();
         if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             getInstallStatus().then(setInstallStatus);
+        }
+        if (fs.existsSync(Directories.inStore(props.mod.targetDirectory))) {
+            dispatch(callCustomWarningModal(true, 'marketPlaceVersionInstalled', props.mod.targetDirectory));
         }
     }, [selectedTrack, installedTrack]);
 

@@ -7,6 +7,7 @@ import selectedTrackReducer from 'renderer/redux/reducers/selectedTrack.reducer'
 import installedTrackReducer from 'renderer/redux/reducers/installedTrack.reducer';
 import latestVersionNamesReducer from 'renderer/redux/reducers/latestVersionNames.reducer';
 import liveriesReducer from 'renderer/redux/reducers/liveries.reducer';
+import customWarningModalReducer from './customWarningModal.reducer';
 
 const rootReducer = combineReducers({
     downloads: downloadsReducer,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
     selectedTrack: selectedTrackReducer,
     installedTrack: installedTrackReducer,
     latestVersionNames: latestVersionNamesReducer,
-    liveries: liveriesReducer
+    liveries: liveriesReducer,
+    customWarningModal: customWarningModalReducer,
 });
 
 export default rootReducer;

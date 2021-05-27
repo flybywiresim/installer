@@ -5,6 +5,11 @@
 <!-- Use the following format below -->
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
+## 1.3.0
+
+1. [LOGIC] Remove failed livery conversion packages - @Benjozork (Benjamin Dupont)
+1. [LOGIC] Warn for marketplace version installed - @FoxtrotSierra6829 (Foxtrot Sierra#6420)
+
 ## 1.2.0
 
 1. [UI] Complete redesign of the installer - @Benjozork (Benjamin Dupont), @FoxtrotSierra6829 (Foxtrot Sierra#6420)
