@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, globalShortcut, App, autoUpdater } from 'electron';
 import * as fs from 'fs';
 import * as readLine from 'readline';
+import * as path from 'path';
 import Store from 'electron-store';
 import walk from 'walkdir';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
@@ -55,10 +56,8 @@ const createWindow = (): void => {
     }
     mainWindow.center();
 
-    mainWindow.webContents.toggleDevTools();
-
     // and load the index.html of the app.
-    mainWindow.loadFile('../renderer/index.html');
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.
