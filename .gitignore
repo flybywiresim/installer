@@ -83,7 +83,6 @@ typings/
 .dynamodb/
 
 # Webpack
-dist/
 .webpack/
 webpack/
 

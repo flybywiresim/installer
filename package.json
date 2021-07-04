@@ -14,7 +14,8 @@
     "start": "npm run compile && electron webpack/main/main.js",
     "package": "npm run compileProd && electron-builder --win --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
-    "lint:fix": "eslint --fix --ext .ts,.tsx ."
+    "lint:fix": "eslint --fix --ext .ts,.tsx .",
+    "dist": "electron-builder"
   },
   "keywords": [],
   "author": "FlyByWire Simulations",
