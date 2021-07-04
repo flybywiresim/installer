@@ -58,8 +58,6 @@ const createWindow = (): void => {
     }
     mainWindow.center();
 
-    mainWindow.webContents.toggleDevTools();
-
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
