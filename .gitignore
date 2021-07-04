@@ -83,11 +83,14 @@ typings/
 .dynamodb/
 
 # Webpack
-dist/
 .webpack/
+webpack/
 
 # Electron-Forge
 out/
+
+# NSIS
+dist/
 
 # JetBrains
 .idea/

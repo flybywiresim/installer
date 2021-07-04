@@ -30,7 +30,7 @@ rules.push({
 module.exports = {
     entry: './src/renderer/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'dist/renderer/'),
+        path: path.resolve(__dirname, 'webpack/renderer/'),
         filename: 'renderer.js',
     },
     target: 'electron-renderer',

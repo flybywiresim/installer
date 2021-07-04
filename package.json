@@ -3,20 +3,28 @@
   "productName": "FlyByWire Installer",
   "version": "1.3.0-dev",
   "description": "Desktop application to install and customize FlyByWire mods",
-  "main": ".webpack/main",
+  "main": "webpack/main/main.js",
   "scripts": {
     "compile:main": "webpack --config webpack.main.config.js",
     "compile:renderer": "webpack --config webpack.renderer.config.js",
     "compile": "npm run compile:main && npm run compile:renderer",
-    "start": "npm run compile && electron dist/main/main.js",
+    "start": "npm run compile && electron webpack/main/main.js",
     "package": "npm run compile && electron-builder",
     "make": "electron-forge make -p win32",
     "lint": "eslint --ext .ts,.tsx .",
-    "lint:fix": "eslint --fix --ext .ts,.tsx ."
+    "lint:fix": "eslint --fix --ext .ts,.tsx .",
+    "dist": "electron-builder"
   },
   "keywords": [],
   "author": "FlyByWire Simulations",
   "license": "GPL-3.0",
+  "build": {
+    "appId": "com.flybywiresim.installer",
+    "win" : {
+      "target": "nsis",
+      "icon": "src/main/icons/icon.ico"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.12.13",
     "@babel/preset-env": "^7.12.13",

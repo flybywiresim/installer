@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     entry: './src/main/index.ts',
     output: {
-        path: path.resolve(__dirname, 'dist/main/'),
+        path: path.resolve(__dirname, 'webpack/main/'),
     },
     target: 'electron-main',
     module: {
