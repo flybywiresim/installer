@@ -5,15 +5,16 @@
   "description": "Desktop application to install and customize FlyByWire mods",
   "main": "webpack/main/main.js",
   "scripts": {
-    "compile:main": "webpack --config webpack.main.config.js",
-    "compile:renderer": "webpack --config webpack.renderer.config.js",
+    "compile:main": "webpack --config webpack.main.config.js --mode=development",
+    "compile:renderer": "webpack --config webpack.renderer.config.js --mode=development",
+    "compileProd:main": "webpack --config webpack.main.config.js --mode=production",
+    "compileProd:renderer": "webpack --config webpack.renderer.config.js --mode=production",
     "compile": "npm run compile:main && npm run compile:renderer",
+    "compileProd": "npm run compileProd:main && npm run compileProd:renderer",
     "start": "npm run compile && electron webpack/main/main.js",
-    "package": "npm run compile && electron-builder",
-    "make": "electron-forge make -p win32",
+    "package": "npm run compileProd && electron-builder",
     "lint": "eslint --ext .ts,.tsx .",
-    "lint:fix": "eslint --fix --ext .ts,.tsx .",
-    "dist": "electron-builder"
+    "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "keywords": [],
   "author": "FlyByWire Simulations",
@@ -22,7 +23,10 @@
     "appId": "com.flybywiresim.installer",
     "win" : {
       "target": "nsis",
-      "icon": "src/main/icons/icon.ico"
+      "icon": "src/main/icons/icon.ico",
+      "files": [
+        "webpack/**/*"
+      ]
     }
   },
   "devDependencies": {
