@@ -7,6 +7,14 @@ const settings = new Store;
 
 export class Directories {
 
+    static store(): string {
+        return path.join(settings.get('mainSettings.msfsMainPath') as string, 'Official', 'OneStore');
+    }
+
+    static inStore(targetDir: string): string {
+        return path.join(settings.get('mainSettings.msfsMainPath') as string, 'Official', 'OneStore', targetDir);
+    }
+
     static community(): string {
         return settings.get('mainSettings.msfsPackagePath') as string;
     }

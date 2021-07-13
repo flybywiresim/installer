@@ -4,7 +4,8 @@ import {
     ChangelogState,
     DownloadsState,
     ModAndTrackLatestVersionNamesState,
-    ShowWarningModalState
+    ShowWarningModalState,
+    CustomWarningModal
 } from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { ModTrack } from "renderer/utils/InstallerConfiguration";
@@ -25,6 +26,7 @@ export type InstallerStore = {
     downloads: DownloadsState,
     changelog: ChangelogState,
     warningModal: ShowWarningModalState,
+    customWarningModal: CustomWarningModal,
     installStatus: InstallStatus,
     selectedTrack: ModTrack,
     installedTrack: ModTrack,
