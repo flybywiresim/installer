@@ -4,6 +4,7 @@ on:
     tags:
       - 'v*'
       - '!v*-rc*'
+      - '!v*-dev*'
 
 jobs:
   build:
