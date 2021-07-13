@@ -1,10 +1,12 @@
-import { app, BrowserWindow, Menu, globalShortcut, App, autoUpdater } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut, App } from 'electron';
+import { NsisUpdater } from "electron-updater";
 import * as fs from 'fs';
 import * as readLine from 'readline';
 import * as path from 'path';
 import Store from 'electron-store';
 import walk from 'walkdir';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import * as packageInfo from '../../package.json';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -74,8 +76,20 @@ const createWindow = (): void => {
 
     // Auto updater
     if (process.env.NODE_ENV !== 'development') {
-        // The Squirrel application will watch the provided URL
-        autoUpdater.setFeedURL({ url: 'https://cdn.flybywiresim.com/installer/stable' });
+        let updateOptions;
+        if (packageInfo.version.includes('dev')) {
+            updateOptions = {
+                provider:'generic' as const,
+                url: 'https://cdn.flybywiresim.com/installer/dev',
+            };
+        } else {
+            updateOptions = {
+                provider:'generic' as const,
+                url: 'https://cdn.flybywiresim.com/installer/release',
+            };
+        }
+
+        const autoUpdater = new NsisUpdater(updateOptions);
 
         autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
             mainWindow.webContents.send('update-downloaded', { event, releaseNotes, releaseName });
@@ -90,7 +104,7 @@ const createWindow = (): void => {
         });
 
         // tell squirrel to check for updates
-        autoUpdater.checkForUpdates();
+        autoUpdater.checkForUpdatesAndNotify();
     }
 
     configureSettings(app);
