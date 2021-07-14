@@ -11,9 +11,9 @@ jobs:
     name: Upload Release Asset
     runs-on: ubuntu-latest
     env:
-      ASSET_PATH: out/make/squirrel.windows/x64/setup.exe
-      ASSET_DIRECTORY: out/make/squirrel.windows/x64/
-      ASSET_NAME: setup.exe
+      ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
+      ASSET_DIRECTORY: dist/
+      ASSET_NAME: FlyByWire_Installer_Setup.exe
     steps:
       - uses: actions/checkout@v2
 
@@ -25,7 +25,7 @@ jobs:
 
       - name: Package installer
         run: |
-          npm run make
+          npm run package
 
       - name: Create Release
         id: create_release
@@ -53,4 +53,4 @@ jobs:
         env:
           BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
           BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
-        run: ./scripts/cdn.sh out/make/squirrel.windows/x64 installer/stable
+        run: ./scripts/cdn.sh dist/ installer/release
