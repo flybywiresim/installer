@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "2.0.0-dev9",
+  "version": "2.0.0-dev10",
   "description": "Desktop application to install and customize FlyByWire mods",
   "main": "webpack/main/main.js",
   "scripts": {
@@ -22,6 +22,7 @@
   "build": {
     "appId": "com.flybywiresim.installer",
     "nsis": {
+      "include": "scripts/installer.nsh",
       "artifactName": "FlyByWire_Installer_Setup.${ext}"
     },
     "win": {
