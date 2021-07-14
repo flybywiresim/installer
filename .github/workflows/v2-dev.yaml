@@ -23,7 +23,7 @@ jobs:
 
       - name: Package installer
         run: |
-          npm run package --publish=never
+          npm run package
           rmdir dist/win-unpacked
 
       - name: Upload to Bunny CDN
