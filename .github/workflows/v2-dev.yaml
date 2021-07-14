@@ -24,7 +24,7 @@ jobs:
       - name: Package installer
         run: |
           npm run package
-          rm -R -- */
+          rm -rf /dist/*/
 
       - name: Upload to Bunny CDN
         env:
