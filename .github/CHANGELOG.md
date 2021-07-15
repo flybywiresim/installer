@@ -5,6 +5,10 @@
 <!-- Use the following format below -->
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
+## 1.2.1
+
+1. [LOGIC] Prepare Updating to V2
+
 ## 1.2.0
 
 1. [UI] Complete redesign of the installer - @Benjozork (Benjamin Dupont), @FoxtrotSierra6829 (Foxtrot Sierra#6420)

@@ -80,7 +80,7 @@ const createWindow = (): void => {
     // Auto updater
     if (process.env.NODE_ENV !== 'development') {
         // The Squirrel application will watch the provided URL
-        autoUpdater.setFeedURL({ url: 'https://cdn.flybywiresim.com/installer/stable' });
+        autoUpdater.setFeedURL({ url: 'https://cdn.flybywiresim.com/installer/switch' });
 
         autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
             mainWindow.webContents.send('update-downloaded', { event, releaseNotes, releaseName });
