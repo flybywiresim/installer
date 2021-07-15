@@ -1,5 +1,5 @@
 import React from "react";
-import { shell } from "electron";
+// import { shell } from "electron";
 import { Configuration } from "./utils/InstallerConfiguration";
 
 import A320NoseSVG from "renderer/assets/a32nx_nose.svg";
@@ -51,6 +51,12 @@ export const defaultConfiguration: Configuration = {
                     name: 'Development',
                     key: 'a32nx-dev',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
+                    // move experimental users over to dev
+                    alternativeUrls: [
+                        'https://cdn.flybywiresim.com/addons/a32nx/experimental',
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
+                    ],
                     description:
                         <>
                             <p>
@@ -66,7 +72,7 @@ export const defaultConfiguration: Configuration = {
                         branch: 'master',
                     },
                 },
-                {
+                /* {
                     name: 'Experimental',
                     key: 'experimental',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
@@ -93,7 +99,7 @@ export const defaultConfiguration: Configuration = {
                         type: 'githubBranch',
                         branch: 'experimental',
                     },
-                },
+                },*/
             ],
         },
         {
