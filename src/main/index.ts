@@ -82,6 +82,11 @@ const createWindow = (): void => {
                 provider:'generic' as const,
                 url: 'https://cdn.flybywiresim.com/installer/dev',
             };
+        } else if (packageInfo.version.includes('rc')) {
+            updateOptions = {
+                provider:'generic' as const,
+                url: 'https://cdn.flybywiresim.com/installer/rc',
+            };
         } else {
             updateOptions = {
                 provider:'generic' as const,

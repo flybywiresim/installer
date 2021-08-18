@@ -53,4 +53,4 @@ jobs:
         env:
           BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
           BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
-        run: ./scripts/cdn.sh dist/ installer/release
+        run: ./scripts/cdn.sh dist/ installer/release && ./scripts/cdn.sh dist/ installer/rc

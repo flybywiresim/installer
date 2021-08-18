@@ -25,6 +25,12 @@ jobs:
         run: |
           npm run package && rm -rf /dist/win-unpacked/
 
+      - name: Upload to Bunny CDN
+        env:
+          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
+          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
+        run: ./scripts/cdn.sh dist/ installer/rc
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
