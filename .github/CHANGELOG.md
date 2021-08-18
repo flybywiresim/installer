@@ -11,6 +11,7 @@
 1. [LOGIC] Remove converted livery packages if conversion failed @Benjozork
 1. [UI] Rename #help to #support to adopt current Discord channel naming @FoxtrotSierra6829 @davidwalschots
 1. [LOGIC] Request the user to set a new package folder if the current does not exist anymore, fixes error message @FoxtrotSierra68
+1. [ADDONS] Disable "Experimental" version for A32NX @FoxtrotSierra6829
 
 ## 1.2.0
 
