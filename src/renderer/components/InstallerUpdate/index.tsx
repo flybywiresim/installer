@@ -18,6 +18,12 @@ function index(): JSX.Element {
         ipcRenderer.on('update-downloaded', (event, args) => {
             console.log('Update downloaded', args);
             setButtonText('Restart to update');
+            Notification.requestPermission().then(function () {
+                console.log('Showing Update notification');
+                new Notification('Restart to update!', {
+                    'body': "An update to the installer has been downloaded",
+                });
+            }).catch(e => console.log(e));
         });
     }, []);
 

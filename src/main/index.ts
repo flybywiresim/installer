@@ -12,6 +12,8 @@ if (!app.requestSingleInstanceLock()) {
     app.quit();
 }
 
+app.setAppUserModelId('FlyByWire Installer');
+
 let settings = new Store;
 let mainWindow: BrowserWindow;
 
@@ -108,8 +110,8 @@ const createWindow = (): void => {
             mainWindow.webContents.send('update-error', { error });
         });
 
-        // tell squirrel to check for updates
-        autoUpdater.checkForUpdatesAndNotify();
+        // tell autoupdater to check for updates
+        autoUpdater.checkForUpdates();
     }
 
     configureSettings(app);
