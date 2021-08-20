@@ -6,11 +6,14 @@ This repository contains the installer for FlyByWire Simulations projects such a
 
 ## How to contribute
 
-### Build dependencies
+The installer is built as an [Electron Application](https://www.electronjs.org/) for Windows using [TypeScript](https://www.typescriptlang.org/) and [React](https://reactjs.org/).
+
+### Requirements
 
 Please make sure you have:
 
-- NodeJS 14 - [Homepage](https://nodejs.org/en/)
+- [git](https://git-scm.com/downloads)
+- [NodeJS 14](https://nodejs.org/en/)
 
 ### Get started
 
