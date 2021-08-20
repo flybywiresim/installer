@@ -20,6 +20,7 @@
   "author": "FlyByWire Simulations",
   "license": "GPL-3.0",
   "build": {
+  "extraResources": ["./extraResources/**"],
     "appId": "com.flybywiresim.installer",
     "nsis": {
       "include": "scripts/installer.nsh",

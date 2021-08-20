@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, UpdateText } from "renderer/components/InstallerUpdate/styles";
 import { ipcRenderer } from "electron";
+import * as path from 'path';
 
 function index(): JSX.Element {
     const [buttonText, setButtonText] = useState<string>('');
@@ -21,6 +22,7 @@ function index(): JSX.Element {
             Notification.requestPermission().then(function () {
                 console.log('Showing Update notification');
                 new Notification('Restart to update!', {
+                    'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
                     'body': "An update to the installer has been downloaded",
                 });
             }).catch(e => console.log(e));

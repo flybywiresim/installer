@@ -23,6 +23,7 @@ import {
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
+import * as path from 'path';
 import { getModReleases } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem, ModAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
@@ -360,10 +361,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             console.log('Showing notification');
             if (successful) {
                 new Notification('Download complete!', {
+                    'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
                     'body': "You're ready to fly",
                 });
             } else {
                 new Notification('Download failed!', {
+                    'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
                     'body': "Oops, something went wrong",
                 });
             }
