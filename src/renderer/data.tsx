@@ -1,5 +1,5 @@
 import React from "react";
-// import { shell } from "electron";
+import { shell } from "electron";
 import { Configuration } from "./utils/InstallerConfiguration";
 
 import A320NoseSVG from "renderer/assets/a32nx_nose.svg";
@@ -51,9 +51,8 @@ export const defaultConfiguration: Configuration = {
                     name: 'Development',
                     key: 'a32nx-dev',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
-                    // move experimental users over to dev
+                    // move old experimental users over to dev
                     alternativeUrls: [
-                        'https://cdn.flybywiresim.com/addons/a32nx/experimental',
                         'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
                         'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
                     ],
@@ -72,19 +71,17 @@ export const defaultConfiguration: Configuration = {
                         branch: 'master',
                     },
                 },
-                /* {
+                {
                     name: 'Experimental',
                     key: 'experimental',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
-                    alternativeUrls: [
-                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
-                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
-                    ],
+                    alternativeUrls: [],
                     description:
                         <>
                             <p>
-                                The experimental version is similar to the development branch, but contains custom systems (including fly-by-wire, autopilot, FADEC, etc.).
-                                This version is updated whenever the 'experimental' branch on GitHub is updated, which is around every 12 hours.
+                                The updated experimental version now consists of a custom flight management system (work-in-progress) on the development branch as a base.
+                                This version is updated once every week once major features and fixes are ready to be pushed and tested.
+                                Highly unstable version, only feedback and bug reports are accepted as of now, no support would be provided on Discord/GitHub
                             </p>
                         </>,
                     isExperimental: true,
@@ -99,7 +96,7 @@ export const defaultConfiguration: Configuration = {
                         type: 'githubBranch',
                         branch: 'experimental',
                     },
-                },*/
+                },
             ],
         },
         {
