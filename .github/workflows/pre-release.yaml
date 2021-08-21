@@ -23,7 +23,7 @@ jobs:
 
       - name: Package installer
         run: |
-          npm run package && rm -rf /dist/win-unpacked/
+          npm run package && rm -rf ./dist/win-unpacked/
 
       - name: Upload to Bunny CDN
         env:
