@@ -200,14 +200,18 @@ function configureSettings(app: App) {
                     const splitLine = line.split(" ");
                     const combineSplit = splitLine.slice(1).join(" ");
                     const dir = combineSplit.replaceAll('"', '');
-                    const msfs_community_path = dir + "\\Community\\";
+                    const msfsCommunityPath = dir + "\\Community\\";
 
-                    settings.set('mainSettings.msfsPackagePath', msfs_community_path);
+                    settings.set('mainSettings.msfsPackagePath', msfsCommunityPath);
                     if (!settings.has('mainSettings.liveriesPath')) {
-                        settings.set('mainSettings.liveriesPath', msfs_community_path);
+                        settings.set('mainSettings.liveriesPath', msfsCommunityPath);
                     }
                 }
             });
+        } else {
+            settings.set('mainSettings.pathError', 'unknown location');
+            settings.set('mainSettings.msfsPackagePath', 'C:\\');
+            settings.set('mainSettings.liveriesPath', 'C:\\');
         }
     } else if (!settings.has('mainSettings.liveriesPath')) {
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
