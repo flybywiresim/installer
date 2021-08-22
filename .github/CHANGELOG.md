@@ -7,11 +7,11 @@
 
 ## 2.0.0
 
-1. [LOGIC] Installation method changed from Electron-Forge/Squirel to electron-builder/NSIS to prevent future memory leaks during update @Benjozork @FoxtrotSierra6829
-1. [LOGIC] Remove converted livery packages if conversion failed @Benjozork
-1. [UI] Rename #help to #support to adopt current Discord channel naming @FoxtrotSierra6829 @davidwalschots
-1. [LOGIC] Request the user to set 'Community' folder manually if it cannot be found, fixes error message @FoxtrotSierra68
-1. [ADDONS] Update "Experimental" version text for A32NX @FoxtrotSierra6829
+1. [LOGIC] Installation method changed from Electron-Forge/Squirel to electron-builder/NSIS to prevent future memory leaks during update @Benjozork - @FoxtrotSierra6829
+1. [LOGIC] Remove converted livery packages if conversion failed - @Benjozork
+1. [UI] Rename #help to #support to adopt current Discord channel naming - @FoxtrotSierra6829, @davidwalschots
+1. [LOGIC] Request the user to set 'Community' folder manually if it cannot be found, fixes error message - @FoxtrotSierra68
+1. [ADDONS] Update "Experimental" version text for A32NX - @FoxtrotSierra6829
 
 ## 1.2.0
 
