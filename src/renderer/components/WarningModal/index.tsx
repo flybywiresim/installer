@@ -8,7 +8,8 @@ import { ExperimentalModTrack } from "renderer/utils/InstallerConfiguration";
 type WarningModalProps = {
     track: ExperimentalModTrack,
     trackHandler: CallableFunction,
-    showWarningModal: boolean
+    showWarningModal: boolean,
+    isSelected: boolean,
 };
 
 const settings = new Store();
@@ -54,7 +55,7 @@ const WarningModal = (props: WarningModalProps) => {
             setDisableWarningCheck(disableWarningSettings);
         }
 
-        if (!disableWarning) {
+        if (!disableWarning || !props.isSelected) {
             return props.showWarningModal;
         } else {
             handleTrackSelected();

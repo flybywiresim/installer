@@ -1,6 +1,10 @@
+const ReactRefreshTypeScript = require('react-refresh-typescript');
 const path = require('path');
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 module.exports = {
+    mode: isDevelopment ? 'development' : 'production',
     entry: './src/main/index.ts',
     output: {
         path: path.resolve(__dirname, 'webpack/main/'),
@@ -15,7 +19,10 @@ module.exports = {
                 use: {
                     loader: 'ts-loader',
                     options: {
-                        transpileOnly: true,
+                        getCustomTransformers: () => ({
+                            before: isDevelopment ? [ReactRefreshTypeScript()] : [],
+                        }),
+                        transpileOnly: isDevelopment,
                     },
                 },
             },

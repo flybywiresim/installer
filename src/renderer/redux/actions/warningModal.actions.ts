@@ -2,7 +2,7 @@ import * as actionTypes from "../actionTypes";
 import { ShowWarningModalAction } from "../types";
 import { ModTrack } from "renderer/utils/InstallerConfiguration";
 
-export function callWarningModal(show: boolean, track?: ModTrack, setTrack?: boolean, acceptedCallback?: CallableFunction): ShowWarningModalAction {
+export function callWarningModal(show: boolean, track?: ModTrack, setTrack?: boolean, acceptedCallback?: CallableFunction, isSelected?: boolean,): ShowWarningModalAction {
     let trackHandler: CallableFunction = null;
 
     if (acceptedCallback) {
@@ -18,6 +18,7 @@ export function callWarningModal(show: boolean, track?: ModTrack, setTrack?: boo
             showWarningModal: show,
             track,
             trackHandler: trackHandler,
+            isSelected,
         }
     };
 }

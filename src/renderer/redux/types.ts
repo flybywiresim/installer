@@ -48,6 +48,7 @@ export interface ShowWarningModalAction {
         showWarningModal: boolean,
         track: null | ModTrack,
         trackHandler: null | CallableFunction,
+        isSelected: boolean,
     }
 }
 

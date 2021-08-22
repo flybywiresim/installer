@@ -1,4 +1,3 @@
-import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
@@ -146,4 +145,4 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     );
 };
 
-export default hot(module)(App);
+export default App;

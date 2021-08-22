@@ -332,8 +332,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const handleTrackSelection = (track: ModTrack) => {
+        const isSelected = selectedTrack === track;
+
         if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
-            dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
+            dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental,() => selectAndSetTrack(track.key), isSelected));
         } else {
             selectAndSetTrack(props.selectedTrack.key);
         }
