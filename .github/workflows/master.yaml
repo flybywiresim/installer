@@ -1,7 +1,7 @@
 name: vmaster
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
@@ -11,8 +11,8 @@ jobs:
     env:
       MASTER_PRE_RELEASE_ID: 36189658
       MASTER_PRE_RELEASE_TAG: vmaster
-      ASSET_PATH: out/make/squirrel.windows/x64/setup.exe
-      ASSET_NAME: setup.exe
+      ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
+      ASSET_NAME: FlyByWire_Installer_Setup.exe
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -26,7 +26,13 @@ jobs:
 
       - name: Package installer
         run: |
-          npm run make
+          npm run package && rm -rf ./dist/win-unpacked/
+
+      - name: Upload to Bunny CDN (dev)
+        env:
+          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
+          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
+        run: ./scripts/cdn.sh dist/ installer/dev
 
       - name: Get and delete master pre-release zip asset
         run: |

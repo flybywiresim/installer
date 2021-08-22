@@ -1,56 +1,36 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "1.3.0-dev",
+  "version": "2.0.0-dev18",
   "description": "Desktop application to install and customize FlyByWire mods",
-  "main": ".webpack/main",
+  "main": "webpack/main/main.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make -p win32",
+    "compile:main": "webpack --config webpack.main.config.js --mode=development",
+    "compile:renderer": "webpack --config webpack.renderer.config.js --mode=development",
+    "compileProd:main": "webpack --config webpack.main.config.js --mode=production",
+    "compileProd:renderer": "webpack --config webpack.renderer.config.js --mode=production",
+    "compile": "npm run compile:main && npm run compile:renderer",
+    "compileProd": "npm run compileProd:main && npm run compileProd:renderer",
+    "start": "npm run compile && electron webpack/main/main.js",
+    "package": "npm run compileProd && electron-builder --win --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "keywords": [],
   "author": "FlyByWire Simulations",
   "license": "GPL-3.0",
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "src/main/icons/icon.ico"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "fbw_installer",
-            "authors": "FlyByWire Simulations",
-            "description": "FlyByWire Simulations Installer",
-            "setupIcon": "./src/main/icons/icon.ico",
-            "setupExe": "setup.exe",
-            "iconUrl": "https://cdn.flybywiresim.com/assets/installer/icon.ico",
-            "loadingGif": "./src/main/icons/loading.gif",
-            "remoteReleases": "https://cdn.flybywiresim.com/installer/stable"
-          }
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/renderer/index.html",
-                  "js": "./src/renderer/renderer.tsx",
-                  "name": "main_window"
-                }
-              ]
-            }
-          }
-        ]
+  "build": {
+  "extraResources": ["./extraResources/**"],
+    "appId": "com.flybywiresim.installer",
+    "nsis": {
+      "include": "scripts/installer.nsh",
+      "artifactName": "FlyByWire_Installer_Setup.${ext}"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/main/icons/icon.ico",
+      "files": [
+        "webpack/**/*"
       ]
     }
   },
@@ -58,12 +38,6 @@
     "@babel/core": "^7.12.13",
     "@babel/preset-env": "^7.12.13",
     "@babel/preset-react": "^7.12.13",
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-deb": "^6.0.0-beta.54",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "@electron-forge/plugin-webpack": "6.0.0-beta.54",
     "@flybywiresim/api-client": "~0.5.0",
     "@flybywiresim/tailwind-config": "~0.3.0",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
@@ -77,18 +51,23 @@
     "@types/react-redux": "^7.1.16",
     "@types/styled-components": "^5.1.7",
     "@types/webpack": "^4.41.26",
+    "@types/webpack-dev-server": "^3.11.3",
     "@types/webpack-env": "^1.16.0",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
+    "@webpack-cli/serve": "^1.3.1",
     "babel-loader": "^8.2.2",
     "css-loader": "^4.3.0",
     "electron": "^11.2.3",
+    "electron-builder": "^22.11.8",
     "electron-devtools-installer": "^3.1.1",
     "eslint": "^7.19.0",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-react": "^7.22.0",
-    "fork-ts-checker-webpack-plugin": "^5.0.14",
+    "fork-ts-checker-webpack-plugin": "^6.2.0",
+    "html-webpack-plugin": "^4.5.2",
     "husky": "^4.3.8",
+    "inspectpack": "^4.7.1",
     "less": "^3.13.1",
     "less-loader": "^7.3.0",
     "lint-staged": "^10.5.4",
@@ -99,8 +78,12 @@
     "style-loader": "^1.3.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@2.0.3",
     "ts-loader": "^8.0.15",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "webpack": "^5.29.0",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "@ant-design/icons": "^4.4.0",
@@ -108,8 +91,8 @@
     "@flybywiresim/react-components": "^0.2.5",
     "antd": "^4.12.2",
     "config-ini-parser": "~1.5.9",
-    "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^6.0.1",
+    "electron-updater": "^4.3.9",
     "fs-extra": "^8.1.0",
     "immer": "^8.0.1",
     "lodash": "^4.17.20",

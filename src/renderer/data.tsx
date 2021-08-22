@@ -51,6 +51,11 @@ export const defaultConfiguration: Configuration = {
                     name: 'Development',
                     key: 'a32nx-dev',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
+                    // move old experimental users over to dev
+                    alternativeUrls: [
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
+                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
+                    ],
                     description:
                         <>
                             <p>
@@ -70,15 +75,13 @@ export const defaultConfiguration: Configuration = {
                     name: 'Experimental',
                     key: 'experimental',
                     url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
-                    alternativeUrls: [
-                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
-                        'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
-                    ],
+                    alternativeUrls: [],
                     description:
                         <>
                             <p>
-                                The experimental version is similar to the development branch, but contains custom systems (including fly-by-wire, autopilot, FADEC, etc.).
-                                This version is updated whenever the 'experimental' branch on GitHub is updated, which is around every 12 hours.
+                                This version is similar to the development version, but contains custom systems still being developed, including the new FBW Custom Flight Management System (cFMS).
+                                Experimental will be updated with the latest changes from both the 'autopilot-custom-fpm' branch and development version regularly.
+                                No support will be offered via Discord for this version.
                             </p>
                         </>,
                     isExperimental: true,

@@ -1,19 +1,18 @@
-import { app, BrowserWindow, Menu, globalShortcut, App, autoUpdater } from 'electron';
-import fs from "fs-extra";
+import { app, BrowserWindow, Menu, globalShortcut, App } from 'electron';
+import { NsisUpdater } from "electron-updater";
+import * as fs from 'fs-extra';
 import * as readLine from 'readline';
+import * as path from 'path';
 import Store from 'electron-store';
 import walk from 'walkdir';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-declare const MAIN_WINDOW_WEBPACK_ENTRY: never;
-
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
-    app.quit();
-}
+import * as packageInfo from '../../package.json';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
 }
+
+app.setAppUserModelId('FlyByWire Installer');
 
 let settings = new Store;
 let mainWindow: BrowserWindow;
@@ -62,7 +61,7 @@ const createWindow = (): void => {
     mainWindow.center();
 
     // and load the index.html of the app.
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.
@@ -79,8 +78,25 @@ const createWindow = (): void => {
 
     // Auto updater
     if (process.env.NODE_ENV !== 'development') {
-        // The Squirrel application will watch the provided URL
-        autoUpdater.setFeedURL({ url: 'https://cdn.flybywiresim.com/installer/stable' });
+        let updateOptions;
+        if (packageInfo.version.includes('dev')) {
+            updateOptions = {
+                provider:'generic' as const,
+                url: 'https://cdn.flybywiresim.com/installer/dev',
+            };
+        } else if (packageInfo.version.includes('rc')) {
+            updateOptions = {
+                provider:'generic' as const,
+                url: 'https://cdn.flybywiresim.com/installer/rc',
+            };
+        } else {
+            updateOptions = {
+                provider:'generic' as const,
+                url: 'https://cdn.flybywiresim.com/installer/release',
+            };
+        }
+
+        const autoUpdater = new NsisUpdater(updateOptions);
 
         autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
             mainWindow.webContents.send('update-downloaded', { event, releaseNotes, releaseName });
@@ -94,7 +110,7 @@ const createWindow = (): void => {
             mainWindow.webContents.send('update-error', { error });
         });
 
-        // tell squirrel to check for updates
+        // tell autoupdater to check for updates
         autoUpdater.checkForUpdates();
     }
 
@@ -184,14 +200,18 @@ function configureSettings(app: App) {
                     const splitLine = line.split(" ");
                     const combineSplit = splitLine.slice(1).join(" ");
                     const dir = combineSplit.replaceAll('"', '');
-                    const msfs_community_path = dir + "\\Community\\";
+                    const msfsCommunityPath = dir + "\\Community\\";
 
-                    settings.set('mainSettings.msfsPackagePath', msfs_community_path);
+                    settings.set('mainSettings.msfsPackagePath', msfsCommunityPath);
                     if (!settings.has('mainSettings.liveriesPath')) {
-                        settings.set('mainSettings.liveriesPath', msfs_community_path);
+                        settings.set('mainSettings.liveriesPath', msfsCommunityPath);
                     }
                 }
             });
+        } else {
+            settings.set('mainSettings.pathError', 'unknown location');
+            settings.set('mainSettings.msfsPackagePath', 'C:\\');
+            settings.set('mainSettings.liveriesPath', 'C:\\');
         }
     } else if (!settings.has('mainSettings.liveriesPath')) {
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
