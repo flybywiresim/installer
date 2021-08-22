@@ -1,7 +1,7 @@
 name: vmaster
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
@@ -26,7 +26,13 @@ jobs:
 
       - name: Package installer
         run: |
-          npm run package
+          npm run package && rm -rf ./dist/win-unpacked/
+
+      - name: Upload to Bunny CDN (dev)
+        env:
+          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
+          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
+        run: ./scripts/cdn.sh dist/ installer/dev
 
       - name: Get and delete master pre-release zip asset
         run: |
