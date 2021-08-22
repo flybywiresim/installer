@@ -79,9 +79,9 @@ export const defaultConfiguration: Configuration = {
                     description:
                         <>
                             <p>
-                                The updated experimental version now consists of a custom flight management system (work-in-progress) on the development branch as a base.
-                                This version is updated once every week once major features and fixes are ready to be pushed and tested.
-                                Highly unstable version, only feedback and bug reports are accepted as of now, no support would be provided on Discord/GitHub
+                                This version is similar to the development version, but contains custom systems still being developed, including the new FBW Custom Flight Management System (cFMS).
+                                Experimental will be updated with the latest changes from both the 'autopilot-custom-fpm' branch and development version regularly.
+                                No support will be offered via Discord for this version.
                             </p>
                         </>,
                     isExperimental: true,
