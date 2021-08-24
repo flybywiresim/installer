@@ -22,9 +22,9 @@ function index(): JSX.Element {
             setButtonText(i18n.t('InstallerUpdate.RestartToUpdate'));
             Notification.requestPermission().then(function () {
                 console.log('Showing Update notification');
-                new Notification('Restart to update!', {
+                new Notification(i18n.t('Notification.RestartToUpdate'), {
                     'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
-                    'body': "An update to the installer has been downloaded",
+                    'body': i18n.t('Notification.InstallerUpdateDownloaded'),
                 });
             }).catch(e => console.log(e));
         });

@@ -35,12 +35,12 @@
         },
         "Experimental": {
           "Name": "Experimental",
-          "Desc": "The experimental version is similar to the development branch, but contains custom systems (including fly-by-wire, autopilot, FADEC, etc.). This version is updated whenever the 'experimental' branch on GitHub is updated, which is around every 12 hours.",
+          "Desc": "This version is similar to the development version, but contains custom systems still being developed, including the new FBW Custom Flight Management System (cFMS). Experimental will be updated with the latest changes from both the 'autopilot-custom-fpm' branch and development version regularly. No support will be offered via Discord for this version.",
           "WarningContent": {
             "Desc": "The experimental version contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.",
             "PleaseRead": "To understand what you are getting into and the potential issues you might experience, please read",
             "ThisGuide": "this guide",
-            "NoSupport": "Please be aware that no support will be offered via Discord help channels."
+            "NoSupport": "Please be aware that no support will be offered via Discord support channels."
           }
         }
       }
@@ -130,7 +130,9 @@
     "DownloadComplete": "Download complete!",
     "DownloadFailed": "Download failed!",
     "ReadyToFly": "You're ready to fly",
-    "SomethingWentWrong": "Oops, something went wrong"
+    "SomethingWentWrong": "Oops, something went wrong",
+    "InstallerUpdateDownloaded": "An update to the installer has been downloaded",
+    "RestartToUpdate": "Restart to update!"
   },
   "QA": {
     "NoLabels": "No Labels",
@@ -163,6 +165,32 @@
     "zh": {
       "Hans": "Simplified Chinese",
       "Hant": "Traditional Chinese"
+    }
+  },
+  "LanguagesNative": {
+    "af": "Afrikaans",
+    "ar": "العربية",
+    "ca": "Català",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomi",
+    "fr": "Français",
+    "id": "Bahasa Indonesia",
+    "it": "Italiano",
+    "ko": "한국어",
+    "nb": "Norsk",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt_BR": "Português do Brasil",
+    "pt_PL": "Português europeu",
+    "ru": "Русский",
+    "sv": "Svenska",
+    "zh": {
+      "Hans": "汉语",
+      "Hant": "漢語"
     }
   }
 }

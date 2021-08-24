@@ -176,9 +176,16 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
 
 const LanguageSettingsItem = () => {
     const { t, i18n } = useTranslation();
+    const languageName = (element: string) => {
+        if (t('LanguagesNative.' + element) === t('Languages.' + element)) {
+            return t('Languages.' + element);
+        } else {
+            return t('LanguagesNative.' + element) + ' / ' + t('Languages.' + element);
+        }
+    };
 
     const languages: {value: string, name: string}[] = [];
-    supportedLanguages.forEach(element => languages.push({ value: element, name: t('Languages.' + element) }));
+    supportedLanguages.forEach(element => languages.push({ value: element, name: languageName(element) }));
 
     const handleSelect = (language: string) => {
         i18n.changeLanguage(language);
@@ -193,7 +200,7 @@ const LanguageSettingsItem = () => {
                 onChange={event => handleSelect(event.currentTarget.value)}
                 name="Language"
                 id="language-list"
-                className="text-base text-white w-40 outline-none bg-navy border-2 border-navy px-2"
+                className="text-base text-white w-60 outline-none bg-navy border-2 border-navy px-2"
             >
                 {languages.map(language =>
                     <option value={language.value} key={language.value}>{language.name}</option>)
