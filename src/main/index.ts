@@ -175,6 +175,11 @@ function configureSettings(app: App) {
         settings.set('mainSettings.useCdnCache', true);
     }
 
+    if (settings.has('mainSettings.msfsPackagePath') && !fs.existsSync(settings.get('mainSettings.msfsPackagePath') as string)) {
+        settings.set('mainSettings.pathError', settings.get('mainSettings.msfsPackagePath') as string);
+        settings.delete('mainSettings.msfsPackagePath');
+    }
+
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
 
@@ -202,6 +207,7 @@ function configureSettings(app: App) {
                     const dir = combineSplit.replaceAll('"', '');
                     const msfsCommunityPath = dir + "\\Community\\";
 
+                    settings.delete('mainSettings.pathError');
                     settings.set('mainSettings.msfsPackagePath', msfsCommunityPath);
                     if (!settings.has('mainSettings.liveriesPath')) {
                         settings.set('mainSettings.liveriesPath', msfsCommunityPath);
@@ -209,18 +215,14 @@ function configureSettings(app: App) {
                 }
             });
         } else {
-            settings.set('mainSettings.pathError', 'unknown location');
+            if (!settings.has('mainSettings.pathErrror')) {
+                settings.set('mainSettings.pathError', 'unknown location');
+            }
             settings.set('mainSettings.msfsPackagePath', 'C:\\');
             settings.set('mainSettings.liveriesPath', 'C:\\');
         }
     } else if (!settings.has('mainSettings.liveriesPath')) {
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
-    }
-    if (!fs.existsSync(settings.get('mainSettings.msfsPackagePath') as string)) {
-        settings.set('mainSettings.pathError', settings.get('mainSettings.msfsPackagePath') as string);
-        settings.set('mainSettings.msfsPackagePath', 'C:\\');
-        settings.set('mainSettings.liveriesPath', 'C:\\');
-
     } else if (!fs.existsSync(settings.get('mainSettings.liveriesPath') as string)) {
         settings.set('mainSettings.liveriesPathError', settings.get('mainSettings.liveriesPath') as string);
         settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
