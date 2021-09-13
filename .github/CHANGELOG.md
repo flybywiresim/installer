@@ -7,6 +7,7 @@
 
 ## 2.0.1
 1. [LOGIC] Fix error during configuration of settings on first installation @nistei
+1. [UI] Change link to experimental guide
 
 ## 2.0.0
 
