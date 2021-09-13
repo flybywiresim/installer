@@ -88,7 +88,7 @@ export const defaultConfiguration: Configuration = {
                     warningContent:
                         <>
                             <p>The experimental version contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.</p>
-                            <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://github.com/flybywiresim/a32nx/blob/experimental/docs/README.md")}>this guide</a>.</p>
+                            <p>To understand what you are getting into and the potential issues you might experience, please read <a onClick={() => shell.openExternal("https://docs.flybywiresim.com/fbw-a32nx/support/exp/")}>this guide</a>.</p>
 
                             <p style={{ marginTop: '1em', fontWeight: 'bold' }}>Please be aware that no support will be offered via Discord support channels.</p>
                         </>,
