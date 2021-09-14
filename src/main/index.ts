@@ -19,6 +19,8 @@ let mainWindow: BrowserWindow;
 
 Menu.setApplicationMenu(null);
 
+const serve = process.argv.slice(1).some((arg) => arg === "--serve");
+
 const createWindow = (): void => {
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -61,7 +63,11 @@ const createWindow = (): void => {
     mainWindow.center();
 
     // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    if (serve) {
+        mainWindow.loadURL('http://localhost:8080/index.html');
+    } else {
+        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    }
 
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.

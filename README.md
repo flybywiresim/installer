@@ -26,7 +26,7 @@ npm install
 Then run the development server using
 
 ```shell script
-npm run start
+npm run dev
 ```
 
 To build the package as .exe, run
