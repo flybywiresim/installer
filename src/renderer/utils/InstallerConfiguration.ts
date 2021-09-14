@@ -22,13 +22,13 @@ type BaseModTrack = {
     key: string,
     url: string,
     alternativeUrls?: string[],
-    description: JSX.Element,
+    description: string,
     releaseModel: ReleaseModel,
 }
 
 export type MainlineModTrack = BaseModTrack & { isExperimental: false }
 
-export type ExperimentalModTrack = BaseModTrack & { isExperimental: true, warningContent: JSX.Element }
+export type ExperimentalModTrack = BaseModTrack & { isExperimental: true, warningContent: string }
 
 export type ModTrack = MainlineModTrack | ExperimentalModTrack;
 

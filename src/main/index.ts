@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, globalShortcut, App } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut, App, shell } from 'electron';
 import { NsisUpdater } from "electron-updater";
 import * as fs from 'fs-extra';
 import * as readLine from 'readline';
@@ -68,6 +68,12 @@ const createWindow = (): void => {
     } else {
         mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
     }
+
+    // Open all links with target="_blank" with the users default browser
+    mainWindow.webContents.on("new-window", (event, url) => {
+        event.preventDefault();
+        shell.openExternal(url).then();
+    });
 
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.
