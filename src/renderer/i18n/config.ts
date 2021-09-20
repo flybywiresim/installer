@@ -5,9 +5,9 @@ import Store from "electron-store";
 
 import universalLanguageDetect from '@unly/universal-language-detector';
 
-import de from './de/translation.json';
-import en from './en/translation.json';
-import nb from './nb/translation.json';
+import de from './translation/de.json';
+import en from './translation/en.json';
+import nb from './translation/nb.json';
 
 const settings = new Store;
 
