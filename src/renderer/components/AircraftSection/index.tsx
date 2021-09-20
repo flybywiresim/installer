@@ -422,7 +422,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             case InstallStatus.Downloading:
                 return (
                     <ButtonContainer>
-                        <StateText>{t('AircraftSection.Downloading') + ` ` + `${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
+                        <StateText>{t('AircraftSection.Downloading') + ` ` + `${download?.module.toLowerCase()} ${t('AircraftSection.Module')}: ${download?.progress}%`}</StateText>
                         <CancelButton onClick={handleCancel}>{t('AircraftSection.Cancel')}</CancelButton>
                     </ButtonContainer>
                 );
