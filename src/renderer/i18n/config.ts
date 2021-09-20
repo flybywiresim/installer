@@ -9,10 +9,11 @@ import de from './translation/de.json';
 import en from './translation/en.json';
 import it from './translation/it.json';
 import nb from './translation/nb.json';
+import ru from './translation/ru.json';
 
 const settings = new Store;
 
-export const supportedLanguages = ['de', 'en', 'it', 'nb'];
+export const supportedLanguages = ['de', 'en', 'it', 'nb', 'ru'];
 
 let lang = universalLanguageDetect({
     supportedLanguages,
@@ -37,6 +38,9 @@ export const resources = {
     },
     nb: {
         translation: nb,
+    },
+    ru: {
+        translation: ru,
     }
 } as const;
 

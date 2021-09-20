@@ -101,7 +101,7 @@ const WarningModal = (props: WarningModalProps) => {
                     onChange={handleOnChange}
                     className="ml-auto mr-2 w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
                 />
-                <span className="ml-2">{t('WarningModal.DoNotShowAgain')}</span>
+                <span className="ml-2 w-60">{t('WarningModal.DoNotShowAgain')}</span>
             </div>
         </WarningModalBase>
     );
