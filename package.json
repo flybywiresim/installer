@@ -5,14 +5,20 @@
   "description": "Desktop application to install and customize FlyByWire mods",
   "main": "webpack/main/main.js",
   "scripts": {
-    "compile:main": "webpack --config webpack.main.config.js --mode=development",
-    "compile:renderer": "webpack --config webpack.renderer.config.js --mode=development",
-    "compileProd:main": "webpack --config webpack.main.config.js --mode=production",
-    "compileProd:renderer": "webpack --config webpack.renderer.config.js --mode=production",
-    "compile": "npm run compile:main && npm run compile:renderer",
-    "compileProd": "npm run compileProd:main && npm run compileProd:renderer",
-    "start": "npm run compile && electron webpack/main/main.js",
-    "package": "npm run compileProd && electron-builder --win --publish=never",
+    "compile:base:main": "webpack --config webpack.main.config.js",
+    "compile:base:renderer": "webpack --config webpack.renderer.config.js",
+    "compile:base": "npm run compile:base:main && npm run compile:base:renderer",
+    "compile:prod:main": "npm run compile:base:main -- --mode=production",
+    "compile:prod:renderer": "npm run compile:base:renderer -- --mode=production",
+    "compile:prod": "npm run compile:prod:main && npm run compile:prod:renderer",
+    "compile:dev:main": "npm run compile:base:main -- --mode=development",
+    "compile:dev:renderer": "npm run compile:base:renderer -- --mode=development",
+    "compile:dev": "npm run compile:dev:main && npm run compile:dev:renderer",
+    "compile:watch:main": "webpack serve --config webpack.main.config.js --mode=development",
+    "compile:watch:renderer": "webpack serve --config webpack.renderer.config.js --mode=development",
+    "start": "npm run compile:prod && electron webpack/main/main.js",
+    "dev": "npm run compile:dev:main && concurrently --kill-others -n renderer,electron \"npm:compile:watch:renderer\" \"electron webpack/main/main.js --serve\"",
+    "package": "npm run compile:prod && electron-builder --win --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
@@ -20,7 +26,9 @@
   "author": "FlyByWire Simulations",
   "license": "GPL-3.0",
   "build": {
-  "extraResources": ["./extraResources/**"],
+    "extraResources": [
+      "./extraResources/**"
+    ],
     "appId": "com.flybywiresim.installer",
     "nsis": {
       "include": "scripts/installer.nsh",
@@ -57,6 +65,7 @@
     "@typescript-eslint/parser": "^4.14.2",
     "@webpack-cli/serve": "^1.3.1",
     "babel-loader": "^8.2.2",
+    "concurrently": "^6.2.1",
     "css-loader": "^4.3.0",
     "electron": "^11.2.3",
     "electron-builder": "^22.11.8",
