@@ -90,6 +90,15 @@ enum MsfsStatus {
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const { t } = useTranslation();
 
+    const translateIfAble = (input: string) => {
+        if (input.startsWith("t('")) {
+            const translatedinput = input.slice(3, -2);
+            return t(translatedinput);
+        } else {
+            return input;
+        }
+    };
+
     const findInstalledTrack = (): ModTrack => {
         if (!Directories.isFragmenterInstall(props.mod)) {
             console.log('Not installed');
@@ -478,7 +487,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             <HeaderImage>
                 <ModelInformationContainer>
                     <ModelName>{props.mod.name}</ModelName>
-                    <ModelSmallDesc>{props.mod?.shortDescription ?? ''}</ModelSmallDesc>
+                    <ModelSmallDesc>{translateIfAble(props.mod?.shortDescription ?? '')}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
                     {msfsIsOpen !== MsfsStatus.Closed && <>
@@ -538,12 +547,17 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h3 className="font-semibold text-teal-50">{t('AircraftSection.AboutThisVersion')}</h3>
                         <ReactMarkdown
                             className="text-lg text-gray-300"
-                            children={selectedTrack?.description ?? ''}
+                            children={translateIfAble(selectedTrack?.description ?? '')}
                             remarkPlugins={[remarkGfm]}
                             linkTarget={"_blank"}
                         />
                         <h3 className="font-semibold text-teal-50">{t('AircraftSection.Details')}</h3>
-                        <p className="text-lg text-gray-300">{props.mod?.description ?? ''}</p>
+                        <ReactMarkdown
+                            className="text-lg text-gray-300"
+                            children={translateIfAble(props.mod?.description ?? '')}
+                            remarkPlugins={[remarkGfm]}
+                            linkTarget={"_blank"}
+                        />
                     </DetailsContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>

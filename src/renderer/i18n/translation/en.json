@@ -36,12 +36,7 @@
         "Experimental": {
           "Name": "Experimental",
           "Desc": "This version is similar to the development version, but contains custom systems still being developed, including the new FBW Custom Flight Management System (cFMS). Experimental will be updated with the latest changes from both the 'autopilot-custom-fpm' branch and development version regularly. No support will be offered via Discord for this version.",
-          "WarningContent": {
-            "Desc": "The experimental version contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.",
-            "PleaseRead": "To understand what you are getting into and the potential issues you might experience, please read",
-            "ThisGuide": "this guide",
-            "NoSupport": "Please be aware that no support will be offered via Discord support channels."
-          }
+          "WarningContent": "The **experimental version** contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.\n\n To understand what you are getting into and the potential issues you might experience, please read [this guide](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n **Please be aware that no support will be offered via Discord support channels.**"
         }
       }
     },

@@ -15,13 +15,7 @@
         },
         "Experimental": {
           "Desc": "Den eksperimentelle versjonen ligner utviklingsgrenen, men inneholder tilpassede systemer (inkludert fly-by-wire, autopilot, FADEC, etc.). Denne versjonen oppdateres når 'autopilot'-grenen på GitHub oppdateres, som er rundt hver 12. time.",
-          "Name": "Eksperimental",
-          "WarningContent": {
-            "Desc": "Den eksperimentelle versjonen inneholder tilpassede systemer som bedre samsvarer med den virkelige oppførselen til en A320neo. De er under utvikling, og feil kan forekomme.",
-            "NoSupport": "Vær oppmerksom på at ingen støtte vil bli tilbudt via Discord hjelpekanaler.",
-            "PleaseRead": "For å forstå hva du går inn i og potensielle problemer du kan oppleve, kan du lese",
-            "ThisGuide": "Denne guiden"
-          }
+          "Name": "Eksperimental"
         },
         "Name": "Versjoner",
         "Stable": {

@@ -4,6 +4,7 @@ import { InstallerStore } from "renderer/redux/store";
 
 import './index.css';
 import { Mod, ModTrack } from "renderer/utils/InstallerConfiguration";
+import { useTranslation } from "react-i18next";
 
 export const Tracks: React.FC = ({ children }) => (
     <div className="flex flex-row justify-start items-stretch gap-2">
@@ -22,6 +23,15 @@ type TrackProps = {
 };
 
 export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, mod, track }) => {
+    const { t } = useTranslation();
+    const translateIfAble = (input: string) => {
+        if (input.startsWith("t('")) {
+            const translatedinput = input.slice(3, -2);
+            return t(translatedinput);
+        } else {
+            return input;
+        }
+    };
     const latestVersionName = useSelector<InstallerStore, string>(state => {
         return state.latestVersionNames
             .find((entry) => entry.modKey === mod.key && entry.trackKey === track.key)
@@ -48,7 +58,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
             <div
                 className={`${makeBorderStyle()} w-1 h-12 rounded-r-xl transition transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
             <div className="flex flex-col px-5 py-2">
-                <span className="text-xl text-gray-50">{track.name}</span>
+                <span className="text-xl text-gray-50">{translateIfAble(track.name)}</span>
                 <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
             </div>
         </div>

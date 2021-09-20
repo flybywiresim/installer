@@ -20,6 +20,15 @@ const WarningModal = (props: WarningModalProps) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
+    const translateIfAble = (input: string) => {
+        if (input.startsWith("t('")) {
+            const translatedinput = input.slice(3, -2);
+            return t(translatedinput);
+        } else {
+            return input;
+        }
+    };
+
     const [disableWarningCheck, setDisableWarningCheck] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
     const [disableWarning, setDisableWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
 
@@ -81,7 +90,7 @@ const WarningModal = (props: WarningModalProps) => {
         >
             <ReactMarkdown
                 className="text-lg text-gray-300"
-                children={props.track?.warningContent}
+                children={translateIfAble(props.track?.warningContent ?? '')}
                 remarkPlugins={[remarkGfm]}
                 linkTarget={"_blank"}
             />
