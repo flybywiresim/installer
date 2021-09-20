@@ -10,17 +10,17 @@
       },
       "Versions": {
         "Development": {
-          "Desc": "Development wird die neuesten Funktionen haben, die in die nächste Stable kommen werden. Fehler sind zu erwarten. Es wird immer dann aktualisiert, wenn etwas zur „Master“ -Branch auf Github hinzugefügt wird. Für Unterstützung besuchen Sie bitte unseren Discord.",
+          "Desc": "Die Development-Version wird die neuesten Funktionen haben, die irgendwann in der nächsten stabilen Version enden werden.\n\n Im Allgemeinen hat diese Version die neuesten Fehlerbehebungen und Funktionen, aber auch ein etwas höheres Risiko, Fehler zu enthalten, da Funktionen weniger Zeit hatten, von Benutzern verwendet und getestet zu werden.\n\n Diese Version wird oft und manchmal mehrmals am Tag aktualisiert. Wir empfehlen, diese Version vor jedem Start des Simulators über unseren Installer zu aktualisieren.\n\n Jede Ergänzung der Development-Version wird von mehreren Personen, unserem QA-Team und auch interessierten Benutzern code-geprüft und getestet. Im Allgemeinen ist sie tendenziell sehr stabil und robust.\n\n Neueste Ergänzungen zu dieser Version sind entweder im offiziellen [CHANGELOG](https://github.com/flybywiresim/a32nx/blob/master/.github/CHANGELOG.md) oder in den Commits der Master-Branch des Projekts zu sehen: [Github Commits in Master](https://github.com/flybywiresim/a32nx/commits/master)",
           "Name": "Development"
         },
         "Experimental": {
-          "Desc": "Diese Version ähnelt der Development Version, enthält jedoch individuelle Systeme, die noch entwickelt werden, einschließlich des neuen FBW Custom Flight Management Systems (CFMs). Die Experimental Version wird regelmäßig mit den neuesten Änderungen sowohl aus der „autopilot-custom-fpm“ Branch als auch der Development Version aktualisiert. Für diese Version wird kein Support über Discord angeboten.",
-          "Name": "Experimental",
+          "Desc": "Diese Version ähnelt der Development-Version, enthält jedoch individuelle Systeme, die noch entwickelt werden, einschließlich des neuen FBW Custom Flight Management Systems (CFMs).\n\n Experimental wird regelmäßig mit den neuesten Änderungen sowohl aus der „autopilot-custom-fpm“-Branch als auch der Development-Version aktualisiert.\n\n Für diese Version wird kein Support über Discord angeboten.",
+          "Name": "Experimentell",
           "WarningContent": "Die **experimentelle Version** enthält benutzerdefinierte Systeme, die dem realen Verhalten eines A320neo besser entsprechen. Diese befinden sich in der Entwicklung und Bugs sind zu erwarten.\n\n Um zu verstehen, worauf du dich einlässt und welche potenziellen Probleme dich möglicherweise erwarten, lies bitte [diesen Leitfaden](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n **Bitte beachte, dass kein Support über Discord-Supportkanäle angeboten wird.**"
         },
         "Name": "Versionen",
         "Stable": {
-          "Desc": "Stable ist unsere Variante mit den wenigsten Fehlern und der besten Performance. Diese Version wird nicht immer auf dem neuesten Stand sein, aber wir garantieren, dass sie mit jedem größeren Patch von MSFS kompatibel ist.",
+          "Desc": "Stable ist unsere Version mit Funktionen, die am ausgereiftesten und am besten getesteten sind. Dies sollte eine zuverlässige Version für Benutzer sein, die Stabilität gegenüber den neuesten Funktionen bevorzugen.\n\n Diese Version wird nicht immer auf dem neuesten Stand sein, aber wir arbeiten hart daran, die Kompatibilität mit der aktuellen Version von Microsoft Flight Simulator sicherzustellen.",
           "Name": "Stable"
         }
       }

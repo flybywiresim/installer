@@ -142,7 +142,12 @@ export const LeftContainer = styled.div`
   grid-row: 3;
 `;
 
-export const DetailsContainer = styled.div``;
+export const DetailsContainer = styled.div`
+a {
+    font-weight: 500;
+    color: ${colors.tealLight};
+  }
+`;
 
 export const VersionHistoryContainer = styled.div`
   grid-row: 3 / span 2;
