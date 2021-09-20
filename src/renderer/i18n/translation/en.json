@@ -95,7 +95,7 @@
     "DownloadSettings": {
       "Name": "Download Settings",
       "AutomaticInstallerUpdates": "Automatic Installer Updates",
-      "AutomaticModUpdates": "Automatic Mod Updates",
+      "AutomaticAddonUpdates": "Automatic Addon Updates",
       "InstallDirectory": "Install Directory",
       "SeparateLiveriesDirectory": "Separate Liveries Directory",
       "UseCDN": "Use CDN (Faster Downloads)"

@@ -14,8 +14,9 @@
           "Name": "Development"
         },
         "Experimental": {
-          "Desc": "Die experimentelle Version ähnelt der Development Version, enthält jedoch benutzerdefinierte Systeme (einschließlich Fly-by-Wire, Autopilot, FADEC usw.). Diese Version wird immer dann aktualisiert, wenn die „Autopilot“ -Branch auf GitHub aktualisiert wird, was etwa alle 12 Stunden passiert.",
-          "Name": "Experimentell"
+          "Desc": "Diese Version ähnelt der Development Version, enthält jedoch individuelle Systeme, die noch entwickelt werden, einschließlich des neuen FBW Custom Flight Management Systems (CFMs). Die Experimental Version wird regelmäßig mit den neuesten Änderungen sowohl aus der „autopilot-custom-fpm“ Branch als auch der Development Version aktualisiert. Für diese Version wird kein Support über Discord angeboten.",
+          "Name": "Experimental",
+          "WarningContent": "Die **experimentelle Version** enthält benutzerdefinierte Systeme, die dem realen Verhalten eines A320neo besser entsprechen. Diese befinden sich in der Entwicklung und Bugs sind zu erwarten.\n\n Um zu verstehen, worauf du dich einlässt und welche potenziellen Probleme dich möglicherweise erwarten, lies bitte [diesen Leitfaden](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n **Bitte beachte, dass kein Support über Discord-Supportkanäle angeboten wird.**"
         },
         "Name": "Versionen",
         "Stable": {
@@ -32,7 +33,7 @@
     "Cancel": "Abbrechen",
     "CheckingStatus": "Status wird überprüft...",
     "Completed": "Abgeschlossen",
-    "Decompressing": "Dekomprimiere",
+    "Decompressing": "Dekomprimiere...",
     "Details": "Details",
     "DownloadCanceled": "Download abgebrochen",
     "Downloading": "Lädt herunter:",
@@ -92,14 +93,42 @@
       "Hant": "Traditionelles Chinesisch"
     }
   },
+  "LanguagesNative": {
+    "af": "Afrikaans",
+    "ar": "العربية",
+    "ca": "Català",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomi",
+    "fr": "Français",
+    "id": "Bahasa Indonesia",
+    "it": "Italiano",
+    "ko": "한국어",
+    "nb": "Norsk",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt_BR": "Português do Brasil",
+    "pt_PL": "Português europeu",
+    "ru": "Русский",
+    "sv": "Svenska",
+    "zh": {
+      "Hans": "汉语",
+      "Hant": "漢語"
+    }
+  },
   "NoInternetModal": {
     "OfflineText": "Es scheint, als bist du offline"
   },
   "Notification": {
     "DownloadComplete": "Download abgeschlossen!",
-    "DownloadFailed": "Download fehlgeschlagen!",
+    "DownloadFailed": "Download fehlgeschlagen",
+    "InstallerUpdateDownloaded": "Ein Update für den Installer wurde heruntergeladen",
     "ReadyToFly": "Bereit zum Abheben",
-    "SomethingWentWrong": "Ups! Da ist etwas schiefgelaufen."
+    "RestartToUpdate": "Zum Aktualisieren neu starten!",
+    "SomethingWentWrong": "Hoppla! Da ist etwas schiefgelaufen."
   },
   "QA": {
     "NoLabels": "Keine Labels",
@@ -110,10 +139,11 @@
   },
   "SettingsSection": {
     "DownloadSettings": {
+      "AutomaticAddonUpdates": "Automatische Addon-Updates",
       "AutomaticInstallerUpdates": "Automatische Installer-Updates",
-      "AutomaticModUpdates": "Automatische Mod-Updates",
       "InstallDirectory": "Installationsverzeichnis",
       "Name": "Download-Einstellungen",
+      "SeparateLiveriesDirectory": "Separates Verzeichnis für Lackierungen",
       "UseCDN": "CDN verwenden (Schnellere Downloads)"
     },
     "General": "Allgemein",
@@ -121,6 +151,7 @@
       "AlwaysOnTop": "Immer im Vordergrund",
       "CheckForUpdates": "Nach Updates suchen",
       "CurrentVersion": "Aktuelle Version",
+      "DisableIncompatibleLiveryWarnings": "Warnungen für inkompatible Lackierungen deaktivieren",
       "DisableVersionWarnings": "Versionswarnungen deaktivieren",
       "Information": "Informationen",
       "Language": "Sprache",
@@ -128,7 +159,7 @@
       "MinimizeOnClose": "Installer beim Schließen minimieren",
       "Name": "Allgemeine Einstellungen",
       "ReceiveNotifications": "Benachrichtigungen erhalten",
-      "ResetToDefault": "Einstellungen zurücksetzen"
+      "ResetToDefault": "Einstellungen auf Standardwerte zurücksetzen"
     },
     "InstallerSettings": "Installer-Einstellungen",
     "Settings": "Einstellungen",
@@ -140,7 +171,7 @@
   },
   "SideBar": {
     "Installed": "Installiert",
-    "Installing": "Wird installiert…",
+    "Installing": "Installiere…",
     "NotAvailable": "Nicht verfügbar",
     "NotInstalled": "Nicht installiert",
     "QATesting": "QA Tests",
