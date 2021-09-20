@@ -41,6 +41,8 @@ import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const settings = new Store;
 
@@ -531,7 +533,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 <LeftContainer>
                     <DetailsContainer>
                         <h3 className="font-semibold text-teal-50">About This Version</h3>
-                        <p className="text-lg text-gray-300">{selectedTrack?.description ?? ''}</p>
+                        <ReactMarkdown
+                            className="text-lg text-gray-300"
+                            children={selectedTrack?.description ?? ''}
+                            remarkPlugins={[remarkGfm]}
+                            linkTarget={"_blank"}
+                        />
                         <h3 className="font-semibold text-teal-50">Details</h3>
                         <p className="text-lg text-gray-300">{props.mod.description}</p>
                     </DetailsContainer>

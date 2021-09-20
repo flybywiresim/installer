@@ -4,6 +4,8 @@ import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import { WarningModalBase } from "./styles";
 import Store from "electron-store";
 import { ExperimentalModTrack } from "renderer/utils/InstallerConfiguration";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type WarningModalProps = {
     track: ExperimentalModTrack,
@@ -74,7 +76,12 @@ const WarningModal = (props: WarningModalProps) => {
                 marginLeft: '200px',
             }}
         >
-            <p>{props.track?.warningContent}</p>
+            <ReactMarkdown
+                className="text-lg text-gray-300"
+                children={props.track?.warningContent}
+                remarkPlugins={[remarkGfm]}
+                linkTarget={"_blank"}
+            />
             <div className="w-auto absolute pt-10 flex items-center">
                 <input
                     type="checkbox"

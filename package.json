@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "2.0.1-dev02",
+  "version": "2.1.0-dev01",
   "description": "Desktop application to install and customize FlyByWire mods",
   "main": "webpack/main/main.js",
   "scripts": {
@@ -112,8 +112,10 @@
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
     "react-html-parser": "^2.0.2",
+    "react-markdown": "^7.0.1",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
+    "remark-gfm": "^2.0.0",
     "simplebar-react": "^2.3.0",
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
