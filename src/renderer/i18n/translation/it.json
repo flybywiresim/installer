@@ -1,0 +1,191 @@
+{
+  "AircraftSection": {
+    "A32NX": {
+      "Desc": "L'A320neo è uno dei numerosi aggiornamenti introdotti da Airbus per aiutare a mantenere la posizione della sua linea di prodotti A320 come la famiglia di aerei a corridoio singolo più avanzata e a basso consumo di carburante al mondo. Il jetliner A320neo di base ha una scelta di due motori di nuova generazione (il PurePower PW1100G-JM di Pratt e Whitney e il LEAP-1A di CFM International) e dispone di grandi dispositivi a punta alare a risparmio di carburante noti come Sharklets.",
+      "ShortDesc": "Serie Airbus A320neo",
+      "Variants": {
+        "Leap": {
+          "Name": "Neo (CFM LEAP-1A)"
+        }
+      },
+      "Versions": {
+        "Development": {
+          "Desc": "La versione Devlopment avrà le ultime funzionalità che finiranno nella prossima versione stabile.\n\n In generale questa versione ha le ultime correzioni e le funzionalità più recenti, ma anche un rischio leggermente maggiore di contenere bug perché le funzionalità hanno avuto meno tempo per essere utilizzate e testate dagli utenti.\n\n Questa versione si aggiorna spesso e a volte più volte al giorno. Si consiglia di aggiornare questa versione tramite il nostro programma di installazione prima di ogni avvio del simulatore.\n\n Ogni aggiunta alla versione Development viene sottoposta a revisione del codice e testata da diverse persone, dal nostro team di controllo di qualità e anche dagli utenti interessati. In generale tende ad essere molto stabile e robusto.\n\n Le ultime aggiunte a questa versione possono essere viste nel [CHANGELOG](https://github.com/flybywiresim/a32nx/blob/master/.github/CHANGELOG.md) ufficiale o nei commit per il branch principale del progetto: [Github Commit per Master](https://github.com/flybywiresim/a32nx/commits/master)",
+          "Name": "Development"
+        },
+        "Experimental": {
+          "Desc": "Questa versione è simile alla versione Development, ma contiene sistemi personalizzati ancora in fase di sviluppo, tra cui il nuovo FBW Custom Flight Management System (cFMS).\n\n Experimental verrà aggiornato regolarmente con le ultime modifiche sia dal branch «autopilot-custom-fpm» e anche dalla versione Development\n\n Nessun supporto sarà offerto tramite Discord per questa versione.",
+          "Name": "Experimental",
+          "WarningContent": "La **versione sperimentale** contiene sistemi personalizzati che corrispondono più da vicino al comportamento reale di un A320neo. Questi sono in fase di sviluppo e ci sono prevedibilmente dei bug.\n\n Per capire cosa stai scaricando e i potenziali problemi che potresti riscontrare, leggi [questa guida](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n **Ricorda che non verrà offerto alcun supporto tramite i canali di supporto Discord.**"
+        },
+        "Name": "Versioni",
+        "Stable": {
+          "Desc": "Stable è la nostra versione che ha caratteristiche più mature e testate. Questa dovrebbe essere una versione affidabile per quegli utenti che preferiscono la stabilità rispetto alle funzionalità più recenti.\n\n Questa versione non sarà sempre aggiornata, ma lavoriamo duramente per garantirne la compatibilità con la versione corrente di Microsoft Flight Simulator.",
+          "Name": "Stabile"
+        }
+      }
+    },
+    "A380X": {
+      "Desc": "",
+      "ShortDesc": "Airbus A380-800"
+    },
+    "AboutThisVersion": "Informazioni su questa versione",
+    "Cancel": "Annulla",
+    "CheckingStatus": "Verificando il stato",
+    "Completed": "Completato",
+    "Decompressing": "Decompressando",
+    "Details": "Dettagli",
+    "DownloadCanceled": "Download annullato",
+    "Downloading": "Download in corso…",
+    "Error": "Errore",
+    "ExperimentalVersions": "Versioni sperimentali",
+    "FailedToInstall": "Installazione non riuscita",
+    "FinishingUpdate": "Aggiornamento di finitura",
+    "Install": "Installa",
+    "Installed": "Installato",
+    "InstalledGit": "Installato (git)",
+    "MainlineVersions": "Versioni principali",
+    "MajorVersion": "versione principale",
+    "MinorVersion": "versione minore",
+    "Module": "modulo",
+    "NewReleaseAvailable": "Nuova versione disponibile",
+    "PatchVersion": "versione patch",
+    "PleaseCloseMSFS": "Per favore chiudere MSFS",
+    "PreparingUpdate": "Preparando il aggiorno",
+    "ReleaseHistory": "Cronologia di pubblicazioni",
+    "Retrying": "Nuovo tentativo in corso",
+    "SwitchVersion": "Cambia Versione",
+    "UnknownState": "Stato sconosciuto",
+    "Update": "Aggiorna",
+    "Variants": "Varianti"
+  },
+  "HomeSection": {
+    "Desc": "FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft, the A32NX (a modification of the default A320neo in MSFS), and the A380."
+  },
+  "InstallerUpdate": {
+    "DownloadingUpdate": "Installazione del aggiornamento in corso",
+    "ErrorUpdate": "Errore di aggiornamento",
+    "RestartToUpdate": "Riavvia per aggiornare"
+  },
+  "Languages": {
+    "af": "afrikaans",
+    "ar": "Arabo",
+    "ca": "Catalano",
+    "cs": "Ceco",
+    "de": "Tedesco",
+    "el": "Greco",
+    "en": "Inglese",
+    "es": "Spagnolo",
+    "fi": "Finlandese",
+    "fr": "Francese",
+    "id": "Indonesiano",
+    "it": "Italiano",
+    "ko": "Coreano",
+    "nb": "Norvegese",
+    "nl": "Olandese",
+    "pl": "Polacco",
+    "pt_BR": "Portoghese brasiliano",
+    "pt_PL": "Portoghese europeo",
+    "ru": "Russo",
+    "sv": "Svedese",
+    "zh": {
+      "Hans": "Cinese semplificato",
+      "Hant": "Cinese tradizionale"
+    }
+  },
+  "LanguagesNative": {
+    "af": "Afrikaans",
+    "ar": "العربية",
+    "ca": "Català",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomi",
+    "fr": "Français",
+    "id": "Bahasa Indonesia",
+    "it": "Italiano",
+    "ko": "한국어",
+    "nb": "Norsk",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt_BR": "Português do Brasil",
+    "pt_PL": "Português europeu",
+    "ru": "Русский",
+    "sv": "Svenska",
+    "zh": {
+      "Hans": "汉语",
+      "Hant": "漢語"
+    }
+  },
+  "NoInternetModal": {
+    "OfflineText": "Sembra che tu sia offline"
+  },
+  "Notification": {
+    "DownloadComplete": "Installazione completata!",
+    "DownloadFailed": "Scaricamento fallito",
+    "InstallerUpdateDownloaded": "Un update al installatore è stato installato",
+    "ReadyToFly": "Sei pronto a volare",
+    "RestartToUpdate": "Riavvia per aggiornare",
+    "SomethingWentWrong": "Oops! Qualcosa è andato storto"
+  },
+  "QA": {
+    "NoLabels": "Nessuna etichetta",
+    "OpenedPullRequests": "Richieste pull aperte",
+    "PullRequests": "Richieste pull",
+    "QATesting": "Testazione per assuranza di qualità",
+    "SearchPullRequest": "Ricerca richieste pull"
+  },
+  "SettingsSection": {
+    "DownloadSettings": {
+      "AutomaticAddonUpdates": "Aggiornamenti automatici dei addons",
+      "AutomaticInstallerUpdates": "Aggiornamenti automatici del programma di installazione",
+      "InstallDirectory": "Directory per l'installazione",
+      "Name": "Impostazioni di installamento ",
+      "SeparateLiveriesDirectory": "Separa il directoru dei livery",
+      "UseCDN": "Usa CDN (download più veloci)"
+    },
+    "General": "Generale",
+    "GeneralSettings": {
+      "AlwaysOnTop": "Sempre oltre tutto",
+      "CheckForUpdates": "Ricerca aggiornamenti",
+      "CurrentVersion": "Versione attuale",
+      "DisableIncompatibleLiveryWarnings": "Disattiva avvisi di livery incompatibili",
+      "DisableVersionWarnings": "Disabilita avvisi di versione",
+      "Information": "Informazioni",
+      "Language": "Lingua",
+      "LaunchOnStartup": "Avvia su Startup",
+      "MinimizeOnClose": "Riduci il installatore quando chiuso",
+      "Name": "Impostazioni Generali",
+      "ReceiveNotifications": "Ricevi notifiche",
+      "ResetToDefault": "Ripristina le impostazioni predefinite"
+    },
+    "InstallerSettings": "Impostazioni del programma di installazione",
+    "Settings": "Impostazioni",
+    "UserSettings": {
+      "Authorize": "Autorizza",
+      "Connections": "Connessioni",
+      "Name": "Impostazioni utente"
+    }
+  },
+  "SideBar": {
+    "Installed": "Installato",
+    "Installing": "Installando",
+    "NotAvailable": "Non disponibile",
+    "NotInstalled": "Non installato",
+    "QATesting": "Test QA",
+    "Settings": "Impostazioni",
+    "UpdateAvailable": "Aggiornamento disponibile"
+  },
+  "TopBar": {
+    "Installer": "Installatore"
+  },
+  "WarningModal": {
+    "Cancel": "Annulla",
+    "Caution": "Attenzione!",
+    "DoNotShowAgain": "Non mostrarmelo più",
+    "Select": "Seleziona",
+    "Warning": "Attenzione!"
+  }
+}
