@@ -1,0 +1,193 @@
+{
+  "AircraftSection": {
+    "A32NX": {
+      "Desc": "A320neo (новый вариант двигателя) является одним из многих модернизаций, представленных Airbus, чтобы помочь сохранить позиции линейки продуктов A320 как самого передового и экономичного семейства однопроходных самолетов в мире. Базовый реактивный лайнер A320neo имеет выбор из двух двигателей нового поколения (PurePower PW1100G-JM от Pratt и Whitney и LEAP-1A от CFM International) и оснащен большими, экономичными устройствами крыльев, известными как Sharklets.",
+      "ShortDesc": "Aэробус A320нео Cемейство",
+      "Variants": {
+        "Leap": {
+          "Name": "Нео (CFM LEAP-1A)"
+        }
+      },
+      "Versions": {
+        "Development": {
+          "Desc": "Development will have the latest features that will eventually end up in the next stable release.\n\n In general this version has the latest fixes and newest features but also a slightly higher risk of containing bugs as features had less time to be used and tested by users.\n\n This version updates often and sometimes several times a days. We recommend to update this version via our installer before every start of the simulator.\n\n Every addition to the development version is code-reviewed and tested by several people, our QA Team and also interested users. In general it tends to be very stable and robust.\n\n Latest additions to this version can be seen either in the official [CHANGELOG](https://github.com/flybywiresim/a32nx/blob/master/.github/CHANGELOG.md) or the commits to the master branch of the project: [Github Commits to Master](https://github.com/flybywiresim/a32nx/commits/master)",
+          "Name": "разработки"
+        },
+        "Experimental": {
+          "Desc": "Эта версия аналогична версии для разработки, но содержит пользовательские системы, которые еще разрабатываются, включая новую систему управления полетами FBW Custom Flught Management System (CFM).\n\n Экспериментальная версия будет регулярно обновляться с учетом последних изменений из ветки autopilot-custom-fpm и версии для разработки.\n\n Поддержка этой версии через Discord не будет предоставляться.",
+          "Name": "Экспериментальная",
+          "WarningContent": "**Экспериментальная версия** содержит новые системы, которые более точно соответствуют реальному поведению A320neo. Они находятся в разработке и ожидаются ошибки и баги.\n\n Чтобы понять, с чем вы сталкиваетесь и какие потенциальные проблемы могут возникнуть, прочитайте [это руководство](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n **Имейте в виду, что поддержка через каналы поддержки Discord не будет предоставляться.**"
+        },
+        "Name": "Версии",
+        "Stable": {
+          "Desc": "Стабильная версия — это наша версия с самыми проверенными функциями. Это надежная версия для тех пользователей, которые предпочитают стабильность, а не новейшие функции. Эта версия не всегда будет актуальной, но мы прилагаем все усилия для обеспечения ее совместимости с текущей версией Microsoft Flight Simulator.",
+          "Name": "Стабильный"
+        }
+      }
+    },
+    "A380X": {
+      "Desc": "",
+      "ShortDesc": "Aэробус A380-800"
+    },
+    "AboutThisVersion": "Об этой версии",
+    "Cancel": "Отмена",
+    "CheckingStatus": "Проверка статуса...",
+    "Completed": "Операция завершена",
+    "Decompressing": "Декомпрессия",
+    "Details": "Подробности",
+    "DownloadCanceled": "Загрузка отменена",
+    "Downloading": "Скачивание…",
+    "Error": "Ошибка",
+    "ExperimentalVersions": "Экспериментальная версия",
+    "FailedToInstall": "Не удалось установить",
+    "FinishingUpdate": "Завершение обновления",
+    "Install": "Установить",
+    "Installed": "Установлено",
+    "InstalledGit": "Установлено (git)",
+    "MainlineVersions": "Основные версии",
+    "MajorVersion": "основная версия",
+    "MinorVersion": "минорная версия",
+    "Module": "модуль",
+    "NewReleaseAvailable": "Доступен новый релиз",
+    "PatchVersion": "патч-версия",
+    "PleaseCloseMSFS": "Закройте MSFS",
+    "PreparingUpdate": "Подготовка обновления",
+    "ReleaseHistory": "История релизов",
+    "Retrying": "Повтор попытки",
+    "SwitchVersion": "Переключить версию",
+    "UnknownState": "Неизвестное состояние",
+    "Update": "Обновить",
+    "Variants": "Варианты"
+  },
+  "HomeSection": {
+    "Desc": "FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft, the A32NX (a modification of the default A320neo in MSFS), and the A380."
+  },
+  "InstallerUpdate": {
+    "DownloadingUpdate": "Загрузка обновления",
+    "ErrorUpdate": "Ошибка обновления",
+    "RestartToUpdate": "Перезапустите для обновления"
+  },
+  "Languages": {
+    "af": "Африкаанс",
+    "ar": "Арабский",
+    "ca": "Каталанский",
+    "cs": "Чешский",
+    "de": "Немецкий",
+    "el": "Греческий",
+    "en": "Английский",
+    "es": "Испанский",
+    "fi": "Финский",
+    "fr": "Французский",
+    "id": "Индонезийский",
+    "it": "Итальянский",
+    "ja": "Японский",
+    "ko": "Корейский",
+    "nb": "Норвежский",
+    "nl": "Голландский",
+    "pl": "Польский",
+    "pt_BR": "Бразильский португальский",
+    "pt_PL": "Европейский португальский",
+    "ru": "Русский",
+    "sv": "Шведский",
+    "zh": {
+      "Hans": "Упрощенный китайский",
+      "Hant": "Традиционный китайский"
+    }
+  },
+  "LanguagesNative": {
+    "af": "Afrikaans",
+    "ar": "العربية",
+    "ca": "Català",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomi",
+    "fr": "Français",
+    "id": "Bahasa Indonesia",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt_BR": "Português do Brasil",
+    "pt_PL": "Português europeu",
+    "ru": "Русский",
+    "sv": "Svenska",
+    "zh": {
+      "Hans": "汉语",
+      "Hant": "漢語"
+    }
+  },
+  "NoInternetModal": {
+    "OfflineText": "Похоже, вы не в сети"
+  },
+  "Notification": {
+    "DownloadComplete": "Загрузка завершена!",
+    "DownloadFailed": "Загрузка не удалась!",
+    "InstallerUpdateDownloaded": "Обновление программы установки было загружено",
+    "ReadyToFly": "Вы готовы к полету",
+    "RestartToUpdate": "Перезапустите чтобы обновить!",
+    "SomethingWentWrong": "Что-то пошло не так!"
+  },
+  "QA": {
+    "NoLabels": "Без метки",
+    "OpenedPullRequests": "Открытые пулл реквесты",
+    "PullRequests": "Пулл реквесты",
+    "QATesting": "Тестирование качества",
+    "SearchPullRequest": "Искать пулл реквесты"
+  },
+  "SettingsSection": {
+    "DownloadSettings": {
+      "AutomaticAddonUpdates": "Автоматические обновления аддона",
+      "AutomaticInstallerUpdates": "Автоматическое обновление установщика",
+      "InstallDirectory": "Путь к папке установлении",
+      "Name": "Настройки загрузки",
+      "SeparateLiveriesDirectory": "Отдельный путь к папке ливрей",
+      "UseCDN": "Использовать CDN (более быстрая загрузка)"
+    },
+    "General": "Общие",
+    "GeneralSettings": {
+      "AlwaysOnTop": "Поверх других окон",
+      "CheckForUpdates": "Проверить наличие обновлений",
+      "CurrentVersion": "Текущая версия",
+      "DisableIncompatibleLiveryWarnings": "Отключить предупреждения о несовместимой ливрее",
+      "DisableVersionWarnings": "Отключить предупреждения о версии",
+      "Information": "Информация",
+      "Language": "Язык",
+      "LaunchOnStartup": "Запуск при включении компьютера",
+      "MinimizeOnClose": "Свернуть установщик при закрытии",
+      "Name": "Общие настройки",
+      "ReceiveNotifications": "Получать уведомления",
+      "ResetToDefault": "Сброс настроек"
+    },
+    "InstallerSettings": "Параметры установщика",
+    "Settings": "Настройки",
+    "UserSettings": {
+      "Authorize": "Авторизовать",
+      "Connections": "Подключения",
+      "Name": "Настройки пользователя"
+    }
+  },
+  "SideBar": {
+    "Installed": "Установлено",
+    "Installing": "Установка…",
+    "NotAvailable": "Недоступно",
+    "NotInstalled": "Не установлено",
+    "QATesting": "Тестирование качества",
+    "Settings": "Настройки",
+    "UpdateAvailable": "Доступно обновление"
+  },
+  "TopBar": {
+    "Installer": "Установочная программа"
+  },
+  "WarningModal": {
+    "Cancel": "Отмена",
+    "Caution": "Внимание!",
+    "DoNotShowAgain": "Больше не показывать это сообщение",
+    "Select": "Выбрать",
+    "Warning": "Предупреждение!"
+  }
+}

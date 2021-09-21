@@ -1,0 +1,194 @@
+{
+  "TopBar": {
+    "Installer": "Installer"
+  },
+  "SideBar": {
+    "Installed": "Installed",
+    "Installing": "Installing...",
+    "NotAvailable": "Not Available",
+    "NotInstalled": "Not Installed",
+    "Settings": "Settings",
+    "UpdateAvailable": "Update Available",
+    "QATesting": "QA Testing"
+  },
+  "HomeSection": {
+    "Desc": "FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft, the A32NX (a modification of the default A320neo in MSFS), and the A380."
+  },
+  "AircraftSection": {
+    "A32NX": {
+      "ShortDesc": "Airbus A320neo Series",
+      "Desc": "The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines (the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) and features large, fuel-saving wingtip devices known as Sharklets.",
+      "Variants": {
+        "Leap": {
+          "Name": "Neo (CFM LEAP-1A)"
+        }
+      },
+      "Versions": {
+        "Name": "Versions",
+        "Stable": {
+          "Name": "Stable",
+          "Desc": "Stable is our version which has features that are the most mature and most tested. This should be a reliable version for those users preferring stability over newest features.\n\n This version will not always be up to date but we work hard at ensuring its compatibility with the current version from Microsoft Flight Simulator."
+        },
+        "Development": {
+          "Name": "Development",
+          "Desc": "Development will have the latest features that will eventually end up in the next stable release.\n\n In general this version has the latest fixes and newest features but also a slightly higher risk of containing bugs as features had less time to be used and tested by users.\n\n This version updates often and sometimes several times a days. We recommend to update this version via our installer before every start of the simulator.\n\n Every addition to the development version is code-reviewed and tested by several people, our QA Team and also interested users. In general it tends to be very stable and robust.\n\n Latest additions to this version can be seen either in the official [CHANGELOG](https://github.com/flybywiresim/a32nx/blob/master/.github/CHANGELOG.md) or the commits to the master branch of the project: [Github Commits to Master](https://github.com/flybywiresim/a32nx/commits/master)"
+        },
+        "Experimental": {
+          "Name": "Experimental",
+          "Desc": "This version is similar to the development version, but contains custom systems still being developed, including the new FBW Custom Flight Management System (cFMS).\n\n Experimental will be updated with the latest changes from both the 'autopilot-custom-fpm' branch and development version regularly.\n\n No support will be offered via Discord for this version.",
+          "WarningContent": "The **experimental version** contains custom systems that more closely matches real-life behaviour of an A320neo. Those are in development and bugs are to be expected.\n\n To understand what you are getting into and the potential issues you might experience, please read [this guide](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n **Please be aware that no support will be offered via Discord support channels.**"
+        }
+      }
+    },
+    "A380X": {
+      "ShortDesc": "Airbus A380-800",
+      "Desc": ""
+    },
+    "AboutThisVersion": "About This Version",
+    "Cancel": "Cancel",
+    "CheckingStatus": "Checking status...",
+    "Completed": "Completed",
+    "Decompressing": "Decompressing",
+    "Details": "Details",
+    "DownloadCanceled": "Download canceled",
+    "Downloading": "Downloading",
+    "Error": "Error",
+    "ExperimentalVersions": "Experimental versions",
+    "FailedToInstall": "Failed to install",
+    "FinishingUpdate": "Finishing Update",
+    "Install": "Install",
+    "Installed": "Installed",
+    "InstalledGit": "Installed (git)",
+    "MainlineVersions": "Mainline versions",
+    "MajorVersion": "major version",
+    "MinorVersion": "minor version",
+    "Module": "module",
+    "NewReleaseAvailable": "New release available",
+    "PatchVersion": "patch version",
+    "PleaseCloseMSFS": "Please close MSFS",
+    "PreparingUpdate": "Preparing Update",
+    "ReleaseHistory": "Release History",
+    "Retrying": "Retrying",
+    "SwitchVersion": "Switch version",
+    "UnknownState": "Unknown state",
+    "Update": "Update",
+    "Variants": "Variants"
+  },
+  "SettingsSection": {
+    "Settings": "Settings",
+    "InstallerSettings": "Installer Settings",
+    "General": "General",
+    "GeneralSettings": {
+      "Name": "General Settings",
+      "AlwaysOnTop": "Always on Top",
+      "CheckForUpdates": "Check for Updates",
+      "CurrentVersion": "Current version",
+      "DateLayout": "Date Layout",
+      "DisableVersionWarnings": "Disable Version Warnings",
+      "DisableIncompatibleLiveryWarnings": "Disable Incompatible Livery Warnings",
+      "Information": "Information",
+      "LaunchOnStartup": "Launch on Startup",
+      "Language": "Language",
+      "MinimizeOnClose": "Minimize Installer on close",
+      "ReceiveNotifications": "Receive Notifications",
+      "ResetToDefault": "Reset settings to default"
+    },
+    "DownloadSettings": {
+      "Name": "Download Settings",
+      "AutomaticInstallerUpdates": "Automatic Installer Updates",
+      "AutomaticAddonUpdates": "Automatic Addon Updates",
+      "InstallDirectory": "Install Directory",
+      "SeparateLiveriesDirectory": "Separate Liveries Directory",
+      "UseCDN": "Use CDN (Faster Downloads)"
+    },
+    "UserSettings": {
+      "Name": "User Settings",
+      "Authorize": "Authorize",
+      "Connections": "Connections"
+    }
+  },
+  "InstallerUpdate": {
+    "DownloadingUpdate": "Downloading update",
+    "ErrorUpdate": "Update error",
+    "RestartToUpdate": "Restart to update"
+  },
+  "NoInternetModal": {
+    "OfflineText": "It seems you're offline"
+  },
+  "WarningModal": {
+    "Cancel": "Cancel",
+    "Caution": "Caution!",
+    "DoNotShowAgain": "Don't show me this again",
+    "Select": "Select",
+    "Warning": "Warning!"
+  },
+  "Notification": {
+    "DownloadComplete": "Download complete!",
+    "DownloadFailed": "Download failed!",
+    "ReadyToFly": "You're ready to fly",
+    "SomethingWentWrong": "Oops, something went wrong",
+    "InstallerUpdateDownloaded": "An update to the installer has been downloaded",
+    "RestartToUpdate": "Restart to update!"
+  },
+  "QA": {
+    "NoLabels": "No Labels",
+    "OpenedPullRequests": "Opened Pull Requests",
+    "PullRequests": "Pull Requests",
+    "QATesting": "QA Testing",
+    "SearchPullRequest": "Search Pull Request"
+  },
+  "Languages": {
+    "af": "Afrikaans",
+    "ar": "Arabic",
+    "ca": "Catalan",
+    "cs": "Czech",
+    "de": "German",
+    "el": "Greek",
+    "en": "English",
+    "es": "Spanish",
+    "fi": "Finnish",
+    "fr": "French",
+    "id": "Indonesian",
+    "it": "Italian",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "nb": "Norwegian",
+    "nl": "Dutch",
+    "pl": "Polish",
+    "pt_BR": "Brazilian Portuguese",
+    "pt_PL": "European Portuguese",
+    "ru": "Russian",
+    "sv": "Swedish",
+    "zh": {
+      "Hans": "Simplified Chinese",
+      "Hant": "Traditional Chinese"
+    }
+  },
+  "LanguagesNative": {
+    "af": "Afrikaans",
+    "ar": "العربية",
+    "ca": "Català",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomi",
+    "fr": "Français",
+    "id": "Bahasa Indonesia",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt_BR": "Português do Brasil",
+    "pt_PL": "Português europeu",
+    "ru": "Русский",
+    "sv": "Svenska",
+    "zh": {
+      "Hans": "汉语",
+      "Hant": "漢語"
+    }
+  }
+}

@@ -6,6 +6,7 @@ import Store from "electron-store";
 import { ExperimentalModTrack } from "renderer/utils/InstallerConfiguration";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useTranslation } from "react-i18next";
 
 type WarningModalProps = {
     track: ExperimentalModTrack,
@@ -17,6 +18,16 @@ const settings = new Store();
 
 const WarningModal = (props: WarningModalProps) => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
+
+    const translateIfAble = (input: string) => {
+        if (input.startsWith("t('")) {
+            const translatedinput = input.slice(3, -2);
+            return t(translatedinput);
+        } else {
+            return input;
+        }
+    };
 
     const [disableWarningCheck, setDisableWarningCheck] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
     const [disableWarning, setDisableWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
@@ -66,10 +77,11 @@ const WarningModal = (props: WarningModalProps) => {
 
     return (
         <WarningModalBase
-            title="Warning!"
+            title={t('WarningModal.Warning')}
             visible={handleVisible()}
-            okText="Select"
+            okText={t('WarningModal.Select')}
             onOk={handleOk}
+            cancelText={t('WarningModal.Cancel')}
             onCancel={handleCancel}
             centered={true}
             style={{
@@ -78,7 +90,7 @@ const WarningModal = (props: WarningModalProps) => {
         >
             <ReactMarkdown
                 className="text-lg text-gray-300"
-                children={props.track?.warningContent}
+                children={translateIfAble(props.track?.warningContent ?? '')}
                 remarkPlugins={[remarkGfm]}
                 linkTarget={"_blank"}
             />
@@ -89,7 +101,7 @@ const WarningModal = (props: WarningModalProps) => {
                     onChange={handleOnChange}
                     className="ml-auto mr-2 w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
                 />
-                <span className="ml-2">Don't show me this again</span>
+                <span className="ml-2 w-60">{t('WarningModal.DoNotShowAgain')}</span>
             </div>
         </WarningModalBase>
     );
