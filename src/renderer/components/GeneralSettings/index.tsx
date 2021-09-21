@@ -193,20 +193,23 @@ const LanguageSettingsItem = () => {
     };
 
     return (
-        <div className="flex flex-row justify-between mt-1 mb-2 mr-2">
-            <SettingItemName>{t('SettingsSection.GeneralSettings.Language')}</SettingItemName>
-            <select
-                value={i18n.language}
-                onChange={event => handleSelect(event.currentTarget.value)}
-                name="Language"
-                id="language-list"
-                className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
-            >
-                {languages.map(language =>
-                    <option value={language.value} key={language.value}>{language.name}</option>)
-                }
-            </select>
-        </div>
+        <>
+            <div className="h-0.5 bg-gray-700"></div>
+            <div className="flex flex-row justify-between mb-3.5 mt-3.5 mr-2">
+                <SettingItemName>{t('SettingsSection.GeneralSettings.Language')}</SettingItemName>
+                <select
+                    value={i18n.language}
+                    onChange={event => handleSelect(event.currentTarget.value)}
+                    name="Language"
+                    id="language-list"
+                    className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
+                >
+                    {languages.map(language =>
+                        <option value={language.value} key={language.value}>{language.name}</option>)
+                    }
+                </select>
+            </div>
+        </>
     );
 };
 
