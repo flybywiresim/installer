@@ -4,7 +4,7 @@ import A320NoseSVG from "renderer/assets/a32nx_nose.svg";
 import A380NoseSVG from "renderer/assets/a380x_nose.svg";
 
 export const defaultConfiguration: Configuration = {
-    mods: [
+    addons: [
         {
             name: 'A32NX',
             repoName: 'a32nx',

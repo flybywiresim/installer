@@ -1,6 +1,6 @@
 import { defaultConfiguration } from "renderer/data";
 
-export type ModVersion = {
+export type AddonVersion = {
     title: string,
     date: Date,
     type: 'major' | 'minor' | 'patch'
@@ -17,7 +17,7 @@ export type GithubBranchReleaseModel = {
 
 export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel
 
-type BaseModTrack = {
+type BaseAddonTrack = {
     name: string,
     key: string,
     url: string,
@@ -26,13 +26,13 @@ type BaseModTrack = {
     releaseModel: ReleaseModel,
 }
 
-export type MainlineModTrack = BaseModTrack & { isExperimental: false }
+export type MainlineAddonTrack = BaseAddonTrack & { isExperimental: false }
 
-export type ExperimentalModTrack = BaseModTrack & { isExperimental: true, warningContent: string }
+export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true, warningContent: string }
 
-export type ModTrack = MainlineModTrack | ExperimentalModTrack;
+export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
-export type Mod = {
+export type Addon = {
     name: string,
     repoName: string,
     aircraftName: string,
@@ -43,12 +43,12 @@ export type Mod = {
     menuIconUrl: string,
     targetDirectory: string,
     alternativeNames?: string[],
-    tracks: ModTrack[],
+    tracks: AddonTrack[],
     enabled: boolean,
 }
 
 export type Configuration = {
-    mods: Mod[],
+    addons: Addon[],
 }
 
 export class InstallerConfiguration {
@@ -87,7 +87,7 @@ export class InstallerConfiguration {
     }
 
     private static isConfigurationValid(config: Configuration): boolean {
-        return !!(config.mods);
+        return !!(config.addons);
     }
 
 }

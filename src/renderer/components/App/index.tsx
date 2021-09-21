@@ -14,25 +14,25 @@ import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
 import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
-import { SetModAndTrackLatestReleaseInfo } from "renderer/redux/types";
+import { SetAddonAndTrackLatestReleaseInfo } from "renderer/redux/types";
 import { Settings } from "tabler-icons-react";
-import { SidebarItem, SidebarMod, SidebarPublisher } from "renderer/components/App/SideBar";
+import { SidebarItem, SidebarAddon, SidebarPublisher } from "renderer/components/App/SideBar";
 import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
-import { Configuration, Mod, ModVersion } from "renderer/utils/InstallerConfiguration";
+import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 
-const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
+const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
 /**
- * Obtain releases for a specific mod
+ * Obtain releases for a specific addon
  *
- * @param mod
+ * @param addon
  */
-export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
-    const releases = (await releaseCache.fetchOrCompute(async (): Promise<ModVersion[]> => {
-        return (await GitVersions.getReleases('flybywiresim', mod.repoName))
+export const getAddonReleases = async (addon: Addon): Promise<AddonVersion[]> => {
+    const releases = (await releaseCache.fetchOrCompute(async (): Promise<AddonVersion[]> => {
+        return (await GitVersions.getReleases('flybywiresim', addon.repoName))
             .filter(r => /v\d/.test(r.name))
             .map(r => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
     })).map(r => ({ ...r, date: new Date(r.date) })); // Local Data cache returns a string instead of Date
@@ -58,14 +58,14 @@ export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
     return releases;
 };
 
-export const fetchLatestVersionNames = async (mod: Mod): Promise<void> => {
-    mod.tracks.forEach(async (track) => {
-        const trackLatestVersionName = await AddonData.latestVersionForTrack(mod, track);
+export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
+    addon.tracks.forEach(async (track) => {
+        const trackLatestVersionName = await AddonData.latestVersionForTrack(addon, track);
 
-        store.dispatch<SetModAndTrackLatestReleaseInfo>({
-            type: actionTypes.SET_MOD_AND_TRACK_LATEST_RELEASE_INFO,
+        store.dispatch<SetAddonAndTrackLatestReleaseInfo>({
+            type: actionTypes.SET_ADDON_AND_TRACK_LATEST_RELEASE_INFO,
             payload: {
-                modKey: mod.key,
+                addonKey: addon.key,
                 trackKey: track.key,
                 info: trackLatestVersionName,
             }
@@ -75,10 +75,10 @@ export const fetchLatestVersionNames = async (mod: Mod): Promise<void> => {
 
 const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     useEffect(() => {
-        configuration.mods.forEach(fetchLatestVersionNames);
+        configuration.addons.forEach(fetchLatestVersionNames);
     }, []);
 
-    const [selectedItem, setSelectedItem] = useState<string>(configuration.mods[0].key);
+    const [selectedItem, setSelectedItem] = useState<string>(configuration.addons[0].key);
 
     let sectionToShow;
     switch (selectedItem) {
@@ -87,7 +87,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             break;
 
         default:
-            sectionToShow = <AircraftSection mod={configuration.mods.find(x => x.key === selectedItem)}/>;
+            sectionToShow = <AircraftSection addon={configuration.addons.find(x => x.key === selectedItem)}/>;
             break;
     }
 
@@ -113,13 +113,13 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                 <div className="h-full flex flex-col divide-y divide-gray-700">
                                     <SidebarPublisher name="FlyByWire Simulations" logo={logo}>
                                         {
-                                            configuration.mods.map(mod => {
+                                            configuration.addons.map(addon => {
                                                 return (
-                                                    <SidebarMod
-                                                        key={mod.key}
-                                                        mod={mod}
-                                                        isSelected={selectedItem === mod.key}
-                                                        handleSelected={() => setSelectedItem(mod.key)}
+                                                    <SidebarAddon
+                                                        key={addon.key}
+                                                        addon={addon}
+                                                        isSelected={selectedItem === addon.key}
+                                                        handleSelected={() => setSelectedItem(addon.key)}
                                                     />
                                                 );
                                             })

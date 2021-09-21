@@ -3,7 +3,7 @@ import { Check, ChevronDown, Download, Refresh } from "tabler-icons-react";
 import { useSelector, } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { InstallStatus } from "renderer/components/AircraftSection";
-import { Mod } from "renderer/utils/InstallerConfiguration";
+import { Addon } from "renderer/utils/InstallerConfiguration";
 
 export type SidebarItemProps = { enabled?: boolean, iSelected: boolean, onClick: () => void, className?: string }
 
@@ -33,16 +33,16 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
     );
 };
 
-type SidebarModProps = { mod: Mod, isSelected: boolean, handleSelected: (key: string) => void }
+type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void }
 
-export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleSelected }) => {
+export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected }) => {
     const [downloadState, setStatusText] = useState('');
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
-    const modDownloadState = useSelector<InstallerStore>(state => state.installStatus);
+    const addonDownloadState = useSelector<InstallerStore>(state => state.installStatus);
 
     useEffect(() => {
-        if (mod.enabled) {
-            switch (modDownloadState) {
+        if (addon.enabled) {
+            switch (addonDownloadState) {
                 case InstallStatus.FreshInstall:
                 case InstallStatus.Unknown:
                     setStatusText('Not Installed');
@@ -71,7 +71,7 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
             setStatusText('Not Available');
             setIcon('notAvailable');
         }
-    }, [modDownloadState]);
+    }, [addonDownloadState]);
 
     const Icon = () => {
         switch (icon) {
@@ -89,13 +89,13 @@ export const SidebarMod: React.FC<SidebarModProps> = ({ mod, isSelected, handleS
     };
 
     return (
-        <SidebarItem enabled={mod.enabled} iSelected={isSelected} onClick={() => {
-            if (mod.enabled) {
-                handleSelected(mod.key);
+        <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
+            if (addon.enabled) {
+                handleSelected(addon.key);
             }
         }}>
-            <div className={`flex flex-col ml-3 ${mod.enabled ? 'opacity-100' : 'opacity-60'}`}>
-                <span className="text-xl text-gray-200 font-semibold" key={mod.key}>{mod.name}</span>
+            <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
+                <span className="text-xl text-gray-200 font-semibold" key={addon.key}>{addon.name}</span>
                 <code className="text-lg text-teal-50">{downloadState}</code>
             </div>
 

@@ -1,6 +1,6 @@
 import Store from "electron-store";
 import path from "path";
-import { Mod } from "renderer/utils/InstallerConfiguration";
+import { Addon } from "renderer/utils/InstallerConfiguration";
 import fs from "fs-extra";
 
 const settings = new Store;
@@ -48,8 +48,8 @@ export class Directories {
         console.log('[CLEANUP] Finished removing all temp directories');
     }
 
-    static removeAlternativesForMod(mod: Mod): void {
-        mod.alternativeNames?.forEach(altName => {
+    static removeAlternativesForAddon(addon: Addon): void {
+        addon.alternativeNames?.forEach(altName => {
             const altDir = Directories.inCommunity(altName);
 
             if (fs.existsSync(altDir)) {
@@ -59,8 +59,8 @@ export class Directories {
         });
     }
 
-    static removeTargetForMod(mod: Mod): void {
-        const dir = Directories.inCommunity(mod.targetDirectory);
+    static removeTargetForAddon(addon: Addon): void {
+        const dir = Directories.inCommunity(addon.targetDirectory);
 
         if (fs.existsSync(dir)) {
             console.log('Removing', dir);
@@ -68,13 +68,13 @@ export class Directories {
         }
     }
 
-    static isFragmenterInstall(target: string | Mod): boolean {
+    static isFragmenterInstall(target: string | Addon): boolean {
         const targetDir = typeof target === 'string' ? target : Directories.inCommunity(target.targetDirectory);
 
         return fs.existsSync(path.join(targetDir, 'install.json'));
     }
 
-    static isGitInstall(target: string | Mod): boolean {
+    static isGitInstall(target: string | Addon): boolean {
         const targetDir = typeof target === 'string' ? target : Directories.inCommunity(target.targetDirectory);
 
         try {
