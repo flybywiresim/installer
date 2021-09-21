@@ -1,0 +1,193 @@
+{
+  "AircraftSection": {
+    "A32NX": {
+      "Desc": "A320neo (nytt motoralternativ) är en av många uppgraderingar som Airbus infört för att bibehålla sin A320-produktlinje som världens mest avancerade och bränslesnåla flygplansfamilj. I A320neo kan man välja mellan två motorer av den nya generationen (PurePower PW1100G-JM från Pratt & Whitney och LEAP-1A från CFM International) och har stora, bränslesnåla vingspetsar, så kallade Sharklets.",
+      "ShortDesc": "Airbus A320neo-serien",
+      "Variants": {
+        "Leap": {
+          "Name": "Neo (CFM LEAP-1A)"
+        }
+      },
+      "Versions": {
+        "Development": {
+          "Desc": "Development innehåller de senaste funktionerna som sedan kommer att hamna i nästa stabila version.\n\nI allmänhet har denna version de senaste fixarna och de nyaste funktionerna, men också en något högre risk att innehålla fel eftersom funktionerna har haft mindre tid att användas och testas.\n\nDenna version uppdateras ofta och ibland flera gånger per dag. Vi rekommenderar att du uppdaterar denna version via vårt installationsprogram före varje start av simulatorn.\n\nVarje tillägg till utvecklingsversionen kodgranskas och testas av flera utvecklare samt vårt QA-team. I allmänhet tenderar den till att vara mycket stabil och robust.\n\n De senaste tilläggen till denna version kan ses antingen i den officiella [CHANGELOG](https://github.com/flybywiresim/a32nx/blob/master/.github/CHANGELOG.md) eller i de ändringar som gjorts i projektets mastergren: [Github Commits to Master](https://github.com/flybywiresim/a32nx/commits/master)",
+          "Name": "Development"
+        },
+        "Experimental": {
+          "Desc": "Denna version liknar Development versionen, men innehåller egenutvecklade system inom tidigare utvecklingsfaser.\n\nFör närvarande finns det nya FlyByWire Custom Flight Management System (cFMS) tillgängligt i Experimental versionen.\n\nExperimental versionen kommer regelbundet att uppdateras med de senaste ändringarna i cFMS och även med de senaste ändringarna i Development versionen. Räkna med uppdateringar ungefär en gång i veckan (inte garanterat).",
+          "Name": "Experimental",
+          "WarningContent": "**Experimental-versionen** innehåller egenutvecklade system som bättre liknar det verkliga beteendet hos en A320neo. Dessa är under utveckling och buggar kan förekomma.\n\n För att förstå vad du ger dig in på och vilka eventuella problem du kan få, läs [denna guide](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n **Vänligen notera att ingen support kommer att erbjudas via Discord-supportkanaler.**"
+        },
+        "Name": "Versioner",
+        "Stable": {
+          "Desc": "Stable är vår version med de mest mogna och testade funktionerna. Detta bör vara en pålitlig version för användare som föredrar stabilitet framför den senaste funktionaliteten.\n\nDenna version kommer inte alltid att vara uppdaterad men vi arbetar kontinuerligt med att säkerställa dess kompatibilitet med den senaste versionen av Microsoft Flight Simulator.",
+          "Name": "Stable"
+        }
+      }
+    },
+    "A380X": {
+      "Desc": "",
+      "ShortDesc": "Airbus A380-800"
+    },
+    "AboutThisVersion": "Om denna version",
+    "Cancel": "Avbryt",
+    "CheckingStatus": "Kontrollerar status…",
+    "Completed": "Klar",
+    "Decompressing": "Dekomprimering",
+    "Details": "Detaljer",
+    "DownloadCanceled": "Nedladdning avbruten",
+    "Downloading": "Laddar ner…",
+    "Error": "Fel",
+    "ExperimentalVersions": "Experimentella versioner",
+    "FailedToInstall": "Installation misslyckades",
+    "FinishingUpdate": "Slutför uppdatering",
+    "Install": "Installera",
+    "Installed": "Installerad",
+    "InstalledGit": "Installerad (git)",
+    "MainlineVersions": "Huvudversioner",
+    "MajorVersion": "major version",
+    "MinorVersion": "minor version",
+    "Module": "Modul",
+    "NewReleaseAvailable": "Ny version tillgänglig",
+    "PatchVersion": "patch version",
+    "PleaseCloseMSFS": "Stäng MSFS",
+    "PreparingUpdate": "Förbereder uppdateringen…",
+    "ReleaseHistory": "Versionshistorik",
+    "Retrying": "Försöker igen",
+    "SwitchVersion": "Byt version",
+    "UnknownState": "Okänd status",
+    "Update": "Uppdatera",
+    "Variants": "Varianter"
+  },
+  "HomeSection": {
+    "Desc": "FlyByWire Simulations is a community-driven group currently focused on creating two freeware aircraft, the A32NX (a modification of the default A320neo in MSFS), and the A380."
+  },
+  "InstallerUpdate": {
+    "DownloadingUpdate": "Hämtar uppdatering…",
+    "ErrorUpdate": "Uppdateringsfel",
+    "RestartToUpdate": "Starta om för att uppdatera"
+  },
+  "Languages": {
+    "af": "Afrikaans",
+    "ar": "Arabiska",
+    "ca": "Katalanska",
+    "cs": "Tjeckiska",
+    "de": "Tyska",
+    "el": "Grekiska",
+    "en": "Engelska",
+    "es": "Spanska",
+    "fi": "Finska",
+    "fr": "Franska",
+    "id": "indonesiska",
+    "it": "Italienska",
+    "ja": "Japanska",
+    "ko": "Koreanska",
+    "nb": "Norska",
+    "nl": "Nederländska",
+    "pl": "Polska",
+    "pt_BR": "Brasiliansk portugisiska",
+    "pt_PL": "Europeisk portugisiska",
+    "ru": "Ryska",
+    "sv": "Svenska",
+    "zh": {
+      "Hans": "Förenklad kinesiska",
+      "Hant": "Traditionell kinesiska"
+    }
+  },
+  "LanguagesNative": {
+    "af": "Afrikaans",
+    "ar": "العربية",
+    "ca": "Català",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomi",
+    "fr": "Français",
+    "id": "Bahasa Indonesia",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt_BR": "Português do Brasil",
+    "pt_PL": "Português europeu",
+    "ru": "Русский",
+    "sv": "Svenska",
+    "zh": {
+      "Hans": "汉语",
+      "Hant": "漢語"
+    }
+  },
+  "NoInternetModal": {
+    "OfflineText": "Det verkar som om du är offline?"
+  },
+  "Notification": {
+    "DownloadComplete": "Nedladdning klar!",
+    "DownloadFailed": "Nedladdning misslyckades!",
+    "InstallerUpdateDownloaded": "En uppdatering till installationsprogrammet har laddats ned",
+    "ReadyToFly": "Redo att flyga!",
+    "RestartToUpdate": "Starta om för att uppdatera!",
+    "SomethingWentWrong": "Hoppsan, något gick fel!"
+  },
+  "QA": {
+    "NoLabels": "Inga etiketter",
+    "OpenedPullRequests": "Öppnade Pull Requests",
+    "PullRequests": "Pull Requests",
+    "QATesting": "QA-testning",
+    "SearchPullRequest": "Sök Pull Request"
+  },
+  "SettingsSection": {
+    "DownloadSettings": {
+      "AutomaticAddonUpdates": "Automatiska uppdateringar",
+      "AutomaticInstallerUpdates": "Automatiska uppdateringar för installationsprogram",
+      "InstallDirectory": "Installationskatalog",
+      "Name": "Nedladdningsinställningar",
+      "SeparateLiveriesDirectory": "Separat liveries-katalog",
+      "UseCDN": "Använd CDN (snabbare nedladdningar)"
+    },
+    "General": "Allmänt",
+    "GeneralSettings": {
+      "AlwaysOnTop": "Always on Top",
+      "CheckForUpdates": "Sök efter uppdateringar",
+      "CurrentVersion": "Nuvarande version",
+      "DisableIncompatibleLiveryWarnings": "Inaktivera varningar för inkompatibla liveries",
+      "DisableVersionWarnings": "Inaktivera versionsvarningar",
+      "Information": "Information",
+      "Language": "Språk",
+      "LaunchOnStartup": "Starta vid Windows start",
+      "MinimizeOnClose": "Minimera programmet vid stängning",
+      "Name": "Allmänna inställningar",
+      "ReceiveNotifications": "Ta emot aviseringar",
+      "ResetToDefault": "Återställ inställningar till standard"
+    },
+    "InstallerSettings": "Inställningar för installationsprogrammet",
+    "Settings": "Inställningar",
+    "UserSettings": {
+      "Authorize": "Godkänn",
+      "Connections": "Anslutningar",
+      "Name": "Användarinställningar"
+    }
+  },
+  "SideBar": {
+    "Installed": "Installerad",
+    "Installing": "Installerar…",
+    "NotAvailable": "Ej tillgänglig",
+    "NotInstalled": "Ej installerad",
+    "QATesting": "QA-testning",
+    "Settings": "Inställningar",
+    "UpdateAvailable": "Uppdatering tillgänglig"
+  },
+  "TopBar": {
+    "Installer": "Installationsprogram"
+  },
+  "WarningModal": {
+    "Cancel": "Avbryt",
+    "Caution": "Försiktighet!",
+    "DoNotShowAgain": "Visa mig inte det här igen",
+    "Select": "Välj",
+    "Warning": "Varning!"
+  }
+}
