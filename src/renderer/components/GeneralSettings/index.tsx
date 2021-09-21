@@ -200,7 +200,7 @@ const LanguageSettingsItem = () => {
                 onChange={event => handleSelect(event.currentTarget.value)}
                 name="Language"
                 id="language-list"
-                className="text-base text-white w-60 outline-none bg-navy border-2 border-navy px-2"
+                className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
             >
                 {languages.map(language =>
                     <option value={language.value} key={language.value}>{language.name}</option>)
