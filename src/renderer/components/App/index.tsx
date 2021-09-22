@@ -31,11 +31,11 @@ const releaseCache = new DataCache<ModVersion[]>('releases', 1000 * 3600 * 24);
  * @param mod
  */
 export const getModReleases = async (mod: Mod): Promise<ModVersion[]> => {
-    const releases = await releaseCache.fetchOrCompute(async (): Promise<ModVersion[]> => {
+    const releases = (await releaseCache.fetchOrCompute(async (): Promise<ModVersion[]> => {
         return (await GitVersions.getReleases('flybywiresim', mod.repoName))
             .filter(r => /v\d/.test(r.name))
             .map(r => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
-    });
+    })).map(r => ({ ...r, date: new Date(r.date) })); // Local Data cache returns a string instead of Date
 
     releases
         .forEach((version, index) => {

@@ -187,7 +187,7 @@ function configureSettings(app: App) {
         settings.set('mainSettings.useCdnCache', true);
     }
     if (!settings.has('mainSettings.dateLayout')) {
-        settings.set('mainSettings.dateLayout', 1);
+        settings.set('mainSettings.dateLayout', 'yyyy/mm/dd');
     }
 
     if (!settings.has('mainSettings.msfsPackagePath')) {
