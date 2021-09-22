@@ -167,7 +167,7 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
 };
 
 const DateLayoutItem = (props: {dateLayout: number, setDateLayout: CallableFunction}) => {
-    const handleSelect = (value: number) => {
+    const handleSelect = (value: string) => {
         settings.set('mainSettings.dateLayout', value);
         props.setDateLayout(value);
     };
@@ -179,14 +179,14 @@ const DateLayoutItem = (props: {dateLayout: number, setDateLayout: CallableFunct
                 <SettingItemName>{'Date Layout'}</SettingItemName>
                 <select
                     value={props.dateLayout}
-                    onChange={event => handleSelect(parseInt(event.currentTarget.value))}
+                    onChange={event => handleSelect(event.currentTarget.value)}
                     name="Date Layout"
                     id="datelayout-list"
                     className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
                 >
-                    <option value={1} key={1}>YYYY/MM/DD</option>
-                    <option value={2} key={2}>MM/DD/YYYY</option>
-                    <option value={3} key={3}>DD/MM/YYYY</option>
+                    <option value={'yyyy/mm/dd'}>YYYY/MM/DD</option>
+                    <option value={'mm/dd/yyyy'}>MM/DD/YYYY</option>
+                    <option value={'dd/mm/yyyy'}>DD/MM/YYYY</option>
                 </select>
             </div>
         </>
@@ -216,7 +216,7 @@ function index(): JSX.Element {
         setUseCdnCache(true);
         settings.set('mainSettings.useCdnCache', true);
         setDateLayout(1);
-        settings.set('mainSettings.dateLayout', 1);
+        settings.set('mainSettings.dateLayout', 'yyyy/mm/dd');
         reloadLiveries();
     };
 
