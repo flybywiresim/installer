@@ -17,7 +17,6 @@ type TrackProps = {
     track: AddonTrack,
     isSelected: boolean,
     isInstalled: boolean,
-    // eslint-disable-next-line no-unused-vars
     handleSelected(track: AddonTrack): void,
 };
 
@@ -46,7 +45,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
             onClick={() => handleSelected(track)}
         >
             <div
-                className={`${makeBorderStyle()} w-1 h-12 rounded-r-xl transition transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
+                className={`${makeBorderStyle()} w-1 h-12 rounded-r-xl transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
             <div className="flex flex-col px-5 py-2">
                 <span className="text-xl text-gray-50">{track.name}</span>
                 <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
