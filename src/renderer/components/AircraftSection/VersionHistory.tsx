@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from "styled-components";
 import { shell } from "electron";
+import Store from 'electron-store';
 import { ModVersion } from "renderer/utils/InstallerConfiguration";
+import dateFormat from "dateformat";
+
+const settings = new Store;
 
 /**
  * Container for versions
@@ -32,8 +36,6 @@ const VersionBase: React.FC<VersionProps> = (props) => {
 
     const openReleasePage = () => shell.openExternal(GITHUB_RELEASE_BASE_URL + props.version.title);
 
-    const displayDate = (date: string) => date.substring(0, 10).replaceAll('-', '/');
-
     return (
         <div ref={ref} className={props.className} onClick={openReleasePage}>
             <VersionLine>
@@ -43,7 +45,7 @@ const VersionBase: React.FC<VersionProps> = (props) => {
             </VersionLine>
 
             <VersionTitle>{props.version.title}</VersionTitle>
-            <VersionDate>{displayDate(props.version.date as unknown as string)}</VersionDate>
+            <VersionDate>{dateFormat(props.version.date, settings.get('mainSettings.dateLayout') as string)}</VersionDate>
             <VersionType>{props.version.type} version</VersionType>
         </div>
     );

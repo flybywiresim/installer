@@ -166,6 +166,33 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
     );
 };
 
+const DateLayoutItem = (props: {dateLayout: number, setDateLayout: CallableFunction}) => {
+    const handleSelect = (value: string) => {
+        settings.set('mainSettings.dateLayout', value);
+        props.setDateLayout(value);
+    };
+
+    return (
+        <>
+            <div className="h-0.5 bg-gray-700"></div>
+            <div className="flex flex-row justify-between mb-3.5 mt-3.5 mr-2">
+                <SettingItemName>{'Date Layout'}</SettingItemName>
+                <select
+                    value={props.dateLayout}
+                    onChange={event => handleSelect(event.currentTarget.value)}
+                    name="Date Layout"
+                    id="datelayout-list"
+                    className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
+                >
+                    <option value={'yyyy/mm/dd'}>YYYY/MM/DD</option>
+                    <option value={'mm/dd/yyyy'}>MM/DD/YYYY</option>
+                    <option value={'dd/mm/yyyy'}>DD/MM/YYYY</option>
+                </select>
+            </div>
+        </>
+    );
+};
+
 function index(): JSX.Element {
     const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
     const [separateLiveriesPath, setSeparateLiveriesPath] = useState<boolean>(settings.get('mainSettings.separateLiveriesPath') as boolean);
@@ -173,6 +200,7 @@ function index(): JSX.Element {
     const [disableVersionWarning, setDisableVersionWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
     const [disableLiveryWarning, setDisableLiveryWarning] = useState<boolean>(settings.get('mainSettings.disabledIncompatibleLiveriesWarning') as boolean);
     const [useCdnCache, setUseCdnCache] = useState<boolean>(settings.get('mainSettings.useCdnCache') as boolean);
+    const [dateLayout, setDateLayout] = useState<number>(settings.get('mainSettings.dateLayout') as number);
 
     const handleReset = async () => {
         settings.clear();
@@ -187,6 +215,8 @@ function index(): JSX.Element {
         settings.set('mainSettings.disabledIncompatibleLiveriesWarning', false);
         setUseCdnCache(true);
         settings.set('mainSettings.useCdnCache', true);
+        setDateLayout(1);
+        settings.set('mainSettings.dateLayout', 'yyyy/mm/dd');
         reloadLiveries();
     };
 
@@ -201,6 +231,7 @@ function index(): JSX.Element {
                     <DisableWarningSettingItem disableWarning={disableVersionWarning} setDisableWarning={setDisableVersionWarning} />
                     <DisableLiveryWarningItem disableWarning={disableLiveryWarning} setDisableWarning={setDisableLiveryWarning} />
                     <UseCdnSettingItem useCdnCache={useCdnCache} setUseCdnCache={setUseCdnCache} />
+                    <DateLayoutItem dateLayout={dateLayout} setDateLayout={setDateLayout} />
                 </SettingsItems>
             </Container>
             <InfoContainer>

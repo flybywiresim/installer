@@ -186,6 +186,9 @@ function configureSettings(app: App) {
     if (!settings.has('mainSettings.useCdnCache')) {
         settings.set('mainSettings.useCdnCache', true);
     }
+    if (!settings.has('mainSettings.dateLayout')) {
+        settings.set('mainSettings.dateLayout', 'yyyy/mm/dd');
+    }
 
     if (!settings.has('mainSettings.msfsPackagePath')) {
         let userPath = null;
