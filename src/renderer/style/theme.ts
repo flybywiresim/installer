@@ -54,8 +54,3 @@ export const smallCard = css`
   
   ${dropShadow};
 `;
-
-export const noPadding = css`
-  padding: 0;
-  margin: 0;
-`;
