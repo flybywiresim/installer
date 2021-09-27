@@ -1,6 +1,6 @@
 import * as actions from './actionTypes';
 import { InstallStatus } from 'renderer/components/AircraftSection';
-import { ModTrack } from "renderer/utils/InstallerConfiguration";
+import { AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { ReleaseInfo } from "renderer/utils/AddonData";
 import { LiveryStateEntry } from "renderer/redux/reducers/liveries.reducer";
 
@@ -38,7 +38,7 @@ export interface DeleteDownloadAction {
 
 export interface ShowWarningModalState {
     showWarningModal: boolean,
-    track: null | ModTrack,
+    track: null | AddonTrack,
     trackHandler: null | CallableFunction,
 }
 
@@ -46,7 +46,7 @@ export interface ShowWarningModalAction {
     type: typeof actions.CALL_WARNING_MODAL
     payload: {
         showWarningModal: boolean,
-        track: null | ModTrack,
+        track: null | AddonTrack,
         trackHandler: null | CallableFunction,
     }
 }
@@ -58,12 +58,12 @@ export interface InstallAction {
 
 export interface SelectedTrackAction {
     type: typeof actions.SET_SELECTED_TRACK
-    payload: ModTrack
+    payload: AddonTrack
 }
 
 export interface InstalledTrackAction {
     type: typeof actions.SET_INSTALLED_TRACK
-    payload: ModTrack
+    payload: AddonTrack
 }
 
 export interface SetLiveryStateAction {
@@ -77,12 +77,12 @@ export interface ClearLiveriesStateAction {
 
 export type LiveryAction = SetLiveryStateAction | ClearLiveriesStateAction;
 
-export type ModAndTrackLatestVersionNamesState = { modKey: string, trackKey: string, info: ReleaseInfo }[]
+export type AddonAndTrackLatestVersionNamesState = { addonKey: string, trackKey: string, info: ReleaseInfo }[]
 
-export interface SetModAndTrackLatestReleaseInfo {
-    type: typeof actions.SET_MOD_AND_TRACK_LATEST_RELEASE_INFO
+export interface SetAddonAndTrackLatestReleaseInfo {
+    type: typeof actions.SET_ADDON_AND_TRACK_LATEST_RELEASE_INFO
     payload: {
-        modKey: string,
+        addonKey: string,
         trackKey: string,
         info: ReleaseInfo,
     }

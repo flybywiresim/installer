@@ -24,9 +24,9 @@ import {
 import Store from 'electron-store';
 import fs from "fs-extra";
 import * as path from 'path';
-import { getModReleases } from "renderer/components/App";
+import { getAddonReleases } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, ModAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
+import { DownloadItem, AddonAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
@@ -36,7 +36,7 @@ import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import store, { InstallerStore } from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
-import { Mod, ModTrack, ModVersion } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonTrack, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
@@ -48,15 +48,15 @@ const settings = new Store;
 
 // Props coming from renderer/components/App
 type TransferredProps = {
-    mod: Mod,
+    addon: Addon,
 }
 
 // Props coming from Redux' connect function
 type ConnectedAircraftSectionProps = {
-    selectedTrack: ModTrack,
-    installedTrack: ModTrack,
+    selectedTrack: AddonTrack,
+    installedTrack: AddonTrack,
     installStatus: InstallStatus,
-    latestVersionNames: ModAndTrackLatestVersionNamesState
+    latestVersionNames: AddonAndTrackLatestVersionNamesState
 }
 
 type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps
@@ -87,12 +87,12 @@ enum MsfsStatus {
 }
 
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
-    const findInstalledTrack = (): ModTrack => {
-        if (!Directories.isFragmenterInstall(props.mod)) {
+    const findInstalledTrack = (): AddonTrack => {
+        if (!Directories.isFragmenterInstall(props.addon)) {
             console.log('Not installed');
             if (selectedTrack === null) {
-                setSelectedTrack(props.mod.tracks[0]);
-                return props.mod.tracks[0];
+                setSelectedTrack(props.addon.tracks[0]);
+                return props.addon.tracks[0];
             } else {
                 selectAndSetTrack(props.selectedTrack.key);
                 return selectedTrack;
@@ -100,12 +100,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
 
         try {
-            const manifest = getCurrentInstall(Directories.inCommunity(props.mod.targetDirectory));
+            const manifest = getCurrentInstall(Directories.inCommunity(props.addon.targetDirectory));
             console.log('Currently installed', manifest);
 
-            let track = _.find(props.mod.tracks, { url: manifest.source });
+            let track = _.find(props.addon.tracks, { url: manifest.source });
             if (!track) {
-                track = _.find(props.mod.tracks, { alternativeUrls: [manifest.source] });
+                track = _.find(props.addon.tracks, { alternativeUrls: [manifest.source] });
             }
             console.log('Currently installed', track);
             setInstalledTrack(track);
@@ -120,8 +120,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             console.error(e);
             console.log('Not installed');
             if (selectedTrack === null) {
-                setSelectedTrack(props.mod.tracks[0]);
-                return props.mod.tracks[0];
+                setSelectedTrack(props.addon.tracks[0]);
+                return props.addon.tracks[0];
             } else {
                 selectAndSetTrack(props.selectedTrack.key);
                 return selectedTrack;
@@ -130,12 +130,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const installedTrack = props.installedTrack;
-    const setInstalledTrack = (newInstalledTrack: ModTrack) => {
+    const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
         store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: newInstalledTrack });
     };
 
     const selectedTrack = props.selectedTrack;
-    const setSelectedTrack = (newSelectedTrack: ModTrack) => {
+    const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
         store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, payload: newSelectedTrack });
     };
 
@@ -148,17 +148,17 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const [wait, setWait] = useState(1);
 
-    const [releases, setReleases] = useState<ModVersion[]>([]);
+    const [releases, setReleases] = useState<AddonVersion[]>([]);
 
     useEffect(() => {
-        getModReleases(props.mod).then(releases => {
+        getAddonReleases(props.addon).then(releases => {
             setReleases(releases);
             setWait(wait => wait - 1);
             findInstalledTrack();
         });
-    }, [props.mod]);
+    }, [props.addon]);
 
-    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.mod.name }));
+    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.addon.name }));
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
@@ -185,7 +185,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
         console.log('Checking install status');
 
-        const installDir = Directories.inCommunity(props.mod.targetDirectory);
+        const installDir = Directories.inCommunity(props.addon.targetDirectory);
 
         if (!fs.existsSync(installDir)) {
             return InstallStatus.FreshInstall;
@@ -220,8 +220,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
-    const downloadMod = async (track: ModTrack) => {
-        const installDir = Directories.inCommunity(props.mod.targetDirectory);
+    const downloadAddon = async (track: AddonTrack) => {
+        const installDir = Directories.inCommunity(props.addon.targetDirectory);
         const tempDir = Directories.temp();
 
         console.log('Installing', track);
@@ -250,7 +250,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         try {
             let lastPercent = 0;
             setInstallStatus(InstallStatus.Downloading);
-            dispatch(registerDownload(props.mod.name, ''));
+            dispatch(registerDownload(props.addon.name, ''));
 
             // Perform the fragmenter download
             const installer = new FragmenterInstaller(track.url, tempDir);
@@ -262,7 +262,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             installer.on('downloadProgress', (module, progress) => {
                 if (lastPercent !== progress.percent) {
                     lastPercent = progress.percent;
-                    dispatch(updateDownloadProgress(props.mod.name, module.name, progress.percent));
+                    dispatch(updateDownloadProgress(props.addon.name, module.name, progress.percent));
                 }
             });
             installer.on('unzipStarted', module => {
@@ -293,17 +293,17 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
             // Copy files from temp dir
             setInstallStatus(InstallStatus.DownloadEnding);
-            Directories.removeTargetForMod(props.mod);
+            Directories.removeTargetForAddon(props.addon);
             console.log('Copying files from', tempDir, 'to', installDir);
             await fs.copy(tempDir, installDir, { recursive: true });
             console.log('Finished copying files from', tempDir, 'to', installDir);
 
             // Remove installs existing under alternative names
             console.log('Removing installs existing under alternative names');
-            Directories.removeAlternativesForMod(props.mod);
+            Directories.removeAlternativesForAddon(props.addon);
             console.log('Finished removing installs existing under alternative names');
 
-            dispatch(deleteDownload(props.mod.name));
+            dispatch(deleteDownload(props.addon.name));
             notifyDownload(true);
 
             // Flash completion text
@@ -322,18 +322,18 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
         }
 
-        dispatch(deleteDownload(props.mod.name));
+        dispatch(deleteDownload(props.addon.name));
 
         // Clean up temp dir
         Directories.removeAllTemp();
     };
 
     const selectAndSetTrack = async (key: string) => {
-        const newTrack = props.mod.tracks.find(x => x.key === key);
+        const newTrack = props.addon.tracks.find(x => x.key === key);
         setSelectedTrack(newTrack);
     };
 
-    const handleTrackSelection = (track: ModTrack) => {
+    const handleTrackSelection = (track: AddonTrack) => {
         if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         } else {
@@ -343,7 +343,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const handleInstall = () => {
         if (settings.has('mainSettings.msfsPackagePath')) {
-            downloadMod(selectedTrack).then(() => console.log('Download and install complete'));
+            downloadAddon(selectedTrack).then(() => console.log('Download and install complete'));
         } else {
             setupInstallPath().then();
         }
@@ -353,7 +353,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         if (isDownloading) {
             console.log('Cancel download');
             abortController.abort();
-            dispatch(deleteDownload(props.mod.name));
+            dispatch(deleteDownload(props.addon.name));
         }
     };
 
@@ -474,8 +474,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
             <HeaderImage>
                 <ModelInformationContainer>
-                    <ModelName>{props.mod.name}</ModelName>
-                    <ModelSmallDesc>{props.mod.shortDescription}</ModelSmallDesc>
+                    <ModelName>{props.addon.name}</ModelName>
+                    <ModelSmallDesc>{props.addon.shortDescription}</ModelSmallDesc>
                 </ModelInformationContainer>
                 <SelectionContainer>
                     {msfsIsOpen !== MsfsStatus.Closed && <>
@@ -499,9 +499,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
                         <Tracks>
                             {
-                                props.mod.tracks.filter((track) => !track.isExperimental).map(track =>
+                                props.addon.tracks.filter((track) => !track.isExperimental).map(track =>
                                     <Track
-                                        mod={props.mod}
+                                        addon={props.addon}
                                         key={track.key}
                                         track={track}
                                         isSelected={selectedTrack === track}
@@ -516,9 +516,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h5 className="text-base text-teal-50 uppercase">Experimental versions</h5>
                         <Tracks>
                             {
-                                props.mod.tracks.filter((track) => track.isExperimental).map(track =>
+                                props.addon.tracks.filter((track) => track.isExperimental).map(track =>
                                     <Track
-                                        mod={props.mod}
+                                        addon={props.addon}
                                         key={track.key}
                                         track={track}
                                         isSelected={selectedTrack === track}
@@ -540,7 +540,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                             linkTarget={"_blank"}
                         />
                         <h3 className="font-semibold text-teal-50">Details</h3>
-                        <p className="text-lg text-gray-300">{props.mod.description}</p>
+                        <p className="text-lg text-gray-300">{props.addon.description}</p>
                     </DetailsContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>

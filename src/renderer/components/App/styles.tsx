@@ -4,7 +4,7 @@ import { colors } from "renderer/style/theme";
 import React, { useEffect, useState } from "react";
 import Store from "electron-store";
 import fs from "fs-extra";
-import { Mod } from "renderer/utils/InstallerConfiguration";
+import { Addon } from "renderer/utils/InstallerConfiguration";
 
 const settings = new Store<{ [p: string]: string }>({ watch: true });
 
@@ -132,12 +132,12 @@ const InstallationStates = {
     NOT_INSTALLED: 'not installed'
 };
 
-type AircraftMenuItemProps = { mod: Mod, disabled: boolean };
+type AircraftMenuItemProps = { addon: Addon, disabled: boolean };
 
 export const AircraftMenuItem = (props: AircraftMenuItemProps): JSX.Element => {
     const getInstallText = (value: boolean) => value ? InstallationStates.INSTALLED : InstallationStates.NOT_INSTALLED;
 
-    const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.mod.targetDirectory}\\`;
+    const installDir = `${settings.get('mainSettings.msfsPackagePath')}\\${props.addon.targetDirectory}\\`;
 
     let isInstalled = false;
 
@@ -150,17 +150,17 @@ export const AircraftMenuItem = (props: AircraftMenuItemProps): JSX.Element => {
     const [installationStatus, setInstallationStatus] = useState<string>(() => getInstallText(isInstalled));
 
     useEffect(() => {
-        settings.onDidChange(`cache.${props.mod.key}.lastUpdated`, () => setInstallationStatus(getInstallText(true)));
+        settings.onDidChange(`cache.${props.addon.key}.lastUpdated`, () => setInstallationStatus(getInstallText(true)));
     });
 
     return (
         <AircraftMenuItemBase {...props}>
             <AircraftDetailsContainer>
                 <AircraftInfo>
-                    <AircraftName>{props.mod.name}</AircraftName>
-                    <AircraftInstalledVersion>{props.mod.enabled ? installationStatus : "not available"}</AircraftInstalledVersion>
+                    <AircraftName>{props.addon.name}</AircraftName>
+                    <AircraftInstalledVersion>{props.addon.enabled ? installationStatus : "not available"}</AircraftInstalledVersion>
                 </AircraftInfo>
-                <img id={`icon-${props.mod.key}`} src={props.mod.menuIconUrl} alt={props.mod.aircraftName}/>
+                <img id={`icon-${props.addon.key}`} src={props.addon.menuIconUrl} alt={props.addon.aircraftName}/>
             </AircraftDetailsContainer>
         </AircraftMenuItemBase>
     );

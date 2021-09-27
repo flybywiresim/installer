@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from "styled-components";
 import { shell } from "electron";
+import { AddonVersion } from "renderer/utils/InstallerConfiguration";
 import Store from 'electron-store';
-import { ModVersion } from "renderer/utils/InstallerConfiguration";
 import dateFormat from "dateformat";
 
 const settings = new Store;
@@ -20,7 +20,7 @@ const GITHUB_RELEASE_BASE_URL = 'https://github.com/flybywiresim/a32nx/releases/
 type VersionProps = {
     index: number,
     className?: string,
-    version: ModVersion
+    version: AddonVersion
 };
 
 const VersionBase: React.FC<VersionProps> = (props) => {
@@ -52,7 +52,7 @@ const VersionBase: React.FC<VersionProps> = (props) => {
 };
 
 /**
- * Visually displays a mod release
+ * Visually displays a addon release
  */
 export const Version = styled(VersionBase)`
   display: grid;

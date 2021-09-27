@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 
 import './index.css';
-import { Mod, ModTrack } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 
 export const Tracks: React.FC = ({ children }) => (
     <div className="flex flex-row justify-start items-stretch gap-2">
@@ -13,18 +13,18 @@ export const Tracks: React.FC = ({ children }) => (
 
 type TrackProps = {
     className?: string,
-    mod: Mod,
-    track: ModTrack,
+    addon: Addon,
+    track: AddonTrack,
     isSelected: boolean,
     isInstalled: boolean,
     // eslint-disable-next-line no-unused-vars
-    handleSelected(track: ModTrack): void,
+    handleSelected(track: AddonTrack): void,
 };
 
-export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, mod, track }) => {
+export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, addon, track }) => {
     const latestVersionName = useSelector<InstallerStore, string>(state => {
         return state.latestVersionNames
-            .find((entry) => entry.modKey === mod.key && entry.trackKey === track.key)
+            .find((entry) => entry.addonKey === addon.key && entry.trackKey === track.key)
             ?.info.name ?? '<unknown>';
     });
 

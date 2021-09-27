@@ -3,12 +3,12 @@ import { connect, useDispatch } from 'react-redux';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import { WarningModalBase } from "./styles";
 import Store from "electron-store";
-import { ExperimentalModTrack } from "renderer/utils/InstallerConfiguration";
+import { ExperimentalAddonTrack } from "renderer/utils/InstallerConfiguration";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 type WarningModalProps = {
-    track: ExperimentalModTrack,
+    track: ExperimentalAddonTrack,
     trackHandler: CallableFunction,
     showWarningModal: boolean
 };

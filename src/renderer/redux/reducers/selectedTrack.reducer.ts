@@ -1,10 +1,10 @@
 import * as actionTypes from '../actionTypes';
 import { SelectedTrackAction } from '../types';
-import { ModTrack } from "renderer/utils/InstallerConfiguration";
+import { AddonTrack } from "renderer/utils/InstallerConfiguration";
 
-const initialState : ModTrack = null;
+const initialState : AddonTrack = null;
 
-const reducer = (state = initialState, action: SelectedTrackAction) :ModTrack => {
+const reducer = (state = initialState, action: SelectedTrackAction) :AddonTrack => {
     switch (action.type) {
         case actionTypes.SET_SELECTED_TRACK:
             return action.payload;
