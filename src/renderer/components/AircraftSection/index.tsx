@@ -19,7 +19,8 @@ import {
     SwitchButton,
     TopContainer,
     UpdateButton,
-    VersionHistoryContainer
+    VersionHistoryContainer,
+    SocialContainer
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
@@ -542,6 +543,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h3 className="font-semibold text-teal-50">Details</h3>
                         <p className="text-lg text-gray-300">{props.addon.description}</p>
                     </DetailsContainer>
+                    <SocialContainer>
+                        <figure>
+                            <a href="https://docs.flybywiresim.com/" target="_blank" ><img src="src\renderer\assets\sociallogos\FBW-Logo.png" alt="FlyByWire Documentations" width="170" height="80"></img></a>
+                            <figcaption className="text-teal-50">FlyByWire Documentation</figcaption>
+                        </figure>
+                    </SocialContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>
                     <h3 className="font-semibold text-teal-50">Release History</h3>
