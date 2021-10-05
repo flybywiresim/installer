@@ -545,8 +545,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </DetailsContainer>
                     <SocialContainer>
                         <figure>
-                            <a href="https://docs.flybywiresim.com/" target="_blank" ><img src="src\renderer\assets\sociallogos\FBW-Logo.png" alt="FlyByWire Documentations" width="170" height="80"></img></a>
-                            <figcaption className="text-teal-50">FlyByWire Documentation</figcaption>
+                            <a href="https://docs.flybywiresim.com/" target="_blank" ><img src="src\renderer\assets\sociallogos\instructions (1).png" alt="FlyByWire Documentations" width="75" height="60"></img></a>
+                            <figcaption className="text-teal-50">Click Above</figcaption>
+                            <figcaption className="text-teal-50">To Vist FBW</figcaption>
+                            <figcaption className="text-teal-50">Documentation</figcaption>
                         </figure>
                     </SocialContainer>
                 </LeftContainer>
