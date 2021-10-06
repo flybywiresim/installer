@@ -143,17 +143,6 @@ export const LeftContainer = styled.div`
 
 export const DetailsContainer = styled.div``;
 
-export const SocialContainer = styled.div`
-grid-column: start / end;
-grid-row: 2;
-
-display: flex;
-flex-direction: row;
-justify-content: flex-start;
-align-items: stretch;
-column-gap: 2em;
-`;
-
 export const VersionHistoryContainer = styled.div`
   grid-row: 3 / span 2;
 `;

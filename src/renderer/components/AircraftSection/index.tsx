@@ -20,7 +20,6 @@ import {
     TopContainer,
     UpdateButton,
     VersionHistoryContainer,
-    SocialContainer
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
@@ -533,6 +532,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 </TopContainer>
                 <LeftContainer>
                     <DetailsContainer>
+                        <a className="text-sm text-teal-50 uppercase" href="https://docs.flybywiresim.com/pilots-corner/beginner-guide/overview/" target="_blank">For more Information About the A32NX visit, our A32NX Beginners Guide by Clicking Here</a>
                         <h3 className="font-semibold text-teal-50">About This Version</h3>
                         <ReactMarkdown
                             className="text-lg text-gray-300"
@@ -543,14 +543,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h3 className="font-semibold text-teal-50">Details</h3>
                         <p className="text-lg text-gray-300">{props.addon.description}</p>
                     </DetailsContainer>
-                    <SocialContainer>
-                        <figure>
-                            <a href="https://docs.flybywiresim.com/" target="_blank" ><img src="src\renderer\assets\sociallogos\instructions (1).png" alt="FlyByWire Documentations" width="75" height="60"></img></a>
-                            <figcaption className="text-teal-50">Click Above</figcaption>
-                            <figcaption className="text-teal-50">To Vist FBW</figcaption>
-                            <figcaption className="text-teal-50">Documentation</figcaption>
-                        </figure>
-                    </SocialContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>
                     <h3 className="font-semibold text-teal-50">Release History</h3>
