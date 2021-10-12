@@ -10,6 +10,10 @@ export const colors = {
     redDark: '#F70404',
     redDarker: '#E40303',
     redDarkest: "#D10303",
+    pink: "#BC05E1",
+    pinkLight: '#C31EE4',
+    orange: '#FA8C16',
+    orangeLight: '#FB982D',
 
     title: '#FFFFFFDD',
     titleContrast: '#FFFFFF',

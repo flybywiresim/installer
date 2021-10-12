@@ -164,25 +164,51 @@ export const DownloadProgress = styled(Progress)`
 const InstallButtonTemplate = styled(props => <BaseButton
     type="primary"
     icon={<DownloadOutlined />}
+    className={(props.backgroundHover)}
     {...props}
-/>)`
-    min-width: 114px;    
-`;
+>
+    <div className='flex relative justify-center content-center pointer-events-auto'>
+        <div className={'cursor-pointer ' + (props.options && 'mr-5')} onClick={props.onClickAction}>{props.name}</div>
+        {props.options && <div className={'right-0 absolute min-h-full w-0.5  bg-white'}></div>}
+        {props.options ? <div className={'cursor-pointer -right-5 absolute'} onClick={props.setExtended}>{props.extended ? '▴' : '▾'}</div> : <></>}
+    </div>
+    {props.extended ? <div className="overflow-hidden pointer-events-auto">
+        <div onMouseLeave={() => {
+            document.addEventListener("click", function handler() {
+                props.setExtended();
+                document.removeEventListener('click', handler);
+            });
+        }} className={`cursor-pointer absolute w-full right-0 rounded-b-5px bg-${props.background}`}>
+            {props.options?.includes(uninstall) && <div className={"rounded-5px hover:bg-" + (props.background) + "-light"} onClick={() => {
+                props.uninstallAction(); props.setExtended();
+            }}>Uninstall</div>}
+            {props.options?.includes(bugReport) && <div className={"rounded-5px hover:bg-" + (props.background) + "-light"} onClick={() => {
+                props.reportAction(); props.setExtended();
+            }}>Report Bug</div>}
+            {props.options?.includes(featureRequest) && <div className={"rounded-5px hover:bg-" + (props.background) + "-light"} onClick={() => {
+                props.requestAction(); props.setExtended();
+            }}>Request Feature</div>}
+        </div>
+    </div> : <div></div>}
+</BaseButton>)`
+    min-width: 114px;
+    cursor: default;
+    pointer-events: none;
+    ${props => (props.options?.includes(featureRequest) ? "min-width: 170px" : "min-width: 114px")};
+    borderColor: ${props => (colors[(props.background as keyof typeof colors)])};
+    background: ${props => (colors[(props.background as keyof typeof colors)])};
 
-export const InstallButton = styled(props =>
-    <InstallButtonTemplate
-        style={{
-            background: colors.positive,
-            borderColor: colors.positive
-        }}
-        {...props}
-    >Install</InstallButtonTemplate>)``;
+    :hover {
+        background: ${props => (colors[(props.background + "Light") as keyof typeof colors])};
+    }
+`;
 
 export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  z-index: 10;
   
   column-gap: 1.25em;
 `;
@@ -192,25 +218,33 @@ export const StateText = styled(props => <span className={props.className}>{prop
   color: ${colors.titleContrast};  
 `;
 
+export const InstallButton = styled(props =>
+    <InstallButtonTemplate
+        style={{
+            background: colors.positive,
+            borderColor: colors.positive
+        }}
+        name = 'Install'
+        {...props}
+    />)``;
+
 export const UpdateButton = styled(
     props =>
         <InstallButtonTemplate
-            style={{
-                background: "#fa8c16",
-                borderColor: "#fa8c16"
-            }}
+            background= {"orange"}
+            name = 'Update'
+            options = {[uninstall]}
             {...props}
-        >Update</InstallButtonTemplate>)``;
+        />)``;
 
 export const SwitchButton = styled(
     props =>
         <InstallButtonTemplate
-            style={{
-                background: "#BC05E1",
-                borderColor: "#BC05E1"
-            }}
+            background= {"pink"}
+            name = 'Switch version'
+            options = {[uninstall]}
             {...props}
-        >Switch version</InstallButtonTemplate>)``;
+        />)``;
 
 export const CancelButton = styled(
     props =>
@@ -224,7 +258,7 @@ export const CancelButton = styled(
         />)``;
 
 export const InstalledButton = styled(
-    (props: { inGitRepo: boolean }) =>
+    props =>
         <InstallButtonTemplate
             icon={null}
             style={{
@@ -233,8 +267,10 @@ export const InstalledButton = styled(
                 borderColor: "#2e995e",
                 pointerEvents: "none"
             }}
+            name = {props.inGitRepo ? 'Installed (git)' : 'Installed'}
+            options = {[uninstall, bugReport, featureRequest]}
             {...props}
-        >{props.inGitRepo ? 'Installed (git)' : 'Installed'}</InstallButtonTemplate>)``;
+        />)``;
 
 export const DisabledButton = styled(
     (props: { text: string }) =>
@@ -246,5 +282,10 @@ export const DisabledButton = styled(
                 borderColor: "#2e3236",
                 pointerEvents: "none"
             }}
+            name = {props.text}
             {...props}
-        >{props.text}</InstallButtonTemplate>)``;
+        />)``;
+
+const uninstall = 'uninstall';
+const bugReport = 'bugReport';
+const featureRequest = 'featureRequest';

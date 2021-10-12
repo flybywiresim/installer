@@ -26,6 +26,10 @@ export const defaultConfiguration: Configuration = {
                 'A32NX',
                 'a32nx'
             ],
+            issueTracker: {
+                bugReport: 'https://github.com/flybywiresim/a32nx/issues/new?assignees=&labels=Bug&template=bug_report_beta.yaml',
+                featureRequest: 'https://github.com/flybywiresim/a32nx/issues/new?assignees=&labels=Request&template=feature_request_beta.yaml',
+            },
             tracks: [
                 {
                     name: 'Stable',

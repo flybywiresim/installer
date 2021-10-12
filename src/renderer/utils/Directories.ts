@@ -23,6 +23,13 @@ export class Directories {
         return path.join(settings.get('mainSettings.liveriesPath') as string, targetDir);
     }
 
+    static inPackagesMicrosoftStore(targetDir: string): string {
+        return path.join(process.env.LOCALAPPDATA, 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState\\packages\\', targetDir);
+    }
+    static inPackagesSteam(targetDir: string): string {
+        return path.join(process.env.APPDATA, 'Microsoft Flight Simulator\\Packages', targetDir);
+    }
+
     static temp(): string {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
     }

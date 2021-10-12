@@ -14,6 +14,9 @@ module.exports = {
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
+            borderRadius: {
+                '5px': '5px',
+            },
             height: {
                 '450px': '450px',
               },
@@ -32,6 +35,14 @@ module.exports = {
                     'darker': '#E40303',
                     'darkest': "#D10303",
                 },
+                pink: {
+                    'DEFAULT': '#BC05E1',
+                    'light': '#C31EE4'
+                },
+                orange: {
+                    'DEFAULT': '#FA8C16',
+                    'light': '#FB982D',
+                }
             },
             boxShadow: {
                 'inner-sm': 'inset 0 1px 2px 0 rgba(0, 0, 0, 0.05)'

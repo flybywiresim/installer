@@ -22,7 +22,7 @@ import {
     VersionHistoryContainer
 } from './styles';
 import Store from 'electron-store';
-import fs from "fs-extra";
+import fs, { readFileSync } from "fs-extra";
 import * as path from 'path';
 import { getAddonReleases } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
@@ -43,6 +43,7 @@ import { LiveryConversionDialog } from "renderer/components/AircraftSection/Live
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { shell } from 'electron';
 
 const settings = new Store;
 
@@ -220,6 +221,50 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
+    const reportBug = () => {
+        if (props.addon.issueTracker.bugReport) {
+            const buildInfo = readFileSync(Directories.inCommunity(props.addon.targetDirectory) + '/build_info.json', 'utf8').split("\n").join("%0A");
+            shell.openExternal(props.addon.issueTracker.bugReport + '&version=' + installedTrack?.name + '&build-info=' + buildInfo);
+        }
+    };
+
+    const requestFeature = () => {
+        if (props.addon.issueTracker.featureRequest) {
+            // currently, prefilling dropdowns isn't supported by GitHub, but I'm leaving this in in case it gets fixed
+            shell.openExternal(props.addon.issueTracker.featureRequest + '&version=' + installedTrack?.name);
+        }
+    };
+
+    const uninstallAddon = async () => {
+        const installDir = Directories.inCommunity(props.addon.targetDirectory);
+        const tempDir = Directories.temp();
+        console.log('uninstalling ', installedTrack);
+
+        if (fs.existsSync(installDir)) {
+            // fs.removeSync(installDir);
+        }
+        if (fs.existsSync(tempDir)) {
+            // fs.removeSync(tempDir);
+        }
+        setInstallStatus(InstallStatus.FreshInstall);
+        setInstalledTrack(null);
+        if (fs.existsSync(Directories.inPackagesMicrosoftStore(props.addon.targetDirectory))) {
+            await fs.promises.readdir(Directories.inPackagesMicrosoftStore(props.addon.targetDirectory))
+                .then((f) => Promise.all(f.map(e => {
+                    if (e != 'work') {
+                        fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(props.addon.targetDirectory), e));
+                    }
+                })));
+        }
+        if (fs.existsSync(Directories.inPackagesSteam(props.addon.targetDirectory))) {
+            await fs.promises.readdir(Directories.inPackagesSteam(props.addon.targetDirectory))
+                .then((f) => Promise.all(f.map(e => {
+                    if (e != 'work') {
+                        fs.promises.unlink(path.join(Directories.inPackagesSteam(props.addon.targetDirectory), e));
+                    }
+                })));
+        }
+    };
     const downloadAddon = async (track: AddonTrack) => {
         const installDir = Directories.inCommunity(props.addon.targetDirectory);
         const tempDir = Directories.temp();
@@ -375,6 +420,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }).catch(e => console.log(e));
     };
 
+    const [installButtonExtended, setInstallButtonExtended] = useState<boolean>(false);
+    const toggleExtended = () => setInstallButtonExtended(!installButtonExtended);
     const getInstallButton = (): JSX.Element => {
         switch (installStatus) {
             case InstallStatus.UpToDate:
@@ -387,7 +434,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 return (
                     <ButtonContainer>
                         <StateText>{'New release available'}</StateText>
-                        <UpdateButton onClick={handleInstall} />
+                        <UpdateButton onClickAction={handleInstall} extended={installButtonExtended} setExtended={toggleExtended} uninstallAction={uninstallAddon} reportAction={reportBug} requestAction={requestFeature} />
                     </ButtonContainer>
                 );
             case InstallStatus.FreshInstall:
@@ -399,7 +446,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </ButtonContainer>
                 );
             case InstallStatus.TrackSwitch:
-                return <SwitchButton onClick={handleInstall} />;
+                return (
+                    <ButtonContainer>
+                        <SwitchButton onClickAction={handleInstall} extended={installButtonExtended} setExtended={toggleExtended} uninstallAction={uninstallAddon} reportAction={reportBug} requestAction={requestFeature} />
+                    </ButtonContainer>
+                );
             case InstallStatus.DownloadPrep:
                 return (
                     <ButtonContainer>
@@ -432,7 +483,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 return (
                     <ButtonContainer>
                         <StateText>Completed!</StateText>
-                        <InstalledButton inGitRepo={false} />
+                        <InstalledButton inGitRepo={false} onClickAction={handleInstall} extended={installButtonExtended} setExtended={toggleExtended} uninstallAction={uninstallAddon} reportAction={reportBug} requestAction={requestFeature} />
                     </ButtonContainer>
                 );
             case InstallStatus.DownloadRetry:

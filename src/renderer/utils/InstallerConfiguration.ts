@@ -45,6 +45,10 @@ export type Addon = {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     enabled: boolean,
+    issueTracker?: {
+        bugReport?: string,
+        featureRequest?: string,
+    }
 }
 
 export type Configuration = {
