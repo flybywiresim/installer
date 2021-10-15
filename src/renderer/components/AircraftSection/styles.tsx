@@ -3,7 +3,7 @@ import { Select, Progress } from 'antd';
 import styled from 'styled-components';
 import { DownloadOutlined } from '@ant-design/icons';
 import { colors, dropShadow, fontSizes } from "renderer/style/theme";
-import headerBackground from "renderer/assets/a32nx-background.png";
+import headerBackground from "renderer/assets/background-image/@bouveng.png";
 
 export const Container = styled.div<{ wait: number }>`
     visibility: ${props => props.wait ? 'hidden' : 'visible'};
