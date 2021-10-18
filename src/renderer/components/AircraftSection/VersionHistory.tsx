@@ -13,6 +13,7 @@ const settings = new Store;
 export const Versions = styled.div`
   display: flex;
   flex-direction: column;
+  grid-row-gap: 7px;
 `;
 
 const GITHUB_RELEASE_BASE_URL = 'https://github.com/flybywiresim/a32nx/releases/tag/';
@@ -58,6 +59,10 @@ export const Version = styled(VersionBase)`
   display: grid;
   grid-template-columns: [start] 1fr [middle] 6fr [end] 3fr;
   grid-template-rows: [start] 30px [middle] auto;
+  background-color: #222c3d;
+  border-radius: 0.375rem;
+  --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 
   letter-spacing: .04em !important;
   

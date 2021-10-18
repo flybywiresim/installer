@@ -248,3 +248,57 @@ export const DisabledButton = styled(
             }}
             {...props}
         >{props.text}</InstallButtonTemplate>)``;
+
+export const AboutContainer = styled.div`
+    background-color: #222c3d;
+    border-radius: 0.375rem;
+    width: 20%;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+`;
+
+export const AddonDescriptionContainer = styled.div`
+    background-color: #222c3d;
+    border-radius: 0.375rem;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+`;
+
+export const A320neoDetailsTitleContainer = styled.div`
+    background-color: #222c3d;
+    border-radius: 0.375rem;
+    width: 8%;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+`;
+
+export const A320neoDetailsContainer = styled.div`
+    background-color: #222c3d;
+    border-radius: 0.375rem;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+`;
+
+export const ReleaseHistoryContainer = styled.div`
+    background-color: #222c3d;
+    border-radius: 0.375rem;
+    width: 60%;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+`;
+
+export const MainlineVersionsContainer = styled.div`
+    background-color: #222c3d;
+    border-radius: 0.375rem;
+    width: 35%;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+`;
+
+export const ExperimentalVersionsContainer = styled.div`
+    background-color: #222c3d;
+    border-radius: 0.375rem;
+    width: 90%;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+`;

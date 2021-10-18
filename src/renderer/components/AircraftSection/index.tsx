@@ -19,7 +19,14 @@ import {
     SwitchButton,
     TopContainer,
     UpdateButton,
-    VersionHistoryContainer
+    VersionHistoryContainer,
+    AboutContainer,
+    AddonDescriptionContainer,
+    A320neoDetailsContainer,
+    A320neoDetailsTitleContainer,
+    ReleaseHistoryContainer,
+    ExperimentalVersionsContainer,
+    MainlineVersionsContainer
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
@@ -496,7 +503,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 }
                 <TopContainer className={liveries.length > 0 ? 'mt-0' : '-mt-5'}>
                     <div>
-                        <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
+                        <MainlineVersionsContainer>
+                            <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
+                        </MainlineVersionsContainer>
                         <Tracks>
                             {
                                 props.addon.tracks.filter((track) => !track.isExperimental).map(track =>
@@ -513,7 +522,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         </Tracks>
                     </div>
                     <div>
-                        <h5 className="text-base text-teal-50 uppercase">Experimental versions</h5>
+                        <ExperimentalVersionsContainer>
+                            <h5 className="text-base text-teal-50 uppercase">Experimental versions</h5>
+                        </ExperimentalVersionsContainer>
                         <Tracks>
                             {
                                 props.addon.tracks.filter((track) => track.isExperimental).map(track =>
@@ -532,19 +543,30 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 </TopContainer>
                 <LeftContainer>
                     <DetailsContainer>
-                        <h3 className="font-semibold text-teal-50">About This Version</h3>
-                        <ReactMarkdown
-                            className="text-lg text-gray-300"
-                            children={selectedTrack?.description ?? ''}
-                            remarkPlugins={[remarkGfm]}
-                            linkTarget={"_blank"}
-                        />
-                        <h3 className="font-semibold text-teal-50">Details</h3>
-                        <p className="text-lg text-gray-300">{props.addon.description}</p>
+                        <AboutContainer>
+                            <h3 className="font-semibold text-teal-50">About This Version</h3>
+                        </AboutContainer>
+                        <AddonDescriptionContainer>
+                            <ReactMarkdown
+                                className="text-lg text-gray-300"
+                                children={selectedTrack?.description ?? ''}
+                                remarkPlugins={[remarkGfm]}
+                                linkTarget={"_blank"}
+                            />
+                        </AddonDescriptionContainer>
+                        <A320neoDetailsTitleContainer>
+                            <h3 className="font-semibold text-teal-50">Details</h3>
+                        </A320neoDetailsTitleContainer>
+
+                        <A320neoDetailsContainer>
+                            <p className="text-lg text-gray-300">{props.addon.description}</p>
+                        </A320neoDetailsContainer>
                     </DetailsContainer>
                 </LeftContainer>
                 <VersionHistoryContainer>
-                    <h3 className="font-semibold text-teal-50">Release History</h3>
+                    <ReleaseHistoryContainer>
+                        <h3 className="font-semibold text-teal-50">Release History</h3>
+                    </ReleaseHistoryContainer>
                     <Versions>
                         {
                             releases.map((version, idx) =>
