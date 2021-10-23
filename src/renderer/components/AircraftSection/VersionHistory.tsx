@@ -58,17 +58,22 @@ export const Version = styled(VersionBase)`
   display: grid;
   grid-template-columns: [start] 1fr [middle] 6fr [end] 3fr;
   grid-template-rows: [start] 30px [middle] auto;
+  border-radius: 0.375rem;
+  width: auto;
 
   letter-spacing: .04em !important;
   
   --timeline-node-color: ${props => props.index === 0 ? 'white' : '#757575'};
   
-  --title-color: ${props => props.index === 0 ? 'white' : '#929292'};
-  --text-color: ${props => props.index === 0 ? 'white' : '#929292'};
+  --title-color: ${props => props.index === 0 ? 'white' : '#666666'};
+  --text-color: ${props => props.index === 0 ? 'white' : '#666666'};
   &:hover {
-    --title-color: #b3b3b3;
-    --text-color: #b3b3b3;
+    --title-color: #c2cbcc;
+    --text-color: #c2cbcc;
     cursor: pointer;
+    background-color: #222c3d;
+    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   }
 
   & > * {
@@ -80,7 +85,7 @@ const VersionLine = styled.svg`
   grid-column: start / middle;
   stroke: #757575;
   fill: #757575;
-  stroke-width: 1;
+  stroke-width: 1.5;
   
   circle {
     stroke: var(--timeline-node-color);
