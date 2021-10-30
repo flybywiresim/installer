@@ -10,13 +10,15 @@ import {
     SettingsItem,
     SettingsItems,
     InfoContainer,
-    InfoButton, ResetButton
+    InfoButton, ResetButton,
 } from './styles';
 import { configureInitialInstallPath } from "renderer/settings";
 import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
 import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
 import { Toggle } from '@flybywiresim/react-components';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { shell } from 'electron';
 
 const settings = new Store;
 
@@ -235,7 +237,10 @@ function index(): JSX.Element {
                 </SettingsItems>
             </Container>
             <InfoContainer>
-                <InfoButton onClick={showChangelog}>v{packageInfo.version}</InfoButton>
+                <div className="flex flex-col mt-6">
+                    <InfoButton className="m-0" onClick={showChangelog}>v{packageInfo.version}</InfoButton>
+                    <InfoButton onClick={() => shell.openExternal("https://github.com/flybywiresim/installer/issues/new/choose")} className="m-0"><ExclamationCircleOutlined /> Report Issue</InfoButton>
+                </div>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
             </InfoContainer>
         </>

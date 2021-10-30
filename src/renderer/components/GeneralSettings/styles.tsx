@@ -62,13 +62,13 @@ export const InfoItem = styled.h6`
   color: ${colors.mutedText} !important;
 `;
 export const InfoButton = styled.h6`
-  margin-top: 1.5em;
   color: ${colors.mutedText} !important;
   cursor: pointer;
 
   :hover {
     color: ${colors.mutedTextDark} !important;
   }
+  svg { vertical-align: baseline; }
 `;
 
 export const ResetButton = styled.button`
