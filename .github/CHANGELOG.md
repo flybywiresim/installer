@@ -7,6 +7,9 @@
 
 ## 2.1.0
 1. [UI] Add ability to change date layout @FoxtrotSierra6829
+1. [LOGIC] Add dropdown to install button @FoxtrotSierra6829
+1. [LOGIC] Autopopulate build_info on bug report @FoxtrotSierra6829
+1. [LOGIC] Add uninstall option @FoxtrotSierra6829
 
 
 ## 2.0.1
