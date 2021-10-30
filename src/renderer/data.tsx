@@ -85,7 +85,7 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'A380X',
             aircraftName: 'KFBW',
-            key: 'A380X',
+            key: 'KFBW',
             enabled: true,
             menuIconUrl: A380NoseSVG,
             backgroundImageUrls: [],

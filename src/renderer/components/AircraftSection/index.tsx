@@ -472,7 +472,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     return (
         <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
-            <HeaderImage>
+            <HeaderImage addonKey={props.addon.key}>
                 <ModelInformationContainer>
                     <ModelName>{props.addon.name}</ModelName>
                     <ModelSmallDesc>{props.addon.shortDescription}</ModelSmallDesc>
