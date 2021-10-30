@@ -34,6 +34,7 @@ module.exports = {
                     'dark': '#F70404',
                     'darker': '#E40303',
                     'darkest': "#D10303",
+                    'light': '#FC4E4E',
                 },
                 pink: {
                     'DEFAULT': '#BC05E1',
@@ -42,6 +43,17 @@ module.exports = {
                 orange: {
                     'DEFAULT': '#FA8C16',
                     'light': '#FB982D',
+                },
+                green: {
+                    'DEFAULT': '#00B853',
+                    'light': '#1ABF64',
+                },
+                mutedGreen: {
+                    'DEFAULT': '#2E995E',
+                    'light': '#43A36E'
+                },
+                disabled: {
+                    'DEFAULT': '#2E3236',
                 }
             },
             boxShadow: {

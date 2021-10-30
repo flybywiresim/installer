@@ -2,23 +2,17 @@ import React, { useEffect, useState } from 'react';
 import {
     ButtonContainer,
     ButtonsContainer as SelectionContainer,
-    CancelButton,
     Content,
     DetailsContainer,
-    DisabledButton,
     DownloadProgress,
     HeaderImage,
-    InstallButton,
-    InstalledButton,
     LeftContainer,
     DialogContainer,
     ModelInformationContainer,
     ModelName,
     ModelSmallDesc,
     StateText,
-    SwitchButton,
     TopContainer,
-    UpdateButton,
     VersionHistoryContainer
 } from './styles';
 import Store from 'electron-store';
@@ -44,6 +38,7 @@ import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { shell } from 'electron';
+import { InstallButtonComponent } from './InstallButton';
 
 const settings = new Store;
 
@@ -79,6 +74,7 @@ export enum InstallStatus {
     DownloadError,
     DownloadCanceled,
     Unknown,
+    Wait,
 }
 
 enum MsfsStatus {
@@ -241,10 +237,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         console.log('uninstalling ', installedTrack);
 
         if (fs.existsSync(installDir)) {
-            // fs.removeSync(installDir);
+            fs.removeSync(installDir);
         }
         if (fs.existsSync(tempDir)) {
-            // fs.removeSync(tempDir);
+            fs.removeSync(tempDir);
         }
         setInstallStatus(InstallStatus.FreshInstall);
         setInstalledTrack(null);
@@ -420,103 +416,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }).catch(e => console.log(e));
     };
 
-    const [installButtonExtended, setInstallButtonExtended] = useState<boolean>(false);
-    const toggleExtended = () => setInstallButtonExtended(!installButtonExtended);
-    const getInstallButton = (): JSX.Element => {
-        switch (installStatus) {
-            case InstallStatus.UpToDate:
-                return (
-                    <ButtonContainer>
-                        <InstalledButton inGitRepo={false} />
-                    </ButtonContainer>
-                );
-            case InstallStatus.NeedsUpdate:
-                return (
-                    <ButtonContainer>
-                        <StateText>{'New release available'}</StateText>
-                        <UpdateButton onClickAction={handleInstall} extended={installButtonExtended} setExtended={toggleExtended} uninstallAction={uninstallAddon} reportAction={reportBug} requestAction={requestFeature} />
-                    </ButtonContainer>
-                );
-            case InstallStatus.FreshInstall:
-                return <InstallButton onClick={handleInstall} />;
-            case InstallStatus.GitInstall:
-                return (
-                    <ButtonContainer>
-                        <InstalledButton inGitRepo={true} />
-                    </ButtonContainer>
-                );
-            case InstallStatus.TrackSwitch:
-                return (
-                    <ButtonContainer>
-                        <SwitchButton onClickAction={handleInstall} extended={installButtonExtended} setExtended={toggleExtended} uninstallAction={uninstallAddon} reportAction={reportBug} requestAction={requestFeature} />
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadPrep:
-                return (
-                    <ButtonContainer>
-                        <StateText>Preparing update</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.Downloading:
-                return (
-                    <ButtonContainer>
-                        <StateText>{`Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
-                        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-                    </ButtonContainer>
-                );
-            case InstallStatus.Decompressing:
-                return (
-                    <ButtonContainer>
-                        <StateText>Decompressing</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadEnding:
-                return (
-                    <ButtonContainer>
-                        <StateText>Finishing update</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadDone:
-                return (
-                    <ButtonContainer>
-                        <StateText>Completed!</StateText>
-                        <InstalledButton inGitRepo={false} onClickAction={handleInstall} extended={installButtonExtended} setExtended={toggleExtended} uninstallAction={uninstallAddon} reportAction={reportBug} requestAction={requestFeature} />
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadRetry:
-                return (
-                    <ButtonContainer>
-                        <StateText>Retrying {download?.module.toLowerCase()} module</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadError:
-                return (
-                    <ButtonContainer>
-                        <StateText>Failed to install</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.DownloadCanceled:
-                return (
-                    <ButtonContainer>
-                        <StateText>Download canceled</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
-                );
-            case InstallStatus.Unknown:
-                return (
-                    <ButtonContainer>
-                        <StateText>Unknown state</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
-                );
-        }
-    };
-
     const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
         return state.liveries.map((entry) => entry.livery);
     });
@@ -532,10 +431,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     {msfsIsOpen !== MsfsStatus.Closed && <>
                         <ButtonContainer>
                             <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
-                            <DisabledButton text='Update' />
+                            {<InstallButtonComponent installStatus={InstallStatus.Wait} handleInstall={handleInstall} handleCancel={handleCancel} uninstallAddon={uninstallAddon} reportBug={reportBug} requestFeature={requestFeature} download={download}/>}
                         </ButtonContainer>
                     </>}
-                    {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
+                    {msfsIsOpen === MsfsStatus.Closed && <InstallButtonComponent installStatus={installStatus} handleInstall={handleInstall} handleCancel={handleCancel} uninstallAddon={uninstallAddon} reportBug={reportBug} requestFeature={requestFeature} download={download}/>}
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" />
