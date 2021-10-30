@@ -137,7 +137,6 @@ export const TopContainer = styled.div`
 `;
 
 export const LeftContainer = styled.div`
-  grid-column: start / middle;
   grid-row: 3;
 `;
 

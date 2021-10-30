@@ -15,12 +15,11 @@ export const Versions = styled.div`
   flex-direction: column;
 `;
 
-const GITHUB_RELEASE_BASE_URL = 'https://github.com/flybywiresim/a32nx/releases/tag/';
-
 type VersionProps = {
     index: number,
     className?: string,
     version: AddonVersion
+    baseURL: string,
 };
 
 const VersionBase: React.FC<VersionProps> = (props) => {
@@ -34,7 +33,7 @@ const VersionBase: React.FC<VersionProps> = (props) => {
         setVersionContainerHeight(height);
     }, [ref.current?.clientHeight]);
 
-    const openReleasePage = () => shell.openExternal(GITHUB_RELEASE_BASE_URL + props.version.title);
+    const openReleasePage = () => shell.openExternal(props.baseURL + props.version.title);
 
     return (
         <div ref={ref} className={props.className} onClick={openReleasePage}>

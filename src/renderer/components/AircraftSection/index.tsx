@@ -530,7 +530,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         </Tracks>
                     </div>
                 </TopContainer>
-                <LeftContainer>
+                <LeftContainer className={'col-start-1 ' + (props.addon.gitHubReleaseBaseURL ? 'col-end-2' : 'col-end-3')}>
                     <DetailsContainer>
                         <h3 className="font-semibold text-teal-50">About This Version</h3>
                         <ReactMarkdown
@@ -543,16 +543,16 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <p className="text-lg text-gray-300">{props.addon.description}</p>
                     </DetailsContainer>
                 </LeftContainer>
-                <VersionHistoryContainer>
+                {props.addon.gitHubReleaseBaseURL && <VersionHistoryContainer>
                     <h3 className="font-semibold text-teal-50">Release History</h3>
                     <Versions>
                         {
                             releases.map((version, idx) =>
-                                <Version key={idx} index={idx} version={version} />
+                                <Version key={idx} index={idx} version={version} baseURL={props.addon.gitHubReleaseBaseURL} />
                             )
                         }
                     </Versions>
-                </VersionHistoryContainer>
+                </VersionHistoryContainer>}
             </Content>
         </div>
     );
