@@ -31,7 +31,9 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
         className={(props.backgroundHover)}
         {...props}
     >
-        <div className='flex relative justify-center content-center pointer-events-auto' onMouseOver={() => {setHoverOverDropdown(false)}}>
+        <div className='flex relative justify-center content-center pointer-events-auto' onMouseOver={() => {
+            setHoverOverDropdown(false);
+        }}>
             <div className={(props.disabled ? 'pointer-events-disabled ' : 'cursor-pointer ') + (props.options && 'mr-5')} onClick={props.onClickAction}>{props.name}</div>
             {props.options && <div className={'right-0 absolute min-h-full w-0.5  bg-white'}></div>}
             {props.options ? <div className={'cursor-pointer -right-5 absolute'} onClick={toggleExtended}>{installButtonExtended ? '▴' : '▾'}</div> : <></>}
@@ -43,7 +45,9 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
                     document.removeEventListener('click', handler);
                 });
             }}
-            onMouseOver={() => {setHoverOverDropdown(true)}}
+            onMouseOver={() => {
+                setHoverOverDropdown(true);
+            }}
             className={`cursor-pointer absolute w-full right-0 rounded-b-5px bg-${props.background}`}>
                 {props.options?.includes(uninstall) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
                     uninstallAddon(); toggleExtended();
