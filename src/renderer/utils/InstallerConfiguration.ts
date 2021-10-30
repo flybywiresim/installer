@@ -34,7 +34,8 @@ export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
 export type Addon = {
     name: string,
-    repoName: string,
+    repoOwner?: string,
+    repoName?: string,
     aircraftName: string,
     key: string,
     backgroundImageUrls: string[],

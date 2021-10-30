@@ -32,7 +32,7 @@ const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24)
  */
 export const getAddonReleases = async (addon: Addon): Promise<AddonVersion[]> => {
     const releases = (await releaseCache.fetchOrCompute(async (): Promise<AddonVersion[]> => {
-        return (await GitVersions.getReleases('flybywiresim', addon.repoName))
+        return (await GitVersions.getReleases(addon.repoOwner, addon.repoName))
             .filter(r => /v\d/.test(r.name))
             .map(r => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
     })).map(r => ({ ...r, date: new Date(r.date) })); // Local Data cache returns a string instead of Date

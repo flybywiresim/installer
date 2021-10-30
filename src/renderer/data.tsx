@@ -7,6 +7,7 @@ export const defaultConfiguration: Configuration = {
     addons: [
         {
             name: 'A32NX',
+            repoOwner: 'flybywiresim',
             repoName: 'a32nx',
             aircraftName: 'A320neo',
             key: 'A32NX',
@@ -83,7 +84,6 @@ export const defaultConfiguration: Configuration = {
         },
         {
             name: 'A380X',
-            repoName: 'a32nx',
             aircraftName: 'KFBW',
             key: 'A380X',
             enabled: true,
