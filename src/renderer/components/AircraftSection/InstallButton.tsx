@@ -15,13 +15,15 @@ type InstallButtonProps = {
     handleInstall: () => void,
     handleCancel: () => void,
     uninstallAddon: () => void,
+    hasBugReport: () => boolean,
     reportBug: () => void,
+    hasFeatureRequest: () => boolean,
     requestFeature: () => void,
     download: DownloadItem,
 
 }
 
-export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installStatus, handleInstall, handleCancel, uninstallAddon, reportBug, requestFeature, download }) => {
+export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installStatus, handleInstall, handleCancel, uninstallAddon, hasBugReport, reportBug, hasFeatureRequest, requestFeature, download }) => {
     const uninstall = 'uninstall';
     const bugReport = 'bugReport';
     const featureRequest = 'featureRequest';
@@ -52,10 +54,10 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
                 {props.options?.includes(uninstall) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
                     uninstallAddon(); toggleExtended();
                 }}>Uninstall</div>}
-                {props.options?.includes(bugReport) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
+                {(props.options?.includes(bugReport) && hasBugReport()) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
                     reportBug(); toggleExtended();
                 }}>Report Bug</div>}
-                {props.options?.includes(featureRequest) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
+                {(props.options?.includes(featureRequest) && hasFeatureRequest()) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
                     requestFeature(); toggleExtended();
                 }}>Request Feature</div>}
             </div>

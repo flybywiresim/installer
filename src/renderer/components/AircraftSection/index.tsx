@@ -217,11 +217,25 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
+    const hasBugReport = () => {
+        if (props.addon.issueTracker.bugReport) {
+            return true;
+        }
+        return false;
+    };
+
     const reportBug = () => {
         if (props.addon.issueTracker.bugReport) {
             const buildInfo = readFileSync(Directories.inCommunity(props.addon.targetDirectory) + '/build_info.json', 'utf8').split("\n").join("%0A");
             shell.openExternal(props.addon.issueTracker.bugReport + '&version=' + installedTrack?.name + '&build-info=' + buildInfo);
         }
+    };
+
+    const hasFeatureRequest = () => {
+        if (props.addon.issueTracker.featureRequest) {
+            return true;
+        }
+        return false;
     };
 
     const requestFeature = () => {
@@ -431,10 +445,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     {msfsIsOpen !== MsfsStatus.Closed && <>
                         <ButtonContainer>
                             <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
-                            {<InstallButtonComponent installStatus={InstallStatus.Wait} handleInstall={handleInstall} handleCancel={handleCancel} uninstallAddon={uninstallAddon} reportBug={reportBug} requestFeature={requestFeature} download={download}/>}
+                            {<InstallButtonComponent installStatus={InstallStatus.Wait} handleInstall={handleInstall} handleCancel={handleCancel} uninstallAddon={uninstallAddon} hasBugReport={hasBugReport} reportBug={reportBug} hasFeatureRequest={hasFeatureRequest} requestFeature={requestFeature} download={download}/>}
                         </ButtonContainer>
                     </>}
-                    {msfsIsOpen === MsfsStatus.Closed && <InstallButtonComponent installStatus={installStatus} handleInstall={handleInstall} handleCancel={handleCancel} uninstallAddon={uninstallAddon} reportBug={reportBug} requestFeature={requestFeature} download={download}/>}
+                    {msfsIsOpen === MsfsStatus.Closed && <InstallButtonComponent installStatus={installStatus} handleInstall={handleInstall} handleCancel={handleCancel} uninstallAddon={uninstallAddon} hasBugReport={hasBugReport} reportBug={reportBug} hasFeatureRequest={hasFeatureRequest} requestFeature={requestFeature} download={download}/>}
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" />
