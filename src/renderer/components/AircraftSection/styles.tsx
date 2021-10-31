@@ -251,7 +251,7 @@ export const DisabledButton = styled(
 
 export const StartMSFSButton = styled.div`
         .button {
-            background-color: #2E995E;
+            background-color: #00b853;
             border-color: 2e3236;
             color: #dddddd;
             text-align: center;
