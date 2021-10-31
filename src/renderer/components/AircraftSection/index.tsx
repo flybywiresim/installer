@@ -19,7 +19,8 @@ import {
     SwitchButton,
     TopContainer,
     UpdateButton,
-    VersionHistoryContainer
+    VersionHistoryContainer,
+    StartMSFSButton
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
@@ -470,6 +471,23 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         return state.liveries.map((entry) => entry.livery);
     });
 
+    function startMSFS() {
+        const child = require('child_process').execFile;
+        const file = "FlightSimulator.exe";
+
+        child(file, function (err: unknown,) {
+            if (err) {
+                console.error(err);
+            }
+            return (
+                <StartMSFSButton>
+                    <button onClick={startMSFS} className="button">Start MSFS</button>
+                </StartMSFSButton>
+            );
+
+        });
+    }
+
     return (
         <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
             <HeaderImage>
@@ -485,6 +503,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         </ButtonContainer>
                     </>}
                     {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
+                    <ButtonContainer>
+                        <StartMSFSButton>
+                            <button onClick={startMSFS} className="button">Start MSFS</button>
+                        </StartMSFSButton>
+                    </ButtonContainer>
                 </SelectionContainer>
             </HeaderImage>
             <DownloadProgress percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" />
