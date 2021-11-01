@@ -4,7 +4,8 @@ import {
     ChangelogState,
     DownloadsState,
     AddonAndTrackLatestVersionNamesState,
-    ShowWarningModalState
+    ShowWarningModalState,
+    AddonStates
 } from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { AddonTrack } from "renderer/utils/InstallerConfiguration";
@@ -25,6 +26,7 @@ if (module.hot) {
 export type InstallerStore = {
     downloads: DownloadsState,
     changelog: ChangelogState,
+    addons: AddonStates,
     warningModal: ShowWarningModalState,
     installStatus: InstallStatus,
     selectedTrack: AddonTrack,

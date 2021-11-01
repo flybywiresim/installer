@@ -12,6 +12,8 @@ export interface DownloadItem {
 
 export type DownloadsState = DownloadItem[];
 
+export type AddonStates =  any
+
 export interface UpdateDownloadProgressAction {
     type: typeof actions.UPDATE_DOWNLOAD_PROGRESS
     payload: {
@@ -53,16 +55,19 @@ export interface ShowWarningModalAction {
 
 export interface InstallAction {
     type: typeof actions.SET_INSTALL_STATUS
+    addonKey: string
     payload: InstallStatus
 }
 
 export interface SelectedTrackAction {
     type: typeof actions.SET_SELECTED_TRACK
+    addonKey: string
     payload: AddonTrack
 }
 
 export interface InstalledTrackAction {
     type: typeof actions.SET_INSTALLED_TRACK
+    addonKey: string
     payload: AddonTrack
 }
 

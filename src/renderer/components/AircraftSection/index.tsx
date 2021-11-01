@@ -57,6 +57,7 @@ type ConnectedAircraftSectionProps = {
     installedTrack: AddonTrack,
     installStatus: InstallStatus,
     latestVersionNames: AddonAndTrackLatestVersionNamesState
+    addons: any
 }
 
 type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps
@@ -136,12 +137,18 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const selectedTrack = props.selectedTrack;
     const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
-        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, payload: newSelectedTrack });
+        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: props.addon.key, payload: newSelectedTrack });
     };
 
-    const installStatus = props.installStatus;
+    const installStatus = (): InstallStatus => {
+        try {
+            return props.addons[props.addon.key].installStatus as InstallStatus;
+        } catch (e) {
+            return InstallStatus.Unknown;
+        }
+    }
     const setInstallStatus = (new_state: InstallStatus) => {
-        store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
+        store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: props.addon.key, payload: new_state });
     };
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
@@ -173,7 +180,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     useEffect(() => {
         findInstalledTrack();
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+        if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
             getInstallStatus().then(setInstallStatus);
         }
     }, [selectedTrack, installedTrack]);
@@ -334,7 +341,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const handleTrackSelection = (track: AddonTrack) => {
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+        if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         } else {
             selectAndSetTrack(props.selectedTrack.key);
@@ -376,7 +383,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const getInstallButton = (): JSX.Element => {
-        switch (installStatus) {
+        switch (installStatus()) {
             case InstallStatus.UpToDate:
                 return (
                     <ButtonContainer>
