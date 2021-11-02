@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import { WarningModalBase } from "./styles";
-import Store from "electron-store";
 import { ExperimentalAddonTrack } from "renderer/utils/InstallerConfiguration";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import settings from "common/settings";
 
 type WarningModalProps = {
     track: ExperimentalAddonTrack,
@@ -13,12 +13,10 @@ type WarningModalProps = {
     showWarningModal: boolean
 };
 
-const settings = new Store();
-
 const WarningModal = (props: WarningModalProps) => {
     const dispatch = useDispatch();
 
-    const [disableWarningCheck, setDisableWarningCheck] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
+    const [disableWarningCheck, setDisableWarningCheck] = useState<boolean>(settings.get<string, boolean>('mainSettings.disableExperimentalWarning') as boolean);
     const [disableWarning, setDisableWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
 
     const handleDisableWarning = () => {

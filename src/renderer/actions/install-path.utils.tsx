@@ -1,7 +1,5 @@
 import { remote } from 'electron';
-import Store from 'electron-store';
-
-const settings = new Store;
+import settings from "common/settings";
 
 export async function setupInstallPath(): Promise<string> {
     const currentPath = settings.get<string>('mainSettings.msfsPackagePath');

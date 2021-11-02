@@ -1,9 +1,7 @@
-import Store from "electron-store";
 import path from "path";
 import { Addon } from "renderer/utils/InstallerConfiguration";
 import fs from "fs-extra";
-
-const settings = new Store;
+import settings from "common/settings";
 
 export class Directories {
 

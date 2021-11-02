@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import store from '../../redux/store';
-import Store from 'electron-store';
 import { setupInstallPath, setupLiveriesPath } from 'renderer/actions/install-path.utils';
 import {
     Container,
@@ -17,8 +16,7 @@ import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
 import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
 import { Toggle } from '@flybywiresim/react-components';
-
-const settings = new Store;
+import settings from "common/settings";
 
 // eslint-disable-next-line no-unused-vars
 const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
@@ -27,9 +25,7 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
         if (path) {
             props.setPath(path);
-            if (settings.has('mainSettings.pathError')) {
-                settings.delete('mainSettings.pathError');
-            }
+            settings.set('mainSettings.pathError', false);
             if (!settings.get('mainSettings.separateLiveriesPath') && !settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
                 reloadLiveries();
             }

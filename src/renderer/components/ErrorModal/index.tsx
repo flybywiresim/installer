@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import Store from "electron-store";
 import { setupInstallPath, setupLiveriesPath } from 'renderer/actions/install-path.utils';
 import { reloadLiveries } from '../AircraftSection/LiveryConversion';
-
-const settings = new Store();
+import settings from "common/settings";
 
 export const ErrorModal = (): JSX.Element => {
-    const [active, setActive] = useState<boolean>(settings.has('mainSettings.pathError') || settings.has('mainSettings.liveriesPathError'));
+    const [active, setActive] = useState<boolean>(settings.get<string, boolean>('mainSettings.pathError') || settings.get<string, boolean>('mainSettings.liveriesPathError'));
 
     const handleClose = () => {
         setActive(false);
@@ -21,7 +19,7 @@ export const ErrorModal = (): JSX.Element => {
                 reloadLiveries();
             }
             handleClose();
-            settings.delete('mainSettings.pathError');
+            settings.delete('mainSettings.pathError' as never);
         }
     };
     const handleSelectLiveriesPath = async () => {
@@ -33,7 +31,7 @@ export const ErrorModal = (): JSX.Element => {
                 reloadLiveries();
             }
             handleClose();
-            settings.delete('mainSettings.liveriesPathError');
+            settings.delete('mainSettings.liveriesPathError' as never);
         }
     };
 

@@ -2,10 +2,9 @@ import { remote } from "electron";
 import fs from "fs";
 import walk from "walkdir";
 import readLine from "readline";
-import Store from "electron-store";
+import settings from "common/settings";
 
 const { app } = remote;
-const settings = new Store;
 
 export async function configureInitialInstallPath(): Promise<string> {
     let userPath = null;
