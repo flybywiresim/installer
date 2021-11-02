@@ -50,7 +50,7 @@ const hideChangelog = () => {
 };
 
 const didVersionChange = () => {
-    if (!settings.has('metaInfo.lastVersion') || (packageInfo.version !== settings.get('metaInfo.lastVersion'))) {
+    if (packageInfo.version !== settings.get<string>('metaInfo.lastVersion')) {
         settings.set('metaInfo.lastVersion', packageInfo.version);
         store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
             showChangelog: true
