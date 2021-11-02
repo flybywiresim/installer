@@ -33,7 +33,7 @@ const defaultCommunityDir = (): string => {
     const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
     const msfsConfigLines = msfsConfig.split(/\r?\n/);
     const packagesPathLine = msfsConfigLines.find(line => line.includes('InstalledPackagesPath'));
-    const communityDir = path.join(packagesPathLine.split(" ").slice(1).join(" ").replaceAll('"', ''), "\\Community\\");
+    const communityDir = path.join(packagesPathLine.split(" ").slice(1).join(" ").replaceAll('"', ''), "\\Community");
 
     return fs.existsSync(communityDir) ? communityDir : 'C:\\';
 };
@@ -93,17 +93,7 @@ const schema: Schema<unknown> = {
             liveriesPath: {
                 type: "string",
                 default: defaultCommunityDir(),
-            },
-            // TODO: Remove
-            pathError: {
-                type: "boolean",
-                default: false,
-            },
-            // TODO: Remove
-            liveriesPathError: {
-                type: "boolean",
-                default: false,
-            },
+            }
         }
     },
     cache: {

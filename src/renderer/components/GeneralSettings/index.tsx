@@ -16,6 +16,7 @@ import * as actionTypes from '../../redux/actionTypes';
 import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
+import { Directories } from "renderer/utils/Directories";
 
 const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
@@ -23,7 +24,6 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
         if (path) {
             props.setPath(path);
-            settings.set('mainSettings.pathError', false);
             if (!settings.get('mainSettings.separateLiveriesPath') && !settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
                 reloadLiveries();
             }
@@ -59,11 +59,9 @@ const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) 
 
 const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, setSeperateLiveriesPath: CallableFunction, setLiveriesPath: CallableFunction}) => {
     const handleClick = () => {
-        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
-        props.setLiveriesPath(settings.get('mainSettings.msfsPackagePath'));
+        props.setLiveriesPath(Directories.community());
         const newState = !props.separateLiveriesPath;
         props.setSeperateLiveriesPath(newState);
-        settings.set('mainSettings.separateLiveriesPath', newState);
         if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
             reloadLiveries();
         }
