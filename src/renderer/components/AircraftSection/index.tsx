@@ -20,7 +20,8 @@ import {
     TopContainer,
     UpdateButton,
     VersionHistoryContainer,
-    StartMSFSButton
+    StartMSFSButton,
+    CloseMSFSButton
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
@@ -488,6 +489,20 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         });
     }
 
+    function closeMSFS() {
+        const MsfsStatus = require('process');
+        MsfsStatus.kill(0);
+
+        if (process) {
+            return (
+                <CloseMSFSButton>
+                    <button onClick={closeMSFS} className="button">Close MSFS</button>
+                </CloseMSFSButton>
+            );
+        }
+
+    }
+
     return (
         <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
             <HeaderImage>
@@ -507,6 +522,9 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <StartMSFSButton>
                             <button onClick={startMSFS} className="button">Start MSFS</button>
                         </StartMSFSButton>
+                        <CloseMSFSButton>
+                            <button onClick={closeMSFS} className="button">Close MSFS</button>
+                        </CloseMSFSButton>
                     </ButtonContainer>
                 </SelectionContainer>
             </HeaderImage>
