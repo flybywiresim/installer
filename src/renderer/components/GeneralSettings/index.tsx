@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import store from '../../redux/store';
 import { setupInstallPath, setupLiveriesPath } from 'renderer/actions/install-path.utils';
 import {
@@ -11,14 +11,12 @@ import {
     InfoContainer,
     InfoButton, ResetButton
 } from './styles';
-import { configureInitialInstallPath } from "renderer/settings";
 import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
 import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
 import { Toggle } from '@flybywiresim/react-components';
-import settings from "common/settings";
+import settings, { useSetting } from "common/settings";
 
-// eslint-disable-next-line no-unused-vars
 const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
         const path = await setupInstallPath();
@@ -162,7 +160,7 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
     );
 };
 
-const DateLayoutItem = (props: {dateLayout: number, setDateLayout: CallableFunction}) => {
+const DateLayoutItem = (props: {dateLayout: string, setDateLayout: CallableFunction}) => {
     const handleSelect = (value: string) => {
         settings.set('mainSettings.dateLayout', value);
         props.setDateLayout(value);
@@ -190,29 +188,19 @@ const DateLayoutItem = (props: {dateLayout: number, setDateLayout: CallableFunct
 };
 
 function index(): JSX.Element {
-    const [installPath, setInstallPath] = useState<string>(settings.get('mainSettings.msfsPackagePath') as string);
-    const [separateLiveriesPath, setSeparateLiveriesPath] = useState<boolean>(settings.get('mainSettings.separateLiveriesPath') as boolean);
-    const [liveriesPath, setLiveriesPath] = useState<string>(settings.get('mainSettings.liveriesPath') as string);
-    const [disableVersionWarning, setDisableVersionWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
-    const [disableLiveryWarning, setDisableLiveryWarning] = useState<boolean>(settings.get('mainSettings.disabledIncompatibleLiveriesWarning') as boolean);
-    const [useCdnCache, setUseCdnCache] = useState<boolean>(settings.get('mainSettings.useCdnCache') as boolean);
-    const [dateLayout, setDateLayout] = useState<number>(settings.get('mainSettings.dateLayout') as number);
+    const [installPath, setInstallPath] = useSetting<string>('mainSettings.msfsPackagePath');
+    const [separateLiveriesPath, setSeparateLiveriesPath] = useSetting<boolean>('mainSettings.separateLiveriesPath');
+    const [liveriesPath, setLiveriesPath] = useSetting<string>('mainSettings.liveriesPath');
+    const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
+    const [disableLiveryWarning, setDisableLiveryWarning] = useSetting<boolean>('mainSettings.disabledIncompatibleLiveriesWarning');
+    const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
+    const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
 
     const handleReset = async () => {
-        settings.clear();
+        settings.reset('mainSettings' as never);
+
+        // Workaround to flush the defaults
         settings.set('metaInfo.lastVersion', packageInfo.version);
-        setInstallPath(await configureInitialInstallPath());
-        setLiveriesPath(installPath);
-        setSeparateLiveriesPath(false);
-        settings.set('mainSettings.separateLiveriesPath', false);
-        setDisableVersionWarning(false);
-        settings.set('mainSettings.disableExperimentalWarning', false);
-        setDisableLiveryWarning(false);
-        settings.set('mainSettings.disabledIncompatibleLiveriesWarning', false);
-        setUseCdnCache(true);
-        settings.set('mainSettings.useCdnCache', true);
-        setDateLayout(1);
-        settings.set('mainSettings.dateLayout', 'yyyy/mm/dd');
         reloadLiveries();
     };
 

@@ -10,16 +10,19 @@ export const ErrorModal = (): JSX.Element => {
         setActive(false);
     };
 
+    const reloadLiveriesIfNeeded = () => {
+        if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
+            reloadLiveries();
+        }
+    };
+
     const handleSelectPath = async () => {
         const path = await setupInstallPath();
         if (path) {
             settings.set('mainSettings.liveriesPath', path);
             settings.set('mainSettings.separateLiveriesPath', false);
-            if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
-                reloadLiveries();
-            }
+            reloadLiveriesIfNeeded();
             handleClose();
-            settings.delete('mainSettings.pathError' as never);
         }
     };
     const handleSelectLiveriesPath = async () => {
@@ -27,11 +30,8 @@ export const ErrorModal = (): JSX.Element => {
         if (path) {
             settings.set('mainSettings.liveriesPath', path);
             settings.set('mainSettings.separateLiveriesPath', true);
-            if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
-                reloadLiveries();
-            }
+            reloadLiveriesIfNeeded();
             handleClose();
-            settings.delete('mainSettings.liveriesPathError' as never);
         }
     };
 

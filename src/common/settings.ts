@@ -4,6 +4,7 @@ import walk from "walkdir";
 import { app as electronApp, remote } from "electron";
 import * as path from "path";
 import { Schema } from "electron-store";
+import { Dispatch, SetStateAction, useState } from "react";
 
 const defaultCommunityDir = (): string => {
     // Ensure proper functionality in main- and renderer-process
@@ -43,6 +44,20 @@ export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
     const winSize = window.getSize();
     store.set('cache.main.lastWindowX', winSize[0]);
     store.set('cache.main.lastWindowY', winSize[1]);
+};
+
+export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => {
+    const [storedValue, setStoredValue] = useState(store.get<string, T>(key));
+
+    store.onDidChange(key as never, (val) => {
+        setStoredValue(val as T);
+    });
+
+    const setValue = (newVal: T) => {
+        store.set(key, newVal);
+    };
+
+    return [storedValue, setValue];
 };
 
 const schema: Schema<unknown> = {
@@ -129,7 +144,7 @@ const schema: Schema<unknown> = {
     }
 };
 
-const store = new Store({ schema });
+const store = new Store({ schema, clearInvalidConfig: true });
 
 // Workaround to flush the defaults
 store.set('metaInfo.lastLaunch', Date.now());
