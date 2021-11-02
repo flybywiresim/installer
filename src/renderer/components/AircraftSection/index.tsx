@@ -493,13 +493,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         const MsfsStatus = require('process');
         MsfsStatus.kill(0);
 
-        if (process) {
-            return (
-                <CloseMSFSButton>
-                    <button onClick={closeMSFS} className="button">Close MSFS</button>
-                </CloseMSFSButton>
-            );
-        }
+        return (
+            <CloseMSFSButton>
+                <button onClick={closeMSFS} className="button">Close MSFS</button>
+            </CloseMSFSButton>
+        );
 
     }
 
