@@ -5,7 +5,7 @@ import { WarningModalBase } from "./styles";
 import { ExperimentalAddonTrack } from "renderer/utils/InstallerConfiguration";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import settings from "common/settings";
+import { useSetting } from "common/settings";
 
 type WarningModalProps = {
     track: ExperimentalAddonTrack,
@@ -16,12 +16,11 @@ type WarningModalProps = {
 const WarningModal = (props: WarningModalProps) => {
     const dispatch = useDispatch();
 
-    const [disableWarningCheck, setDisableWarningCheck] = useState<boolean>(settings.get<string, boolean>('mainSettings.disableExperimentalWarning') as boolean);
-    const [disableWarning, setDisableWarning] = useState<boolean>(settings.get('mainSettings.disableExperimentalWarning') as boolean);
+    const [dontShowAgain, setDontShowAgain] = useState<boolean>(false);
+    const [disableWarning, setDisableWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
 
     const handleDisableWarning = () => {
-        setDisableWarning(disableWarningCheck);
-        settings.set('mainSettings.disableExperimentalWarning', disableWarningCheck);
+        setDisableWarning(dontShowAgain);
     };
 
     const handleTrackSelected = () => {
@@ -29,36 +28,26 @@ const WarningModal = (props: WarningModalProps) => {
     };
 
     const handleOk = () => {
+        setDontShowAgain(false);
         handleDisableWarning();
         handleTrackSelected();
     };
 
     const handleCancel = () => {
-        setDisableWarningCheck(disableWarning);
+        setDontShowAgain(false);
         dispatch(callWarningModal(false, null));
     };
 
     const handleOnChange = () => {
-        console.log("Click!");
-        console.log(disableWarningCheck);
-        const newState = !disableWarningCheck;
-        console.log(newState);
-        setDisableWarningCheck(newState);
+        setDontShowAgain(!dontShowAgain);
     };
 
     const handleVisible = (): boolean => {
-        const disableWarningSettings = settings.get('mainSettings.disableExperimentalWarning') as boolean;
-
-        if (disableWarningSettings !== disableWarning) {
-            setDisableWarning(disableWarningSettings);
-            setDisableWarningCheck(disableWarningSettings);
-        }
-
-        if (!disableWarning) {
-            return props.showWarningModal;
-        } else {
+        if (disableWarning) {
             handleTrackSelected();
             return false;
+        } else {
+            return props.showWarningModal;
         }
     };
 
@@ -83,7 +72,7 @@ const WarningModal = (props: WarningModalProps) => {
             <div className="w-auto absolute pt-10 flex items-center">
                 <input
                     type="checkbox"
-                    checked={disableWarningCheck}
+                    checked={dontShowAgain}
                     onChange={handleOnChange}
                     className="ml-auto mr-2 w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
                 />
