@@ -258,7 +258,7 @@ export const StartMSFSButton = styled.div`
             display: inline-block;
             width: auto;
             height: auto;
-            margin-left: 5px;
+            margin-left: 10px;
             font-size: 1.45em !important;
             font-weight: 600;
             border-width: 0 !important;
@@ -272,7 +272,7 @@ export const StartMSFSButton = styled.div`
           }
 
      `;
-//button that closes if MSFS is running (Not ready as of now)
+
 export const CloseMSFSButton = styled.div`
      .button {
          background-color: #fc3a3a;
@@ -282,7 +282,7 @@ export const CloseMSFSButton = styled.div`
          display: inline-block;
          width: auto;
          height: auto;
-         margin-left: 5px;
+         margin-left: 10px;
          font-size: 1.45em !important;
          font-weight: 600;
          border-width: 0 !important;
