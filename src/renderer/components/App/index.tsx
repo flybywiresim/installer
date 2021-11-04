@@ -87,7 +87,8 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             break;
 
         default:
-            sectionToShow = <AircraftSection addon={configuration.addons.find(x => x.key === selectedItem)}/>;
+            // setting a dynamic key forces a reload of the component when changing between addons
+            sectionToShow = <AircraftSection key={selectedItem} addon={configuration.addons.find(x => x.key === selectedItem)}/>;
             break;
     }
 
