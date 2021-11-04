@@ -26,7 +26,7 @@ import fs from "fs-extra";
 import * as path from 'path';
 import { getAddonReleases } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, AddonAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
+import { DownloadItem, AddonAndTrackLatestVersionNamesState, } from 'renderer/redux/types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
@@ -34,7 +34,7 @@ import _ from 'lodash';
 import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
-import store, { InstallerStore } from '../../redux/store';
+import store, { InstallerStore, } from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
 import { Addon, AddonTrack, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
@@ -53,11 +53,10 @@ type TransferredProps = {
 
 // Props coming from Redux' connect function
 type ConnectedAircraftSectionProps = {
-    selectedTrack: AddonTrack,
-    installedTrack: AddonTrack,
-    installStatus: InstallStatus,
+    selectedTracks: Record<string, AddonTrack>,
+    installedTracks: Record<string, AddonTrack>,
+    installStatus: Record<string, InstallStatus>,
     latestVersionNames: AddonAndTrackLatestVersionNamesState
-    addons: any
 }
 
 type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps
@@ -91,12 +90,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const findInstalledTrack = (): AddonTrack => {
         if (!Directories.isFragmenterInstall(props.addon)) {
             console.log('Not installed');
-            if (selectedTrack === null) {
+            if (selectedTrack()) {
+                selectAndSetTrack(selectedTrack().key);
+                return selectedTrack();
+            } else {
                 setSelectedTrack(props.addon.tracks[0]);
                 return props.addon.tracks[0];
-            } else {
-                selectAndSetTrack(props.selectedTrack.key);
-                return selectedTrack;
             }
         }
 
@@ -110,43 +109,60 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             }
             console.log('Currently installed', track);
             setInstalledTrack(track);
-            if (selectedTrack === null) {
+            if (selectedTrack()) {
+                selectAndSetTrack(selectedTrack().key);
+                return selectedTrack();
+            } else {
                 setSelectedTrack(track);
                 return track;
-            } else {
-                selectAndSetTrack(props.selectedTrack.key);
-                return selectedTrack;
             }
         } catch (e) {
             console.error(e);
             console.log('Not installed');
-            if (selectedTrack === null) {
+            if (selectedTrack()) {
+                selectAndSetTrack(selectedTrack().key);
+                return selectedTrack();
+            } else {
                 setSelectedTrack(props.addon.tracks[0]);
                 return props.addon.tracks[0];
-            } else {
-                selectAndSetTrack(props.selectedTrack.key);
-                return selectedTrack;
             }
         }
     };
 
-    const installedTrack = props.installedTrack;
+    const installedTrack = (): AddonTrack => {
+        try {
+            return props.installedTracks[props.addon.key] as AddonTrack;
+        } catch (e) {
+            setInstalledTrack(null)
+            return null
+        }
+    };
     const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
-        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: newInstalledTrack });
+        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: props.addon.key,  payload: newInstalledTrack });
     };
 
-    const selectedTrack = props.selectedTrack;
+    const selectedTrack = (): AddonTrack => {
+        try {
+            return props.selectedTracks[props.addon.key] as AddonTrack;
+        } catch (e) {
+            setSelectedTrack(null)
+            return null
+        }
+    }
+
     const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
         store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: props.addon.key, payload: newSelectedTrack });
     };
 
     const installStatus = (): InstallStatus => {
         try {
-            return props.addons[props.addon.key].installStatus as InstallStatus;
+            return props.installStatus[props.addon.key] as InstallStatus;
         } catch (e) {
+            setInstallStatus(InstallStatus.Unknown)
             return InstallStatus.Unknown;
         }
     }
+
     const setInstallStatus = (new_state: InstallStatus) => {
         store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: props.addon.key, payload: new_state });
     };
@@ -165,7 +181,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         });
     }, [props.addon]);
 
-    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.addon.name }));
+    const download: DownloadItem = useSelector((state: InstallerStore) => _.find(state.downloads, { id: props.addon.name }));
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
@@ -183,10 +199,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
             getInstallStatus().then(setInstallStatus);
         }
-    }, [selectedTrack, installedTrack]);
+    }, [selectedTrack(), installedTrack()]);
 
     const getInstallStatus = async (): Promise<InstallStatus> => {
-        if (!selectedTrack) {
+        if (!selectedTrack()) {
             return InstallStatus.Unknown;
         }
 
@@ -204,12 +220,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
 
         try {
-            const updateInfo = await needsUpdate(selectedTrack.url, installDir, {
+            const updateInfo = await needsUpdate(selectedTrack().url, installDir, {
                 forceCacheBust: true
             });
             console.log('Update info', updateInfo);
 
-            if (selectedTrack !== installedTrack && installedTrack !== null) {
+            if (selectedTrack() !== installedTrack() && installedTrack()) {
                 return InstallStatus.TrackSwitch;
             }
             if (updateInfo.isFreshInstall) {
@@ -344,13 +360,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         } else {
-            selectAndSetTrack(props.selectedTrack.key);
+            selectAndSetTrack(selectedTrack().key);
         }
     };
 
     const handleInstall = () => {
         if (settings.has('mainSettings.msfsPackagePath')) {
-            downloadAddon(selectedTrack).then(() => console.log('Download and install complete'));
+            downloadAddon(selectedTrack()).then(() => console.log('Download and install complete'));
         } else {
             setupInstallPath().then();
         }
@@ -478,7 +494,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     });
 
     return (
-        <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
+        <div className={`bg-navy ${wait ? 'hidden' : 'visible'} ${props.addon.name}`}>
             <HeaderImage addonKey={props.addon.key}>
                 <ModelInformationContainer>
                     <ModelName>{props.addon.name}</ModelName>
@@ -511,8 +527,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                         addon={props.addon}
                                         key={track.key}
                                         track={track}
-                                        isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack?.key === track.key}
+                                        isSelected={selectedTrack() === track}
+                                        isInstalled={installedTrack()?.key === track.key}
                                         handleSelected={() => handleTrackSelection(track)}
                                     />
                                 )
@@ -528,8 +544,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                         addon={props.addon}
                                         key={track.key}
                                         track={track}
-                                        isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack?.key === track.key}
+                                        isSelected={selectedTrack() === track}
+                                        isInstalled={installedTrack()?.key === track.key}
                                         handleSelected={() => handleTrackSelection(track)}
                                     />
                                 )
@@ -542,7 +558,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <h3 className="font-semibold text-teal-50">About This Version</h3>
                         <ReactMarkdown
                             className="text-lg text-gray-300"
-                            children={selectedTrack?.description ?? ''}
+                            children={selectedTrack()?.description ?? ''}
                             remarkPlugins={[remarkGfm]}
                             linkTarget={"_blank"}
                         />

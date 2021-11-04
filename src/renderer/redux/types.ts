@@ -3,6 +3,7 @@ import { InstallStatus } from 'renderer/components/AircraftSection';
 import { AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { ReleaseInfo } from "renderer/utils/AddonData";
 import { LiveryStateEntry } from "renderer/redux/reducers/liveries.reducer";
+import rootReducer from './reducers';
 
 export interface DownloadItem {
     id: string
@@ -12,7 +13,6 @@ export interface DownloadItem {
 
 export type DownloadsState = DownloadItem[];
 
-export type AddonStates =  any
 
 export interface UpdateDownloadProgressAction {
     type: typeof actions.UPDATE_DOWNLOAD_PROGRESS
@@ -106,6 +106,5 @@ export interface ChangelogAction {
 
 export type DownloadActionType = UpdateDownloadProgressAction | RegisterNewDownloadProgressAction | DeleteDownloadAction
 
-export interface RootStore {
-    downloads: DownloadsState
-}
+
+export type RootStore = ReturnType<typeof rootReducer> 
