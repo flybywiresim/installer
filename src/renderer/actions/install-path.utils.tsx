@@ -1,11 +1,11 @@
-import { remote } from 'electron';
 import settings from "common/settings";
 import { Directories } from "renderer/utils/Directories";
+import { dialog } from "@electron/remote";
 
 export async function setupInstallPath(): Promise<string> {
     const currentPath = Directories.community();
 
-    const path = await remote.dialog.showOpenDialog({
+    const path = await dialog.showOpenDialog({
         title: 'Select your community directory',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
         properties: ['openDirectory']
@@ -25,7 +25,7 @@ export async function setupInstallPath(): Promise<string> {
 export async function setupLiveriesPath(): Promise<string> {
     const currentPath = Directories.liveries();
 
-    const path = await remote.dialog.showOpenDialog({
+    const path = await dialog.showOpenDialog({
         title: 'Select your liveries directory',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
         properties: ['openDirectory']
