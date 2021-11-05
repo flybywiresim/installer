@@ -21,7 +21,6 @@ import {
     UpdateButton,
     VersionHistoryContainer
 } from './styles';
-import Store from 'electron-store';
 import fs from "fs-extra";
 import * as path from 'path';
 import { getAddonReleases } from "renderer/components/App";
@@ -43,8 +42,7 @@ import { LiveryConversionDialog } from "renderer/components/AircraftSection/Live
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-
-const settings = new Store;
+import settings from "common/settings";
 
 // Props coming from renderer/components/App
 type TransferredProps = {

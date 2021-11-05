@@ -1,12 +1,9 @@
-import { app, BrowserWindow, Menu, globalShortcut, App, shell } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut, shell } from 'electron';
 import { NsisUpdater } from "electron-updater";
-import * as fs from 'fs-extra';
-import * as readLine from 'readline';
 import * as path from 'path';
-import Store from 'electron-store';
-import walk from 'walkdir';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
+import settings from "common/settings";
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -14,7 +11,6 @@ if (!app.requestSingleInstanceLock()) {
 
 app.setAppUserModelId('FlyByWire Installer');
 
-let settings = new Store;
 let mainWindow: BrowserWindow;
 
 Menu.setApplicationMenu(null);
@@ -44,22 +40,22 @@ const createWindow = (): void => {
 
     mainWindow.on('closed', () => {
         mainWindow.removeAllListeners();
-        mainWindow = null;
-        settings = null;
         app.quit();
     });
 
-    const lastX = settings.get('cache.main.lastWindowX');
-    const lastY = settings.get('cache.main.lastWindowY');
+    const lastX = settings.get<string, number>('cache.main.lastWindowX');
+    const lastY = settings.get<string, number>('cache.main.lastWindowY');
+    const shouldMaximize = settings.get<string, boolean>('cache.main.maximized');
 
-    if ((typeof lastX === "number") && (typeof lastY === "number") && !settings.get('cache.main.maximized')) {
+    if (shouldMaximize) {
+        mainWindow.maximize();
+    } else if (lastX && lastY) { // 0 width and height should be reset to defaults
         mainWindow.setBounds({
             width: lastX,
             height: lastY
         });
-    } else if (settings.get('cache.main.maximized')) {
-        mainWindow.maximize();
     }
+
     mainWindow.center();
 
     // and load the index.html of the app.
@@ -77,6 +73,7 @@ const createWindow = (): void => {
 
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.
+        settings.openInEditor();
         mainWindow.webContents.openDevTools();
     }
 
@@ -125,8 +122,6 @@ const createWindow = (): void => {
         // tell autoupdater to check for updates
         autoUpdater.checkForUpdates();
     }
-
-    configureSettings(app);
 };
 
 // This method will be called when Electron has finished
@@ -172,87 +167,3 @@ app.on('second-instance', () => {
         mainWindow.focus();
     }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
-function configureSettings(app: App) {
-    if (!settings.has('mainSettings.separateLiveriesPath')) {
-        settings.set('mainSettings.separateLiveriesPath', false);
-    }
-    if (!settings.has('mainSettings.disableExperimentalWarning')) {
-        settings.set('mainSettings.disableExperimentalWarning', false);
-    }
-    if (!settings.has('mainSettings.useCdnCache')) {
-        settings.set('mainSettings.useCdnCache', true);
-    }
-    if (!settings.has('mainSettings.dateLayout')) {
-        settings.set('mainSettings.dateLayout', 'yyyy/mm/dd');
-    }
-
-    if (!settings.has('mainSettings.msfsPackagePath')) {
-        let userPath = null;
-
-        const steamMsfsPath = app.getPath('appData') + "\\Microsoft Flight Simulator\\UserCfg.opt";
-        const msStoreMsfsPath = app.getPath('home') + "\\AppData\\Local\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\UserCfg.opt";
-
-        if (fs.existsSync(steamMsfsPath)) {
-            userPath = steamMsfsPath;
-        } else if (fs.existsSync(msStoreMsfsPath)) {
-            userPath = msStoreMsfsPath;
-        } else {
-            walk(app.getPath('home') + "\\AppData\\Local\\", (path) => {
-                if (path.includes("Flight") && path.includes("UserCfg.opt")) {
-                    userPath = path;
-                }
-            });
-        }
-
-        if (userPath) {
-            const msfsConfig = fs.createReadStream(userPath.toString());
-            readLine.createInterface(msfsConfig).on('line', (line) => {
-                if (line.includes("InstalledPackagesPath")) {
-                    const splitLine = line.split(" ");
-                    const combineSplit = splitLine.slice(1).join(" ");
-                    const dir = combineSplit.replaceAll('"', '');
-                    const msfsCommunityPath = dir + "\\Community\\";
-
-                    settings.set('mainSettings.msfsPackagePath', msfsCommunityPath);
-                    if (!settings.has('mainSettings.liveriesPath')) {
-                        settings.set('mainSettings.liveriesPath', msfsCommunityPath);
-                    }
-                }
-            });
-        } else {
-            settings.set('mainSettings.pathError', 'unknown location');
-            settings.set('mainSettings.msfsPackagePath', 'C:\\');
-            settings.set('mainSettings.liveriesPath', 'C:\\');
-        }
-    } else if (!settings.has('mainSettings.liveriesPath')) {
-        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
-    }
-    if (!fs.existsSync(settings.get('mainSettings.msfsPackagePath') as string)) {
-        const msfsPackagePath = settings.get('mainSettings.msfsPackagePath');
-
-        if (msfsPackagePath) {
-            settings.set('mainSettings.pathError', msfsPackagePath as string);
-        } else {
-            settings.delete('mainSettings.pathError');
-        }
-
-        settings.set('mainSettings.msfsPackagePath', 'C:\\');
-        settings.set('mainSettings.liveriesPath', 'C:\\');
-
-    } else if (!fs.existsSync(settings.get('mainSettings.liveriesPath') as string)) {
-        const liveriesPath = settings.get('mainSettings.liveriesPath');
-
-        if (liveriesPath) {
-            settings.set('mainSettings.liveriesPathError', liveriesPath as string);
-        } else {
-            settings.delete('mainSettings.liveriesPathError');
-        }
-
-        settings.set('mainSettings.liveriesPath', settings.get('mainSettings.msfsPackagePath'));
-        settings.set('mainSettings.separateLiveriesPath', false);
-    }
-}

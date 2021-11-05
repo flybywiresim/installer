@@ -1,9 +1,7 @@
-import Store from "electron-store";
 import path from "path";
 import { Addon } from "renderer/utils/InstallerConfiguration";
 import fs from "fs-extra";
-
-const settings = new Store;
+import settings from "common/settings";
 
 export class Directories {
 
@@ -30,8 +28,8 @@ export class Directories {
     static removeAllTemp(): void {
         console.log('[CLEANUP] Removing all temp directories');
 
-        if (!settings.has('mainSettings.msfsPackagePath')) {
-            console.warn('[CLEANUP] Install directory is not set. Aborting');
+        if (!fs.existsSync(Directories.community())) {
+            console.warn('[CLEANUP] Install directory does not exist. Aborting');
             return;
         }
 
