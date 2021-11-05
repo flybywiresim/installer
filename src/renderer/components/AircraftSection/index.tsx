@@ -483,25 +483,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             if (err) {
                 console.error(err);
             }
-            return (
-                <StartMSFSButton>
-                    <button onClick={startMSFS} className="button">Start MSFS</button>
-                </StartMSFSButton>
-            );
-
         });
     }
 
     function closeMSFS() {
         const MsfsStatus = require('process');
         MsfsStatus.kill(0);
-
-        return (
-            <CloseMSFSButton>
-                <button onClick={closeMSFS} className="button">Close MSFS</button>
-            </CloseMSFSButton>
-        );
-
     }
 
     return (
