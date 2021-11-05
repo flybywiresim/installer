@@ -523,11 +523,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <StartMSFSButton>
                             <button onClick={startMSFS} className="button" id="startMSFS">Start MSFS</button>
                         </StartMSFSButton>
+                    </ButtonContainer>
 
+                    <ButtonContainer>
                         <CloseMSFSButton>
                             <button onClick={closeMSFS} className="button" id="closeMSFS" hidden>Close MSFS</button>
                         </CloseMSFSButton>
-
                     </ButtonContainer>
                 </SelectionContainer>
             </HeaderImage>

@@ -282,6 +282,7 @@ export const CloseMSFSButton = styled.div`
          display: inline-block;
          width: auto;
          height: auto;
+         margin-left: 10px;
          font-size: 1.45em !important;
          font-weight: 600;
          border-width: 0 !important;
