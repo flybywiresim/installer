@@ -43,24 +43,6 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
         </SettingsItem>
     );
 };
-//once finished, this will allow users select any file to open (as of now this is NOT specific to MSFS.exe(s))
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ExecutableInstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
-    async function handleClick() {
-        const inputElement = document.createElement("input");
-        // Set its type to file
-        inputElement.type = "file";
-
-        inputElement.dispatchEvent(new MouseEvent("click"));
-    }
-
-    return (
-        <SettingsItem>
-            <SettingItemName>Executable Install Directory</SettingItemName>
-            <SettingItemContent onClick={handleClick}>{props.path}</SettingItemContent>
-        </SettingsItem>
-    );
-};
 
 const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
