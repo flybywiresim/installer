@@ -272,27 +272,3 @@ export const StartMSFSButton = styled.div`
           }
 
      `;
-
-export const CloseMSFSButton = styled.div`
-     .button {
-         background-color: #fc3a3a;
-         border-color: 2e3236;
-         color: #dddddd;
-         text-align: center;
-         display: inline-block;
-         width: auto;
-         height: auto;
-         margin-left: 10px;
-         font-size: 1.45em !important;
-         font-weight: 600;
-         border-width: 0 !important;
-         border-radius: 5px;
-       
-         padding: .25em 1.25em .15em;
-         
-         cursor: pointer;
-       
-         ${dropShadow};
-       }
-
-  `;

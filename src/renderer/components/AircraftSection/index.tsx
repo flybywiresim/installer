@@ -21,7 +21,6 @@ import {
     UpdateButton,
     VersionHistoryContainer,
     StartMSFSButton,
-    CloseMSFSButton
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
@@ -486,11 +485,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         });
     }
 
-    function closeMSFS() {
-        const MsfsStatus = require('process');
-        MsfsStatus.kill(0);
-    }
-
     return (
         <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
             <HeaderImage>
@@ -510,12 +504,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <StartMSFSButton>
                             <button onClick={startMSFS} className="button" id="startMSFS">Start MSFS</button>
                         </StartMSFSButton>
-                    </ButtonContainer>
-
-                    <ButtonContainer>
-                        <CloseMSFSButton>
-                            <button onClick={closeMSFS} className="button" id="closeMSFS" hidden>Close MSFS</button>
-                        </CloseMSFSButton>
                     </ButtonContainer>
                 </SelectionContainer>
             </HeaderImage>
