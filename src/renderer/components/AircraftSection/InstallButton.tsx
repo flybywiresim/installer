@@ -66,7 +66,7 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
         min-width: 114px;
         cursor: default;
         pointer-events: none;
-        ${props => (props.options?.includes(featureRequest) ? 'min-width: 170px' : 'min-width: 114px')};
+        ${props => (props.options?.includes(featureRequest) ? 'min-width: 190px' : 'min-width: 114px')};
         borderColor: ${props => (colors[(props.background as keyof typeof colors)])};
         background: ${props => (colors[(props.background as keyof typeof colors)])};
     
