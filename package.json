@@ -102,7 +102,7 @@
     "antd": "^4.12.2",
     "config-ini-parser": "~1.5.9",
     "dateformat": "^5.0.1",
-    "electron-store": "^6.0.1",
+    "electron-store": "^8.0.1",
     "electron-updater": "^4.3.9",
     "fs-extra": "^8.1.0",
     "immer": "^8.0.1",

@@ -39,8 +39,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { shell } from 'electron';
 import { InstallButtonComponent } from './InstallButton';
-
-const settings = new Store;
+import settings from "common/settings";
 
 // Props coming from renderer/components/App
 type TransferredProps = {

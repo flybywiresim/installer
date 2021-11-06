@@ -31,7 +31,6 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from 'renderer/components/App';
 import store from 'renderer/redux/store';
-import Store from 'electron-store';
 import { Configuration, InstallerConfiguration } from 'renderer/utils/InstallerConfiguration';
 
 import './index.css';
@@ -42,8 +41,7 @@ import * as actionTypes from "renderer/redux/actionTypes";
 import { LiveryAction } from "renderer/redux/types";
 import { LiveryState } from "renderer/redux/reducers/liveries.reducer";
 import { Directories } from "renderer/utils/Directories";
-
-const settings = new Store;
+import settings, { persistWindowSettings } from "common/settings";
 
 const win = remote.getCurrentWindow();
 
@@ -113,13 +111,7 @@ function handleWindowControls() {
 
     document.getElementById('close-button')?.addEventListener("click", () => {
         Directories.removeAllTemp();
-
-        settings.set('cache.main.maximized', win.isMaximized());
-        const winSize = win.getSize();
-
-        settings.set('cache.main.lastWindowX', winSize[0]);
-        settings.set('cache.main.lastWindowY', winSize[1]);
-
+        persistWindowSettings(win);
         win.destroy();
     });
 }

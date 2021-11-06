@@ -7,9 +7,7 @@ import { AlertTriangle, Check } from "tabler-icons-react";
 import { Progress } from "antd";
 import { LiveryState, LiveryStateEntry } from "renderer/redux/reducers/liveries.reducer";
 import { LiveryAction, SetLiveryStateAction } from "renderer/redux/types";
-import Store from "electron-store";
-
-const settings = new Store();
+import settings from "common/settings";
 
 export const reloadLiveries = (): void => {
     store.dispatch({
