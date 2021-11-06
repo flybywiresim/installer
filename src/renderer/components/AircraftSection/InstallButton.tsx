@@ -35,10 +35,15 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
     >
         <div className='flex relative justify-center content-center pointer-events-auto' onMouseOver={() => {
             setHoverOverDropdown(false);
-        }}>
+            setHoverOverButton(true);
+        }}
+        onMouseLeave={() => {
+            setHoverOverButton(false)
+        }}
+        >
             <div className={(props.disabled ? 'pointer-events-disabled ' : 'cursor-pointer ') + (props.options && 'mr-5')} onClick={props.onClickAction}>{props.name}</div>
-            {props.options && <div className={'right-0 absolute min-h-full w-0.5  bg-white'}></div>}
-            {props.options ? <div className={'cursor-pointer -right-5 absolute'} onClick={toggleExtended}>{installButtonExtended ? '▴' : '▾'}</div> : <></>}
+            {props.options && <div className={'right-0 absolute min-h-full opacity-50 w-0.5  bg-white'}></div>}
+            {props.options && <div className={'cursor-pointer text-white -right-5.5 absolute'} onClick={toggleExtended}>{installButtonExtended ? '▴' : '▾'}</div>}
         </div>
         {installButtonExtended ? <div className='overflow-hidden pointer-events-auto'>
             <div onMouseLeave={() => {
@@ -49,8 +54,11 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
             }}
             onMouseOver={() => {
                 setHoverOverDropdown(true);
+                setHoverOverButton(false)
             }}
-            className={`cursor-pointer absolute w-full right-0 rounded-b-5px bg-${props.background}`}>
+            className={`cursor-pointer absolute w-full right-0 text-white rounded-b-5px bg-${props.background}`}>
+                <div className={'h-1.5 bg-' + (props.background) + ((hoverOverButton && !props.disabled) ? '-light' : '')}></div>
+                <div className="h-px bg-white"></div>
                 {props.options?.includes(uninstall) && <div className={'rounded-5px py-1 hover:bg-' + (props.background) + '-light'} onClick={() => {
                     uninstallAddon(); toggleExtended();
                 }}>Uninstall</div>}
@@ -140,6 +148,7 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
 
     const [installButtonExtended, setInstallButtonExtended] = useState<boolean>(false);
     const [hoverOverDropdown, setHoverOverDropdown] = useState<boolean>(false);
+    const [hoverOverButton, setHoverOverButton] = useState<boolean>(false);
     const toggleExtended = () => setInstallButtonExtended(!installButtonExtended);
     switch (installStatus) {
         case InstallStatus.UpToDate:
