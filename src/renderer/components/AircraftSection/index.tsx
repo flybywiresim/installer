@@ -474,14 +474,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     function startMSFS() {
         const child = require('child_process').execFile;
         const file = "FlightSimulator.exe";
-        const CloseMSFSButton = document.getElementById('closeMSFS');
-        CloseMSFSButton.removeAttribute("hidden");
         document.getElementById("startMSFS").style.display = "none";
-        document.getElementById("closeMSFS").style.display = "block";
-        child(file, function (err: unknown,) {
-            if (err) {
-                console.error(err);
-            }
+        child(file, function () {
         });
     }
 
