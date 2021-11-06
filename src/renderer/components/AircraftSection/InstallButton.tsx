@@ -51,13 +51,13 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
                 setHoverOverDropdown(true);
             }}
             className={`cursor-pointer absolute w-full right-0 rounded-b-5px bg-${props.background}`}>
-                {props.options?.includes(uninstall) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
+                {props.options?.includes(uninstall) && <div className={'rounded-5px py-1 hover:bg-' + (props.background) + '-light'} onClick={() => {
                     uninstallAddon(); toggleExtended();
                 }}>Uninstall</div>}
-                {(props.options?.includes(bugReport) && hasBugReport()) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
+                {(props.options?.includes(bugReport) && hasBugReport()) && <div className={'rounded-5px py-1 hover:bg-' + (props.background) + '-light'} onClick={() => {
                     reportBug(); toggleExtended();
                 }}>Report Bug</div>}
-                {(props.options?.includes(featureRequest) && hasFeatureRequest()) && <div className={'rounded-5px hover:bg-' + (props.background) + '-light'} onClick={() => {
+                {(props.options?.includes(featureRequest) && hasFeatureRequest()) && <div className={'rounded-5px py-1 hover:bg-' + (props.background) + '-light'} onClick={() => {
                     requestFeature(); toggleExtended();
                 }}>Request Feature</div>}
             </div>
