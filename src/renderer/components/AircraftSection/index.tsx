@@ -21,6 +21,7 @@ import {
     UpdateButton,
     VersionHistoryContainer,
     StartMSFSButton,
+    MSFSisRunning,
 } from './styles';
 import Store from 'electron-store';
 import fs from "fs-extra";
@@ -474,6 +475,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     function startMSFS() {
         const child = require('child_process').execFile;
         const file = "FlightSimulator.exe";
+        const MSFSisRunning = document.getElementById('msfsrunning');
+        MSFSisRunning.removeAttribute("hidden");
         document.getElementById("startMSFS").style.display = "none";
         child(file, function () {
         });
@@ -498,6 +501,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         <StartMSFSButton>
                             <button onClick={startMSFS} className="button" id="startMSFS">Start MSFS</button>
                         </StartMSFSButton>
+                    </ButtonContainer>
+
+                    <ButtonContainer>
+                        <MSFSisRunning>
+                            <button className="button" id="msfsrunning" hidden>MSFS Was Launched</button>
+                        </MSFSisRunning>
                     </ButtonContainer>
                 </SelectionContainer>
             </HeaderImage>
