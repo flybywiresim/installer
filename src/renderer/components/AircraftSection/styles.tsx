@@ -273,7 +273,7 @@ export const StartMSFSButton = styled.div`
 
      `;
 
-export const MSFSisRunning = styled.div`
+export const MSFSisRunningButton = styled.div`
         .button {
             background-color: #2e3236;
             border-color: 2e3236;
