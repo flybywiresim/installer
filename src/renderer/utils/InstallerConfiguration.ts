@@ -47,8 +47,14 @@ export type Addon = {
     enabled: boolean,
 }
 
-export type Configuration = {
+export type Publisher = {
+    name: string,
+    logoUrl: string,
     addons: Addon[],
+}
+
+export type Configuration = {
+    publishers: Publisher[],
 }
 
 export class InstallerConfiguration {
@@ -87,7 +93,7 @@ export class InstallerConfiguration {
     }
 
     private static isConfigurationValid(config: Configuration): boolean {
-        return !!(config.addons);
+        return !!(config.publishers);
     }
 
 }
