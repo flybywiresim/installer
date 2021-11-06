@@ -15,7 +15,6 @@ import {
     TopContainer,
     VersionHistoryContainer
 } from './styles';
-import Store from 'electron-store';
 import fs, { readFileSync } from "fs-extra";
 import * as path from 'path';
 import { getAddonReleases } from "renderer/components/App";
