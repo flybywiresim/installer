@@ -38,7 +38,7 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
             setHoverOverButton(true);
         }}
         onMouseLeave={() => {
-            setHoverOverButton(false)
+            setHoverOverButton(false);
         }}
         >
             <div className={(props.disabled ? 'pointer-events-disabled ' : 'cursor-pointer ') + (props.options && 'mr-5')} onClick={props.onClickAction}>{props.name}</div>
@@ -54,7 +54,7 @@ export const InstallButtonComponent: React.FC<InstallButtonProps> = ({ installSt
             }}
             onMouseOver={() => {
                 setHoverOverDropdown(true);
-                setHoverOverButton(false)
+                setHoverOverButton(false);
             }}
             className={`cursor-pointer absolute w-full right-0 text-white rounded-b-5px bg-${props.background}`}>
                 <div className={'h-1.5 bg-' + (props.background) + ((hoverOverButton && !props.disabled) ? '-light' : '')}></div>
