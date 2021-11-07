@@ -14,6 +14,7 @@ export const defaultConfiguration: Configuration = {
                 {
                     name: 'A32NX',
                     repoName: 'a32nx',
+                    gitHubReleaseBaseURL: 'https://github.com/flybywiresim/a32nx/releases/tag/',
                     aircraftName: 'A320neo',
                     key: 'A32NX',
                     enabled: true,
