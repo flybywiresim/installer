@@ -6,8 +6,6 @@ import SettingsSection from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
 import AircraftSection from 'renderer/components/AircraftSection';
 
-import logo from 'renderer/assets/FBW-Tail.svg';
-
 import { Container, MainLayout, Content, PageHeader, PageSider, } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
@@ -75,11 +73,18 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
 };
 
 const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
+    const [addons] = useState<Addon[]>(
+        configuration.publishers.reduce((arr, curr) => {
+            arr.push(...curr.addons);
+            return arr;
+        }, [])
+    );
+
     useEffect(() => {
-        configuration.addons.forEach(fetchLatestVersionNames);
+        addons.forEach(fetchLatestVersionNames);
     }, []);
 
-    const [selectedItem, setSelectedItem] = useState<string>(configuration.addons[0].key);
+    const [selectedItem, setSelectedItem] = useState<string>(addons[0].key);
 
     let sectionToShow;
     switch (selectedItem) {
@@ -92,7 +97,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             break;
 
         default:
-            sectionToShow = <AircraftSection addon={configuration.addons.find(x => x.key === selectedItem)}/>;
+            sectionToShow = <AircraftSection addon={addons.find(x => x.key === selectedItem)}/>;
             break;
     }
 
@@ -116,20 +121,22 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                         <div className="h-full pt-14 flex flex-row justify-start">
                             <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
                                 <div className="h-full flex flex-col divide-y divide-gray-700">
-                                    <SidebarPublisher name="FlyByWire Simulations" logo={logo}>
-                                        {
-                                            configuration.addons.map(addon => {
-                                                return (
-                                                    <SidebarAddon
-                                                        key={addon.key}
-                                                        addon={addon}
-                                                        isSelected={selectedItem === addon.key}
-                                                        handleSelected={() => setSelectedItem(addon.key)}
-                                                    />
-                                                );
-                                            })
-                                        }
-                                    </SidebarPublisher>
+                                    {
+                                        configuration.publishers.map(publisher => (
+                                            <SidebarPublisher name={publisher.name} logo={publisher.logoUrl}>
+                                                {
+                                                    publisher.addons.map(addon => (
+                                                        <SidebarAddon
+                                                            key={addon.key}
+                                                            addon={addon}
+                                                            isSelected={selectedItem === addon.key}
+                                                            handleSelected={() => setSelectedItem(addon.key)}
+                                                        />
+                                                    ))
+                                                }
+                                            </SidebarPublisher>
+                                        ))
+                                    }
 
                                     <div className="mt-auto">
                                         {
