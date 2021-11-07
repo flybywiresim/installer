@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
+import DebugSection from 'renderer/components/DebugSection';
 import AircraftSection from 'renderer/components/AircraftSection';
 
 import logo from 'renderer/assets/FBW-Tail.svg';
@@ -15,7 +16,7 @@ import { DataCache } from '../../utils/DataCache';
 import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
 import { SetAddonAndTrackLatestReleaseInfo } from "renderer/redux/types";
-import { Settings } from "tabler-icons-react";
+import { Code, Settings } from "tabler-icons-react";
 import { SidebarItem, SidebarAddon, SidebarPublisher } from "renderer/components/App/SideBar";
 import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
@@ -83,7 +84,11 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     let sectionToShow;
     switch (selectedItem) {
         case 'settings':
-            sectionToShow = <SettingsSection/>;
+            sectionToShow = <SettingsSection />;
+            break;
+
+        case 'debug':
+            sectionToShow = <DebugSection />;
             break;
 
         default:
@@ -126,13 +131,27 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                         }
                                     </SidebarPublisher>
 
-                                    <SidebarItem className="mt-auto" iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
-                                        <Settings className="text-gray-100 ml-2 mr-3" size={24} />
+                                    <div className="mt-auto">
+                                        {
+                                            process.env.NODE_ENV === "development" &&
+                                            <SidebarItem iSelected={selectedItem === 'debug'} onClick={() => setSelectedItem('debug')}>
+                                                <Code className="text-gray-100 ml-2 mr-3" size={24} />
 
-                                        <div className="flex flex-col">
-                                            <span className="text-lg text-gray-200 font-semibold">Settings</span>
-                                        </div>
-                                    </SidebarItem>
+                                                <div className="flex flex-col">
+                                                    <span className="text-lg text-gray-200 font-semibold">Debug</span>
+                                                </div>
+                                            </SidebarItem>
+                                        }
+
+                                        <SidebarItem iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
+                                            <Settings className="text-gray-100 ml-2 mr-3" size={24} />
+
+                                            <div className="flex flex-col">
+                                                <span className="text-lg text-gray-200 font-semibold">Settings</span>
+                                            </div>
+                                        </SidebarItem>
+                                    </div>
+
                                 </div>
                             </PageSider>
                             <Content className="overflow-y-scroll bg-navy m-0">

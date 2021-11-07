@@ -1,13 +1,17 @@
-import { app, BrowserWindow, Menu, globalShortcut, shell } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut, shell, ipcMain } from 'electron';
 import { NsisUpdater } from "electron-updater";
 import * as path from 'path';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
-import settings from "common/settings";
+import settings, { persistWindowSettings } from "common/settings";
+import channels from "common/channels";
+import * as remote from "@electron/remote/main";
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
 }
+
+remote.initialize();
 
 app.setAppUserModelId('FlyByWire Installer');
 
@@ -30,7 +34,7 @@ const createWindow = (): void => {
         show: false,
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true
+            contextIsolation: false,
         }
     });
 
@@ -42,6 +46,21 @@ const createWindow = (): void => {
         mainWindow.removeAllListeners();
         app.quit();
     });
+
+    ipcMain.on(channels.window.minimize, () => {
+        mainWindow.minimize();
+    });
+
+    ipcMain.on(channels.window.maximize, () => {
+        mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
+    });
+
+    ipcMain.on(channels.window.close, () => {
+        persistWindowSettings(mainWindow);
+        mainWindow.destroy();
+    });
+
+    remote.enable(mainWindow.webContents);
 
     const lastX = settings.get<string, number>('cache.main.lastWindowX');
     const lastY = settings.get<string, number>('cache.main.lastWindowY');
@@ -60,15 +79,14 @@ const createWindow = (): void => {
 
     // and load the index.html of the app.
     if (serve) {
-        mainWindow.loadURL('http://localhost:8080/index.html');
+        mainWindow.loadURL('http://localhost:8080/index.html').then();
     } else {
-        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html')).then();
     }
 
-    // Open all links with target="_blank" with the users default browser
-    mainWindow.webContents.on("new-window", (event, url) => {
-        event.preventDefault();
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
         shell.openExternal(url).then();
+        return { action: 'deny' };
     });
 
     if (process.env.NODE_ENV === 'development') {
@@ -108,19 +126,19 @@ const createWindow = (): void => {
         const autoUpdater = new NsisUpdater(updateOptions);
 
         autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
-            mainWindow.webContents.send('update-downloaded', { event, releaseNotes, releaseName });
+            mainWindow.webContents.send(channels.update.downloaded, { event, releaseNotes, releaseName });
         });
 
         autoUpdater.addListener('update-available', () => {
-            mainWindow.webContents.send('update-available');
+            mainWindow.webContents.send(channels.update.available);
         });
 
         autoUpdater.addListener('error', (error) => {
-            mainWindow.webContents.send('update-error', { error });
+            mainWindow.webContents.send(channels.update.error, { error });
         });
 
         // tell autoupdater to check for updates
-        autoUpdater.checkForUpdates();
+        autoUpdater.checkForUpdates().then();
     }
 };
 

@@ -13,7 +13,7 @@ The installer is built as an [Electron Application](https://www.electronjs.org/)
 Please make sure you have:
 
 - [git](https://git-scm.com/downloads)
-- [NodeJS 14](https://nodejs.org/en/)
+- [NodeJS 16](https://nodejs.org/en/)
 
 ### Get started
 
