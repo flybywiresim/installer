@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Store from 'electron-store';
 import store from '../../redux/store';
 import { InnerContainer, Close } from './styles';
 import * as packageInfo from '../../../../package.json';
@@ -9,12 +8,11 @@ import ReactHtmlParser from 'react-html-parser';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import changelog from '../../../../.github/CHANGELOG.md';
 import * as actionTypes from '../../redux/actionTypes';
+import settings from "common/settings";
 
 type ChangelogProps = {
     showChangelog: boolean
 }
-
-const settings = new Store;
 
 const ShowChangelog = (props: ChangelogProps) => {
     didVersionChange();
@@ -50,7 +48,7 @@ const hideChangelog = () => {
 };
 
 const didVersionChange = () => {
-    if (!settings.has('metaInfo.lastVersion') || (packageInfo.version !== settings.get('metaInfo.lastVersion'))) {
+    if (packageInfo.version !== settings.get<string>('metaInfo.lastVersion')) {
         settings.set('metaInfo.lastVersion', packageInfo.version);
         store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
             showChangelog: true

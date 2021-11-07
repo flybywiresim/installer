@@ -2,10 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from "styled-components";
 import { shell } from "electron";
 import { AddonVersion } from "renderer/utils/InstallerConfiguration";
-import Store from 'electron-store';
 import dateFormat from "dateformat";
-
-const settings = new Store;
+import settings from "common/settings";
 
 /**
  * Container for versions

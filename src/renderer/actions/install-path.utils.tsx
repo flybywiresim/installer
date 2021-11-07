@@ -1,16 +1,16 @@
-import { remote } from 'electron';
-import Store from 'electron-store';
-
-const settings = new Store;
+import settings from "common/settings";
+import { Directories } from "renderer/utils/Directories";
+import { dialog } from "@electron/remote";
 
 export async function setupInstallPath(): Promise<string> {
-    const currentPath = settings.get<string>('mainSettings.msfsPackagePath');
+    const currentPath = Directories.community();
 
-    const path = await remote.dialog.showOpenDialog({
+    const path = await dialog.showOpenDialog({
         title: 'Select your community directory',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
         properties: ['openDirectory']
     });
+
     if (path.filePaths[0]) {
         settings.set('mainSettings.msfsPackagePath', path.filePaths[0]);
         if (!settings.get('mainSettings.separateLiveriesPath')) {
@@ -23,13 +23,14 @@ export async function setupInstallPath(): Promise<string> {
 }
 
 export async function setupLiveriesPath(): Promise<string> {
-    const currentPath = settings.get<string>('mainSettings.liveriesPath');
+    const currentPath = Directories.liveries();
 
-    const path = await remote.dialog.showOpenDialog({
+    const path = await dialog.showOpenDialog({
         title: 'Select your liveries directory',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
         properties: ['openDirectory']
     });
+
     if (path.filePaths[0]) {
         settings.set('mainSettings.liveriesPath', path.filePaths[0]);
         return path.filePaths[0];
