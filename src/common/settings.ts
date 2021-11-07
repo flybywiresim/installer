@@ -1,25 +1,23 @@
 import Store from "electron-store";
 import * as fs from "fs-extra";
 import walk from "walkdir";
-import { app as electronApp, remote } from "electron";
 import * as path from "path";
 import { Schema } from "electron-store";
 import { Dispatch, SetStateAction, useState } from "react";
 
 const defaultCommunityDir = (): string => {
     // Ensure proper functionality in main- and renderer-process
-    const app = electronApp || remote.app;
     let msfsConfigPath = null;
 
-    const steamPath = path.join(app.getPath('appData'), "\\Microsoft Flight Simulator\\UserCfg.opt");
-    const storePath = path.join(app.getPath('home'), "\\AppData\\Local\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\UserCfg.opt");
+    const steamPath = path.join(process.env.APPDATA, "\\Microsoft Flight Simulator\\UserCfg.opt");
+    const storePath = path.join(process.env.LOCALAPPDATA, "\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\UserCfg.opt");
 
     if (fs.existsSync(steamPath)) {
         msfsConfigPath = steamPath;
     } else if (fs.existsSync(storePath)) {
         msfsConfigPath = storePath;
     } else {
-        walk(path.join(app.getPath('home'), "\\AppData\\Local\\"), (path) => {
+        walk(process.env.LOCALAPPDATA, (path) => {
             if (path.includes("Flight") && path.includes("UserCfg.opt")) {
                 msfsConfigPath = path;
             }
