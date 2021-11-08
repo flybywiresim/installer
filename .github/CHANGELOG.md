@@ -7,6 +7,7 @@
 
 ## 2.1.0
 1. [UI] Add ability to change date layout @FoxtrotSierra6829
+1. [UI] Add ability to show third party licenses @nistei
 
 
 ## 2.0.1

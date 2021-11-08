@@ -8,8 +8,8 @@ import {
     SettingItemName,
     SettingsItem,
     SettingsItems,
-    InfoContainer,
-    InfoButton, ResetButton
+    InfoButton,
+    ResetButton,
 } from './styles';
 import * as packageInfo from '../../../../package.json';
 import * as actionTypes from '../../redux/actionTypes';
@@ -17,6 +17,9 @@ import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversi
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
 import { Directories } from "renderer/utils/Directories";
+import { shell } from "electron";
+import path from "path";
+import * as fs from "fs";
 
 const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
@@ -216,10 +219,14 @@ function index(): JSX.Element {
                     <DateLayoutItem dateLayout={dateLayout} setDateLayout={setDateLayout} />
                 </SettingsItems>
             </Container>
-            <InfoContainer>
-                <InfoButton onClick={showChangelog}>v{packageInfo.version}</InfoButton>
+            <div className="flex flex-row justify-between pr-4">
+                <div className="flex flex-row justify-start gap-3">
+                    <InfoButton onClick={showChangelog}>v{packageInfo.version}</InfoButton>
+                    <h6 className="mt-6 text-gray-600">|</h6>
+                    <InfoButton onClick={openThirdPartyLicenses}>Third party licenses</InfoButton>
+                </div>
                 <ResetButton onClick={handleReset}>Reset settings to default</ResetButton>
-            </InfoContainer>
+            </div>
         </>
     );
 }
@@ -228,6 +235,18 @@ const showChangelog = () => {
     store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
         showChangelog: true
     } });
+};
+
+const openThirdPartyLicenses = () => {
+    const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
+
+    if (!fs.existsSync(licensesPath)) {
+        alert('The requested file does not exist.');
+        return;
+    }
+
+    shell.openExternal(licensesPath)
+        .catch(console.error);
 };
 
 export default index;
