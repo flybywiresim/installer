@@ -4,6 +4,7 @@ import { InstallerStore } from "renderer/redux/store";
 
 import './index.css';
 import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
+import dateFormat from "dateformat";
 
 export const Tracks: React.FC = ({ children }) => (
     <div className="flex flex-row justify-start items-stretch gap-2">
@@ -25,6 +26,12 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
         return state.latestVersionNames
             .find((entry) => entry.addonKey === addon.key && entry.trackKey === track.key)
             ?.info.name ?? '<unknown>';
+    });
+
+    const latestVersionDate = useSelector<InstallerStore, Date | string>(state => {
+        return state.latestVersionNames
+            .find((entry) => entry.addonKey === addon.key && entry.trackKey === track.key)
+            ?.info.releaseDate ?? '<unknown>';
     });
 
     const makeBorderStyle = () => {
@@ -49,6 +56,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
             <div className="flex flex-col px-5 py-2">
                 <span className="text-xl text-gray-50">{track.name}</span>
                 <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
+                <span className="text-sm text-teal-50 -mt-0.5"><code>{dateFormat(latestVersionDate)}</code></span>
             </div>
         </div>
     );
