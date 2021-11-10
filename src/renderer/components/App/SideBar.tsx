@@ -33,6 +33,21 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
     );
 };
 
+export const SidebarCompact: React.FC<SidebarPublisherProps> = ({ name, logo, children }) => {
+    const [expanded, setExpanded] = useState(true);
+
+    return (
+        <>
+            <span onClick={() => setExpanded(old => !old)} className="bg-navy-lighter flex flex-row items-center transform transition-colors duration-300 hover:bg-navy-lightest text-lg text-white pl-3 py-3.5 cursor-pointer">
+                <ChevronDown className={`text-gray-200 transform transition-transform duration-300 ${expanded ? 'rotate-0' : '-rotate-90'}`} size={28} />
+                <img className="ml-1 mr-2" src={logo} alt="" />
+                <span className="text-base text-gray-100">{name}</span>
+            </span>
+            {expanded && children}
+        </>
+    );
+};
+
 type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void }
 
 export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected }) => {
