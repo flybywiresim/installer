@@ -474,11 +474,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const handleStartMsfs = () => {
         const child = require('child_process').execFile;
-        const file = "FlightSimulator.exe";
+        const FILE_NAME = "FlightSimulator.exe";
         const MSFSisRunningButton = document.getElementById('msfsrunning');
         MSFSisRunningButton.removeAttribute("hidden");
         document.getElementById("handleStartMsfs").style.display = "none";
-        child(file, () => {});
+        child(FILE_NAME, () => {});
     };
 
     return (
