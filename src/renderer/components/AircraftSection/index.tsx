@@ -472,15 +472,14 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         return state.liveries.map((entry) => entry.livery);
     });
 
-    function startMSFS() {
+    const handleStartMsfs = () => {
         const child = require('child_process').execFile;
         const file = "FlightSimulator.exe";
         const MSFSisRunningButton = document.getElementById('msfsrunning');
         MSFSisRunningButton.removeAttribute("hidden");
-        document.getElementById("startMSFS").style.display = "none";
-        child(file, function () {
-        });
-    }
+        document.getElementById("handleStartMsfs").style.display = "none";
+        child(file, () => {});
+    };
 
     return (
         <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
@@ -499,7 +498,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
                     <ButtonContainer>
                         <StartMSFSButton>
-                            <button onClick={startMSFS} className="button" id="startMSFS">Start MSFS</button>
+                            <button onClick={handleStartMsfs} className="button" id="handleStartMsfs">Start MSFS</button>
                         </StartMSFSButton>
                     </ButtonContainer>
 
