@@ -179,7 +179,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     useEffect(() => {
         if (download && isDownloading) {
-            console.log(download.progress);
             ipcRenderer.send('set-window-progress-bar', download.progress / 100);
         } else {
             ipcRenderer.send('set-window-progress-bar', -1);
