@@ -184,7 +184,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         } else {
             ipcRenderer.send('set-window-progress-bar', -1);
         }
-        console.log(download);
     }, [download]);
 
     const getInstallStatus = async (): Promise<InstallStatus> => {
