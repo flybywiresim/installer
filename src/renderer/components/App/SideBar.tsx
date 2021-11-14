@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Check, ChevronDown, Download, Refresh } from "tabler-icons-react";
+import { AlertTriangle, ArrowBarToDown, ChevronDown , CircleCheck, Rotate2 } from "tabler-icons-react";
 import { useSelector, } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { InstallStatus } from "renderer/components/AircraftSection";
@@ -76,15 +76,15 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
     const Icon = () => {
         switch (icon) {
             case 'notAvailable':
-                return <Download className="text-gray-700 ml-auto mr-4" size={28} />;
+                return <AlertTriangle className="text-gray-700 ml-auto mr-4" size={28} />;
             case 'install':
-                return <Download className="text-gray-400 ml-auto mr-4" size={28} />;
+                return <ArrowBarToDown className="text-gray-400 ml-auto mr-4" size={28} />;
             case 'installing':
-                return <Refresh className="text-yellow-400 ml-auto mr-4 animate-spin-reverse" size={28} />;
+                return <Rotate2 className="text-yellow-400 ml-auto mr-4 animate-spin-reverse" size={28} />;
             case 'installed':
-                return <Check className="text-green-400 ml-auto mr-4" size={28} />;
+                return <CircleCheck className="text-green-400 ml-auto mr-4" size={28} />;
             case 'update':
-                return <Download className="text-yellow-400 ml-auto mr-4" size={28} />;
+                return <ArrowBarToDown className="text-yellow-400 ml-auto mr-4" size={28} />;
         }
     };
 
