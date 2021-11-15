@@ -8,7 +8,7 @@
 ## 2.1.0
 
 1. [UI] Add ability to change date layout @FoxtrotSierra6829
-1. [UI] Add progressbar to taskbar tab to show installation progress @ErickSharp
+1. [UI] Add progress bar to taskbar tab to show installation progress @ErickSharp
 
 ## 2.0.1
 
