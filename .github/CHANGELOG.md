@@ -7,6 +7,7 @@
 
 ## 2.1.0
 1. [UI] Add ability to change date layout @FoxtrotSierra6829
+1. [UI] Changed the sideBar installStatus icons @GhostEagle68#0030
 
 
 ## 2.0.1
