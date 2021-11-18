@@ -6,12 +6,16 @@
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
 ## 2.1.0
-1. [UI] Add ability to change date layout @FoxtrotSierra6829
 
+1. [UI] Add ability to change date layout - @FoxtrotSierra6829
+1. [UI] Add progress bar to taskbar tab to show installation progress - @ErickSharp
+1. [UI] Add ability to show third party licenses - @nistei
+1. [ADDONS] Add Synaptic Simulations A22X placeholder - @MikeRomaa
 
 ## 2.0.1
-1. [LOGIC] Fix error during configuration of settings on first installation @nistei
-1. [UI] Change link to experimental guide @FoxtrotSierra6829
+
+1. [LOGIC] Fix error during configuration of settings on first installation - @nistei
+1. [UI] Change link to experimental guide - @FoxtrotSierra6829
 
 ## 2.0.0
 

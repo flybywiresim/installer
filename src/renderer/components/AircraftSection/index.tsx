@@ -43,6 +43,7 @@ import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import settings from "common/settings";
+import { ipcRenderer } from 'electron';
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -198,6 +199,14 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             getInstallStatus().then(setInstallStatus);
         }
     }, [selectedTrack(), installedTrack()]);
+
+    useEffect(() => {
+        if (download && isDownloading) {
+            ipcRenderer.send('set-window-progress-bar', download.progress / 100);
+        } else {
+            ipcRenderer.send('set-window-progress-bar', -1);
+        }
+    }, [download]);
 
     const getInstallStatus = async (): Promise<InstallStatus> => {
         if (!selectedTrack()) {
