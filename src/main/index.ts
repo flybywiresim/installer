@@ -60,6 +60,14 @@ const createWindow = (): void => {
         mainWindow.destroy();
     });
 
+    /*
+     * Setting the value of the program's taskbar progress bar.
+     * value: The value to set the progress bar to. ( [0 - 1.0], -1 to hide the progress bar )
+     */
+    ipcMain.on('set-window-progress-bar', (_, value: number) => {
+        mainWindow.setProgressBar(value);
+    });
+
     remote.enable(mainWindow.webContents);
 
     const lastX = settings.get<string, number>('cache.main.lastWindowX');
