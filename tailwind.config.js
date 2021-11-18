@@ -16,13 +16,17 @@ module.exports = {
         extend: {
             height: {
                 '450px': '450px',
-              },
+            },
             width: {
                 '520px': '520px',
                 '700px': '700px',
-              },
+            },
             colors: {
+                'quasi-white': '#fafafa',
+                cyan: '#00E0FE',
                 navy: {
+                    'DEFAULT': '#171E2C',
+                    'light': '#1F2A3C',
                     'lightest': '#273347',
                     'lighter': '#222c3d',
                 },

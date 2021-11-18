@@ -21,6 +21,10 @@ import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
+import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
+
+import fbwLogo from '../../assets/FBW-Tail.svg';
+import synLogo from '../../assets/Synaptic-Logo.png';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -107,8 +111,13 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             <ChangelogModal />
             <WarningModal />
             <SimpleBar>
-                <Container>
-                    <MainLayout className="overflow-hidden">
+                <Container className="flex flex-row">
+                    <NavBar>
+                        <NavBarPublisher icon={fbwLogo} />
+                        <NavBarPublisher icon={synLogo} />
+                    </NavBar>
+
+                    <MainLayout className="flex flex-col overflow-hidden">
                         <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
                             <PageHeader className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
