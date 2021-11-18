@@ -1,5 +1,3 @@
-import React from 'react';
-import { Button } from 'antd';
 import styled from 'styled-components';
 import { colors } from "renderer/style/theme";
 
@@ -48,19 +46,6 @@ export const SettingItemContent = styled.span`
     }
 `;
 
-export const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  
-  padding-right: .55em;
-`;
-
-export const InfoItem = styled.h6`
-  margin-top: 1.5em;
-  color: ${colors.mutedText} !important;
-`;
 export const InfoButton = styled.h6`
   margin-top: 1.5em;
   color: ${colors.mutedText} !important;
@@ -87,5 +72,3 @@ export const ResetButton = styled.button`
     border-color: ${colors.redDarker};
   }
 `;
-
-export const SettingButton = styled((props) => <Button type="link" style={{ color: '#41a4ff' }} {...props}>{props.children}</Button>)``;

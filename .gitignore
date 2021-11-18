@@ -100,3 +100,6 @@ dist/
 
 # VSCode
 .vscode/
+
+# License checker
+extraResources/licenses.md
