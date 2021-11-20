@@ -13,6 +13,7 @@ export const defaultConfiguration: Configuration = {
             addons: [
                 {
                     name: 'A32NX',
+                    repoOwner: 'flybywiresim',
                     repoName: 'a32nx',
                     gitHubReleaseBaseURL: 'https://github.com/flybywiresim/a32nx/releases/tag/',
                     aircraftName: 'A320neo',
@@ -131,6 +132,7 @@ export const defaultConfiguration: Configuration = {
             addons: [
                 {
                     name: 'A22X',
+                    repoOwner: 'Synaptic-Simulations',
                     repoName: 'a22x',
                     aircraftName: 'A220-300',
                     key: 'A22X',
