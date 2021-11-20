@@ -40,11 +40,11 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
     const addonDownloadState = useSelector<InstallerStore>((state) => {
         try {
-            return state.installStatus[addon.key]  as InstallStatus;
+            return state.installStatus[addon.key] as InstallStatus;
         } catch (e) {
             return InstallStatus.Unknown;
         }
-    })
+    });
 
     useEffect(() => {
         if (addon.enabled) {

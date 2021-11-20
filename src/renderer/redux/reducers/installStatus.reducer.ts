@@ -4,13 +4,13 @@ import { InstallStatus } from "renderer/components/AircraftSection";
 
 const initialState : Record<string, InstallStatus> = null;
 
-const reducer = (state = initialState, action: InstallAction) => {
+const reducer = (state = initialState, action: InstallAction): Record<string, InstallStatus> => {
     switch (action.type) {
         case actionTypes.SET_INSTALL_STATUS:
             return {
                 ...state,
                 [action.addonKey]: action.payload,
-                }
+            };
         default:
             return state;
     }

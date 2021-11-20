@@ -13,7 +13,6 @@ export interface DownloadItem {
 
 export type DownloadsState = DownloadItem[];
 
-
 export interface UpdateDownloadProgressAction {
     type: typeof actions.UPDATE_DOWNLOAD_PROGRESS
     payload: {
@@ -106,5 +105,4 @@ export interface ChangelogAction {
 
 export type DownloadActionType = UpdateDownloadProgressAction | RegisterNewDownloadProgressAction | DeleteDownloadAction
 
-
-export type RootStore = ReturnType<typeof rootReducer> 
+export type RootStore = ReturnType<typeof rootReducer>

@@ -132,22 +132,22 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         try {
             return props.installedTracks[props.addon.key] as AddonTrack;
         } catch (e) {
-            setInstalledTrack(null)
-            return null
+            setInstalledTrack(null);
+            return null;
         }
     };
     const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
-        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: props.addon.key,  payload: newInstalledTrack });
+        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: props.addon.key, payload: newInstalledTrack });
     };
 
     const selectedTrack = (): AddonTrack => {
         try {
             return props.selectedTracks[props.addon.key] as AddonTrack;
         } catch (e) {
-            setSelectedTrack(null)
-            return null
+            setSelectedTrack(null);
+            return null;
         }
-    }
+    };
 
     const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
         store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: props.addon.key, payload: newSelectedTrack });
@@ -157,10 +157,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         try {
             return props.installStatus[props.addon.key] as InstallStatus;
         } catch (e) {
-            setInstallStatus(InstallStatus.Unknown)
+            setInstallStatus(InstallStatus.Unknown);
             return InstallStatus.Unknown;
         }
-    }
+    };
 
     const setInstallStatus = (new_state: InstallStatus) => {
         store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: props.addon.key, payload: new_state });

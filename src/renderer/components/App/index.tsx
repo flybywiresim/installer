@@ -80,7 +80,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         }, [])
     );
 
-    addons.forEach(AddonData.configureInitialAddonState)
+    addons.forEach(AddonData.configureInitialAddonState);
 
     useEffect(() => {
         addons.forEach(fetchLatestVersionNames);
