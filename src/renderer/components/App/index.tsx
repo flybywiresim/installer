@@ -21,6 +21,7 @@ import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
+import settings from 'common/settings';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -86,7 +87,19 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         addons.forEach(fetchLatestVersionNames);
     }, []);
 
-    const [selectedItem, setSelectedItem] = useState<string>(addons[0].key);
+    const initialSelectedItem = (): string => {
+        if (settings.get('cache.main.sectionToShow')) {
+            return settings.get('cache.main.sectionToShow');
+        } else {
+            return addons[0].key;
+        }
+    };
+
+    const [selectedItem, setSelectedItem] = useState<string>(initialSelectedItem);
+
+    useEffect(() => {
+        settings.set('cache.main.sectionToShow', selectedItem);
+    }, [selectedItem]);
 
     let sectionToShow;
     switch (selectedItem) {
