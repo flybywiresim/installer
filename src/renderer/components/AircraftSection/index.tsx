@@ -562,7 +562,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 </TopContainer>
                 <LeftContainer className={'col-start-1 ' + (props.addon.gitHubReleaseBaseURL ? 'col-end-2' : 'col-end-3')}>
                     <DetailsContainer>
-                        <h3 className="font-semibold text-teal-50">About This Version</h3>
+                        {selectedTrack().description && <h3 className="font-semibold text-teal-50">About This Version</h3>}
                         <ReactMarkdown
                             className="text-lg text-gray-300"
                             children={selectedTrack()?.description ?? ''}

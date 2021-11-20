@@ -22,7 +22,7 @@ type BaseAddonTrack = {
     key: string,
     url: string,
     alternativeUrls?: string[],
-    description: string,
+    description?: string,
     releaseModel: ReleaseModel,
 }
 
