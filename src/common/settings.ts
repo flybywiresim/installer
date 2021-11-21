@@ -27,6 +27,7 @@ const defaultCommunityDir = (): string => {
     if (!msfsConfigPath) {
         return 'C:\\';
     }
+
     try {
         const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
         const msfsConfigLines = msfsConfig.split(/\r?\n/);
@@ -35,6 +36,7 @@ const defaultCommunityDir = (): string => {
 
         return fs.existsSync(communityDir) ? communityDir : 'C:\\';
     } catch (e) {
+        console.warn('Could not parse community dir from file', msfsConfigPath)
         return 'C:\\';
     }
 };
