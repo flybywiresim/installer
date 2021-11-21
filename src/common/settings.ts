@@ -37,6 +37,7 @@ const defaultCommunityDir = (): string => {
         return fs.existsSync(communityDir) ? communityDir : 'C:\\';
     } catch (e) {
         console.warn('Could not parse community dir from file', msfsConfigPath);
+        console.error(e);
         return 'C:\\';
     }
 };
