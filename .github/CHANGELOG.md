@@ -5,6 +5,9 @@
 <!-- Use the following format below -->
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
+## 2.1.1
+
+1. [LOGIC] Fix error during configuration of community directory - @FoxtrotSierra6829
 ## 2.1.0
 
 1. [UI] Add ability to change date layout - @FoxtrotSierra6829
