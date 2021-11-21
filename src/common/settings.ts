@@ -27,13 +27,16 @@ const defaultCommunityDir = (): string => {
     if (!msfsConfigPath) {
         return 'C:\\';
     }
-
-    const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
-    const msfsConfigLines = msfsConfig.split(/\r?\n/);
-    const packagesPathLine = msfsConfigLines.find(line => line.includes('InstalledPackagesPath'));
-    const communityDir = path.join(packagesPathLine.split(" ").slice(1).join(" ").replaceAll('"', ''), "\\Community");
+    try {
+        const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
+        const msfsConfigLines = msfsConfig.split(/\r?\n/);
+        const packagesPathLine = msfsConfigLines.find(line => line.includes('InstalledPackagesPath'));
+        const communityDir = path.join(packagesPathLine.split(" ").slice(1).join(" ").replaceAll('"', ''), "\\Community");
 
     return fs.existsSync(communityDir) ? communityDir : 'C:\\';
+    } catch (e) {
+        return 'C:\\';
+    }
 };
 
 export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
