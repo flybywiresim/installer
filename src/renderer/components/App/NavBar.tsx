@@ -1,5 +1,6 @@
 import React from "react";
 import { FC } from "react";
+import { Publisher } from "renderer/utils/InstallerConfiguration";
 
 export const NavBar: FC = ({ children }) => (
     <div className="bg-navy p-5 flex flex-col gap-y-5">
@@ -14,11 +15,11 @@ export const NavBarItem: FC = ({ children }) => (
 );
 
 export interface NavBarPublisherProps {
-    icon: string,
+    publisher: Publisher,
 }
 
-export const NavBarPublisher: FC<NavBarPublisherProps> = ({ icon }) => (
+export const NavBarPublisher: FC<NavBarPublisherProps> = ({ publisher }) => (
     <NavBarItem>
-        <img width={32} src={icon} />
+        <img width={32} src={publisher.logoUrl} />
     </NavBarItem>
 );

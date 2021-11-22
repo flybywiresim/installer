@@ -22,9 +22,7 @@ import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConf
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-
-import fbwLogo from '../../assets/FBW-Tail.svg';
-import synLogo from '../../assets/Synaptic-Logo.png';
+import { AddonBar, AddonBarItem } from "renderer/components/App/AddonBar";
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -113,9 +111,15 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             <SimpleBar>
                 <Container className="flex flex-row">
                     <NavBar>
-                        <NavBarPublisher icon={fbwLogo} />
-                        <NavBarPublisher icon={synLogo} />
+                        {configuration.publishers.map((publisher) => (
+                            <NavBarPublisher publisher={publisher} />
+                        ))}
                     </NavBar>
+                    <AddonBar>
+                        {configuration.publishers[0].addons.map((addon) => (
+                            <AddonBarItem className="bg-cyan h-32" addon={addon} />
+                        ))}
+                    </AddonBar>
 
                     <MainLayout className="flex flex-col overflow-hidden">
                         <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
