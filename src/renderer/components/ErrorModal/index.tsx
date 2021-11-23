@@ -6,8 +6,8 @@ import { Directories } from "renderer/utils/Directories";
 import * as fs from "fs";
 
 export const ErrorModal = (): JSX.Element => {
-    const [communityError, setCommunityError] = useState<boolean>(!fs.existsSync(Directories.community()));
-    const [liveriesError, setLiveriesError] = useState<boolean>(!fs.existsSync(Directories.liveries()));
+    const [communityError, setCommunityError] = useState<boolean>(!fs.existsSync(Directories.community()) || Directories.community() === 'C:\\');
+    const [liveriesError, setLiveriesError] = useState<boolean>(!fs.existsSync(Directories.liveries()) || Directories.liveries() === 'C:\\');
 
     const handleClose = () => {
         setCommunityError(false);
