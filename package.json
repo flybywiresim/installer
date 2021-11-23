@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "2.1.0-dev02",
+  "version": "2.1.1-dev.1",
   "description": "Desktop application to install and customize FlyByWire addons",
   "main": "webpack/main/main.js",
   "scripts": {
