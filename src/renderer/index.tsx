@@ -43,6 +43,7 @@ import { LiveryState } from "renderer/redux/reducers/liveries.reducer";
 import { Directories } from "renderer/utils/Directories";
 import settings from "common/settings";
 import channels from "common/channels";
+import { MemoryRouter } from 'react-router-dom';
 
 // Check for A32NX incompatible liveries if not disabled
 
@@ -68,7 +69,9 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
 
     ReactDOM.render(
         <Provider store={store}>
-            <App configuration={config} />
+            <MemoryRouter>
+                <App configuration={config} />
+            </MemoryRouter>
         </Provider>,
         document.getElementById('root')
     );
@@ -83,26 +86,3 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
         document.getElementById('root')
     );
 });
-
-// When document has loaded, initialize
-document.onreadystatechange = () => {
-    if (document.readyState == "complete") {
-        handleWindowControls();
-    }
-};
-
-function handleWindowControls() {
-    document.getElementById('min-button')?.addEventListener("click", () => {
-        ipcRenderer.send(channels.window.minimize);
-    });
-
-    document.getElementById('max-button')?.addEventListener("click", () => {
-        ipcRenderer.send(channels.window.maximize);
-
-    });
-
-    document.getElementById('close-button')?.addEventListener("click", () => {
-        Directories.removeAllTemp();
-        ipcRenderer.send(channels.window.close);
-    });
-}

@@ -38,6 +38,8 @@ const createWindow = (): void => {
         }
     });
 
+    remote.enable(mainWindow.webContents);
+
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
     });
@@ -60,6 +62,10 @@ const createWindow = (): void => {
         mainWindow.destroy();
     });
 
+    ipcMain.on(channels.window.isMaximized, (event) => {
+        event.sender.send(channels.window.isMaximized, mainWindow.isMaximized());
+    });
+
     /*
      * Setting the value of the program's taskbar progress bar.
      * value: The value to set the progress bar to. ( [0 - 1.0], -1 to hide the progress bar )
@@ -67,8 +73,6 @@ const createWindow = (): void => {
     ipcMain.on('set-window-progress-bar', (_, value: number) => {
         mainWindow.setProgressBar(value);
     });
-
-    remote.enable(mainWindow.webContents);
 
     const lastX = settings.get<string, number>('cache.main.lastWindowX');
     const lastY = settings.get<string, number>('cache.main.lastWindowY');

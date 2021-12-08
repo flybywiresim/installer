@@ -14,13 +14,11 @@ export const defaultConfiguration: Configuration = {
                 {
                     name: 'A32NX',
                     repoName: 'a32nx',
-                    aircraftName: 'A320neo',
+                    aircraftName: 'A320-251N',
                     key: 'A32NX',
                     enabled: true,
                     menuIconUrl: A320NoseSVG,
-                    backgroundImageUrls: [
-                        'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'
-                    ],
+                    backgroundImageUrl: 'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png',
                     shortDescription: 'Airbus A320neo Series',
                     description: 'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
                         'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +
@@ -89,11 +87,11 @@ export const defaultConfiguration: Configuration = {
                 {
                     name: 'A380X',
                     repoName: 'a380x',
-                    aircraftName: 'A380',
+                    aircraftName: 'A380-841',
                     key: 'A380X',
                     enabled: false,
                     menuIconUrl: A380NoseSVG,
-                    backgroundImageUrls: [],
+                    backgroundImageUrl: 'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png',
                     shortDescription: 'Airbus A380-800',
                     description: '',
                     targetDirectory: 'A380',
@@ -112,7 +110,7 @@ export const defaultConfiguration: Configuration = {
                     key: 'A22X',
                     enabled: false,
                     menuIconUrl: A320NoseSVG,
-                    backgroundImageUrls: [],
+                    backgroundImageUrl: 'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png',
                     shortDescription: 'Airbus A220-300 (CSeries 300)',
                     description: '',
                     targetDirectory: 'A22X',

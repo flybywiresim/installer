@@ -37,7 +37,7 @@ export type Addon = {
     repoName: string,
     aircraftName: string,
     key: string,
-    backgroundImageUrls: string[],
+    backgroundImageUrl: string,
     shortDescription: string,
     description: string,
     menuIconUrl: string,
@@ -47,10 +47,18 @@ export type Addon = {
     enabled: boolean,
 }
 
+type PublisherButton = {
+    text: string,
+    url: string,
+    icon: string,
+    inline?: boolean,
+}
+
 export type Publisher = {
     name: string,
     logoUrl: string,
     addons: Addon[],
+    buttons?: PublisherButton[],
 }
 
 export type Configuration = {

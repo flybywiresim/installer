@@ -6,7 +6,7 @@ import SettingsSection from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
 import AircraftSection from 'renderer/components/AircraftSection';
 
-import { Container, MainLayout, Content, PageHeader, PageSider, } from './styles';
+import { Container, MainLayout, PageHeader, PageSider, } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
@@ -14,14 +14,13 @@ import { DataCache } from '../../utils/DataCache';
 import * as actionTypes from '../../redux/actionTypes';
 import store from '../../redux/store';
 import { SetAddonAndTrackLatestReleaseInfo } from "renderer/redux/types";
-import { Code, Settings } from "tabler-icons-react";
-import { SidebarItem, SidebarAddon, SidebarPublisher } from "renderer/components/App/SideBar";
 import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
+import { Route, Switch } from 'react-router-dom';
 import { AddonBar, AddonBarItem } from "renderer/components/App/AddonBar";
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
@@ -86,22 +85,17 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         addons.forEach(fetchLatestVersionNames);
     }, []);
 
-    const [selectedItem, setSelectedItem] = useState<string>(addons[0].key);
+    const [selectedAddon, setSelectedAddon] = useState(addons[0]);
+    const [selectedPublisher, setSelectedPublisher] = useState(configuration.publishers[0]);
 
-    let sectionToShow;
-    switch (selectedItem) {
-        case 'settings':
-            sectionToShow = <SettingsSection />;
-            break;
+    useEffect(() => {
+        fetchLatestVersionNames(selectedPublisher.addons[0]).then(() => {
+            setSelectedAddon(selectedPublisher.addons[0]);
+        });
+    }, [selectedPublisher]);
 
-        case 'debug':
-            sectionToShow = <DebugSection />;
-            break;
-
-        default:
-            sectionToShow = <AircraftSection addon={addons.find(x => x.key === selectedItem)}/>;
-            break;
-    }
+    console.log(configuration.publishers);
+    console.log(addons);
 
     return (
         <>
@@ -110,19 +104,8 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             <WarningModal />
             <SimpleBar>
                 <Container className="flex flex-row">
-                    <NavBar>
-                        {configuration.publishers.map((publisher) => (
-                            <NavBarPublisher publisher={publisher} />
-                        ))}
-                    </NavBar>
-                    <AddonBar>
-                        {configuration.publishers[0].addons.map((addon) => (
-                            <AddonBarItem className="bg-cyan h-32" addon={addon} />
-                        ))}
-                    </AddonBar>
-
                     <MainLayout className="flex flex-col overflow-hidden">
-                        <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
+                        <div className="absolute w-full h-10 z-50 flex flex-row pl-4 items-center bg-navy-dark shadow-xl">
                             <PageHeader className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
                                 <InstallerUpdate />
@@ -131,52 +114,38 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                             <WindowButtons />
                         </div>
 
-                        <div className="h-full pt-14 flex flex-row justify-start">
-                            <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
+                        <div className="h-full pt-10 flex flex-row justify-start">
+                            <NavBar>
+                                {configuration.publishers.map((publisher) => (
+                                    <NavBarPublisher
+                                        selected={selectedPublisher === publisher}
+                                        publisher={publisher}
+                                        onClick={() => setSelectedPublisher(publisher)}
+                                    />
+                                ))}
+                            </NavBar>
+                            <PageSider className="z-40 flex-none bg-navy-medium shadow-2xl h-full" style={{ width: '30rem' }}>
                                 <div className="h-full flex flex-col divide-y divide-gray-700">
-                                    {
-                                        configuration.publishers.map(publisher => (
-                                            <SidebarPublisher name={publisher.name} logo={publisher.logoUrl}>
-                                                {
-                                                    publisher.addons.map(addon => (
-                                                        <SidebarAddon
-                                                            key={addon.key}
-                                                            addon={addon}
-                                                            isSelected={selectedItem === addon.key}
-                                                            handleSelected={() => setSelectedItem(addon.key)}
-                                                        />
-                                                    ))
-                                                }
-                                            </SidebarPublisher>
-                                        ))
-                                    }
-
-                                    <div className="mt-auto">
-                                        {
-                                            process.env.NODE_ENV === "development" &&
-                                            <SidebarItem iSelected={selectedItem === 'debug'} onClick={() => setSelectedItem('debug')}>
-                                                <Code className="text-gray-100 ml-2 mr-3" size={24} />
-
-                                                <div className="flex flex-col">
-                                                    <span className="text-lg text-gray-200 font-semibold">Debug</span>
-                                                </div>
-                                            </SidebarItem>
-                                        }
-
-                                        <SidebarItem iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
-                                            <Settings className="text-gray-100 ml-2 mr-3" size={24} />
-
-                                            <div className="flex flex-col">
-                                                <span className="text-lg text-gray-200 font-semibold">Settings</span>
-                                            </div>
-                                        </SidebarItem>
-                                    </div>
-
+                                    <AddonBar publisher={selectedPublisher}>
+                                        {selectedPublisher.addons.map((addon) => (
+                                            <AddonBarItem selected={selectedAddon.key === addon.key && addon.enabled} enabled={addon.enabled} className="h-32" addon={addon} onClick={() => setSelectedAddon(addon)} />
+                                        ))}
+                                    </AddonBar>
                                 </div>
                             </PageSider>
-                            <Content className="overflow-y-scroll bg-navy m-0">
-                                {sectionToShow}
-                            </Content>
+                            <div className="bg-navy m-0">
+                                <Switch>
+                                    <Route exact path="/">
+                                        <AircraftSection addon={addons.find(x => x.key === selectedAddon.key)}/>;
+                                    </Route>
+                                    <Route path="/debug">
+                                        <DebugSection/>
+                                    </Route>
+                                    <Route path="/settings">
+                                        <SettingsSection/>
+                                    </Route>
+                                </Switch>
+                            </div>
                         </div>
                     </MainLayout>
                 </Container>

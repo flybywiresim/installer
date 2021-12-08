@@ -10,8 +10,7 @@ export const Container = styled.div<{ wait: number }>`
 `;
 
 export const HeaderImage = styled.div`
-    height: 35vh;
-    max-height: 400px;
+    height: 50vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${headerBackground});
     background-size: cover;
     background-position: center;
@@ -118,6 +117,7 @@ export const Content = styled.div`
     grid-template-rows: auto auto;
     grid-gap: 1.32em;
     padding: 6px 24px 24px 24px;
+    height: 50vh;
 `;
 
 export const DialogContainer = styled.div`
@@ -148,17 +148,17 @@ export const VersionHistoryContainer = styled.div`
 `;
 
 export const DownloadProgress = styled(Progress)`
-  top: -10px;
+    .ant-progress-inner {
+        border: none;
+        height: 6px;
+        background-color: ${colors.navy};
+    }
 
-  .ant-progress-inner {
-    border: none;
-    height: 3px;
-    background-color: ${colors.navy};
-  }
 
-  .ant-progress-bg {
-    border-radius: 0;
-  }
+
+    .ant-progress-bg {
+        border-radius: 0;
+    }
 `;
 
 const InstallButtonTemplate = styled(props => <BaseButton

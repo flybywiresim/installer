@@ -1,25 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
     ButtonContainer,
-    ButtonsContainer as SelectionContainer,
     CancelButton,
-    Content,
-    DetailsContainer,
     DisabledButton,
-    DownloadProgress,
-    HeaderImage,
     InstallButton,
     InstalledButton,
-    LeftContainer,
     DialogContainer,
-    ModelInformationContainer,
-    ModelName,
-    ModelSmallDesc,
     StateText,
     SwitchButton,
-    TopContainer,
     UpdateButton,
-    VersionHistoryContainer
 } from './styles';
 import fs from "fs-extra";
 import * as path from 'path';
@@ -40,8 +29,6 @@ import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import settings from "common/settings";
 import { ipcRenderer } from 'electron';
 
@@ -145,14 +132,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
-    const [wait, setWait] = useState(1);
-
     const [releases, setReleases] = useState<AddonVersion[]>([]);
 
     useEffect(() => {
         getAddonReleases(props.addon).then(releases => {
             setReleases(releases);
-            setWait(wait => wait - 1);
             findInstalledTrack();
         });
     }, [props.addon]);
@@ -478,89 +462,83 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     });
 
     return (
-        <div className={`bg-navy ${wait ? 'hidden' : 'visible'}`}>
-            <HeaderImage>
-                <ModelInformationContainer>
-                    <ModelName>{props.addon.name}</ModelName>
-                    <ModelSmallDesc>{props.addon.shortDescription}</ModelSmallDesc>
-                </ModelInformationContainer>
-                <SelectionContainer>
+        <div className="bg-navy-light flex flex-col h-full">
+            {/* <HeaderImage>
+            </HeaderImage> */}
+            <div className="h-full relative bg-cover bg-center"
+                style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${props.addon.backgroundImageUrl})` }}
+            >
+                <div className="absolute bottom-10 left-10">
                     {msfsIsOpen !== MsfsStatus.Closed && <>
                         <ButtonContainer>
                             <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
                             <DisabledButton text='Update' />
+                            {/* TODO: put download speed here */}
                         </ButtonContainer>
                     </>}
                     {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
-                </SelectionContainer>
-            </HeaderImage>
-            <DownloadProgress percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" />
-            <Content>
-                {liveries.length > 0 &&
+                </div>
+            </div>
+            {/* <Content></Content> */}
+            {/* <DownloadProgress className="absolute top-0 left-0 right-0 mx-auto" percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" /> */}
+            <div className="flex flex-row h-full relative">
+                <div className="p-5 overflow-y-scroll">
+                    {liveries.length > 0 &&
                     <DialogContainer>
                         <LiveryConversionDialog />
                     </DialogContainer>
-                }
-                <TopContainer className={liveries.length > 0 ? 'mt-0' : '-mt-5'}>
-                    <div>
-                        <h5 className="text-base text-teal-50 uppercase">Mainline versions</h5>
-                        <Tracks>
-                            {
-                                props.addon.tracks.filter((track) => !track.isExperimental).map(track =>
-                                    <Track
-                                        addon={props.addon}
-                                        key={track.key}
-                                        track={track}
-                                        isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack?.key === track.key}
-                                        handleSelected={() => handleTrackSelection(track)}
-                                    />
-                                )
-                            }
-                        </Tracks>
+                    }
+                    <div className="">
+                        <h2 className="text-white font-extrabold">Choose Your Version</h2>
+                        <div className="flex flex-row gap-x-8">
+                            <div>
+                                <Tracks>
+                                    {
+                                        props.addon.tracks.filter((track) => !track.isExperimental).map(track =>
+                                            <Track
+                                                addon={props.addon}
+                                                key={track.key}
+                                                track={track}
+                                                isSelected={selectedTrack === track}
+                                                isInstalled={installedTrack?.key === track.key}
+                                                handleSelected={() => handleTrackSelection(track)}
+                                            />
+                                        )
+                                    }
+                                </Tracks>
+                                <h5 className="text-base text-teal-50 mt-2">Mainline Releases</h5>
+                            </div>
+                            <div>
+                                <Tracks>
+                                    {
+                                        props.addon.tracks.filter((track) => track.isExperimental).map(track =>
+                                            <Track
+                                                addon={props.addon}
+                                                key={track.key}
+                                                track={track}
+                                                isSelected={selectedTrack === track}
+                                                isInstalled={installedTrack?.key === track.key}
+                                                handleSelected={() => handleTrackSelection(track)}
+                                                isExperimental={true}
+                                            />
+                                        )
+                                    }
+                                </Tracks>
+                                <h5 className="text-base text-teal-50 mt-2">Experimental Releases</h5>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h5 className="text-base text-teal-50 uppercase">Experimental versions</h5>
-                        <Tracks>
-                            {
-                                props.addon.tracks.filter((track) => track.isExperimental).map(track =>
-                                    <Track
-                                        addon={props.addon}
-                                        key={track.key}
-                                        track={track}
-                                        isSelected={selectedTrack === track}
-                                        isInstalled={installedTrack?.key === track.key}
-                                        handleSelected={() => handleTrackSelection(track)}
-                                    />
-                                )
-                            }
-                        </Tracks>
+                    <div className="mt-10">
+                        <h2 className="text-white font-extrabold">Description</h2>
+                        <p className="text-xl text-white font-manrope">{props.addon.description}</p>
                     </div>
-                </TopContainer>
-                <LeftContainer>
-                    <DetailsContainer>
-                        <h3 className="font-semibold text-teal-50">About This Version</h3>
-                        <ReactMarkdown
-                            className="text-lg text-gray-300"
-                            children={selectedTrack?.description ?? ''}
-                            remarkPlugins={[remarkGfm]}
-                            linkTarget={"_blank"}
-                        />
-                        <h3 className="font-semibold text-teal-50">Details</h3>
-                        <p className="text-lg text-gray-300">{props.addon.description}</p>
-                    </DetailsContainer>
-                </LeftContainer>
-                <VersionHistoryContainer>
-                    <h3 className="font-semibold text-teal-50">Release History</h3>
-                    <Versions>
-                        {
-                            releases.map((version, idx) =>
-                                <Version key={idx} index={idx} version={version} />
-                            )
-                        }
-                    </Versions>
-                </VersionHistoryContainer>
-            </Content>
+                </div>
+                <div className="h-full relative bg-navy p-10 flex-shrink-0" style={{ width: '20rem' }}>
+                    <div className="absolute bottom-10 text-white flex items-center justify-center bg-gradient-to-r from-cyan to-blue-500 w-64 rounded-md p-5 flex-shrink-0">
+                        Download
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

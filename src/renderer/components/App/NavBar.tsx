@@ -1,25 +1,47 @@
 import React from "react";
 import { FC } from "react";
+import { NavLink, useHistory } from "react-router-dom";
 import { Publisher } from "renderer/utils/InstallerConfiguration";
+import { Settings } from "tabler-icons-react";
 
-export const NavBar: FC = ({ children }) => (
-    <div className="bg-navy p-5 flex flex-col gap-y-5">
-        {children}
-    </div>
-);
+export const NavBar: FC = ({ children }) => {
+    const history = useHistory();
 
-export const NavBarItem: FC = ({ children }) => (
-    <div className="w-16 h-16 bg-navy-light flex flex-col justify-center items-center rounded-md">
-        {children}
-    </div>
-);
+    return (
+        <div className="bg-navy p-5 flex flex-col justify-between">
+            <div className="flex flex-col gap-y-5">
+                {children}
+            </div>
 
-export interface NavBarPublisherProps {
+            <NavbarItem to="/settings" onClick={() => {}} selected={history.location.pathname === "/settings"}>
+                <Settings className="text-gray-100" size={24} />
+            </NavbarItem>
+        </div>
+    );
+};
+
+export interface NavBarItemProps {
+    to?: string,
+    selected: boolean,
+    onClick: () => void
+}
+
+export interface NavBarPublisherProps extends NavBarItemProps {
     publisher: Publisher,
 }
 
-export const NavBarPublisher: FC<NavBarPublisherProps> = ({ publisher }) => (
-    <NavBarItem>
+export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', selected, onClick, children }) => (
+    <NavLink
+        to={to}
+        className={`w-16 h-16 shadow-md hover:shadow-lg flex flex-col justify-center items-center rounded-md border-2 border-navy-light bg-transparent hover:bg-navy-light transition duration-200 ${selected && 'bg-navy-light'}`}
+        onClick={onClick}
+    >
+        {children}
+    </NavLink>
+);
+
+export const NavBarPublisher: FC<NavBarPublisherProps> = ({ publisher, selected, onClick }) => (
+    <NavbarItem selected={selected} onClick={onClick}>
         <img width={32} src={publisher.logoUrl} />
-    </NavBarItem>
+    </NavbarItem>
 );

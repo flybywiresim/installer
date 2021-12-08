@@ -5,14 +5,16 @@ import { InstallerStore } from "renderer/redux/store";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { Addon } from "renderer/utils/InstallerConfiguration";
 
-export type SidebarItemProps = { enabled?: boolean, iSelected: boolean, onClick: () => void, className?: string }
+export type SidebarItemProps = { enabled?: boolean, selected: boolean, onClick: () => void, className?: string }
 
-export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, iSelected, onClick, children, className }) => {
+export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, selected, onClick, children, className }) => {
     return (
         <div
-            className={`w-full flex flex-row items-center transition-all duration-200 ${iSelected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} ${enabled ? 'hover:bg-navy-lightest' : ''} pl-5 py-4 ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full flex flex-row items-center transition-all duration-200 ${selected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} ${enabled ? 'hover:bg-navy-lightest' : ''} pl-5 py-4 ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={onClick}
-        >{children}</div>
+        >
+            {children}
+        </div>
     );
 };
 
@@ -89,7 +91,7 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
     };
 
     return (
-        <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
+        <SidebarItem enabled={addon.enabled} selected={isSelected} onClick={() => {
             if (addon.enabled) {
                 handleSelected(addon.key);
             }

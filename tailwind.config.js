@@ -22,19 +22,26 @@ module.exports = {
                 '700px': '700px',
             },
             colors: {
-                'quasi-white': '#fafafa',
-                cyan: '#00E0FE',
+                'quasi-white': '#FAFAFA',
+                grey:  {
+                    medium: '#EDEDED',
+                },
+                cyan: {
+                    DEFAULT: '#00E0FE',
+                    medium: '00C4F5'
+                },
                 navy: {
-                    'DEFAULT': '#171E2C',
-                    'light': '#1F2A3C',
-                    'lightest': '#273347',
-                    'lighter': '#222c3d',
+                    DEFAULT: '#171E2C',
+                    light: '#1F2A3C',
+                    lightest: '#273347',
+                    lighter: '#222c3d',
+                    dark: '#0E131B',
                 },
                 red: {
-                    'DEFAULT': '#FC3A3A',
-                    'dark': '#F70404',
-                    'darker': '#E40303',
-                    'darkest': "#D10303",
+                    DEFAULT: '#FC3A3A',
+                    dark: '#F70404',
+                    darker: '#E40303',
+                    darkest: '#D10303',
                 },
             },
             boxShadow: {
@@ -43,11 +50,19 @@ module.exports = {
             animation: {
                 'spin-reverse': 'spin 1s linear infinite reverse',
             },
+            fontFamily: {
+                inter: ['Inter', 'sans-serif'],
+                manrope: ['Manrope', 'sans-serif'],
+            },
+            borderRadius: {
+                'sm-md': '4px',
+            },
         },
     },
     variants: {
         extend: {
-            backgroundColor: ['first']
+            brightness: ['hover', 'focus'],
+            backgroundColor: ['first'],
         }
     },
     plugins: [require('@flybywiresim/tailwind-config')],
