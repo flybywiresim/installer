@@ -19,10 +19,9 @@ type TrackProps = {
     isSelected: boolean,
     isInstalled: boolean,
     handleSelected(track: AddonTrack): void,
-    isExperimental?: boolean,
 };
 
-export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, addon, track, isExperimental }) => {
+export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, addon, track }) => {
     const latestVersionName = useSelector<InstallerStore, string>(state => {
         return state.latestVersionNames
             .find((entry) => entry.addonKey === addon.key && entry.trackKey === track.key)
@@ -31,7 +30,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
 
     return (
         <div
-            className={`w-60 flex flex-row items-center relative bg-navy text-white rounded-sm-md border-2 border-transparent transition-all duration-200 cursor-pointer ${(isSelected || isInstalled) && (isExperimental ? 'border-yellow-300 text-yellow-300' : 'border-cyan text-cyan')}`}
+            className={`w-60 flex flex-row items-center relative bg-navy text-white rounded-sm-md border-2 border-transparent transition-all duration-200 cursor-pointer ${isSelected && 'border-cyan text-cyan'}`}
             onClick={() => handleSelected(track)}
         >
             <div className={`w-1 h-12 rounded-r-xl transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
@@ -40,7 +39,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
                 <span className="text-lg text-current -mt-0.5">{latestVersionName}</span>
             </div>
             {isInstalled && (
-                <Check className="absolute right-2 stroke-current" strokeWidth={3}/>
+                <Check className={`absolute right-2 text-cyan stroke-current`} strokeWidth={3}/>
             )}
         </div>
     );

@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
-    ButtonContainer,
-    CancelButton,
-    DisabledButton,
-    InstallButton,
-    InstalledButton,
     DialogContainer,
-    StateText,
-    SwitchButton,
-    UpdateButton,
 } from './styles';
 import fs from "fs-extra";
 import * as path from 'path';
@@ -31,6 +23,8 @@ import { LiveryConversionDialog } from "renderer/components/AircraftSection/Live
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import settings from "common/settings";
 import { ipcRenderer } from 'electron';
+import { NavLink, Redirect, Route } from 'react-router-dom';
+import { InfoCircle, JournalText, Palette, Sliders } from 'react-bootstrap-icons';
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -71,6 +65,37 @@ enum MsfsStatus {
     Closed,
     Checking,
 }
+
+interface InstallButtonProps {
+    className?: string;
+    onClick?: () => void;
+}
+
+const InstallButton: FC<InstallButtonProps> = ({ children, className, onClick }) => (
+    <div className={`w-64 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer ${className}`} onClick={onClick}>
+        {children}
+    </div>
+);
+
+const StateText: FC = ({ children }) => (
+    <div className="text-white text-2xl font-bold">
+        {children}
+    </div>
+);
+
+interface SideBarLinkProps {
+    to: string;
+}
+
+const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
+    <NavLink
+        className="flex flex-row items-center gap-x-5 justify-center text-2xl text-white hover:text-cyan"
+        activeClassName="text-cyan"
+        to={to}
+    >
+        {children}
+    </NavLink>
+);
 
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const findInstalledTrack = (): AddonTrack => {
@@ -366,93 +391,168 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }).catch(e => console.log(e));
     };
 
-    const getInstallButton = (): JSX.Element => {
+    const activeState = (): JSX.Element => {
+        if (msfsIsOpen !== MsfsStatus.Closed) {
+            return (
+                <StateText>
+                    {msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}
+                </StateText>
+            );
+        }
+
         switch (installStatus) {
             case InstallStatus.UpToDate:
                 return (
-                    <ButtonContainer>
-                        <InstalledButton inGitRepo={false} />
-                    </ButtonContainer>
+                    <></>
                 );
             case InstallStatus.NeedsUpdate:
                 return (
-                    <ButtonContainer>
-                        <StateText>{'New release available'}</StateText>
-                        <UpdateButton onClick={handleInstall} />
-                    </ButtonContainer>
+                    <StateText>New release available</StateText>
                 );
             case InstallStatus.FreshInstall:
-                return <InstallButton onClick={handleInstall} />;
+                return (
+                    <></>
+                );
             case InstallStatus.GitInstall:
                 return (
-                    <ButtonContainer>
-                        <InstalledButton inGitRepo={true} />
-                    </ButtonContainer>
+                    <></>
                 );
             case InstallStatus.TrackSwitch:
-                return <SwitchButton onClick={handleInstall} />;
+                return (
+                    <></>
+                );
             case InstallStatus.DownloadPrep:
                 return (
-                    <ButtonContainer>
-                        <StateText>Preparing update</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
+                    <StateText>Preparing update</StateText>
                 );
             case InstallStatus.Downloading:
                 return (
-                    <ButtonContainer>
-                        <StateText>{`Downloading ${download?.module.toLowerCase()} module: ${download?.progress}%`}</StateText>
-                        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-                    </ButtonContainer>
+                    <StateText>{`Downloading ${download?.module.toLowerCase()} module`}</StateText>
                 );
             case InstallStatus.Decompressing:
                 return (
-                    <ButtonContainer>
-                        <StateText>Decompressing</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
+                    <StateText>Decompressing</StateText>
                 );
             case InstallStatus.DownloadEnding:
                 return (
-                    <ButtonContainer>
-                        <StateText>Finishing update</StateText>
-                        <DisabledButton text='Cancel'/>
-                    </ButtonContainer>
+                    <StateText>Finishing update</StateText>
                 );
             case InstallStatus.DownloadDone:
                 return (
-                    <ButtonContainer>
-                        <StateText>Completed!</StateText>
-                        <InstalledButton inGitRepo={false} />
-                    </ButtonContainer>
+                    <StateText>Completed!</StateText>
                 );
             case InstallStatus.DownloadRetry:
                 return (
-                    <ButtonContainer>
-                        <StateText>Retrying {download?.module.toLowerCase()} module</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
+                    <StateText>Retrying {download?.module.toLowerCase()} module</StateText>
                 );
             case InstallStatus.DownloadError:
                 return (
-                    <ButtonContainer>
-                        <StateText>Failed to install</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
+                    <StateText>Failed to install</StateText>
                 );
             case InstallStatus.DownloadCanceled:
                 return (
-                    <ButtonContainer>
-                        <StateText>Download canceled</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
+                    <StateText>Download canceled</StateText>
                 );
             case InstallStatus.Unknown:
                 return (
-                    <ButtonContainer>
-                        <StateText>Unknown state</StateText>
-                        <DisabledButton text='Error'/>
-                    </ButtonContainer>
+                    <StateText>Unknown state</StateText>
+                );
+        }
+    };
+
+    const activeInstallButton = (): JSX.Element => {
+        if (msfsIsOpen !== MsfsStatus.Closed) {
+            return (
+                <InstallButton className="bg-gray-700 text-grey-medium pointer-events-none">
+                    Update
+                </InstallButton>
+            );
+        }
+
+        switch (installStatus) {
+            case InstallStatus.UpToDate:
+                return (
+                    <InstallButton className="pointer-events-none bg-green-500">
+                        Installed
+                    </InstallButton>
+                );
+            case InstallStatus.NeedsUpdate:
+                return (
+                    <InstallButton className="bg-yellow-500" onClick={handleInstall}>
+                        Update
+                    </InstallButton>
+                );
+            case InstallStatus.FreshInstall:
+                return (
+                    <InstallButton className="pointer-events-none bg-green-500" onClick={handleInstall}>
+                        Installed
+                    </InstallButton>
+                );
+            case InstallStatus.GitInstall:
+                return (
+                    <InstallButton className="pointer-events-none bg-green-500">
+                        Installed (git)
+                    </InstallButton>
+                );
+            case InstallStatus.TrackSwitch:
+                return (
+                    <InstallButton className="bg-purple-600" onClick={handleInstall}>
+                        Switch Version
+                    </InstallButton>
+                );
+            case InstallStatus.DownloadPrep:
+                return (
+                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                        Cancel
+                    </InstallButton>
+                );
+            case InstallStatus.Downloading:
+                return (
+                    <InstallButton className="bg-red-600" onClick={handleCancel}>
+                        Cancel
+                    </InstallButton>
+                );
+            case InstallStatus.Decompressing:
+                return (
+                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                        Cancel
+                    </InstallButton>
+                );
+            case InstallStatus.DownloadEnding:
+                return (
+                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                        Cancel
+                    </InstallButton>
+                );
+            case InstallStatus.DownloadDone:
+                return (
+                    <InstallButton className="pointer-events-none bg-green-500">
+                        Installed
+                    </InstallButton>
+                );
+            case InstallStatus.DownloadRetry:
+                return (
+                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                        Error
+                    </InstallButton>
+                );
+            case InstallStatus.DownloadError:
+                return (
+                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                        Error
+                    </InstallButton>
+                );
+            case InstallStatus.DownloadCanceled:
+                return (
+                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                        Error
+                    </InstallButton>
+                );
+            case InstallStatus.Unknown:
+                return (
+                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                        Error
+                    </InstallButton>
                 );
         }
     };
@@ -463,79 +563,103 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     return (
         <div className="bg-navy-light flex flex-col h-full">
-            {/* <HeaderImage>
-            </HeaderImage> */}
             <div className="h-full relative bg-cover bg-center"
                 style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${props.addon.backgroundImageUrl})` }}
             >
-                <div className="absolute bottom-10 left-10">
-                    {msfsIsOpen !== MsfsStatus.Closed && <>
-                        <ButtonContainer>
-                            <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
-                            <DisabledButton text='Update' />
-                            {/* TODO: put download speed here */}
-                        </ButtonContainer>
-                    </>}
-                    {msfsIsOpen === MsfsStatus.Closed && getInstallButton()}
+                <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
+                    <div>
+                        {activeState()}
+                        {/* TODO: Actually calculate this value */}
+                        {installStatus === InstallStatus.Downloading && (
+                            <div className="text-white text-2xl">98.7 mb/s</div>
+                        )}
+                    </div>
+                    {installStatus === InstallStatus.Downloading && (
+                        // TODO: Replace this with a JIT value
+                        <div className="text-white font-semibold" style={{ fontSize: '38px' }}>
+                            {download?.progress}%
+                        </div>
+                    )}
                 </div>
             </div>
-            {/* <Content></Content> */}
             {/* <DownloadProgress className="absolute top-0 left-0 right-0 mx-auto" percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" /> */}
             <div className="flex flex-row h-full relative">
-                <div className="p-5 overflow-y-scroll">
-                    {liveries.length > 0 &&
+                <div className="p-5 overflow-y-scroll w-full">
+                    <Route path="/aircraft-section">
+                        <Redirect to="/aircraft-section/configure" />
+                    </Route>
+                    <Route path="/aircraft-section/configure">
+                        {liveries.length > 0 &&
                     <DialogContainer>
                         <LiveryConversionDialog />
                     </DialogContainer>
-                    }
-                    <div className="">
-                        <h2 className="text-white font-extrabold">Choose Your Version</h2>
-                        <div className="flex flex-row gap-x-8">
-                            <div>
-                                <Tracks>
-                                    {
-                                        props.addon.tracks.filter((track) => !track.isExperimental).map(track =>
-                                            <Track
-                                                addon={props.addon}
-                                                key={track.key}
-                                                track={track}
-                                                isSelected={selectedTrack === track}
-                                                isInstalled={installedTrack?.key === track.key}
-                                                handleSelected={() => handleTrackSelection(track)}
-                                            />
-                                        )
-                                    }
-                                </Tracks>
-                                <h5 className="text-base text-teal-50 mt-2">Mainline Releases</h5>
-                            </div>
-                            <div>
-                                <Tracks>
-                                    {
-                                        props.addon.tracks.filter((track) => track.isExperimental).map(track =>
-                                            <Track
-                                                addon={props.addon}
-                                                key={track.key}
-                                                track={track}
-                                                isSelected={selectedTrack === track}
-                                                isInstalled={installedTrack?.key === track.key}
-                                                handleSelected={() => handleTrackSelection(track)}
-                                                isExperimental={true}
-                                            />
-                                        )
-                                    }
-                                </Tracks>
-                                <h5 className="text-base text-teal-50 mt-2">Experimental Releases</h5>
+                        }
+                        <div className="">
+                            <h2 className="text-white font-extrabold">Choose Your Version</h2>
+                            <div className="flex flex-row gap-x-8">
+                                <div>
+                                    <Tracks>
+                                        {
+                                            props.addon.tracks.filter((track) => !track.isExperimental).map(track =>
+                                                <Track
+                                                    addon={props.addon}
+                                                    key={track.key}
+                                                    track={track}
+                                                    isSelected={selectedTrack === track}
+                                                    isInstalled={installedTrack?.key === track.key}
+                                                    handleSelected={() => handleTrackSelection(track)}
+                                                />
+                                            )
+                                        }
+                                    </Tracks>
+                                    <h5 className="text-base text-teal-50 mt-2">Mainline Releases</h5>
+                                </div>
+                                <div>
+                                    <Tracks>
+                                        {
+                                            props.addon.tracks.filter((track) => track.isExperimental).map(track =>
+                                                <Track
+                                                    addon={props.addon}
+                                                    key={track.key}
+                                                    track={track}
+                                                    isSelected={selectedTrack === track}
+                                                    isInstalled={installedTrack?.key === track.key}
+                                                    handleSelected={() => handleTrackSelection(track)}
+                                                />
+                                            )
+                                        }
+                                    </Tracks>
+                                    <h5 className="text-base text-teal-50 mt-2">Experimental Releases</h5>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="mt-10">
-                        <h2 className="text-white font-extrabold">Description</h2>
-                        <p className="text-xl text-white font-manrope">{props.addon.description}</p>
-                    </div>
+                        <div className="mt-10">
+                            <h2 className="text-white font-extrabold">Description</h2>
+                            <p className="text-xl text-white font-manrope">{props.addon.description}</p>
+                        </div>
+                    </Route>
                 </div>
-                <div className="h-full relative bg-navy p-10 flex-shrink-0" style={{ width: '20rem' }}>
-                    <div className="absolute bottom-10 text-white flex items-center justify-center bg-gradient-to-r from-cyan to-blue-500 w-64 rounded-md p-5 flex-shrink-0">
-                        Download
+                <div className="flex flex-col items-center justify-between h-full relative bg-navy p-7 flex-shrink-0">
+                    <div className="flex flex-col items-start place-self-start space-y-7">
+                        <SideBarLink to="/aircraft-section/configure">
+                            <Sliders size={24}/>
+                            Configure
+                        </SideBarLink>
+                        <SideBarLink to="/aircraft-section/release-notes">
+                            <JournalText size={24}/>
+                            Release Notes
+                        </SideBarLink>
+                        <SideBarLink to="/aircraft-section/liveries">
+                            <Palette size={24}/>
+                            Liveries
+                        </SideBarLink>
+                        <SideBarLink to="/aircraft-section/about">
+                            <InfoCircle size={24}/>
+                            About
+                        </SideBarLink>
+                    </div>
+                    <div>
+                        {activeInstallButton()}
                     </div>
                 </div>
             </div>

@@ -18,7 +18,8 @@ export const defaultConfiguration: Configuration = {
                     key: 'A32NX',
                     enabled: true,
                     menuIconUrl: A320NoseSVG,
-                    backgroundImageUrl: 'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png',
+                    // TODO: Change this
+                    backgroundImageUrl: 'https://media.discordapp.net/attachments/742814829680656496/916731692096561183/unknown.png?width=1404&height=670',
                     shortDescription: 'Airbus A320neo Series',
                     description: 'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
                         'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +

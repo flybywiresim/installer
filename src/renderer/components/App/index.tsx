@@ -20,7 +20,7 @@ import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConf
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { AddonBar, AddonBarItem } from "renderer/components/App/AddonBar";
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
@@ -124,7 +124,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                     />
                                 ))}
                             </NavBar>
-                            <PageSider className="z-40 flex-none bg-navy-medium shadow-2xl h-full" style={{ width: '30rem' }}>
+                            <PageSider className="z-40 flex-none bg-navy-medium shadow-2xl h-full" style={{ width: '26rem' }}>
                                 <div className="h-full flex flex-col divide-y divide-gray-700">
                                     <AddonBar publisher={selectedPublisher}>
                                         {selectedPublisher.addons.map((addon) => (
@@ -133,9 +133,12 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                     </AddonBar>
                                 </div>
                             </PageSider>
-                            <div className="bg-navy m-0">
+                            <div className="bg-navy m-0 w-full">
                                 <Switch>
                                     <Route exact path="/">
+                                        <Redirect to="/aircraft-section"/>
+                                    </Route>
+                                    <Route path="/aircraft-section">
                                         <AircraftSection addon={addons.find(x => x.key === selectedAddon.key)}/>;
                                     </Route>
                                     <Route path="/debug">

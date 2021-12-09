@@ -46,6 +46,10 @@ code {
   @apply bg-navy-lightest;
 }
 
+div {
+  @apply font-manrope;
+}
+
 h1,
 h2,
 h3,

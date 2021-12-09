@@ -29,7 +29,7 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
 
     return (
         <div
-            className={`w-full p-5 flex flex-col justify-between rounded-md cursor-pointer transition duration-200 ${dependantStyles} ${!enabled && 'opacity-50 cursor-not-allowed'} ${className}`}
+            className={`w-full p-5 flex flex-col justify-between rounded-md transition duration-200 ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={enabled && onClick}
         >
             <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
