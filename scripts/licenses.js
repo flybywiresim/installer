@@ -24,7 +24,7 @@ checker.init({
         markdown += `### Repository: ${value.repository}\n`;
         markdown += '### License file\n```\n';
         if (fs.existsSync(value.licenseFile)) {
-            markdown += fs.readFileSync(value.licenseFile).toString().replaceAll(/```/g, '\\`\\`\\`');
+            markdown += fs.readFileSync(value.licenseFile).toString().replace(/```/g, '\\`\\`\\`');
         } else {
             console.warn('License file does not exist', value);
         }
