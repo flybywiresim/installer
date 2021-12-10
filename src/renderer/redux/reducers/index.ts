@@ -12,9 +12,9 @@ const rootReducer = combineReducers({
     downloads: downloadsReducer,
     changelog: changelogReducer,
     warningModal: warningModalReducer,
+    installStatus: installStatusReducer,
     selectedTracks: selectedTrackReducer,
     installedTracks: installedTrackReducer,
-    installStatus: installStatusReducer,
     latestVersionNames: latestVersionNamesReducer,
     liveries: liveriesReducer
 });
