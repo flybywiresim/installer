@@ -3,6 +3,7 @@ import { InstallStatus } from 'renderer/components/AircraftSection';
 import { AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { ReleaseInfo } from "renderer/utils/AddonData";
 import { LiveryStateEntry } from "renderer/redux/reducers/liveries.reducer";
+import rootReducer from './reducers';
 
 export interface DownloadItem {
     id: string
@@ -53,16 +54,19 @@ export interface ShowWarningModalAction {
 
 export interface InstallAction {
     type: typeof actions.SET_INSTALL_STATUS
+    addonKey: string
     payload: InstallStatus
 }
 
 export interface SelectedTrackAction {
     type: typeof actions.SET_SELECTED_TRACK
+    addonKey: string
     payload: AddonTrack
 }
 
 export interface InstalledTrackAction {
     type: typeof actions.SET_INSTALLED_TRACK
+    addonKey: string
     payload: AddonTrack
 }
 
@@ -101,6 +105,4 @@ export interface ChangelogAction {
 
 export type DownloadActionType = UpdateDownloadProgressAction | RegisterNewDownloadProgressAction | DeleteDownloadAction
 
-export interface RootStore {
-    downloads: DownloadsState
-}
+export type RootStore = ReturnType<typeof rootReducer>

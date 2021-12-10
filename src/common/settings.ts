@@ -117,6 +117,10 @@ const schema: Schema<unknown> = {
                     maximized: {
                         type: "boolean",
                         default: false,
+                    },
+                    sectionToShow: {
+                        type: "string",
+                        default: "",
                     }
                 }
             }
