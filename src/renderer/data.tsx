@@ -94,6 +94,7 @@ export const defaultConfiguration: Configuration = {
                     aircraftName: 'KFBW',
                     key: 'KFBW',
                     enabled: true,
+                    hidden: true,
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: [],
                     shortDescription: 'KFBW airport',

@@ -46,6 +46,7 @@ export type Addon = {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     enabled: boolean,
+    hidden?: boolean,
     gitHubReleaseBaseURL?: string,
 }
 

@@ -7,6 +7,7 @@ import * as actionTypes from '../redux/actionTypes';
 import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
 import _ from "lodash";
 import { InstallStatus } from "renderer/components/AircraftSection";
+import { useSetting } from "common/settings";
 
 export type ReleaseInfo = {
     name: string,
@@ -77,6 +78,13 @@ export class AddonData {
                 setSelectedTrack(addon.tracks[0]);
                 selectedTrack = addon.tracks[0];
             }
+        }
+        
+        const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.'+ addon.key);
+
+        if (addon.hidden && !addonDiscovered) {
+            setInstallStatus(InstallStatus.Hidden)
+            return;
         }
 
         if (!selectedTrack) {
