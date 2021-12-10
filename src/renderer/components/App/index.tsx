@@ -20,8 +20,9 @@ import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConf
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import { AddonBar, AddonBarItem } from "renderer/components/App/AddonBar";
+import { NoAvailableAddonsSection } from '../NoAvailableAddonsSection';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -74,6 +75,8 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
 };
 
 const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
+    const history = useHistory();
+
     const [addons] = useState<Addon[]>(
         configuration.publishers.reduce((arr, curr) => {
             arr.push(...curr.addons);
@@ -89,8 +92,21 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     const [selectedPublisher, setSelectedPublisher] = useState(configuration.publishers[0]);
 
     useEffect(() => {
-        fetchLatestVersionNames(selectedPublisher.addons[0]).then(() => {
-            setSelectedAddon(selectedPublisher.addons[0]);
+        let firstAvailableAddon: Addon;
+
+        selectedPublisher.addons.forEach(addon => {
+            if (addon.enabled) {
+                firstAvailableAddon = addon;
+            }
+        });
+
+        if (!firstAvailableAddon) {
+            history.push('/no-available-addons');
+            return;
+        }
+
+        fetchLatestVersionNames(firstAvailableAddon).then(() => {
+            setSelectedAddon(firstAvailableAddon);
         });
     }, [selectedPublisher]);
 
@@ -148,6 +164,9 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                     </Route>
                                     <Route path="/settings">
                                         <SettingsSection/>
+                                    </Route>
+                                    <Route path="/no-available-addons">
+                                        <NoAvailableAddonsSection/>
                                     </Route>
                                 </Switch>
                             </div>
