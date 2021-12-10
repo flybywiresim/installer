@@ -32,7 +32,7 @@ function index(): JSX.Element {
     return (
         <div
             className="flex items-center place-self-start justify-center px-4 h-full bg-yellow-500 hover:bg-yellow-600 z-50 cursor-pointer transition duration-200"
-            hidden={updateNeeded}
+            hidden={!updateNeeded}
             onClick={() => ipcRenderer.send('restart')}
         >
             <div className="text-white font-semibold text-lg">{buttonText}Restart to Update</div>
