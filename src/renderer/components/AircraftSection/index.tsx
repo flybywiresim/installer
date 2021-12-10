@@ -1,7 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import {
-    DialogContainer,
-} from './styles';
+import { DialogContainer, } from './styles';
 import fs from "fs-extra";
 import * as path from 'path';
 import { getAddonReleases } from "renderer/components/App";
@@ -25,6 +23,7 @@ import settings from "common/settings";
 import { ipcRenderer } from 'electron';
 import { NavLink, Redirect, Route } from 'react-router-dom';
 import { InfoCircle, JournalText, Palette, Sliders } from 'react-bootstrap-icons';
+import './index.css';
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -72,7 +71,7 @@ interface InstallButtonProps {
 }
 
 const InstallButton: FC<InstallButtonProps> = ({ children, className, onClick }) => (
-    <div className={`w-64 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer ${className}`} onClick={onClick}>
+    <div className={`w-64 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer transition duration-200 ${className}`} onClick={onClick}>
         {children}
     </div>
 );
@@ -478,7 +477,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 );
             case InstallStatus.NeedsUpdate:
                 return (
-                    <InstallButton className="bg-yellow-500" onClick={handleInstall}>
+                    <InstallButton className="bg-yellow-500 hover:bg-yellow-400" onClick={handleInstall}>
                         Update
                     </InstallButton>
                 );
@@ -496,7 +495,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 );
             case InstallStatus.TrackSwitch:
                 return (
-                    <InstallButton className="bg-purple-600" onClick={handleInstall}>
+                    <InstallButton className="bg-purple-600 hover:bg-purple-700" onClick={handleInstall}>
                         Switch Version
                     </InstallButton>
                 );
@@ -508,7 +507,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 );
             case InstallStatus.Downloading:
                 return (
-                    <InstallButton className="bg-red-600" onClick={handleCancel}>
+                    <InstallButton className="bg-red-600 hover:bg-red-500" onClick={handleCancel}>
                         Cancel
                     </InstallButton>
                 );
@@ -581,8 +580,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                         </div>
                     )}
                 </div>
+                {installStatus === InstallStatus.Downloading && (
+                    <div className="absolute -bottom-1 w-full h-2 bg-cyan z-10 progress-bar-animated" style={{ width: `${download?.progress}%` }}/>
+                )}
             </div>
-            {/* <DownloadProgress className="absolute top-0 left-0 right-0 mx-auto" percent={download?.progress} strokeColor="#00c2cc" trailColor="transparent" showInfo={false} status="active" /> */}
             <div className="flex flex-row h-full relative">
                 <div className="p-5 overflow-y-scroll w-full">
                     <Route path="/aircraft-section">

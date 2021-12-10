@@ -1,7 +1,20 @@
-.selector:not(.installed):hover div:first-child {
-    @apply scale-y-75 bg-gray-400;
+.progress-bar-animated {
+  transition: width 0.5s ease;
 }
 
-.selector:hover div:first-child {
-    @apply scale-y-75;
+.progress-bar-animated::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 1));
+  transform: translateX(-100%);
+  animation: progress-bar-shine 1s infinite;
+}
+
+@keyframes progress-bar-shine {
+  to {
+    transform: translateX(0);
+    opacity: 0.1;
+  }
 }
