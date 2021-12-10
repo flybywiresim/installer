@@ -581,7 +581,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     )}
                 </div>
                 {installStatus === InstallStatus.Downloading && (
-                    <div className="absolute -bottom-1 w-full h-2 bg-cyan z-10 progress-bar-animated" style={{ width: `${download?.progress}%` }}/>
+                    <div className="absolute -bottom-1 w-full h-2 bg-cyan progress-bar-animated" style={{ width: `${download?.progress}%` }}/>
                 )}
             </div>
             <div className="flex flex-row h-full relative">

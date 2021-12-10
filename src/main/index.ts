@@ -74,6 +74,11 @@ const createWindow = (): void => {
         mainWindow.setProgressBar(value);
     });
 
+    ipcMain.on('restart', () => {
+        app.relaunch();
+        app.exit();
+    });
+
     const lastX = settings.get<string, number>('cache.main.lastWindowX');
     const lastY = settings.get<string, number>('cache.main.lastWindowY');
     const shouldMaximize = settings.get<string, boolean>('cache.main.maximized');

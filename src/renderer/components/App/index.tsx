@@ -108,31 +108,33 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                         <div className="absolute w-full h-10 z-50 flex flex-row pl-4 items-center bg-navy-dark shadow-xl">
                             <PageHeader className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
-                                <InstallerUpdate />
                             </PageHeader>
 
+                            <InstallerUpdate />
                             <WindowButtons />
                         </div>
 
                         <div className="h-full pt-10 flex flex-row justify-start">
-                            <NavBar>
-                                {configuration.publishers.map((publisher) => (
-                                    <NavBarPublisher
-                                        selected={selectedPublisher === publisher}
-                                        publisher={publisher}
-                                        onClick={() => setSelectedPublisher(publisher)}
-                                    />
-                                ))}
-                            </NavBar>
-                            <PageSider className="z-40 flex-none bg-navy-medium shadow-2xl h-full" style={{ width: '26rem' }}>
-                                <div className="h-full flex flex-col divide-y divide-gray-700">
-                                    <AddonBar publisher={selectedPublisher}>
-                                        {selectedPublisher.addons.map((addon) => (
-                                            <AddonBarItem selected={selectedAddon.key === addon.key && addon.enabled} enabled={addon.enabled} className="h-32" addon={addon} onClick={() => setSelectedAddon(addon)} />
-                                        ))}
-                                    </AddonBar>
-                                </div>
-                            </PageSider>
+                            <div className="z-50 flex flex-row">
+                                <NavBar>
+                                    {configuration.publishers.map((publisher) => (
+                                        <NavBarPublisher
+                                            selected={selectedPublisher === publisher}
+                                            publisher={publisher}
+                                            onClick={() => setSelectedPublisher(publisher)}
+                                        />
+                                    ))}
+                                </NavBar>
+                                <PageSider className="flex-none bg-navy-medium shadow-2xl h-full" style={{ width: '26rem' }}>
+                                    <div className="h-full flex flex-col divide-y divide-gray-700">
+                                        <AddonBar publisher={selectedPublisher}>
+                                            {selectedPublisher.addons.map((addon) => (
+                                                <AddonBarItem selected={selectedAddon.key === addon.key && addon.enabled} enabled={addon.enabled} className="h-32" addon={addon} onClick={() => setSelectedAddon(addon)} />
+                                            ))}
+                                        </AddonBar>
+                                    </div>
+                                </PageSider>
+                            </div>
                             <div className="bg-navy m-0 w-full">
                                 <Switch>
                                     <Route exact path="/">
