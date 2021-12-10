@@ -581,11 +581,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     )}
                 </div>
                 {installStatus === InstallStatus.Downloading && (
-                    <div className="absolute -bottom-1 w-full h-2 bg-cyan progress-bar-animated" style={{ width: `${download?.progress}%` }}/>
+                    <div className="absolute -bottom-1 w-full h-2 z-10 bg-cyan progress-bar-animated" style={{ width: `${download?.progress}%` }}/>
                 )}
             </div>
             <div className="flex flex-row h-full relative">
-                <div className="p-5 overflow-y-scroll w-full">
+                <div className="p-7 overflow-y-scroll w-full">
                     <Route path="/aircraft-section">
                         <Redirect to="/aircraft-section/configure" />
                     </Route>

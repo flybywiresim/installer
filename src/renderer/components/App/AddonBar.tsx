@@ -25,15 +25,15 @@ export interface AddonBarItemProps {
 }
 
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
-    const dependantStyles = selected ? "bg-gradient-to-r from-cyan to-blue-500 text-white" : `bg-grey-medium text-black border-2 border-transparent ${enabled && 'hover:border-cyan'}`;
+    const dependantStyles = selected ? "bg-gradient-to-l from-cyan to-blue-500 text-white" : `bg-grey-medium text-black border-2 border-transparent ${enabled && 'hover:border-cyan'}`;
 
     return (
         <div
-            className={`w-full p-5 flex flex-col justify-between rounded-md transition duration-200 ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full p-5 flex flex-col justify-between rounded-lg transition duration-200 ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={enabled && onClick}
         >
             <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
-            <h1 className="text-5xl text-current font-extrabold">{addon.name}</h1>
+            <img className="h-10 w-max" src={selected ? addon.titleImageUrlSelected : addon.titleImageUrl} />
         </div>
     );
 };

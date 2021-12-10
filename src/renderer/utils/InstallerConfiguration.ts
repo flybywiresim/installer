@@ -36,6 +36,8 @@ export type Addon = {
     name: string,
     repoName: string,
     aircraftName: string,
+    titleImageUrl: string,
+    titleImageUrlSelected: string,
     key: string,
     backgroundImageUrl: string,
     shortDescription: string,
