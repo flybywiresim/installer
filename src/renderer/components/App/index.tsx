@@ -23,6 +23,7 @@ import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import { AddonBar, AddonBarItem } from "renderer/components/App/AddonBar";
 import { NoAvailableAddonsSection } from '../NoAvailableAddonsSection';
+import settings from 'common/settings';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -33,7 +34,7 @@ const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24)
  */
 export const getAddonReleases = async (addon: Addon): Promise<AddonVersion[]> => {
     const releases = (await releaseCache.fetchOrCompute(async (): Promise<AddonVersion[]> => {
-        return (await GitVersions.getReleases('flybywiresim', addon.repoName))
+        return (await GitVersions.getReleases(addon.repoOwner, addon.repoName))
             .filter(r => /v\d/.test(r.name))
             .map(r => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
     })).map(r => ({ ...r, date: new Date(r.date) })); // Local Data cache returns a string instead of Date
@@ -84,6 +85,8 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         }, [])
     );
 
+    addons.forEach(AddonData.configureInitialAddonState);
+
     useEffect(() => {
         addons.forEach(fetchLatestVersionNames);
     }, []);
@@ -92,6 +95,14 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     const [selectedPublisher, setSelectedPublisher] = useState(configuration.publishers[0]);
 
     useEffect(() => {
+        settings.set('cache.main.sectionToShow', history.location.pathname);
+    }, [selectedAddon]);
+
+    useEffect(() => {
+        if (settings.get('cache.main.sectionToShow')) {
+            history.push(settings.get('cache.main.sectionToShow'));
+        }
+
         let firstAvailableAddon: Addon;
 
         selectedPublisher.addons.forEach(addon => {
@@ -109,9 +120,6 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             setSelectedAddon(firstAvailableAddon);
         });
     }, [selectedPublisher]);
-
-    console.log(configuration.publishers);
-    console.log(addons);
 
     return (
         <>

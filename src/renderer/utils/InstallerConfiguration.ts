@@ -22,7 +22,7 @@ type BaseAddonTrack = {
     key: string,
     url: string,
     alternativeUrls?: string[],
-    description: string,
+    description?: string,
     releaseModel: ReleaseModel,
 }
 
@@ -34,7 +34,8 @@ export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
 export type Addon = {
     name: string,
-    repoName: string,
+    repoOwner?: string,
+    repoName?: string,
     aircraftName: string,
     titleImageUrl: string,
     titleImageUrlSelected: string,
@@ -47,6 +48,8 @@ export type Addon = {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     enabled: boolean,
+    hidden?: boolean,
+    gitHubReleaseBaseURL?: string,
 }
 
 type PublisherButton = {

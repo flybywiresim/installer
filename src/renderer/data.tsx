@@ -13,6 +13,7 @@ export const defaultConfiguration: Configuration = {
             addons: [
                 {
                     name: 'A32NX',
+                    repoOwner: 'flybywiresim',
                     repoName: 'a32nx',
                     aircraftName: 'A320-251N',
                     titleImageUrl: 'https://media.discordapp.net/attachments/806767835355152394/918704262031228938/A32NX-Logo-LightBG.png',
@@ -54,6 +55,7 @@ export const defaultConfiguration: Configuration = {
                             alternativeUrls: [
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
+                                'https://cdn.flybywiresim.com/addons/a32nx/experimental',
                             ],
                             description: 'Development will have the latest features that will end up in the next stable. ' +
                                 'Bugs are to be expected. It updates whenever something is added to the \'master\' ' +
@@ -64,7 +66,7 @@ export const defaultConfiguration: Configuration = {
                                 branch: 'master',
                             },
                         },
-                        {
+                        /* {
                             name: 'Experimental',
                             key: 'experimental',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
@@ -84,7 +86,7 @@ export const defaultConfiguration: Configuration = {
                                 type: 'githubBranch',
                                 branch: 'experimental',
                             },
-                        },
+                        }, */
                     ],
                 },
                 {
@@ -110,6 +112,7 @@ export const defaultConfiguration: Configuration = {
             addons: [
                 {
                     name: 'A22X',
+                    repoOwner: 'Synaptic-Simulations',
                     repoName: 'a22x',
                     aircraftName: 'A220-300',
                     titleImageUrl: 'https://media.discordapp.net/attachments/806767835355152394/918704262031228938/A32NX-Logo-LightBG.png',

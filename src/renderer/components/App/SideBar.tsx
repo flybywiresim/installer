@@ -40,11 +40,21 @@ type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (k
 export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected }) => {
     const [downloadState, setStatusText] = useState('');
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
-    const addonDownloadState = useSelector<InstallerStore>(state => state.installStatus);
+    const addonDownloadState = useSelector<InstallerStore>((state) => {
+        try {
+            return state.installStatus[addon.key] as InstallStatus;
+        } catch (e) {
+            return InstallStatus.Unknown;
+        }
+    });
 
     useEffect(() => {
         if (addon.enabled) {
             switch (addonDownloadState) {
+                case InstallStatus.Hidden:
+                    setStatusText('Not Available');
+                    setIcon('notAvailable');
+                    break;
                 case InstallStatus.FreshInstall:
                 case InstallStatus.Unknown:
                     setStatusText('Not Installed');

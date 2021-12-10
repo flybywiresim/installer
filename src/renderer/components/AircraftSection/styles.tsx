@@ -3,7 +3,11 @@ import { Select, Progress } from 'antd';
 import styled from 'styled-components';
 import { DownloadOutlined } from '@ant-design/icons';
 import { colors, dropShadow, fontSizes } from "renderer/style/theme";
-import headerBackground from "renderer/assets/a32nx-background.png";
+import headerBackgroundA32NX from 'renderer/assets/a32nx-background.png';
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+const headerBackground: any = {
+    A32NX: headerBackgroundA32NX,
+};
 
 export const Container = styled.div<{ wait: number }>`
     visibility: ${props => props.wait ? 'hidden' : 'visible'};
@@ -137,7 +141,6 @@ export const TopContainer = styled.div`
 `;
 
 export const LeftContainer = styled.div`
-  grid-column: start / middle;
   grid-row: 3;
 `;
 

@@ -13,8 +13,8 @@ const rootReducer = combineReducers({
     changelog: changelogReducer,
     warningModal: warningModalReducer,
     installStatus: installStatusReducer,
-    selectedTrack: selectedTrackReducer,
-    installedTrack: installedTrackReducer,
+    selectedTracks: selectedTrackReducer,
+    installedTracks: installedTrackReducer,
     latestVersionNames: latestVersionNamesReducer,
     liveries: liveriesReducer
 });

@@ -4,7 +4,7 @@ import {
     ChangelogState,
     DownloadsState,
     AddonAndTrackLatestVersionNamesState,
-    ShowWarningModalState
+    ShowWarningModalState,
 } from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { AddonTrack } from "renderer/utils/InstallerConfiguration";
@@ -26,9 +26,9 @@ export type InstallerStore = {
     downloads: DownloadsState,
     changelog: ChangelogState,
     warningModal: ShowWarningModalState,
-    installStatus: InstallStatus,
-    selectedTrack: AddonTrack,
-    installedTrack: AddonTrack,
+    installStatus: Record<string, InstallStatus>,
+    selectedTracks: Record<string, AddonTrack>,
+    installedTracks: Record<string, AddonTrack>,
     latestVersionNames: AddonAndTrackLatestVersionNamesState,
     liveries: LiveriesState,
 };

@@ -4,26 +4,26 @@ import fs from "fs-extra";
 import * as path from 'path';
 import { getAddonReleases } from "renderer/components/App";
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, AddonAndTrackLatestVersionNamesState, RootStore } from 'renderer/redux/types';
+import { DownloadItem, AddonAndTrackLatestVersionNamesState, } from 'renderer/redux/types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
 import _ from 'lodash';
-import { Version, Versions } from "renderer/components/AircraftSection/VersionHistory";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
-import store, { InstallerStore } from '../../redux/store';
+import store, { InstallerStore, } from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
 import { Addon, AddonTrack, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
-import settings from "common/settings";
-import { ipcRenderer } from 'electron';
 import { NavLink, Redirect, Route } from 'react-router-dom';
 import { InfoCircle, JournalText, Palette, Sliders } from 'react-bootstrap-icons';
 import './index.css';
+import settings, { useSetting } from "common/settings";
+import { ipcRenderer } from 'electron';
+import FBWTail from 'renderer/assets/FBW-Tail.svg';
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -32,9 +32,9 @@ type TransferredProps = {
 
 // Props coming from Redux' connect function
 type ConnectedAircraftSectionProps = {
-    selectedTrack: AddonTrack,
-    installedTrack: AddonTrack,
-    installStatus: InstallStatus,
+    selectedTracks: Record<string, AddonTrack>,
+    installedTracks: Record<string, AddonTrack>,
+    installStatus: Record<string, InstallStatus>,
     latestVersionNames: AddonAndTrackLatestVersionNamesState
 }
 
@@ -57,6 +57,7 @@ export enum InstallStatus {
     DownloadError,
     DownloadCanceled,
     Unknown,
+    Hidden
 }
 
 enum MsfsStatus {
@@ -100,12 +101,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const findInstalledTrack = (): AddonTrack => {
         if (!Directories.isFragmenterInstall(props.addon)) {
             console.log('Not installed');
-            if (selectedTrack === null) {
+            if (selectedTrack()) {
+                selectAndSetTrack(selectedTrack().key);
+                return selectedTrack();
+            } else {
                 setSelectedTrack(props.addon.tracks[0]);
                 return props.addon.tracks[0];
-            } else {
-                selectAndSetTrack(props.selectedTrack.key);
-                return selectedTrack;
             }
         }
 
@@ -119,53 +120,79 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             }
             console.log('Currently installed', track);
             setInstalledTrack(track);
-            if (selectedTrack === null) {
+            if (selectedTrack()) {
+                selectAndSetTrack(selectedTrack().key);
+                return selectedTrack();
+            } else {
                 setSelectedTrack(track);
                 return track;
-            } else {
-                selectAndSetTrack(props.selectedTrack.key);
-                return selectedTrack;
             }
         } catch (e) {
             console.error(e);
             console.log('Not installed');
-            if (selectedTrack === null) {
+            if (selectedTrack()) {
+                selectAndSetTrack(selectedTrack().key);
+                return selectedTrack();
+            } else {
                 setSelectedTrack(props.addon.tracks[0]);
                 return props.addon.tracks[0];
-            } else {
-                selectAndSetTrack(props.selectedTrack.key);
-                return selectedTrack;
             }
         }
     };
 
-    const installedTrack = props.installedTrack;
+    const installedTrack = (): AddonTrack => {
+        try {
+            return props.installedTracks[props.addon.key] as AddonTrack;
+        } catch (e) {
+            setInstalledTrack(null);
+            return null;
+        }
+    };
     const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
-        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, payload: newInstalledTrack });
+        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: props.addon.key, payload: newInstalledTrack });
     };
 
-    const selectedTrack = props.selectedTrack;
+    const selectedTrack = (): AddonTrack => {
+        try {
+            return props.selectedTracks[props.addon.key] as AddonTrack;
+        } catch (e) {
+            setSelectedTrack(null);
+            return null;
+        }
+    };
+
     const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
-        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, payload: newSelectedTrack });
+        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: props.addon.key, payload: newSelectedTrack });
     };
 
-    const installStatus = props.installStatus;
+    const installStatus = (): InstallStatus => {
+        try {
+            return props.installStatus[props.addon.key] as InstallStatus;
+        } catch (e) {
+            setInstallStatus(InstallStatus.Unknown);
+            return InstallStatus.Unknown;
+        }
+    };
+
     const setInstallStatus = (new_state: InstallStatus) => {
-        store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, payload: new_state });
+        store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: props.addon.key, payload: new_state });
     };
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
+
+    const [wait, setWait] = useState(1);
 
     const [releases, setReleases] = useState<AddonVersion[]>([]);
 
     useEffect(() => {
         getAddonReleases(props.addon).then(releases => {
             setReleases(releases);
+            setWait(wait => wait - 1);
             findInstalledTrack();
         });
     }, [props.addon]);
 
-    const download: DownloadItem = useSelector((state: RootStore) => _.find(state.downloads, { id: props.addon.name }));
+    const download: DownloadItem = useSelector((state: InstallerStore) => _.find(state.downloads, { id: props.addon.name }));
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
@@ -180,10 +207,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     useEffect(() => {
         findInstalledTrack();
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+        if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
             getInstallStatus().then(setInstallStatus);
         }
-    }, [selectedTrack, installedTrack]);
+    }, [selectedTrack(), installedTrack()]);
 
     useEffect(() => {
         if (download && isDownloading) {
@@ -193,8 +220,14 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     }, [download]);
 
+    const [addonDiscovered, setAddonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + props.addon.key);
+
     const getInstallStatus = async (): Promise<InstallStatus> => {
-        if (!selectedTrack) {
+
+        if (props.addon.hidden && !addonDiscovered) {
+            return InstallStatus.Hidden;
+        }
+        if (!selectedTrack()) {
             return InstallStatus.Unknown;
         }
 
@@ -212,12 +245,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
 
         try {
-            const updateInfo = await needsUpdate(selectedTrack.url, installDir, {
+            const updateInfo = await needsUpdate(selectedTrack().url, installDir, {
                 forceCacheBust: true
             });
             console.log('Update info', updateInfo);
 
-            if (selectedTrack !== installedTrack && installedTrack !== null) {
+            if (selectedTrack() !== installedTrack() && installedTrack()) {
                 return InstallStatus.TrackSwitch;
             }
             if (updateInfo.isFreshInstall) {
@@ -349,16 +382,16 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const handleTrackSelection = (track: AddonTrack) => {
-        if (!isDownloading && installStatus !== InstallStatus.DownloadPrep) {
+        if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
             dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
         } else {
-            selectAndSetTrack(props.selectedTrack.key);
+            selectAndSetTrack(selectedTrack().key);
         }
     };
 
     const handleInstall = () => {
         if (settings.has('mainSettings.msfsPackagePath')) {
-            downloadAddon(selectedTrack).then(() => console.log('Download and install complete'));
+            downloadAddon(selectedTrack()).then(() => console.log('Download and install complete'));
         } else {
             setupInstallPath().then();
         }
@@ -399,7 +432,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             );
         }
 
-        switch (installStatus) {
+        switch (installStatus()) {
             case InstallStatus.UpToDate:
                 return (
                     <></>
@@ -468,7 +501,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             );
         }
 
-        switch (installStatus) {
+        switch (installStatus()) {
             case InstallStatus.UpToDate:
                 return (
                     <InstallButton className="pointer-events-none bg-green-500">
@@ -561,7 +594,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     });
 
     return (
-        <div className="bg-navy-light flex flex-col h-full">
+        <div className={`bg-navy-light flex flex-col h-full ${(wait || (props.addon.hidden && !addonDiscovered)) ? 'hidden' : 'visible'} ${props.addon.name}`}>
             <div className="h-full relative bg-cover bg-center"
                 style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${props.addon.backgroundImageUrl})` }}
             >
@@ -569,18 +602,18 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     <div>
                         {activeState()}
                         {/* TODO: Actually calculate this value */}
-                        {installStatus === InstallStatus.Downloading && (
+                        {installStatus() === InstallStatus.Downloading && (
                             <div className="text-white text-2xl">98.7 mb/s</div>
                         )}
                     </div>
-                    {installStatus === InstallStatus.Downloading && (
+                    {installStatus() === InstallStatus.Downloading && (
                         // TODO: Replace this with a JIT value
                         <div className="text-white font-semibold" style={{ fontSize: '38px' }}>
                             {download?.progress}%
                         </div>
                     )}
                 </div>
-                {installStatus === InstallStatus.Downloading && (
+                {installStatus() === InstallStatus.Downloading && (
                     <div className="absolute -bottom-1 w-full h-2 z-10 bg-cyan progress-bar-animated" style={{ width: `${download?.progress}%` }}/>
                 )}
             </div>
@@ -606,8 +639,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                                     addon={props.addon}
                                                     key={track.key}
                                                     track={track}
-                                                    isSelected={selectedTrack === track}
-                                                    isInstalled={installedTrack?.key === track.key}
+                                                    isSelected={selectedTrack() === track}
+                                                    isInstalled={installedTrack() === track}
                                                     handleSelected={() => handleTrackSelection(track)}
                                                 />
                                             )
@@ -623,8 +656,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                                     addon={props.addon}
                                                     key={track.key}
                                                     track={track}
-                                                    isSelected={selectedTrack === track}
-                                                    isInstalled={installedTrack?.key === track.key}
+                                                    isSelected={selectedTrack() === track}
+                                                    isInstalled={installedTrack() === track}
                                                     handleSelected={() => handleTrackSelection(track)}
                                                 />
                                             )
@@ -661,6 +694,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </div>
                     <div>
                         {activeInstallButton()}
+                    </div>
+                    <div className={`bg-navy text-white flex h-full justify-center items-center ${(!wait && (props.addon.hidden && !addonDiscovered)) ? 'visible' : 'hidden'} ${props.addon.name}`}>
+                        <div className='h-1/5 w-1/5'>
+                            <img onClick={() => {
+                                setAddonDiscovered(true);
+                            }} src={FBWTail} alt="FlyByWire Logo" id="fbw-logo" style={{ transform: 'scale(1.35)' }}/>
+                        </div>
                     </div>
                 </div>
             </div>
