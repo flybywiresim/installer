@@ -1,6 +1,6 @@
 import React from "react";
 import { FC } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink, useHistory, withRouter } from "react-router-dom";
 import { Publisher } from "renderer/utils/InstallerConfiguration";
 import { Settings } from "tabler-icons-react";
 
@@ -40,8 +40,12 @@ export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', selected, onClick, c
     </NavLink>
 );
 
-export const NavBarPublisher: FC<NavBarPublisherProps> = ({ publisher, selected, onClick }) => (
-    <NavbarItem selected={selected} onClick={onClick}>
-        <img width={32} src={publisher.logoUrl} />
-    </NavbarItem>
-);
+export const NavBarPublisher = withRouter<any, any>(({ publisher, selected, onClick, location }) => {
+    console.log(location.pathname);
+
+    return (
+        <NavbarItem selected={selected} onClick={onClick}>
+            <img width={32} src={publisher.logoUrl} />
+        </NavbarItem>
+    );
+});

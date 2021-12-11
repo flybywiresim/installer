@@ -663,13 +663,16 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                             )
                                         }
                                     </Tracks>
-                                    <h5 className="text-base text-teal-50 mt-2">Experimental Releases</h5>
+
+                                    {props.addon.tracks.filter((track) => track.isExperimental).length > 0 && (
+                                        <h5 className="text-base text-teal-50 ">Experimental versions</h5>
+                                    )}
                                 </div>
                             </div>
                         </div>
                         <div className="mt-10">
                             <h2 className="text-white font-extrabold">Description</h2>
-                            <p className="text-xl text-white font-manrope">{props.addon.description}</p>
+                            <p className="text-xl text-white font-manrope leading-relaxed">{props.addon.description}</p>
                         </div>
                     </Route>
                 </div>
