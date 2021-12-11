@@ -45,6 +45,7 @@ import remarkGfm from 'remark-gfm';
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from 'electron';
 import FBWTail from 'renderer/assets/FBW-Tail.svg';
+import { colors } from 'renderer/style/theme';
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -504,6 +505,52 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
+    const discoverPage = (): JSX.Element => {
+        const [percentage, setPercentage] = useState<number>(0);
+        const [animate, setAnimate] = useState<boolean>(false);
+        const necessaryClicks = 5
+        const radius = 120
+        const circumface = 2 * Math.PI * radius
+        const draw = (100 -percentage) / 100 * circumface
+        const animation = () => {
+            if (animate) {
+                return {animation: 'spin 0.5s 1'}
+            }
+            return {}
+        }
+        
+        const click = () => {
+            if (!animate) {
+                setPercentage(percentage+(100/necessaryClicks));
+                setAnimate(true)
+                    setTimeout(() =>{
+                        setAnimate(false)
+                    }, 500);
+                if (percentage===(100-100/necessaryClicks)) {
+                    setAnimate(true)
+                    setTimeout(() =>{
+                        setAddonDiscovered(true)
+                    }, 250);
+                }
+            }
+        }
+            
+        return (
+            <div className={`bg-navy text-white flex h-full justify-center items-center ${(!wait && (props.addon.hidden && !addonDiscovered)) ? 'visible' : 'hidden'} ${props.addon.name}`}>
+                <div className='h-1/2 w-1/2 justify-center items-center relative'>
+                    <div className='absolute flex justify-center items-center h-full w-full'>
+                        <svg style={{transform: 'rotate(-90deg)'}} className="relative h-full w-full">
+                            <circle cx="50%" cy="50%" r={radius} style={{transition: 'all 0.2s ease-in-out', strokeWidth: 10, strokeLinecap: 'round', strokeDasharray: circumface, strokeDashoffset: draw, fill: 'none', stroke: colors.tealLightContrast}}/>
+                        </svg>
+                    </div>
+                    <div className='absolute w-full h-full flex justify-center items-center'>
+                        <img className="w-40 h-40 cursor-pointer" style={animation()} onClick={click} src={FBWTail} alt="FlyByWire Logo" id="fbw-logo"/>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
         return state.liveries.map((entry) => entry.livery);
     });
@@ -594,11 +641,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </VersionHistoryContainer>}
                 </Content>
             </div>
-            <div className={`bg-navy text-white flex h-full justify-center items-center ${(!wait && (props.addon.hidden && !addonDiscovered)) ? 'visible' : 'hidden'} ${props.addon.name}`}>
-                <div className='h-1/5 w-1/5'>
-                <img onClick={() => {setAddonDiscovered(true)}} src={FBWTail} alt="FlyByWire Logo" id="fbw-logo" style={{ transform: 'scale(1.35)' }}/>
-                </div>
-            </div>
+            {discoverPage()}
         </>
     );
 };
