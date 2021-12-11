@@ -626,7 +626,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                 linkTarget={"_blank"}
                             />
                             <h3 className="font-semibold text-teal-50">Details</h3>
-                            <p className="text-lg text-gray-300">{props.addon.description}</p>
+                            <ReactMarkdown
+                                className="text-lg text-gray-300"
+                                children={props.addon.description ?? ''}
+                                remarkPlugins={[remarkGfm]}
+                                linkTarget={"_blank"}
+                            />
                         </DetailsContainer>
                     </LeftContainer>
                     {props.addon.gitHubReleaseBaseURL && <VersionHistoryContainer>
