@@ -98,7 +98,13 @@ export const defaultConfiguration: Configuration = {
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: [],
                     shortDescription: 'KFBW airport',
-                    description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+                    description: 'Welcome to KFBW! \n\n' +
+                        'This is a showcase of the A380 project. Spawn at KFBW or fly there! The nearest airport is KTNP (Twenty-Nine Palms, California, USA). ' +
+                        'There is an ILS without waypoints to Runway 10. Freq: 108.9 CRS: 100  \n' +
+                        'The airport is designed to be used by our developers for flight testing of the A380 and also designed to match the real-world A380 testing airport in Hamburg, Germany (EDHI).  \n' +
+                        'The location allows for quick test flights to LAX, which is also serviced by the A380.  \n' +
+                        'Use the developer or drone camera to explore! \n\n' +
+                        'Happy holidays and enjoy! -FBW Team',
                     targetDirectory: 'flybywire-scenery-kfbw',
                     tracks: [
                         {
