@@ -90,14 +90,15 @@ export const defaultConfiguration: Configuration = {
                     ],
                 },
                 {
-                    name: 'A380X',
-                    aircraftName: 'KFBW',
+                    name: 'KFBW',
+                    aircraftName: 'KFBW airport',
                     key: 'KFBW',
                     enabled: true,
                     hidden: true,
+                    hiddenName: 'A380X',
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: [],
-                    shortDescription: 'KFBW airport',
+                    shortDescription: 'FlyByWire Headquarters',
                     description: 'Welcome to KFBW! \n\n' +
                         'This is a showcase of the A380 project. Spawn at KFBW or fly there! The nearest airport is KTNP (Twenty-Nine Palms, California, USA). ' +
                         'There is an ILS without waypoints to Runway 10. Freq: 108.9 CRS: 100  \n' +
@@ -108,8 +109,8 @@ export const defaultConfiguration: Configuration = {
                     targetDirectory: 'flybywire-scenery-kfbw',
                     tracks: [
                         {
-                            name: 'Stable',
-                            key: 'kfbw-stable',
+                            name: 'Release',
+                            key: 'kfbw-release',
                             url: 'http://localhost:3005/http://localhost:3000',
                             isExperimental: false,
                             releaseModel: {
