@@ -8,6 +8,7 @@ import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
 import _ from "lodash";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { useSetting } from "common/settings";
+import yaml from 'js-yaml';
 
 export type ReleaseInfo = {
     name: string,
@@ -22,6 +23,10 @@ export class AddonData {
             return this.latestVersionForReleasedTrack(addon);
         } else if (track.releaseModel.type === 'githubBranch') {
             return this.latestVersionForRollingTrack(addon, track.releaseModel);
+        } else if (track.releaseModel.type === 'CDN') {
+            console.log('look here')
+            console.log(this.latestVersionForCDN(track));
+            return this.latestVersionForCDN(track);
         }
     }
 
@@ -40,6 +45,16 @@ export class AddonData {
                 name: commit.sha.substring(0, 7),
                 releaseDate: commit.timestamp,
             }));
+    }
+    
+    private static async latestVersionForCDN(track: AddonTrack): Promise<ReleaseInfo> {
+        return fetch(track.url + '/releases.yaml')
+        .then(res => res.blob())
+        .then(blob => blob.text())
+        .then(stream => ({
+            name: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].name,
+            releaseDate: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].date,
+        }))
     }
 
     static async configureInitialAddonState(addon: Addon): Promise<void> {

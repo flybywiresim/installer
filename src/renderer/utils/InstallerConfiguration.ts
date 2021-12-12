@@ -10,12 +10,16 @@ export type GithubReleaseReleaseModel = {
     type: 'githubRelease',
 }
 
+export type CDNReleaseModel = {
+    type: 'CDN',
+}
+
 export type GithubBranchReleaseModel = {
     type: 'githubBranch',
     branch: string,
 }
 
-export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel
+export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel | CDNReleaseModel
 
 type BaseAddonTrack = {
     name: string,
