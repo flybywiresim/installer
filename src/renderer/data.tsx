@@ -110,10 +110,10 @@ export const defaultConfiguration: Configuration = {
                         {
                             name: 'Stable',
                             key: 'kfbw-stable',
-                            url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
+                            url: 'http://localhost:3005/http://localhost:3000',
                             isExperimental: false,
                             releaseModel: {
-                                type: 'githubRelease',
+                                type: 'CDN',
                             },
                         },
                     ],
