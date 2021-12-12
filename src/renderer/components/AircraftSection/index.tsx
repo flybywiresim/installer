@@ -35,7 +35,7 @@ import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import store, { InstallerStore, } from '../../redux/store';
 import * as actionTypes from '../../redux/actionTypes';
-import { Addon, AddonTrack, AddonVersion } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonTrack, AddonVersion, Publisher } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
@@ -50,6 +50,7 @@ import { colors } from 'renderer/style/theme';
 // Props coming from renderer/components/App
 type TransferredProps = {
     addon: Addon,
+    publisher: Publisher
 }
 
 // Props coming from Redux' connect function
@@ -540,11 +541,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 <div className='h-1/2 w-1/2 justify-center items-center relative'>
                     <div className='absolute flex justify-center items-center h-full w-full'>
                         <svg style={{transform: 'rotate(-90deg)'}} className="relative h-full w-full">
-                            <circle cx="50%" cy="50%" r={radius} style={{transition: 'all 0.2s ease-in-out', strokeWidth: 10, strokeLinecap: 'round', strokeDasharray: circumface, strokeDashoffset: draw, fill: 'none', stroke: colors.tealLightContrast}}/>
+                            <circle cx="50%" cy="50%" r={radius} style={{transition: 'all 0.2s ease-in-out', strokeWidth: 10, strokeLinecap: 'round', strokeDasharray: circumface, strokeDashoffset: draw, fill: 'none', stroke: ( props.publisher.mainColor ?? colors.tealLight)}}/>
                         </svg>
                     </div>
                     <div className='absolute w-full h-full flex justify-center items-center'>
-                        <img className="w-40 h-40 cursor-pointer" style={animation()} onClick={click} src={FBWTail} alt="FlyByWire Logo" id="fbw-logo"/>
+                        <img className="w-40 h-40 cursor-pointer" style={animation()} onClick={click} src={props.publisher.logoUrl} alt="Logo" id="logo"/>
                     </div>
                 </div>
             </div>

@@ -10,6 +10,7 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'FlyByWire Simulations',
             logoUrl: FBWLogo,
+            mainColor: '#00c2cc',
             addons: [
                 {
                     name: 'A32NX',

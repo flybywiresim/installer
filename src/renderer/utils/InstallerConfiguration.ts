@@ -59,6 +59,7 @@ export type Publisher = {
     name: string,
     logoUrl: string,
     addons: Addon[],
+    mainColor?: string,
 }
 
 export type Configuration = {
