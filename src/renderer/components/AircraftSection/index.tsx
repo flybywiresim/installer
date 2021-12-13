@@ -54,6 +54,7 @@ import FBWTail from "renderer/assets/FBW-Tail.svg";
 import { PageSider } from "../App/styles";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
+import { GitVersions } from "@flybywiresim/api-client";
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -816,6 +817,15 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                             </div>
                                         </div>
                                     </Route>
+                                    <Route path="/aircraft-section/main/release-notes">
+
+                                    </Route>
+                                    <Route path="/aircraft-section/main/changelog">
+
+                                    </Route>
+                                    <Route path="/aircraft-section/main/about">
+
+                                    </Route>
                                     <div className="flex flex-col items-center justify-between h-full relative bg-navy p-7 flex-shrink-0">
                                         <div className="flex flex-col items-start place-self-start space-y-7">
                                             <SideBarLink to="/aircraft-section/main/configure">
@@ -826,10 +836,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                                 <JournalText size={24} />
                                                 Release Notes
                                             </SideBarLink>
-                                            <SideBarLink to="/aircraft-section/main/liveries">
+                                            {/* <SideBarLink to="/aircraft-section/main/liveries">
                                                 <Palette size={24} />
                                                 Liveries
-                                            </SideBarLink>
+                                            </SideBarLink> */}
                                             <SideBarLink to="/aircraft-section/main/about">
                                                 <InfoCircle size={24} />
                                                 About
