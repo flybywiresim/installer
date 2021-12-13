@@ -108,7 +108,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     useEffect(() => {
         setInterval(() => {
             setSnowRate(sr => {
-                if (sr >= 100) {
+                if (sr >= 60) {
                     console.log(sr);
                     return sr - 20;
                 } else {
