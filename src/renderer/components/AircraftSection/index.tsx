@@ -44,7 +44,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from 'electron';
-import FBWTail from 'renderer/assets/FBW-Tail.svg';
 import { colors } from 'renderer/style/theme';
 
 // Props coming from renderer/components/App
@@ -212,12 +211,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     }, [download]);
 
-    const [addonDiscovered, setAddonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.'+ props.addon.key);
+    const [addonDiscovered, setAddonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + props.addon.key);
 
     const getInstallStatus = async (): Promise<InstallStatus> => {
 
         if (props.addon.hidden && !addonDiscovered) {
-            return InstallStatus.Hidden
+            return InstallStatus.Hidden;
         }
         if (!selectedTrack()) {
             return InstallStatus.Unknown;
@@ -509,39 +508,39 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const discoverPage = (): JSX.Element => {
         const [percentage, setPercentage] = useState<number>(0);
         const [animate, setAnimate] = useState<boolean>(false);
-        const necessaryClicks = 5
-        const radius = 120
-        const circumface = 2 * Math.PI * radius
-        const draw = (100 -percentage) / 100 * circumface
+        const necessaryClicks = 5;
+        const radius = 120;
+        const circumface = 2 * Math.PI * radius;
+        const draw = (100 - percentage) / 100 * circumface;
         const animation = () => {
             if (animate) {
-                return {animation: 'spin 0.5s 1'}
+                return { animation: 'spin 0.5s 1' };
             }
-            return {}
-        }
-        
+            return {};
+        };
+
         const click = () => {
             if (!animate) {
-                setPercentage(percentage+(100/necessaryClicks));
-                setAnimate(true)
+                setPercentage(percentage + (100 / necessaryClicks));
+                setAnimate(true);
+                setTimeout(() =>{
+                    setAnimate(false);
+                }, 500);
+                if (percentage === (100 - 100 / necessaryClicks)) {
+                    setAnimate(true);
                     setTimeout(() =>{
-                        setAnimate(false)
-                    }, 500);
-                if (percentage===(100-100/necessaryClicks)) {
-                    setAnimate(true)
-                    setTimeout(() =>{
-                        setAddonDiscovered(true)
+                        setAddonDiscovered(true);
                     }, 250);
                 }
             }
-        }
-            
+        };
+
         return (
             <div className={`bg-navy text-white flex h-full justify-center items-center ${(!wait && (props.addon.hidden && !addonDiscovered)) ? 'visible' : 'hidden'} ${props.addon.name}`}>
                 <div className='h-1/2 w-1/2 justify-center items-center relative'>
                     <div className='absolute flex justify-center items-center h-full w-full'>
-                        <svg style={{transform: 'rotate(-90deg)'}} className="relative h-full w-full">
-                            <circle cx="50%" cy="50%" r={radius} style={{transition: 'all 0.2s ease-in-out', strokeWidth: 10, strokeLinecap: 'round', strokeDasharray: circumface, strokeDashoffset: draw, fill: 'none', stroke: ( props.publisher.mainColor ?? colors.tealLight)}}/>
+                        <svg style={{ transform: 'rotate(-90deg)' }} className="relative h-full w-full">
+                            <circle cx="50%" cy="50%" r={radius} style={{ transition: 'all 0.2s ease-in-out', strokeWidth: 10, strokeLinecap: 'round', strokeDasharray: circumface, strokeDashoffset: draw, fill: 'none', stroke: (props.publisher.mainColor ?? colors.tealLight) }}/>
                         </svg>
                     </div>
                     <div className='absolute w-full h-full flex justify-center items-center'>
@@ -549,8 +548,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </div>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
         return state.liveries.map((entry) => entry.livery);

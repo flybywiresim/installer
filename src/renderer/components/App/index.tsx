@@ -152,9 +152,9 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                                                 try {
                                                                     return configuration.publishers.find(publisher => publisher.addons
                                                                         .find(item => item.overrideAddonWhileHidden === addon.key)).addons.
-                                                                        find(item => item.overrideAddonWhileHidden === addon.key)
+                                                                        find(item => item.overrideAddonWhileHidden === addon.key);
                                                                 } catch (e) {
-                                                                    return null
+                                                                    return null;
                                                                 }
                                                             }}
                                                         />

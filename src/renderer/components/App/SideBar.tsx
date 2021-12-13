@@ -107,20 +107,20 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
 
     return (
         <>
-        { !(overriddenByAddon && overriddenAddonState === InstallStatus.Hidden) ?
-        <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
-            if (addon.enabled) {
-                handleSelected(addon.key);
-            }
-        }}>
-            <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
-                <span className="text-xl text-gray-200 font-semibold" key={addon.key}>{(addonDownloadState === InstallStatus.Hidden || !addon.enabled) && addon.hiddenName ? addon.hiddenName : addon.name}</span>
-                <code className="text-lg text-teal-50">{downloadState}</code>
-            </div>
+            { !(overriddenByAddon && overriddenAddonState === InstallStatus.Hidden) ?
+                <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
+                    if (addon.enabled) {
+                        handleSelected(addon.key);
+                    }
+                }}>
+                    <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
+                        <span className="text-xl text-gray-200 font-semibold" key={addon.key}>{(addonDownloadState === InstallStatus.Hidden || !addon.enabled) && addon.hiddenName ? addon.hiddenName : addon.name}</span>
+                        <code className="text-lg text-teal-50">{downloadState}</code>
+                    </div>
 
-            <Icon />
-        </SidebarItem>
-        : <></>}
+                    <Icon />
+                </SidebarItem>
+                : <></>}
         </>
     );
 };

@@ -24,7 +24,7 @@ export class AddonData {
         } else if (track.releaseModel.type === 'githubBranch') {
             return this.latestVersionForRollingTrack(addon, track.releaseModel);
         } else if (track.releaseModel.type === 'CDN') {
-            console.log('look here')
+            console.log('look here');
             console.log(this.latestVersionForCDN(track));
             return this.latestVersionForCDN(track);
         }
@@ -46,15 +46,15 @@ export class AddonData {
                 releaseDate: commit.timestamp,
             }));
     }
-    
+
     private static async latestVersionForCDN(track: AddonTrack): Promise<ReleaseInfo> {
         return fetch(track.url + '/releases.yaml')
-        .then(res => res.blob())
-        .then(blob => blob.text())
-        .then(stream => ({
-            name: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].name,
-            releaseDate: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].date,
-        }))
+            .then(res => res.blob())
+            .then(blob => blob.text())
+            .then(stream => ({
+                name: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].name,
+                releaseDate: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].date,
+            }));
     }
 
     static async configureInitialAddonState(addon: Addon): Promise<void> {
@@ -94,11 +94,11 @@ export class AddonData {
                 selectedTrack = addon.tracks[0];
             }
         }
-        
-        const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.'+ addon.key);
+
+        const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + addon.key);
 
         if (addon.hidden && !addonDiscovered) {
-            setInstallStatus(InstallStatus.Hidden)
+            setInstallStatus(InstallStatus.Hidden);
             return;
         }
 
