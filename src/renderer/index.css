@@ -9,14 +9,18 @@
 @tailwind components;
 @tailwind utilities;
 
+button[disabled] {
+  @apply pointer-events-none opacity-50;
+}
+
 html {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 body {
   margin: 0;
   @apply font-inter;
-  letter-spacing: 0.2px;
+  /*letter-spacing: 0.7px;*/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-touch-callout: none;

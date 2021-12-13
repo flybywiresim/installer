@@ -104,6 +104,31 @@ export const defaultConfiguration: Configuration = {
                     targetDirectory: 'A380',
                     tracks: [],
                 },
+            ],
+            buttons: [
+                {
+                    text: 'MCDU',
+                    action: 'internal',
+                    call: 'fbw-remote-mcdu',
+                    icon: 'Tablet',
+                    inop: true,
+                    inline: true,
+                },
+                {
+                    text: 'flyPad',
+                    action: 'internal',
+                    call: 'fbw-remote-flypad',
+                    icon: 'TabletLandscape',
+                    inop: true,
+                    inline: true,
+                },
+                {
+                    text: 'Documentation',
+                    action: 'openBrowser',
+                    url: 'https://docs.flybywiresim.com/',
+                    icon: 'BlockquoteLeft',
+                    inline: false,
+                },
             ]
         },
         {
@@ -128,6 +153,27 @@ export const defaultConfiguration: Configuration = {
                     tracks: [],
                 },
             ],
+            buttons: [
+                {
+                    text: 'Discord',
+                    icon: 'Link45deg',
+                    action: 'openBrowser',
+                    url: 'bruh',
+                },
+                {
+                    text: 'Twitter',
+                    icon: 'Link45deg',
+                    action: 'openBrowser',
+                    url: 'bruh',
+                    inline: true,
+                },
+                {
+                    text: 'Website',
+                    icon: 'BlockquoteLeft',
+                    action: 'openBrowser',
+                    url: 'bruh',
+                }
+            ]
         },
     ],
 };

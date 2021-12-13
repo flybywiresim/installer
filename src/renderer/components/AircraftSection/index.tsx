@@ -690,7 +690,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         <div className="flex flex-row w-full h-full">
             <PageSider
                 className="flex-none bg-navy-medium shadow-2xl h-full"
-                style={{ width: "26rem" }}
+                style={{ width: "29rem" }}
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
                     <AddonBar publisher={props.publisher}>

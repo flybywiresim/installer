@@ -14,7 +14,7 @@ export const NavBar: FC = ({ children }) => {
             </div>
 
             <NavbarItem to="/settings" onClick={() => {}} selected={history.location.pathname === "/settings"}>
-                <Settings className="text-gray-100" size={24} />
+                <Settings className="text-gray-100" size={34} strokeWidth={1} />
             </NavbarItem>
         </div>
     );

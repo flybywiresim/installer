@@ -52,12 +52,26 @@ export type Addon = {
     gitHubReleaseBaseURL?: string,
 }
 
-type PublisherButton = {
+interface BasePublisherButton {
     text: string,
-    url: string,
     icon: string,
     inline?: boolean,
+    inop?: true,
+    forceStroke?: true,
+    action: string,
 }
+
+type UrlPublisherButton = BasePublisherButton & {
+    action: 'openBrowser',
+    url: string,
+}
+
+type InternalAction = BasePublisherButton & {
+    action: 'internal',
+    call: 'fbw-remote-mcdu' | 'fbw-remote-flypad',
+}
+
+export type PublisherButton = UrlPublisherButton | InternalAction
 
 export type Publisher = {
     name: string,
