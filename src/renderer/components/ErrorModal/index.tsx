@@ -8,10 +8,12 @@ import * as fs from "fs";
 export const ErrorModal = (): JSX.Element => {
     const [communityError, setCommunityError] = useState<boolean>(!fs.existsSync(Directories.community()) || Directories.community() === 'C:\\');
     const [liveriesError, setLiveriesError] = useState<boolean>(!fs.existsSync(Directories.liveries()) || Directories.liveries() === 'C:\\');
+    const [linuxError, setLinuxError] = useState<boolean>(Directories.community() === 'linux');
 
     const handleClose = () => {
         setCommunityError(false);
         setLiveriesError(false);
+        setLinuxError(false);
     };
 
     const reloadLiveriesIfNeeded = () => {
@@ -40,7 +42,17 @@ export const ErrorModal = (): JSX.Element => {
     };
 
     const content = (): JSX.Element => {
-        if (communityError) {
+        // Linux's error goes first because it may interfere with the other dir checkers
+        if (linuxError) {
+            return (
+                <>
+                    <span className="w-3/5 text-center text-2xl">Seems like you're using Linux</span>
+                    <span className="w-3/5 text-center text-2xl">We're unable to autodetect your install currently. Please set the correct location before we can continue.</span>
+                    <button className="bg-navy-lightest hover:bg-navy-lighter px-5 py-2 text-lg font-semibold rounded-lg" onClick={handleSelectPath}>Select</button>
+                </>
+            );
+        }
+        if (communityError && (Directories.community() !== 'linux')) {
             return (
                 <>
                     <span className="w-3/5 text-center text-2xl">Your Community folder is set to</span>
@@ -50,7 +62,7 @@ export const ErrorModal = (): JSX.Element => {
                 </>
             );
         }
-        if (liveriesError) {
+        if (liveriesError && (Directories.community() !== 'linux')) {
             return (
                 <>
                     <span className="w-3/5 text-center text-2xl">Your Liveries folder is set to</span>
@@ -63,7 +75,7 @@ export const ErrorModal = (): JSX.Element => {
         return <></>;
     };
 
-    if (communityError || liveriesError) {
+    if (communityError || liveriesError || linuxError) {
         return (
             <div className="h-screen w-screen left-0 top-0 fixed flex flex-col gap-y-5 justify-center items-center bg-navy text-gray-100 z-50">
                 <span className="text-5xl font-semibold">Something went wrong.</span>

@@ -2,10 +2,15 @@ import Store from "electron-store";
 import * as fs from "fs-extra";
 import walk from "walkdir";
 import * as path from "path";
+import * as os from 'os';
 import { Schema } from "electron-store";
 import { Dispatch, SetStateAction, useState } from "react";
 
 const defaultCommunityDir = (): string => {
+    if (os.platform().toString() === 'linux') {
+        return 'linux';
+    }
+
     // Ensure proper functionality in main- and renderer-process
     let msfsConfigPath = null;
 

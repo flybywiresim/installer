@@ -71,7 +71,7 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
     return (
         <div
             className={`w-full p-5 flex flex-col justify-between rounded-lg transition duration-200 ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
-            onClick={enabled && onClick}
+            onClick={enabled ? onClick : undefined}
         >
             <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
             <img className="h-10 w-max" src={selected ? addon.titleImageUrlSelected : addon.titleImageUrl} />
