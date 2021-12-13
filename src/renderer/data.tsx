@@ -121,12 +121,12 @@ export const defaultConfiguration: Configuration = {
                         'The location allows for quick test flights to LAX, which is also serviced by the A380.  \n' +
                         'Use the developer or drone camera to explore! \n\n' +
                         'Happy holidays and enjoy! -FBW Team',
-                    targetDirectory: 'flybywire-scenery-kfbw',
+                    targetDirectory: 'flybywire-airport-kfbw-flybywire-field',
                     tracks: [
                         {
                             name: 'Release',
                             key: 'kfbw-release',
-                            url: 'http://localhost:3005/http://localhost:3000',
+                            url: 'https://cdn.flybywiresim.com/addons/kfbw/release/',
                             isExperimental: false,
                             releaseModel: {
                                 type: 'CDN',
