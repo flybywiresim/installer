@@ -33,14 +33,21 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
     );
 };
 
-type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void }
+type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void, overriddenByAddon: () => Addon }
 
-export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected }) => {
+export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected, overriddenByAddon }) => {
     const [downloadState, setStatusText] = useState('');
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
     const addonDownloadState = useSelector<InstallerStore>((state) => {
         try {
             return state.installStatus[addon.key] as InstallStatus;
+        } catch (e) {
+            return InstallStatus.Unknown;
+        }
+    });
+    const overriddenAddonState = useSelector<InstallerStore>((state) => {
+        try {
+            return state.installStatus[overriddenByAddon().key] as InstallStatus;
         } catch (e) {
             return InstallStatus.Unknown;
         }
@@ -99,6 +106,8 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
     };
 
     return (
+        <>
+        { !(overriddenByAddon && overriddenAddonState === InstallStatus.Hidden) ?
         <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
             if (addon.enabled) {
                 handleSelected(addon.key);
@@ -111,5 +120,7 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
 
             <Icon />
         </SidebarItem>
+        : <></>}
+        </>
     );
 };

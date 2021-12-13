@@ -52,6 +52,7 @@ export type Addon = {
     enabled: boolean,
     hidden?: boolean,
     hiddenName?: string,
+    overrideAddonWhileHidden?: string,
     gitHubReleaseBaseURL?: string,
 }
 
