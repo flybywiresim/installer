@@ -123,6 +123,7 @@
     "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "react-snowfall": "^1.1.1",
     "react-windows-controls": "^1.1.1",
     "redux": "^4.0.5",
     "remark-gfm": "^2.0.0",

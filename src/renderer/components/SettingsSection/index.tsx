@@ -1,12 +1,12 @@
 import React from 'react';
 import { Layout } from 'antd';
-import { Container, Menu, PageSider } from './styles';
+import { Menu, PageSider } from './styles';
 
 import GeneralSettings from 'renderer/components/GeneralSettings';
 
 function index(): JSX.Element {
     return (
-        <Container className="bg-navy-lighter">
+        <div className="bg-navy-lighter text-white flex items-center justify-center m-8 rounded-xl overflow-hidden p-8">
             <Layout>
                 <PageSider>
                     <Menu theme="dark" mode="inline" style={{ width: 256, backgroundColor: '#222c3d', color: 'white' }}
@@ -20,7 +20,7 @@ function index(): JSX.Element {
                     <GeneralSettings />
                 </Layout.Content>
             </Layout>
-        </Container>
+        </div>
     );
 }
 

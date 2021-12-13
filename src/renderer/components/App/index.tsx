@@ -22,6 +22,7 @@ import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import settings from 'common/settings';
+import Snowfall from 'react-snowfall';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -102,6 +103,18 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         }
     }, [selectedPublisher]);
 
+    const [snowRate, setSnowRate] = useState(1000);
+
+    useEffect(() => {
+        setInterval(() => {
+            if (snowRate >= 100) {
+                setSnowRate(snowRate => snowRate - 10);
+            } else {
+                return;
+            }
+        }, 1000);
+    }, []);
+
     return (
         <>
             <ErrorModal/>
@@ -131,6 +144,12 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                     ))}
                                 </NavBar>
                             </div>
+                            <Snowfall
+                                // Applied to the canvas element
+                                style={{ position: 'absolute', inset: 0, zIndex: 100 }}
+                                // Controls the number of snowflakes that are created (default 150)
+                                snowflakeCount={snowRate}
+                            />
                             <div className="bg-navy m-0 w-full">
                                 <Switch>
                                     <Route exact path="/">
