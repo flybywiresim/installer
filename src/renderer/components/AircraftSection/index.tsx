@@ -1,44 +1,74 @@
-import React, { FC, useEffect, useState } from 'react';
-import { DialogContainer, } from './styles';
+import React, { FC, useEffect, useState } from "react";
+import { DialogContainer } from "./styles";
 import fs from "fs-extra";
-import * as path from 'path';
-import { getAddonReleases } from "renderer/components/App";
-import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { DownloadItem, AddonAndTrackLatestVersionNamesState, } from 'renderer/redux/types';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { deleteDownload, registerDownload, updateDownloadProgress } from 'renderer/redux/actions/downloads.actions';
+import * as path from "path";
+import {
+    fetchLatestVersionNames,
+    getAddonReleases,
+} from "renderer/components/App";
+import { setupInstallPath } from "renderer/actions/install-path.utils";
+import {
+    DownloadItem,
+    AddonAndTrackLatestVersionNamesState,
+} from "renderer/redux/types";
+import { connect, useDispatch, useSelector } from "react-redux";
+import {
+    deleteDownload,
+    registerDownload,
+    updateDownloadProgress,
+} from "renderer/redux/actions/downloads.actions";
 import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
-import _ from 'lodash';
-import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
-import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
-import store, { InstallerStore, } from '../../redux/store';
-import * as actionTypes from '../../redux/actionTypes';
-import { Addon, AddonTrack, AddonVersion } from "renderer/utils/InstallerConfiguration";
+import _ from "lodash";
+import {
+    Track,
+    Tracks,
+} from "renderer/components/AircraftSection/TrackSelector";
+import {
+    FragmenterInstaller,
+    needsUpdate,
+    getCurrentInstall,
+} from "@flybywiresim/fragmenter";
+import store, { InstallerStore } from "../../redux/store";
+import * as actionTypes from "../../redux/actionTypes";
+import {
+    Addon,
+    AddonTrack,
+    AddonVersion,
+    Publisher,
+} from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
-import { NavLink, Redirect, Route } from 'react-router-dom';
-import { InfoCircle, JournalText, Palette, Sliders } from 'react-bootstrap-icons';
-import './index.css';
+import { NavLink, Redirect, Route, useHistory } from "react-router-dom";
+import {
+    InfoCircle,
+    JournalText,
+    Palette,
+    Sliders,
+} from "react-bootstrap-icons";
+import "./index.css";
 import settings, { useSetting } from "common/settings";
-import { ipcRenderer } from 'electron';
-import FBWTail from 'renderer/assets/FBW-Tail.svg';
+import { ipcRenderer } from "electron";
+import FBWTail from "renderer/assets/FBW-Tail.svg";
+import { PageSider } from "../App/styles";
+import { AddonBar, AddonBarItem } from "../App/AddonBar";
+import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 
 // Props coming from renderer/components/App
 type TransferredProps = {
-    addon: Addon,
-}
+    publisher: Publisher;
+};
 
 // Props coming from Redux' connect function
 type ConnectedAircraftSectionProps = {
-    selectedTracks: Record<string, AddonTrack>,
-    installedTracks: Record<string, AddonTrack>,
-    installStatus: Record<string, InstallStatus>,
-    latestVersionNames: AddonAndTrackLatestVersionNamesState
-}
+    selectedTracks: Record<string, AddonTrack>;
+    installedTracks: Record<string, AddonTrack>;
+    installStatus: Record<string, InstallStatus>;
+    latestVersionNames: AddonAndTrackLatestVersionNamesState;
+};
 
-type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps
+type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps;
 
 let abortController: AbortController;
 
@@ -57,7 +87,7 @@ export enum InstallStatus {
     DownloadError,
     DownloadCanceled,
     Unknown,
-    Hidden
+    Hidden,
 }
 
 enum MsfsStatus {
@@ -71,16 +101,21 @@ interface InstallButtonProps {
     onClick?: () => void;
 }
 
-const InstallButton: FC<InstallButtonProps> = ({ children, className, onClick }) => (
-    <div className={`w-64 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer transition duration-200 ${className}`} onClick={onClick}>
+const InstallButton: FC<InstallButtonProps> = ({
+    children,
+    className,
+    onClick,
+}) => (
+    <div
+        className={`w-64 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer transition duration-200 ${className}`}
+        onClick={onClick}
+    >
         {children}
     </div>
 );
 
 const StateText: FC = ({ children }) => (
-    <div className="text-white text-2xl font-bold">
-        {children}
-    </div>
+    <div className="text-white text-2xl font-bold">{children}</div>
 );
 
 interface SideBarLinkProps {
@@ -98,27 +133,55 @@ const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
 );
 
 const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
+    const history = useHistory();
+    const [selectedAddon, setSelectedAddon] = useState<Addon>(props.publisher.addons[0]);
+
+    useEffect(() => {
+        settings.set("cache.main.sectionToShow", history.location.pathname);
+
+        let firstAvailableAddon: Addon;
+
+        props.publisher.addons.forEach((addon) => {
+            if (addon.enabled) {
+                firstAvailableAddon = addon;
+            }
+        });
+
+        if (!firstAvailableAddon) {
+            history.push("/aircraft-section/no-available-addons");
+            return;
+        }
+
+        fetchLatestVersionNames(firstAvailableAddon).then(() => {
+            setSelectedAddon(firstAvailableAddon);
+        });
+    }, []);
+
     const findInstalledTrack = (): AddonTrack => {
-        if (!Directories.isFragmenterInstall(props.addon)) {
-            console.log('Not installed');
+        if (!Directories.isFragmenterInstall(selectedAddon)) {
+            console.log("Not installed");
             if (selectedTrack()) {
                 selectAndSetTrack(selectedTrack().key);
                 return selectedTrack();
             } else {
-                setSelectedTrack(props.addon.tracks[0]);
-                return props.addon.tracks[0];
+                setSelectedTrack(selectedAddon.tracks[0]);
+                return selectedAddon.tracks[0];
             }
         }
 
         try {
-            const manifest = getCurrentInstall(Directories.inCommunity(props.addon.targetDirectory));
-            console.log('Currently installed', manifest);
+            const manifest = getCurrentInstall(
+                Directories.inCommunity(selectedAddon.targetDirectory)
+            );
+            console.log("Currently installed", manifest);
 
-            let track = _.find(props.addon.tracks, { url: manifest.source });
+            let track = _.find(selectedAddon.tracks, { url: manifest.source });
             if (!track) {
-                track = _.find(props.addon.tracks, { alternativeUrls: [manifest.source] });
+                track = _.find(selectedAddon.tracks, {
+                    alternativeUrls: [manifest.source],
+                });
             }
-            console.log('Currently installed', track);
+            console.log("Currently installed", track);
             setInstalledTrack(track);
             if (selectedTrack()) {
                 selectAndSetTrack(selectedTrack().key);
@@ -129,32 +192,36 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             }
         } catch (e) {
             console.error(e);
-            console.log('Not installed');
+            console.log("Not installed");
             if (selectedTrack()) {
                 selectAndSetTrack(selectedTrack().key);
                 return selectedTrack();
             } else {
-                setSelectedTrack(props.addon.tracks[0]);
-                return props.addon.tracks[0];
+                setSelectedTrack(selectedAddon.tracks[0]);
+                return selectedAddon.tracks[0];
             }
         }
     };
 
     const installedTrack = (): AddonTrack => {
         try {
-            return props.installedTracks[props.addon.key] as AddonTrack;
+            return props.installedTracks[selectedAddon.key] as AddonTrack;
         } catch (e) {
             setInstalledTrack(null);
             return null;
         }
     };
     const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
-        store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: props.addon.key, payload: newInstalledTrack });
+        store.dispatch({
+            type: actionTypes.SET_INSTALLED_TRACK,
+            addonKey: selectedAddon.key,
+            payload: newInstalledTrack,
+        });
     };
 
     const selectedTrack = (): AddonTrack => {
         try {
-            return props.selectedTracks[props.addon.key] as AddonTrack;
+            return props.selectedTracks[selectedAddon.key] as AddonTrack;
         } catch (e) {
             setSelectedTrack(null);
             return null;
@@ -162,12 +229,16 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
-        store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: props.addon.key, payload: newSelectedTrack });
+        store.dispatch({
+            type: actionTypes.SET_SELECTED_TRACK,
+            addonKey: selectedAddon.key,
+            payload: newSelectedTrack,
+        });
     };
 
     const installStatus = (): InstallStatus => {
         try {
-            return props.installStatus[props.addon.key] as InstallStatus;
+            return props.installStatus[selectedAddon.key] as InstallStatus;
         } catch (e) {
             setInstallStatus(InstallStatus.Unknown);
             return InstallStatus.Unknown;
@@ -175,7 +246,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const setInstallStatus = (new_state: InstallStatus) => {
-        store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: props.addon.key, payload: new_state });
+        store.dispatch({
+            type: actionTypes.SET_INSTALL_STATUS,
+            addonKey: selectedAddon.key,
+            payload: new_state,
+        });
     };
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
@@ -185,21 +260,25 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const [releases, setReleases] = useState<AddonVersion[]>([]);
 
     useEffect(() => {
-        getAddonReleases(props.addon).then(releases => {
+        getAddonReleases(selectedAddon).then((releases) => {
             setReleases(releases);
-            setWait(wait => wait - 1);
+            setWait((wait) => wait - 1);
             findInstalledTrack();
         });
-    }, [props.addon]);
+    }, [selectedAddon]);
 
-    const download: DownloadItem = useSelector((state: InstallerStore) => _.find(state.downloads, { id: props.addon.name }));
+    const download: DownloadItem = useSelector((state: InstallerStore) =>
+        _.find(state.downloads, { id: selectedAddon.name })
+    );
     const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
 
     useEffect(() => {
         const checkMsfsInterval = setInterval(async () => {
-            setMsfsIsOpen(await Msfs.isRunning() ? MsfsStatus.Open : MsfsStatus.Closed);
+            setMsfsIsOpen(
+                (await Msfs.isRunning()) ? MsfsStatus.Open : MsfsStatus.Closed
+            );
         }, 500);
 
         return () => clearInterval(checkMsfsInterval);
@@ -214,41 +293,42 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     useEffect(() => {
         if (download && isDownloading) {
-            ipcRenderer.send('set-window-progress-bar', download.progress / 100);
+            ipcRenderer.send("set-window-progress-bar", download.progress / 100);
         } else {
-            ipcRenderer.send('set-window-progress-bar', -1);
+            ipcRenderer.send("set-window-progress-bar", -1);
         }
     }, [download]);
 
-    const [addonDiscovered, setAddonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + props.addon.key);
+    const [addonDiscovered, setAddonDiscovered] = useSetting<boolean>(
+        "cache.main.discoveredAddons." + selectedAddon.key
+    );
 
     const getInstallStatus = async (): Promise<InstallStatus> => {
-
-        if (props.addon.hidden && !addonDiscovered) {
+        if (selectedAddon.hidden && !addonDiscovered) {
             return InstallStatus.Hidden;
         }
         if (!selectedTrack()) {
             return InstallStatus.Unknown;
         }
 
-        console.log('Checking install status');
+        console.log("Checking install status");
 
-        const installDir = Directories.inCommunity(props.addon.targetDirectory);
+        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
 
         if (!fs.existsSync(installDir)) {
             return InstallStatus.FreshInstall;
         }
 
-        console.log('Checking for git install');
+        console.log("Checking for git install");
         if (Directories.isGitInstall(installDir)) {
             return InstallStatus.GitInstall;
         }
 
         try {
             const updateInfo = await needsUpdate(selectedTrack().url, installDir, {
-                forceCacheBust: true
+                forceCacheBust: true,
             });
-            console.log('Update info', updateInfo);
+            console.log("Update info", updateInfo);
 
             if (selectedTrack() !== installedTrack() && installedTrack()) {
                 return InstallStatus.TrackSwitch;
@@ -269,11 +349,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     };
 
     const downloadAddon = async (track: AddonTrack) => {
-        const installDir = Directories.inCommunity(props.addon.targetDirectory);
+        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
         const tempDir = Directories.temp();
 
-        console.log('Installing', track);
-        console.log('Installing into', installDir, 'using temp dir', tempDir);
+        console.log("Installing", track);
+        console.log("Installing into", installDir, "using temp dir", tempDir);
 
         // Prepare temporary directory
         if (fs.existsSync(tempDir)) {
@@ -282,13 +362,13 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         fs.mkdirSync(tempDir);
 
         // Copy current install to temporary directory
-        console.log('Checking for existing install');
+        console.log("Checking for existing install");
         if (Directories.isFragmenterInstall(installDir)) {
             setInstallStatus(InstallStatus.DownloadPrep);
-            console.log('Found existing install at', installDir);
-            console.log('Copying existing install to', tempDir);
+            console.log("Found existing install at", installDir);
+            console.log("Copying existing install to", tempDir);
             await fs.copy(installDir, tempDir);
-            console.log('Finished copying');
+            console.log("Finished copying");
         }
 
         // Initialize abort controller for downloads
@@ -298,67 +378,75 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         try {
             let lastPercent = 0;
             setInstallStatus(InstallStatus.Downloading);
-            dispatch(registerDownload(props.addon.name, ''));
+            dispatch(registerDownload(selectedAddon.name, ""));
 
             // Perform the fragmenter download
             const installer = new FragmenterInstaller(track.url, tempDir);
 
-            installer.on('downloadStarted', module => {
-                console.log('Downloading started for module', module.name);
+            installer.on("downloadStarted", (module) => {
+                console.log("Downloading started for module", module.name);
                 setInstallStatus(InstallStatus.Downloading);
             });
-            installer.on('downloadProgress', (module, progress) => {
+            installer.on("downloadProgress", (module, progress) => {
                 if (lastPercent !== progress.percent) {
                     lastPercent = progress.percent;
-                    dispatch(updateDownloadProgress(props.addon.name, module.name, progress.percent));
+                    dispatch(
+                        updateDownloadProgress(
+                            selectedAddon.name,
+                            module.name,
+                            progress.percent
+                        )
+                    );
                 }
             });
-            installer.on('unzipStarted', module => {
-                console.log('Started unzipping module', module.name);
+            installer.on("unzipStarted", (module) => {
+                console.log("Started unzipping module", module.name);
                 setInstallStatus(InstallStatus.Decompressing);
             });
-            installer.on('retryScheduled', (module, retryCount, waitSeconds) => {
-                console.log('Scheduling a retry for module', module.name);
-                console.log('Retry count', retryCount);
-                console.log('Waiting for', waitSeconds, 'seconds');
+            installer.on("retryScheduled", (module, retryCount, waitSeconds) => {
+                console.log("Scheduling a retry for module", module.name);
+                console.log("Retry count", retryCount);
+                console.log("Waiting for", waitSeconds, "seconds");
 
                 setInstallStatus(InstallStatus.DownloadRetry);
             });
-            installer.on('retryStarted', (module, retryCount) => {
-                console.log('Starting a retry for module', module.name);
-                console.log('Retry count', retryCount);
+            installer.on("retryStarted", (module, retryCount) => {
+                console.log("Starting a retry for module", module.name);
+                console.log("Retry count", retryCount);
 
                 setInstallStatus(InstallStatus.Downloading);
             });
 
-            console.log('Starting fragmenter download for URL', track.url);
+            console.log("Starting fragmenter download for URL", track.url);
             const installResult = await installer.install(signal, {
-                forceCacheBust: !(settings.get('mainSettings.useCdnCache') as boolean),
+                forceCacheBust: !(settings.get("mainSettings.useCdnCache") as boolean),
                 forceFreshInstall: false,
                 forceManifestCacheBust: true,
             });
-            console.log('Fragmenter download finished for URL', track.url);
+            console.log("Fragmenter download finished for URL", track.url);
 
             // Copy files from temp dir
             setInstallStatus(InstallStatus.DownloadEnding);
-            Directories.removeTargetForAddon(props.addon);
-            console.log('Copying files from', tempDir, 'to', installDir);
+            Directories.removeTargetForAddon(selectedAddon);
+            console.log("Copying files from", tempDir, "to", installDir);
             await fs.copy(tempDir, installDir, { recursive: true });
-            console.log('Finished copying files from', tempDir, 'to', installDir);
+            console.log("Finished copying files from", tempDir, "to", installDir);
 
             // Remove installs existing under alternative names
-            console.log('Removing installs existing under alternative names');
-            Directories.removeAlternativesForAddon(props.addon);
-            console.log('Finished removing installs existing under alternative names');
+            console.log("Removing installs existing under alternative names");
+            Directories.removeAlternativesForAddon(selectedAddon);
+            console.log(
+                "Finished removing installs existing under alternative names"
+            );
 
-            dispatch(deleteDownload(props.addon.name));
+            dispatch(deleteDownload(selectedAddon.name));
             notifyDownload(true);
 
             // Flash completion text
             setInstalledTrack(track);
             setInstallStatus(InstallStatus.DownloadDone);
 
-            console.log('Finished download', installResult);
+            console.log("Finished download", installResult);
         } catch (e) {
             if (signal.aborted) {
                 setInstallStatus(InstallStatus.DownloadCanceled);
@@ -370,28 +458,37 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
         }
 
-        dispatch(deleteDownload(props.addon.name));
+        dispatch(deleteDownload(selectedAddon.name));
 
         // Clean up temp dir
         Directories.removeAllTemp();
     };
 
     const selectAndSetTrack = async (key: string) => {
-        const newTrack = props.addon.tracks.find(x => x.key === key);
+        const newTrack = selectedAddon.tracks.find((x) => x.key === key);
         setSelectedTrack(newTrack);
     };
 
     const handleTrackSelection = (track: AddonTrack) => {
         if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
-            dispatch(callWarningModal(track.isExperimental, track, !track.isExperimental, () => selectAndSetTrack(track.key)));
+            dispatch(
+                callWarningModal(
+                    track.isExperimental,
+                    track,
+                    !track.isExperimental,
+                    () => selectAndSetTrack(track.key)
+                )
+            );
         } else {
             selectAndSetTrack(selectedTrack().key);
         }
     };
 
     const handleInstall = () => {
-        if (settings.has('mainSettings.msfsPackagePath')) {
-            downloadAddon(selectedTrack()).then(() => console.log('Download and install complete'));
+        if (settings.has("mainSettings.msfsPackagePath")) {
+            downloadAddon(selectedTrack()).then(() =>
+                console.log("Download and install complete")
+            );
         } else {
             setupInstallPath().then();
         }
@@ -399,96 +496,80 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const handleCancel = () => {
         if (isDownloading) {
-            console.log('Cancel download');
+            console.log("Cancel download");
             abortController.abort();
-            dispatch(deleteDownload(props.addon.name));
+            dispatch(deleteDownload(selectedAddon.name));
         }
     };
 
     const notifyDownload = (successful: boolean) => {
-        console.log('Requesting notification');
-        Notification.requestPermission().then(function () {
-            console.log('Showing notification');
-            if (successful) {
-                new Notification('Download complete!', {
-                    'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
-                    'body': "You're ready to fly",
-                });
-            } else {
-                new Notification('Download failed!', {
-                    'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
-                    'body': "Oops, something went wrong",
-                });
-            }
-        }).catch(e => console.log(e));
+        console.log("Requesting notification");
+        Notification.requestPermission()
+            .then(function () {
+                console.log("Showing notification");
+                if (successful) {
+                    new Notification("Download complete!", {
+                        icon: path.join(
+                            process.resourcesPath,
+                            "extraResources",
+                            "icon.ico"
+                        ),
+                        body: "You're ready to fly",
+                    });
+                } else {
+                    new Notification("Download failed!", {
+                        icon: path.join(
+                            process.resourcesPath,
+                            "extraResources",
+                            "icon.ico"
+                        ),
+                        body: "Oops, something went wrong",
+                    });
+                }
+            })
+            .catch((e) => console.log(e));
     };
 
     const activeState = (): JSX.Element => {
         if (msfsIsOpen !== MsfsStatus.Closed) {
             return (
                 <StateText>
-                    {msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}
+                    {msfsIsOpen === MsfsStatus.Open
+                        ? "Please close MSFS"
+                        : "Checking status..."}
                 </StateText>
             );
         }
 
         switch (installStatus()) {
             case InstallStatus.UpToDate:
-                return (
-                    <></>
-                );
+                return <></>;
             case InstallStatus.NeedsUpdate:
-                return (
-                    <StateText>New release available</StateText>
-                );
+                return <StateText>New release available</StateText>;
             case InstallStatus.FreshInstall:
-                return (
-                    <></>
-                );
+                return <></>;
             case InstallStatus.GitInstall:
-                return (
-                    <></>
-                );
+                return <></>;
             case InstallStatus.TrackSwitch:
-                return (
-                    <></>
-                );
+                return <></>;
             case InstallStatus.DownloadPrep:
-                return (
-                    <StateText>Preparing update</StateText>
-                );
+                return <StateText>Preparing update</StateText>;
             case InstallStatus.Downloading:
-                return (
-                    <StateText>{`Downloading ${download?.module.toLowerCase()} module`}</StateText>
-                );
+                return <StateText>{`Downloading ${download?.module.toLowerCase()} module`}</StateText>;
             case InstallStatus.Decompressing:
-                return (
-                    <StateText>Decompressing</StateText>
-                );
+                return <StateText>Decompressing</StateText>;
             case InstallStatus.DownloadEnding:
-                return (
-                    <StateText>Finishing update</StateText>
-                );
+                return <StateText>Finishing update</StateText>;
             case InstallStatus.DownloadDone:
-                return (
-                    <StateText>Completed!</StateText>
-                );
+                return <StateText>Completed!</StateText>;
             case InstallStatus.DownloadRetry:
-                return (
-                    <StateText>Retrying {download?.module.toLowerCase()} module</StateText>
-                );
+                return <StateText>Retrying {download?.module.toLowerCase()} module</StateText>;
             case InstallStatus.DownloadError:
-                return (
-                    <StateText>Failed to install</StateText>
-                );
+                return <StateText>Failed to install</StateText>;
             case InstallStatus.DownloadCanceled:
-                return (
-                    <StateText>Download canceled</StateText>
-                );
+                return <StateText>Download canceled</StateText>;
             case InstallStatus.Unknown:
-                return (
-                    <StateText>Unknown state</StateText>
-                );
+                return <StateText>Unknown state</StateText>;
         }
     };
 
@@ -510,13 +591,19 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 );
             case InstallStatus.NeedsUpdate:
                 return (
-                    <InstallButton className="bg-yellow-500 hover:bg-yellow-400" onClick={handleInstall}>
+                    <InstallButton
+                        className="bg-yellow-500 hover:bg-yellow-400"
+                        onClick={handleInstall}
+                    >
                         Update
                     </InstallButton>
                 );
             case InstallStatus.FreshInstall:
                 return (
-                    <InstallButton className="pointer-events-none bg-green-500" onClick={handleInstall}>
+                    <InstallButton
+                        className="pointer-events-none bg-green-500"
+                        onClick={handleInstall}
+                    >
                         Installed
                     </InstallButton>
                 );
@@ -528,7 +615,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 );
             case InstallStatus.TrackSwitch:
                 return (
-                    <InstallButton className="bg-purple-600 hover:bg-purple-700" onClick={handleInstall}>
+                    <InstallButton
+                        className="bg-purple-600 hover:bg-purple-700"
+                        onClick={handleInstall}
+                    >
                         Switch Version
                     </InstallButton>
                 );
@@ -540,7 +630,10 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 );
             case InstallStatus.Downloading:
                 return (
-                    <InstallButton className="bg-red-600 hover:bg-red-500" onClick={handleCancel}>
+                    <InstallButton
+                        className="bg-red-600 hover:bg-red-500"
+                        onClick={handleCancel}
+                    >
                         Cancel
                     </InstallButton>
                 );
@@ -594,116 +687,177 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     });
 
     return (
-        <div className={`bg-navy-light flex flex-col h-full ${(wait || (props.addon.hidden && !addonDiscovered)) ? 'hidden' : 'visible'} ${props.addon.name}`}>
-            <div className="h-full relative bg-cover bg-center"
-                style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${props.addon.backgroundImageUrl})` }}
+        <div className="flex flex-row w-full h-full">
+            <PageSider
+                className="flex-none bg-navy-medium shadow-2xl h-full"
+                style={{ width: "26rem" }}
             >
-                <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
-                    <div>
-                        {activeState()}
-                        {/* TODO: Actually calculate this value */}
-                        {installStatus() === InstallStatus.Downloading && (
-                            <div className="text-white text-2xl">98.7 mb/s</div>
-                        )}
-                    </div>
-                    {installStatus() === InstallStatus.Downloading && (
-                        // TODO: Replace this with a JIT value
-                        <div className="text-white font-semibold" style={{ fontSize: '38px' }}>
-                            {download?.progress}%
-                        </div>
-                    )}
+                <div className="h-full flex flex-col divide-y divide-gray-700">
+                    <AddonBar publisher={props.publisher}>
+                        {props.publisher.addons.map((addon) => (
+                            <AddonBarItem
+                                selected={selectedAddon.key === addon.key && addon.enabled}
+                                enabled={addon.enabled}
+                                className="h-32"
+                                addon={addon}
+                                onClick={() => setSelectedAddon(addon)}
+                            />
+                        ))}
+                    </AddonBar>
                 </div>
-                {installStatus() === InstallStatus.Downloading && (
-                    <div className="absolute -bottom-1 w-full h-2 z-10 bg-cyan progress-bar-animated" style={{ width: `${download?.progress}%` }}/>
-                )}
-            </div>
-            <div className="flex flex-row h-full relative">
-                <div className="p-7 overflow-y-scroll w-full">
-                    <Route path="/aircraft-section">
-                        <Redirect to="/aircraft-section/configure" />
-                    </Route>
-                    <Route path="/aircraft-section/configure">
-                        {liveries.length > 0 &&
-                    <DialogContainer>
-                        <LiveryConversionDialog />
-                    </DialogContainer>
-                        }
-                        <div className="">
-                            <h2 className="text-white font-extrabold">Choose Your Version</h2>
-                            <div className="flex flex-row gap-x-8">
-                                <div>
-                                    <Tracks>
-                                        {
-                                            props.addon.tracks.filter((track) => !track.isExperimental).map(track =>
-                                                <Track
-                                                    addon={props.addon}
-                                                    key={track.key}
-                                                    track={track}
-                                                    isSelected={selectedTrack() === track}
-                                                    isInstalled={installedTrack() === track}
-                                                    handleSelected={() => handleTrackSelection(track)}
-                                                />
-                                            )
-                                        }
-                                    </Tracks>
-                                    <h5 className="text-base text-teal-50 mt-2">Mainline Releases</h5>
-                                </div>
-                                <div>
-                                    <Tracks>
-                                        {
-                                            props.addon.tracks.filter((track) => track.isExperimental).map(track =>
-                                                <Track
-                                                    addon={props.addon}
-                                                    key={track.key}
-                                                    track={track}
-                                                    isSelected={selectedTrack() === track}
-                                                    isInstalled={installedTrack() === track}
-                                                    handleSelected={() => handleTrackSelection(track)}
-                                                />
-                                            )
-                                        }
-                                    </Tracks>
-
-                                    {props.addon.tracks.filter((track) => track.isExperimental).length > 0 && (
-                                        <h5 className="text-base text-teal-50 ">Experimental versions</h5>
+            </PageSider>
+            <div
+                className={`bg-navy-light w-full flex flex-col h-full ${wait || (selectedAddon.hidden && !addonDiscovered)
+                    ? "hidden"
+                    : "visible"
+                } ${selectedAddon.name}`}
+            >
+                <div className="flex flex-row h-full relative">
+                    <div className="w-full">
+                        <Route path="/aircraft-section">
+                            <Redirect to="/aircraft-section/main/configure" />
+                        </Route>
+                        <Route path="/aircraft-section/no-available-addons">
+                            <NoAvailableAddonsSection />
+                        </Route>
+                        <Route path="/aircraft-section/main">
+                            <div className="h-full">
+                                <div
+                                    className="h-1/2 relative bg-cover bg-center"
+                                    style={{
+                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${selectedAddon.backgroundImageUrl})`,
+                                    }}
+                                >
+                                    <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
+                                        <div>
+                                            {activeState()}
+                                            {/* TODO: Actually calculate this value */}
+                                            {installStatus() === InstallStatus.Downloading && (
+                                                <div className="text-white text-2xl">98.7 mb/s</div>
+                                            )}
+                                        </div>
+                                        {installStatus() === InstallStatus.Downloading && (
+                                            // TODO: Replace this with a JIT value
+                                            <div
+                                                className="text-white font-semibold"
+                                                style={{ fontSize: "38px" }}
+                                            >
+                                                {download?.progress}%
+                                            </div>
+                                        )}
+                                    </div>
+                                    {installStatus() === InstallStatus.Downloading && (
+                                        <div
+                                            className="absolute -bottom-1 w-full h-2 z-10 bg-cyan progress-bar-animated"
+                                            style={{ width: `${download?.progress}%` }}
+                                        />
                                     )}
                                 </div>
+                                <div className="flex flex-row h-1/2">
+                                    {liveries.length > 0 && (
+                                        <DialogContainer>
+                                            <LiveryConversionDialog />
+                                        </DialogContainer>
+                                    )}
+                                    <Route path="/aircraft-section/main/configure">
+                                        <div className="p-7 overflow-y-scroll">
+                                            <h2 className="text-white font-extrabold">
+                                            Choose Your Version
+                                            </h2>
+                                            <div className="flex flex-row gap-x-8">
+                                                <div>
+                                                    <Tracks>
+                                                        {selectedAddon.tracks
+                                                            .filter((track) => !track.isExperimental)
+                                                            .map((track) => (
+                                                                <Track
+                                                                    addon={selectedAddon}
+                                                                    key={track.key}
+                                                                    track={track}
+                                                                    isSelected={selectedTrack() === track}
+                                                                    isInstalled={installedTrack() === track}
+                                                                    handleSelected={() => handleTrackSelection(track)}
+                                                                />
+                                                            ))}
+                                                    </Tracks>
+                                                    <h5 className="text-base text-teal-50 mt-2">
+                                                    Mainline Releases
+                                                    </h5>
+                                                </div>
+                                                <div>
+                                                    <Tracks>
+                                                        {selectedAddon.tracks
+                                                            .filter((track) => track.isExperimental)
+                                                            .map((track) => (
+                                                                <Track
+                                                                    addon={selectedAddon}
+                                                                    key={track.key}
+                                                                    track={track}
+                                                                    isSelected={selectedTrack() === track}
+                                                                    isInstalled={installedTrack() === track}
+                                                                    handleSelected={() => handleTrackSelection(track)}
+                                                                />
+                                                            ))}
+                                                    </Tracks>
+
+                                                    {selectedAddon.tracks.filter((track) => track.isExperimental)
+                                                        .length > 0 && (
+                                                        <h5 className="text-base text-teal-50 ">
+                                                    Experimental versions
+                                                        </h5>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="mt-10">
+                                                <h2 className="text-white font-extrabold">Description</h2>
+                                                <p className="text-xl text-white font-manrope leading-relaxed">
+                                                    {selectedAddon.description}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Route>
+                                    <div className="flex flex-col items-center justify-between h-full relative bg-navy p-7 flex-shrink-0">
+                                        <div className="flex flex-col items-start place-self-start space-y-7">
+                                            <SideBarLink to="/aircraft-section/main/configure">
+                                                <Sliders size={24} />
+                                                Configure
+                                            </SideBarLink>
+                                            <SideBarLink to="/aircraft-section/main/release-notes">
+                                                <JournalText size={24} />
+                                                Release Notes
+                                            </SideBarLink>
+                                            <SideBarLink to="/aircraft-section/main/liveries">
+                                                <Palette size={24} />
+                                                Liveries
+                                            </SideBarLink>
+                                            <SideBarLink to="/aircraft-section/main/about">
+                                                <InfoCircle size={24} />
+                                                About
+                                            </SideBarLink>
+                                        </div>
+                                        <div>{activeInstallButton()}</div>
+                                        <div
+                                            className={`bg-navy text-white flex h-full justify-center items-center ${!wait && selectedAddon.hidden && !addonDiscovered
+                                                ? "visible"
+                                                : "hidden"
+                                            } ${selectedAddon.name}`}
+                                        >
+                                            <div className="h-1/5 w-1/5">
+                                                <img
+                                                    onClick={() => {
+                                                        setAddonDiscovered(true);
+                                                    }}
+                                                    src={FBWTail}
+                                                    alt="FlyByWire Logo"
+                                                    id="fbw-logo"
+                                                    style={{ transform: "scale(1.35)" }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div className="mt-10">
-                            <h2 className="text-white font-extrabold">Description</h2>
-                            <p className="text-xl text-white font-manrope leading-relaxed">{props.addon.description}</p>
-                        </div>
-                    </Route>
-                </div>
-                <div className="flex flex-col items-center justify-between h-full relative bg-navy p-7 flex-shrink-0">
-                    <div className="flex flex-col items-start place-self-start space-y-7">
-                        <SideBarLink to="/aircraft-section/configure">
-                            <Sliders size={24}/>
-                            Configure
-                        </SideBarLink>
-                        <SideBarLink to="/aircraft-section/release-notes">
-                            <JournalText size={24}/>
-                            Release Notes
-                        </SideBarLink>
-                        <SideBarLink to="/aircraft-section/liveries">
-                            <Palette size={24}/>
-                            Liveries
-                        </SideBarLink>
-                        <SideBarLink to="/aircraft-section/about">
-                            <InfoCircle size={24}/>
-                            About
-                        </SideBarLink>
-                    </div>
-                    <div>
-                        {activeInstallButton()}
-                    </div>
-                    <div className={`bg-navy text-white flex h-full justify-center items-center ${(!wait && (props.addon.hidden && !addonDiscovered)) ? 'visible' : 'hidden'} ${props.addon.name}`}>
-                        <div className='h-1/5 w-1/5'>
-                            <img onClick={() => {
-                                setAddonDiscovered(true);
-                            }} src={FBWTail} alt="FlyByWire Logo" id="fbw-logo" style={{ transform: 'scale(1.35)' }}/>
-                        </div>
+                        </Route>
                     </div>
                 </div>
             </div>
@@ -713,8 +867,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
 const mapStateToProps = (state: ConnectedAircraftSectionProps) => {
     return {
-        ...state
+        ...state,
     };
 };
 
-export default connect(mapStateToProps) (index);
+export default connect(mapStateToProps)(index);

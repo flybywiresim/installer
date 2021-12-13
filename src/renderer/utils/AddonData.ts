@@ -79,11 +79,11 @@ export class AddonData {
                 selectedTrack = addon.tracks[0];
             }
         }
-        
-        const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.'+ addon.key);
+
+        const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + addon.key);
 
         if (addon.hidden && !addonDiscovered) {
-            setInstallStatus(InstallStatus.Hidden)
+            setInstallStatus(InstallStatus.Hidden);
             return;
         }
 

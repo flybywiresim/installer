@@ -6,7 +6,7 @@ import SettingsSection from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
 import AircraftSection from 'renderer/components/AircraftSection';
 
-import { Container, MainLayout, PageHeader, PageSider, } from './styles';
+import { Container, MainLayout, PageHeader } from './styles';
 import ChangelogModal from '../ChangelogModal';
 import WarningModal from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
@@ -21,8 +21,6 @@ import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
-import { AddonBar, AddonBarItem } from "renderer/components/App/AddonBar";
-import { NoAvailableAddonsSection } from '../NoAvailableAddonsSection';
 import settings from 'common/settings';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
@@ -102,23 +100,6 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         if (settings.get('cache.main.sectionToShow')) {
             history.push(settings.get('cache.main.sectionToShow'));
         }
-
-        let firstAvailableAddon: Addon;
-
-        selectedPublisher.addons.forEach(addon => {
-            if (addon.enabled) {
-                firstAvailableAddon = addon;
-            }
-        });
-
-        if (!firstAvailableAddon) {
-            history.push('/no-available-addons');
-            return;
-        }
-
-        fetchLatestVersionNames(firstAvailableAddon).then(() => {
-            setSelectedAddon(firstAvailableAddon);
-        });
     }, [selectedPublisher]);
 
     return (
@@ -149,15 +130,6 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                         />
                                     ))}
                                 </NavBar>
-                                <PageSider className="flex-none bg-navy-medium shadow-2xl h-full" style={{ width: '26rem' }}>
-                                    <div className="h-full flex flex-col divide-y divide-gray-700">
-                                        <AddonBar publisher={selectedPublisher}>
-                                            {selectedPublisher.addons.map((addon) => (
-                                                <AddonBarItem selected={selectedAddon.key === addon.key && addon.enabled} enabled={addon.enabled} className="h-32" addon={addon} onClick={() => setSelectedAddon(addon)} />
-                                            ))}
-                                        </AddonBar>
-                                    </div>
-                                </PageSider>
                             </div>
                             <div className="bg-navy m-0 w-full">
                                 <Switch>
@@ -165,16 +137,13 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                         <Redirect to="/aircraft-section"/>
                                     </Route>
                                     <Route path="/aircraft-section">
-                                        <AircraftSection addon={addons.find(x => x.key === selectedAddon.key)}/>;
+                                        <AircraftSection publisher={selectedPublisher} />;
                                     </Route>
                                     <Route path="/debug">
                                         <DebugSection/>
                                     </Route>
                                     <Route path="/settings">
                                         <SettingsSection/>
-                                    </Route>
-                                    <Route path="/no-available-addons">
-                                        <NoAvailableAddonsSection/>
                                     </Route>
                                 </Switch>
                             </div>
