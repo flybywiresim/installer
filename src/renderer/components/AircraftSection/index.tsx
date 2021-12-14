@@ -941,14 +941,11 @@ const Changelog = () => {
         <div className="h-full p-7 overflow-y-scroll">
             <h2 className="text-white font-extrabold">Changelog</h2>
             <ol className="text-white">
-                {arr.map((entry: any) => {
-                    console.log(entry);
-                    return (
-                        <li className="font-mono">
-                            {entry}
-                        </li>
-                    );
-                })}
+                {arr.map(entry => (
+                    <li className="font-mono">
+                        {entry}
+                    </li>
+                ))}
             </ol>
         </div>
     );
