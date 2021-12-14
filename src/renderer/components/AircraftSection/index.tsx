@@ -42,9 +42,9 @@ import { LiveryConversionDialog } from "renderer/components/AircraftSection/Live
 import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import { NavLink, Redirect, Route, useHistory } from "react-router-dom";
 import {
+    CardText,
     InfoCircle,
     JournalText,
-    Palette,
     Sliders,
 } from "react-bootstrap-icons";
 import "./index.css";
@@ -54,7 +54,9 @@ import FBWTail from "renderer/assets/FBW-Tail.svg";
 import { PageSider } from "../App/styles";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
-import { GitVersions } from "@flybywiresim/api-client";
+import { GitVersions, ReleaseInfo } from "@flybywiresim/api-client";
+import remarkGfm from "remark-gfm";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -691,7 +693,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         <div className="flex flex-row w-full h-full">
             <PageSider
                 className="flex-none bg-navy-medium shadow-2xl h-full"
-                style={{ width: "29rem" }}
+                style={{ width: "26rem" }}
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
                     <AddonBar publisher={props.publisher}>
@@ -818,15 +820,17 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                         </div>
                                     </Route>
                                     <Route path="/aircraft-section/main/release-notes">
-
+                                        <div>
+                                            <ReleaseNotes addon={selectedAddon} />
+                                        </div>
                                     </Route>
                                     <Route path="/aircraft-section/main/changelog">
-
+                                        <Changelog />
                                     </Route>
                                     <Route path="/aircraft-section/main/about">
 
                                     </Route>
-                                    <div className="flex flex-col items-center justify-between h-full relative bg-navy p-7 flex-shrink-0">
+                                    <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">
                                         <div className="flex flex-col items-start place-self-start space-y-7">
                                             <SideBarLink to="/aircraft-section/main/configure">
                                                 <Sliders size={24} />
@@ -835,6 +839,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                             <SideBarLink to="/aircraft-section/main/release-notes">
                                                 <JournalText size={24} />
                                                 Release Notes
+                                            </SideBarLink>
+                                            <SideBarLink to="/aircraft-section/main/changelog">
+                                                {/* <ListColumnsReverse size={24} /> TODO: USE THIS INSTEAD */}
+                                                <CardText size={24} />
+                                                Change Log
                                             </SideBarLink>
                                             {/* <SideBarLink to="/aircraft-section/main/liveries">
                                                 <Palette size={24} />
@@ -871,6 +880,76 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                     </div>
                 </div>
             </div>
+        </div>
+    );
+};
+
+interface ReleaseNotesProps {
+    addon: Addon;
+}
+
+const ReleaseNotes: FC<ReleaseNotesProps> = ({ addon }) => {
+    const [releases, setReleases] = useState<ReleaseInfo[]>([]);
+
+    useEffect(() => {
+        GitVersions.getReleases(addon.repoOwner, addon.repoName).then(res => setReleases((res)));
+    }, []);
+
+    console.log(releases);
+
+    return (
+        <div className="w-full h-full p-7 overflow-y-scroll">
+            <div className="flex flex-row items-center justify-between">
+                <h2 className="text-white font-extrabold">
+                    Release Notes
+                </h2>
+                {/*    Dropdown will go here*/}
+            </div>
+            <div className="flex flex-col gap-y-7">
+                {releases.map(release =>
+                    <div className="rounded-md bg-navy p-7 ">
+                        <h3 className="text-white font-semibold">{release.name}</h3>
+                        <ReactMarkdown
+                            className="text-lg text-gray-300"
+                            children={release.body ?? ''}
+                            remarkPlugins={[remarkGfm]}
+                            linkTarget={"_blank"}
+                        />
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const Changelog = () => {
+    const URL = 'https://api.github.com/repos/flybywiresim/a32nx/contents/.github/CHANGELOG.md';
+    const [arr, setArr] = useState<string[]>([]);
+
+    useEffect(() => {
+        fetch(URL, {
+            headers: {
+                'accept': 'application/vnd.github.v3.raw',
+            }
+        })
+            .then(res => res.text())
+            .then(text => text.split('1.').slice(3))
+            .then(lines => setArr(lines));
+    }, []);
+
+    return (
+        <div className="h-full p-7 overflow-y-scroll">
+            <h2 className="text-white font-extrabold">Changelog</h2>
+            <ol className="text-white">
+                {arr.map((entry: any) => {
+                    console.log(entry);
+                    return (
+                        <li className="font-mono">
+                            {entry}
+                        </li>
+                    );
+                })}
+            </ol>
         </div>
     );
 };

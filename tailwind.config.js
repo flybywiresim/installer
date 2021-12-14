@@ -53,6 +53,7 @@ module.exports = {
             fontFamily: {
                 inter: ['Inter', 'sans-serif'],
                 manrope: ['Manrope', 'sans-serif'],
+                mono: ['JetBrains Mono', 'monospace'],
             },
             borderRadius: {
                 'sm-md': '4px',
