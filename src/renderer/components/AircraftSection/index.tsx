@@ -351,6 +351,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
+    console.log(selectedTrack());
+
     const downloadAddon = async (track: AddonTrack) => {
         const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
         const tempDir = Directories.temp();
@@ -814,7 +816,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                             <div className="mt-10">
                                                 <h2 className="text-white font-extrabold">Description</h2>
                                                 <p className="text-xl text-white font-manrope leading-relaxed">
-                                                    {selectedAddon.description}
+                                                    {selectedTrack().description}
                                                 </p>
                                             </div>
                                         </div>
@@ -828,7 +830,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                         <Changelog />
                                     </Route>
                                     <Route path="/aircraft-section/main/about">
-
+                                        <About addon={selectedAddon}/>
                                     </Route>
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">
                                         <div className="flex flex-col items-start place-self-start space-y-7">
@@ -884,11 +886,16 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     );
 };
 
-interface ReleaseNotesProps {
-    addon: Addon;
-}
+const About: FC<{ addon: Addon }> = ({ addon }) => (
+    <div className="h-full p-7 overflow-y-scroll">
+        <h2 className="text-white font-extrabold">About</h2>
+        <p className="text-xl text-white font-manrope leading-relaxed">
+            {addon.description}
+        </p>
+    </div>
+);
 
-const ReleaseNotes: FC<ReleaseNotesProps> = ({ addon }) => {
+const ReleaseNotes: FC<{addon: Addon}> = ({ addon }) => {
     const [releases, setReleases] = useState<ReleaseInfo[]>([]);
 
     useEffect(() => {
