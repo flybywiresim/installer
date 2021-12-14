@@ -816,7 +816,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                             <div className="mt-10">
                                                 <h2 className="text-white font-extrabold">Description</h2>
                                                 <p className="text-xl text-white font-manrope leading-relaxed">
-                                                    {selectedTrack().description}
+                                                    {selectedTrack() ? selectedTrack().description : ''}
                                                 </p>
                                             </div>
                                         </div>
