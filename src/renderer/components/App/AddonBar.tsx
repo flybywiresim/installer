@@ -29,7 +29,7 @@ export const AddonBar: FC<AddonBarProps> = ({ publisher, children }) => {
         return (
             <>
                 {groups.map((group) => (
-                    <div className="flex flex-row gap-x-3">
+                    <div className="flex flex-row gap-x-4">
                         {group.map((button) => (
                             <AddonBarPublisherButton button={button} />
                         ))}
@@ -48,7 +48,7 @@ export const AddonBar: FC<AddonBarProps> = ({ publisher, children }) => {
 
             {children}
 
-            <div className="flex flex-col gap-y-3 mt-auto">
+            <div className="flex flex-col gap-y-4 mt-auto">
                 {publisher.buttons && (
                     PublisherButtons(publisher.buttons)
                 )}
@@ -98,11 +98,11 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
 
     return (
         <button
-            className="w-full flex flex-row justify-center items-center px-5 py-3 bg-gray-200 hover:bg-gray-300 rounded-md"
+            className="w-full h-16 flex flex-row justify-center items-center px-5 py-3 bg-gray-200 hover:bg-gray-300 rounded-md"
             disabled={button.inop}
             onClick={handleClick}
         >
-            <span className="w-full flex flex-row justify-start items-center">
+            <span className="w-full h-12 flex flex-row justify-start items-center">
                 {button.forceStroke ? (
                     <ButtonIcon size={24} fill="none" stroke="black" strokeWidth={.75} />
                 ) : (
@@ -110,7 +110,7 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
                 )}
 
                 {button.text.length > 0 && (
-                    <span className="text-xl font-manrope font-semibold ml-3.5">{button.text}</span>
+                    <span className="font-manrope font-bold ml-4" style={{ fontSize: '18px' }}>{button.text}</span>
                 )}
             </span>
         </button>

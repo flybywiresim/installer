@@ -108,7 +108,7 @@ const InstallButton: FC<InstallButtonProps> = ({
     onClick,
 }) => (
     <div
-        className={`w-64 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer transition duration-200 ${className}`}
+        className={`w-64 h-16 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer transition duration-200 ${className}`}
         onClick={onClick}
     >
         {children}
