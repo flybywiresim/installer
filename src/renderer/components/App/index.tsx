@@ -88,8 +88,9 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
     }, []);
 
     const initialSelectedItem = (): string => {
-        if (settings.get('cache.main.sectionToShow')) {
-            return settings.get('cache.main.sectionToShow');
+        const cachedItem = settings.get('cache.main.sectionToShow') as string
+        if ((cachedItem) === 'settings' || cachedItem === 'debug' || addons.find(x => x.key === cachedItem)) {
+            return cachedItem;
         } else {
             return addons[0].key;
         }
