@@ -58,21 +58,40 @@ export class AddonData {
     }
 
     static async configureInitialAddonState(addon: Addon): Promise<void> {
+        let selectedTrack: AddonTrack = null;
+
+        let currentSelectedTrack : AddonTrack = null
+        let currentInstalledTrack : AddonTrack = null
+        let currentInstallStatus : InstallStatus = null
+
+        try {
+            currentSelectedTrack = store.getState().selectedTracks[addon.key]
+            currentInstalledTrack = store.getState().installedTracks[addon.key]
+            currentInstallStatus = store.getState().installStatus[addon.key]
+        } catch (e) {}
+
         const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
-            store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: addon.key, payload: newInstalledTrack });
+            if (!currentInstalledTrack) {
+                store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: addon.key, payload: newInstalledTrack });
+            }
         };
         const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
-            store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: addon.key, payload: newSelectedTrack });
+            if (!currentSelectedTrack) {
+                selectedTrack = newSelectedTrack;
+                store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: addon.key, payload: newSelectedTrack });
+            } else {
+                selectedTrack = currentSelectedTrack
+            }
         };
-        const setInstallStatus = (new_state: InstallStatus) => {
-            store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: addon.key, payload: new_state });
+        const setInstallStatus = (newState: InstallStatus) => {
+            if (!currentInstallStatus || currentInstallStatus === InstallStatus.Hidden) {
+                store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: addon.key, payload: newState });
+            }
         };
 
-        let selectedTrack: AddonTrack = null;
         if (!Directories.isFragmenterInstall(addon)) {
             console.log (addon.key, 'is not installed');
-            selectedTrack = addon.tracks[0];
-            setSelectedTrack(selectedTrack);
+            setSelectedTrack(addon.tracks[0]);
         } else {
             console.log (addon.key, 'is installed');
             try {
@@ -86,12 +105,10 @@ export class AddonData {
                 console.log('Currently installed', track);
                 setInstalledTrack(track);
                 setSelectedTrack(track);
-                selectedTrack = track;
             } catch (e) {
                 console.error(e);
                 console.log('Not installed');
                 setSelectedTrack(addon.tracks[0]);
-                selectedTrack = addon.tracks[0];
             }
         }
 
