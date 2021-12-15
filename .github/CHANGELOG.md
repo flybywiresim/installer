@@ -5,6 +5,8 @@
 <!-- Use the following format below -->
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
+## 2.2.0
+1. [LOGIC] Prepare Installer to be able to handle multiple addons - @FoxtrotSierra6829
 ## 2.1.1
 
 1. [LOGIC] Fix error during configuration of community directory - @FoxtrotSierra6829
