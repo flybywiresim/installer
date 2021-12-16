@@ -1,4 +1,4 @@
-name: vmaster
+name: ci-fix
 on:
   push:
     branches: [ci-fix]
@@ -19,14 +19,21 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16.9'
+      - name: Install system requirements
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          
+          sudo apt-get install libpcre2-8-0=10.34-7
+          sudo apt-get install libssl1.1=1.1.1f-1ubuntu2.1
+          sudo apt-get install libssl1.1:i386=1.1.1f-1ubuntu2.1
+  
+          sudo apt-get install -y wine32 wine64
+
       - name: Set BUILT_DATE_TIME
         run: echo "BUILT_DATE_TIME=$(date -u -Iseconds)" >> $GITHUB_ENV
       - name: Install NPM dependencies
         run: npm ci
-
-      - name: Install system requirements
-        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine64
-
       - name: Package installer
         run: |
           npm run package && rm -rf ./dist/win-unpacked/
