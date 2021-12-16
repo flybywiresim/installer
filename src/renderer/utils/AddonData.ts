@@ -60,15 +60,17 @@ export class AddonData {
     static async configureInitialAddonState(addon: Addon): Promise<void> {
         let selectedTrack: AddonTrack = null;
 
-        let currentSelectedTrack : AddonTrack = null
-        let currentInstalledTrack : AddonTrack = null
-        let currentInstallStatus : InstallStatus = null
+        let currentSelectedTrack : AddonTrack = null;
+        let currentInstalledTrack : AddonTrack = null;
+        let currentInstallStatus : InstallStatus = null;
 
         try {
-            currentSelectedTrack = store.getState().selectedTracks[addon.key]
-            currentInstalledTrack = store.getState().installedTracks[addon.key]
-            currentInstallStatus = store.getState().installStatus[addon.key]
-        } catch (e) {}
+            currentSelectedTrack = store.getState().selectedTracks[addon.key];
+            currentInstalledTrack = store.getState().installedTracks[addon.key];
+            currentInstallStatus = store.getState().installStatus[addon.key];
+        } catch (e) {
+            console.log('initial configuration for addon ' + addon.key);
+        }
 
         const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
             if (!currentInstalledTrack) {
@@ -80,7 +82,7 @@ export class AddonData {
                 selectedTrack = newSelectedTrack;
                 store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: addon.key, payload: newSelectedTrack });
             } else {
-                selectedTrack = currentSelectedTrack
+                selectedTrack = currentSelectedTrack;
             }
         };
         const setInstallStatus = (newState: InstallStatus) => {
