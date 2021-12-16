@@ -10,10 +10,13 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'FlyByWire Simulations',
             logoUrl: FBWLogo,
+            mainColor: '#00c2cc',
             addons: [
                 {
                     name: 'A32NX',
+                    repoOwner: 'flybywiresim',
                     repoName: 'a32nx',
+                    gitHubReleaseBaseURL: 'https://github.com/flybywiresim/a32nx/releases/tag/',
                     aircraftName: 'A320neo',
                     key: 'A32NX',
                     enabled: true,
@@ -100,6 +103,37 @@ export const defaultConfiguration: Configuration = {
                     targetDirectory: 'A380',
                     tracks: [],
                 },
+                {
+                    name: 'KFBW',
+                    aircraftName: 'KFBW airport',
+                    key: 'KFBW',
+                    enabled: true,
+                    hidden: true,
+                    hiddenName: 'A380X',
+                    overrideAddonWhileHidden: 'A380X',
+                    menuIconUrl: A380NoseSVG,
+                    backgroundImageUrls: [],
+                    shortDescription: 'FlyByWire Headquarters',
+                    description: 'Welcome to KFBW! \n\n' +
+                        'This is a showcase of the A380 project. Spawn at KFBW or fly there! The nearest airport is KTNP (Twenty-Nine Palms, California, USA). ' +
+                        'There is an ILS without waypoints to Runway 10. Freq: 108.9 CRS: 100  \n' +
+                        'The airport is designed to be used by our developers for flight testing of the A380 and also designed to match the real-world A380 testing airport in Hamburg, Germany (EDHI).  \n' +
+                        'The location allows for quick test flights to LAX, which is also serviced by the A380.  \n' +
+                        'Use the developer or drone camera to explore! \n\n' +
+                        'Happy holidays and enjoy! -FBW Team',
+                    targetDirectory: 'flybywire-airport-kfbw-flybywire-field',
+                    tracks: [
+                        {
+                            name: 'Release',
+                            key: 'kfbw-release',
+                            url: 'https://cdn.flybywiresim.com/addons/kfbw/release/',
+                            isExperimental: false,
+                            releaseModel: {
+                                type: 'CDN',
+                            },
+                        },
+                    ],
+                },
             ]
         },
         {
@@ -108,6 +142,7 @@ export const defaultConfiguration: Configuration = {
             addons: [
                 {
                     name: 'A22X',
+                    repoOwner: 'Synaptic-Simulations',
                     repoName: 'a22x',
                     aircraftName: 'A220-300',
                     key: 'A22X',

@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "2.1.1-dev.1",
+  "version": "2.2.0-dev.1",
   "description": "Desktop application to install and customize FlyByWire addons",
   "main": "webpack/main/main.js",
   "scripts": {
@@ -56,6 +56,7 @@
     "@types/adm-zip": "^0.4.33",
     "@types/dateformat": "^3.0.1",
     "@types/electron-devtools-installer": "^2.2.0",
+    "@types/js-yaml": "^4.0.5",
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
@@ -108,6 +109,7 @@
     "electron-updater": "^4.3.9",
     "fs-extra": "^8.1.0",
     "immer": "^8.0.1",
+    "js-yaml": "^4.1.0",
     "lodash": "^4.17.20",
     "marked": "^2.0.0",
     "raw-loader": "^4.0.2",

@@ -21,6 +21,7 @@ import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
+import settings from 'common/settings';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -31,7 +32,7 @@ const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24)
  */
 export const getAddonReleases = async (addon: Addon): Promise<AddonVersion[]> => {
     const releases = (await releaseCache.fetchOrCompute(async (): Promise<AddonVersion[]> => {
-        return (await GitVersions.getReleases('flybywiresim', addon.repoName))
+        return (await GitVersions.getReleases(addon.repoOwner, addon.repoName))
             .filter(r => /v\d/.test(r.name))
             .map(r => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
     })).map(r => ({ ...r, date: new Date(r.date) })); // Local Data cache returns a string instead of Date
@@ -80,11 +81,26 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         }, [])
     );
 
+    addons.forEach(AddonData.configureInitialAddonState);
+
     useEffect(() => {
         addons.forEach(fetchLatestVersionNames);
     }, []);
 
-    const [selectedItem, setSelectedItem] = useState<string>(addons[0].key);
+    const initialSelectedItem = (): string => {
+        const cachedItem = settings.get('cache.main.sectionToShow') as string;
+        if ((cachedItem) === 'settings' || cachedItem === 'debug' || addons.find(x => x.key === cachedItem)) {
+            return cachedItem;
+        } else {
+            return addons[0].key;
+        }
+    };
+
+    const [selectedItem, setSelectedItem] = useState<string>(initialSelectedItem);
+
+    useEffect(() => {
+        settings.set('cache.main.sectionToShow', selectedItem);
+    }, [selectedItem]);
 
     let sectionToShow;
     switch (selectedItem) {
@@ -97,7 +113,9 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
             break;
 
         default:
-            sectionToShow = <AircraftSection addon={addons.find(x => x.key === selectedItem)}/>;
+            // setting a dynamic key forces a reload of the component when changing between addons
+            sectionToShow = <AircraftSection key={selectedItem} addon={addons.find(x => x.key === selectedItem)} publisher={configuration.publishers
+                .find(x => x.addons.includes(addons.find(x => x.key === selectedItem)))}/>;
             break;
     }
 
@@ -131,6 +149,15 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                                             addon={addon}
                                                             isSelected={selectedItem === addon.key}
                                                             handleSelected={() => setSelectedItem(addon.key)}
+                                                            overriddenByAddon={() => {
+                                                                try {
+                                                                    return configuration.publishers.find(publisher => publisher.addons
+                                                                        .find(item => item.overrideAddonWhileHidden === addon.key)).addons.
+                                                                        find(item => item.overrideAddonWhileHidden === addon.key);
+                                                                } catch (e) {
+                                                                    return null;
+                                                                }
+                                                            }}
                                                         />
                                                     ))
                                                 }

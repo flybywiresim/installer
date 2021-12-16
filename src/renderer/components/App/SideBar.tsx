@@ -33,16 +33,33 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
     );
 };
 
-type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void }
+type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void, overriddenByAddon: () => Addon }
 
-export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected }) => {
+export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected, overriddenByAddon }) => {
     const [downloadState, setStatusText] = useState('');
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
-    const addonDownloadState = useSelector<InstallerStore>(state => state.installStatus);
+    const addonDownloadState = useSelector<InstallerStore>((state) => {
+        try {
+            return state.installStatus[addon.key] as InstallStatus;
+        } catch (e) {
+            return InstallStatus.Unknown;
+        }
+    });
+    const overriddenAddonState = useSelector<InstallerStore>((state) => {
+        try {
+            return state.installStatus[overriddenByAddon().key] as InstallStatus;
+        } catch (e) {
+            return InstallStatus.Unknown;
+        }
+    });
 
     useEffect(() => {
         if (addon.enabled) {
             switch (addonDownloadState) {
+                case InstallStatus.Hidden:
+                    setStatusText('Not Available');
+                    setIcon('notAvailable');
+                    break;
                 case InstallStatus.FreshInstall:
                 case InstallStatus.Unknown:
                     setStatusText('Not Installed');
@@ -89,17 +106,21 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
     };
 
     return (
-        <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
-            if (addon.enabled) {
-                handleSelected(addon.key);
-            }
-        }}>
-            <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
-                <span className="text-xl text-gray-200 font-semibold" key={addon.key}>{addon.name}</span>
-                <code className="text-lg text-teal-50">{downloadState}</code>
-            </div>
+        <>
+            { !(overriddenByAddon && overriddenAddonState === InstallStatus.Hidden) ?
+                <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
+                    if (addon.enabled) {
+                        handleSelected(addon.key);
+                    }
+                }}>
+                    <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
+                        <span className="text-xl text-gray-200 font-semibold" key={addon.key}>{(addonDownloadState === InstallStatus.Hidden || !addon.enabled) && addon.hiddenName ? addon.hiddenName : addon.name}</span>
+                        <code className="text-lg text-teal-50">{downloadState}</code>
+                    </div>
 
-            <Icon />
-        </SidebarItem>
+                    <Icon />
+                </SidebarItem>
+                : <></>}
+        </>
     );
 };

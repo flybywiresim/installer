@@ -10,19 +10,23 @@ export type GithubReleaseReleaseModel = {
     type: 'githubRelease',
 }
 
+export type CDNReleaseModel = {
+    type: 'CDN',
+}
+
 export type GithubBranchReleaseModel = {
     type: 'githubBranch',
     branch: string,
 }
 
-export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel
+export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel | CDNReleaseModel
 
 type BaseAddonTrack = {
     name: string,
     key: string,
     url: string,
     alternativeUrls?: string[],
-    description: string,
+    description?: string,
     releaseModel: ReleaseModel,
 }
 
@@ -34,7 +38,8 @@ export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
 export type Addon = {
     name: string,
-    repoName: string,
+    repoOwner?: string,
+    repoName?: string,
     aircraftName: string,
     key: string,
     backgroundImageUrls: string[],
@@ -45,12 +50,17 @@ export type Addon = {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     enabled: boolean,
+    hidden?: boolean,
+    hiddenName?: string,
+    overrideAddonWhileHidden?: string,
+    gitHubReleaseBaseURL?: string,
 }
 
 export type Publisher = {
     name: string,
     logoUrl: string,
     addons: Addon[],
+    mainColor?: string,
 }
 
 export type Configuration = {
