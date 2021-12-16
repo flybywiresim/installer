@@ -22,11 +22,10 @@ jobs:
       - name: Install system requirements
         run: |
           sudo dpkg --add-architecture i386
+          sudo apt-get update
           
-          sudo add-apt-repository ppa:ondrej/php
-          sudo apt install -y --allow-downgrades ppa-purge
-          sudo  ppa-purge  ppa:ondrej/php --allow-downgrades
-          
+          sudo apt-get install -y libldap-2.4-2:i386 libfontconfig1:i386
+          sudo apt-get install -y libwine:i386
           sudo apt-get install -y wine32 wine64
 
       - name: Set BUILT_DATE_TIME
