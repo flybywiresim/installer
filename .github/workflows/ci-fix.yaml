@@ -1,0 +1,32 @@
+name: vmaster
+on:
+  push:
+    branches: [ci-fix]
+
+jobs:
+  build:
+    # Prevent running this on forks
+    if: github.repository_owner == 'flybywiresim'
+    runs-on: ubuntu-latest
+    env:
+      MASTER_PRE_RELEASE_ID: 36189658
+      MASTER_PRE_RELEASE_TAG: vmaster
+      ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
+      ASSET_NAME: FlyByWire_Installer_Setup.exe
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.9'
+      - name: Set BUILT_DATE_TIME
+        run: echo "BUILT_DATE_TIME=$(date -u -Iseconds)" >> $GITHUB_ENV
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Install system requirements
+        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine64
+
+      - name: Package installer
+        run: |
+          npm run package && rm -rf ./dist/win-unpacked/
