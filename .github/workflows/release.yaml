@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Upload Release Asset
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     env:
       ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
       ASSET_DIRECTORY: dist/
