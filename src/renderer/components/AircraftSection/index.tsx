@@ -260,7 +260,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const [wait, setWait] = useState(1);
 
-    const [releases, setReleases] = useState<AddonVersion[]>([]);
+    const [, setReleases] = useState<AddonVersion[]>([]);
 
     useEffect(() => {
         getAddonReleases(selectedAddon).then((releases) => {
@@ -892,6 +892,21 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
         <p className="text-xl text-white font-manrope leading-relaxed">
             {addon.description}
         </p>
+
+        {addon.techSpecs && addon.techSpecs.length > 0 && (
+            <>
+                <h2 className="text-white font-extrabold">Tech Specs</h2>
+
+                <div className="flex flex-row gap-x-16">
+                    {addon.techSpecs.map((spec) => (
+                        <span className="flex flex-col items-start">
+                            <span className="text-2xl text-quasi-white">{spec.name}</span>
+                            <span className="text-3xl font-manrope font-semibold text-cyan">{spec.value}</span>
+                        </span>
+                    ))}
+                </div>
+            </>
+        )}
     </div>
 );
 
@@ -899,10 +914,8 @@ const ReleaseNotes: FC<{addon: Addon}> = ({ addon }) => {
     const [releases, setReleases] = useState<ReleaseInfo[]>([]);
 
     useEffect(() => {
-        GitVersions.getReleases(addon.repoOwner, addon.repoName).then(res => setReleases((res)));
+        GitVersions.getReleases(addon.repoOwner, addon.repoName).then((res) => res.slice(0, 5)).then(res => setReleases((res)));
     }, []);
-
-    console.log(releases);
 
     return (
         <div className="w-full h-full p-7 overflow-y-scroll">

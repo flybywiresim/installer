@@ -29,6 +29,20 @@ export const defaultConfiguration: Configuration = {
                         'aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines ' +
                         '(the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) ' +
                         'and features large, fuel-saving wingtip devices known as Sharklets.',
+                    techSpecs: [
+                        {
+                            name: 'Model',
+                            value: 'A320-251N',
+                        },
+                        {
+                            name: 'Engines',
+                            value: 'CFM LEAP 1A-26',
+                        },
+                        {
+                            name: 'APU',
+                            value: 'APS3200',
+                        }
+                    ],
                     targetDirectory: 'flybywire-aircraft-a320-neo',
                     alternativeNames: [
                         'A32NX',

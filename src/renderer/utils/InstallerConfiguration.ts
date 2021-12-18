@@ -32,7 +32,7 @@ export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true, wa
 
 export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
-export type Addon = {
+export interface Addon {
     name: string,
     repoOwner?: string,
     repoName?: string,
@@ -43,6 +43,7 @@ export type Addon = {
     backgroundImageUrl: string,
     shortDescription: string,
     description: string,
+    techSpecs?: AddonTechSpec[],
     menuIconUrl: string,
     targetDirectory: string,
     alternativeNames?: string[],
@@ -50,6 +51,11 @@ export type Addon = {
     enabled: boolean,
     hidden?: boolean,
     gitHubReleaseBaseURL?: string,
+}
+
+export interface AddonTechSpec {
+    name: string,
+    value: string,
 }
 
 interface BasePublisherButton {
