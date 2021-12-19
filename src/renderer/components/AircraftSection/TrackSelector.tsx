@@ -32,12 +32,12 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
             onClick={() => handleSelected(track)}
         >
             <div className={`w-1 h-12 rounded-r-xl transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
-            <div className="flex flex-col px-2 py-2.5">
+            <div className="flex flex-col px-3 py-2.5">
                 <span className="text-xl text-current">{track.name}</span>
-                <span className="text-lg text-current -mt-0.5">{latestVersionName}</span>
+                <span className="text-2xl font-manrope font-bold text-current mt-0.5">{latestVersionName}</span>
             </div>
             {isInstalled && (
-                <Check className={`absolute right-2 text-cyan stroke-current`} strokeWidth={3}/>
+                <Check className={`absolute right-4 text-cyan stroke-current`} strokeWidth={3}/>
             )}
         </div>
     );

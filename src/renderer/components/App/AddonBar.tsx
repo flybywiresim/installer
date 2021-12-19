@@ -43,7 +43,7 @@ export const AddonBar: FC<AddonBarProps> = ({ publisher, children }) => {
         <div className="flex flex-col gap-y-5 bg-quasi-white px-6 py-7 h-full">
             <div className="flex flex-col -space-y-7">
                 <h2 className="font-extrabold">{publisher.name}</h2>
-                <h1 className="font-extrabold">Addons</h1>
+                <h3 className="font-extrabold">Addons</h3>
             </div>
 
             {children}
@@ -66,15 +66,16 @@ export interface AddonBarItemProps {
 }
 
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
-    const dependantStyles = selected ? "bg-gradient-to-l from-cyan to-blue-500 text-white" : `bg-grey-medium text-black border-2 border-transparent ${enabled && 'hover:border-cyan'}`;
+    const dependantStyles = selected ? "bg-gradient-to-l from-cyan to-blue-500 text-white" : `bg-grey-medium text-black ${enabled && 'hover:border-cyan'}`;
 
     return (
         <div
-            className={`w-full p-5 flex flex-col justify-between rounded-lg transition duration-200 ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 border-quasi-white ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={enabled ? onClick : undefined}
         >
             <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
-            <img className="h-10 w-max" src={selected ? addon.titleImageUrlSelected : addon.titleImageUrl} />
+            <img className="h-10 w-max mt-1" src={selected ? addon.titleImageUrlSelected : addon.titleImageUrl} />
+            {/*<span className="text-5xl font-semibold">A32NX</span>*/}
         </div>
     );
 };

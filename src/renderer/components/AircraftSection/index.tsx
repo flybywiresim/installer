@@ -678,11 +678,11 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
         <div className="flex flex-row w-full h-full">
             <PageSider
                 className="flex-none bg-navy-medium shadow-2xl h-full"
-                style={{ width: "26rem" }}
+                style={{ width: "28rem" }}
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
                     <AddonBar publisher={props.publisher}>
-                        {props.publisher.addons.map((addon) => (
+                        {props.publisher.addons.filter((it) => !it.category).map((addon) => (
                             <AddonBarItem
                                 selected={selectedAddon.key === addon.key && addon.enabled}
                                 enabled={addon.enabled || !!addon.hidesAddon}
@@ -692,6 +692,31 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                 onClick={() => setSelectedAddon(addon)}
                             />
                         ))}
+
+                        {props.publisher.defs.filter((it) => it.kind === 'addonCategory').map((category) => {
+                            const categoryAddons = props.publisher.addons.filter((it) => it.category?.substring(1) === category.key);
+
+                            if (categoryAddons.length === 0) {
+                                return null;
+                            }
+
+                            return (
+                                <>
+                                    <span className="text-3xl font-manrope font-bold">{category.title}</span>
+
+                                    {props.publisher.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
+                                        <AddonBarItem
+                                            selected={selectedAddon.key === addon.key && addon.enabled}
+                                            enabled={addon.enabled || !!addon.hidesAddon}
+                                            className="h-32"
+                                            addon={addon}
+                                            key={addon.key}
+                                            onClick={() => setSelectedAddon(addon)}
+                                        />
+                                    ))}
+                                </>
+                            );
+                        })}
                     </AddonBar>
                 </div>
             </PageSider>
@@ -775,8 +800,8 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                                                 />
                                                             ))}
                                                     </Tracks>
-                                                    <h5 className="text-base text-teal-50 mt-2">
-                                                    Mainline Releases
+                                                    <h5 className="text-xl text-quasi-white ml-0.5 mt-3">
+                                                        Mainline Releases
                                                     </h5>
                                                 </div>
                                                 <div>
@@ -795,10 +820,9 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                                             ))}
                                                     </Tracks>
 
-                                                    {selectedAddon.tracks.filter((track) => track.isExperimental)
-                                                        .length > 0 && (
-                                                        <h5 className="text-base text-teal-50 mt-2">
-                                                    Experimental versions
+                                                    {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
+                                                        <h5 className="text-xl text-quasi-white ml-0.5 mt-3">
+                                                            Experimental versions
                                                         </h5>
                                                     )}
                                                 </div>

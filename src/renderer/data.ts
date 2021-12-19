@@ -10,15 +10,28 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'FlyByWire Simulations',
             logoUrl: FBWLogo,
+            defs: [
+                {
+                    kind: 'addonCategory',
+                    key: 'aircraft',
+                    title: 'Aircraft',
+                },
+                {
+                    kind: 'addonCategory',
+                    key: 'scenery',
+                    title: 'Scenery',
+                }
+            ],
             addons: [
                 {
+                    key: 'A32NX',
                     name: 'A32NX',
                     repoOwner: 'flybywiresim',
                     repoName: 'a32nx',
+                    category: '@aircraft',
                     aircraftName: 'A320-251N',
-                    titleImageUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/921976196336607292/A32NX-Logo-LightBG.svg',
+                    titleImageUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/922008764507373628/A32NX-Logo-LightBG1.svg',
                     titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/921976603548975144/A32NX-Logo-DarkBG-Mono.svg',
-                    key: 'A32NX',
                     enabled: true,
                     menuIconUrl: A320NoseSVG,
                     // TODO: Change this
@@ -105,13 +118,15 @@ export const defaultConfiguration: Configuration = {
                 },
                 {
                     name: 'A380X',
-                    repoName: 'a380x',
-                    aircraftName: 'A380-841',
-                    titleImageUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/921975639081381918/A380X-LightBG.svg',
-                    titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/921974898279206932/A380X-DarkBG-Mono.png',
                     key: 'A380X',
+                    repoOwner: 'flybywiresim',
+                    repoName: 'a380x',
+                    category: '@aircraft',
+                    aircraftName: 'A380-841',
+                    titleImageUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/922008938571005982/A380X-LightBG1.svg',
+                    titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/921974898279206932/A380X-DarkBG-Mono.png',
                     enabled: false,
-                    hidesAddon: 'KFBW',
+                    // hidesAddon: 'KFBW',
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: ['https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'],
                     shortDescription: 'Airbus A380-800',
@@ -121,16 +136,17 @@ export const defaultConfiguration: Configuration = {
                 },
                 {
                     name: 'KFBW',
-                    aircraftName: 'KFBW airport',
                     key: 'KFBW',
+                    category: '@scenery',
+                    aircraftName: 'FBW Headquarters',
                     enabled: true,
                     hidden: true,
                     hiddenName: 'A380X',
                     overrideAddonWhileHidden: 'A380X',
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: [],
-                    titleImageUrl: '',
-                    titleImageUrlSelected: '',
+                    titleImageUrl: 'https://cdn.discordapp.com/attachments/845070631644430359/922010902176358410/KFBW3.svg',
+                    titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/922007327924707328/KFBW1.svg',
                     shortDescription: 'FlyByWire Headquarters',
                     description: 'Welcome to KFBW! \n\n' +
                         'This is a showcase of the A380 project. Spawn at KFBW or fly there! The nearest airport is KTNP (Twenty-Nine Palms, California, USA). ' +

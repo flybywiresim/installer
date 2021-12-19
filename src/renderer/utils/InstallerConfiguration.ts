@@ -37,13 +37,14 @@ export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true, wa
 export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
 export interface Addon {
+    key: string,
     name: string,
     repoOwner?: string,
     repoName?: string,
+    category?: `@${string}`,
     aircraftName: string,
     titleImageUrl: string,
     titleImageUrlSelected: string,
-    key: string,
     backgroundImageUrls: string[],
     shortDescription: string,
     description: string,
@@ -64,6 +65,18 @@ export interface AddonTechSpec {
     name: string,
     value: string,
 }
+
+interface DefinitionBase {
+    kind: string,
+}
+
+type AddonCategoryDefinition = DefinitionBase & {
+    kind: 'addonCategory',
+    key: string,
+    title: string,
+}
+
+export type Definition = AddonCategoryDefinition
 
 interface BasePublisherButton {
     text: string,
@@ -89,6 +102,7 @@ export type PublisherButton = UrlPublisherButton | InternalAction
 export type Publisher = {
     name: string,
     logoUrl: string,
+    defs?: Definition[],
     addons: Addon[],
     buttons?: PublisherButton[],
 }
