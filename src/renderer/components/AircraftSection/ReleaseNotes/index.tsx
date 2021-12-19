@@ -13,7 +13,7 @@ export const ReleaseNotes = () => {
             <div className="flex flex-col gap-y-7">
                 {releaseNotes.map((release, index) =>
                     <div className="rounded-md bg-navy p-7" key={index}>
-                        <h3 className="text-white font-semibold">{release.name}</h3>
+                        <h1 className="text-white text-4xl font-semibold">{release.name}</h1>
                         <ReactMarkdown
                             className="markdown-body"
                             children={release.body ?? ''}
