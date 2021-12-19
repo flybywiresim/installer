@@ -2,9 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { Check } from 'tabler-icons-react';
+import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 
 import './index.css';
-import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 
 export const Tracks: React.FC = ({ children }) => (
     <div className="flex flex-row justify-start items-stretch gap-3">
@@ -22,11 +22,9 @@ type TrackProps = {
 };
 
 export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, addon, track }) => {
-    const latestVersionName = useSelector<InstallerStore, string>(state => {
-        return state.latestVersionNames
-            .find((entry) => entry.addonKey === addon.key && entry.trackKey === track.key)
-            ?.info.name ?? '<unknown>';
-    });
+    const latestVersionName = useSelector<InstallerStore, string>((state) => (
+        state.latestVersionNames[addon.key]?.[track.key]?.name ?? '<unknown>'
+    ));
 
     return (
         <div

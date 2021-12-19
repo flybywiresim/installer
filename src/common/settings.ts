@@ -4,7 +4,7 @@ import walk from "walkdir";
 import * as path from "path";
 import * as os from 'os';
 import { Schema } from "electron-store";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const defaultCommunityDir = (): string => {
     if (os.platform().toString() === 'linux') {
@@ -58,9 +58,17 @@ export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
 export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => {
     const [storedValue, setStoredValue] = useState(store.get<string, T>(key));
 
-    store.onDidChange(key as never, (val) => {
-        setStoredValue(val as T);
-    });
+    useEffect(() => {
+        setStoredValue(store.get<string, T>(key));
+
+        const cancel = store.onDidChange(key as never, (val) => {
+            setStoredValue(val as T);
+        });
+
+        return () => {
+            cancel();
+        };
+    }, [key]);
 
     const setValue = (newVal: T) => {
         store.set(key, newVal);

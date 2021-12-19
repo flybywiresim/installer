@@ -15,7 +15,11 @@ export type GithubBranchReleaseModel = {
     branch: string,
 }
 
-export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel
+export type CDNReleaseModel = {
+    type: 'CDN',
+}
+
+export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel | CDNReleaseModel
 
 type BaseAddonTrack = {
     name: string,
@@ -40,7 +44,7 @@ export interface Addon {
     titleImageUrl: string,
     titleImageUrlSelected: string,
     key: string,
-    backgroundImageUrl: string,
+    backgroundImageUrls: string[],
     shortDescription: string,
     description: string,
     techSpecs?: AddonTechSpec[],
@@ -49,7 +53,10 @@ export interface Addon {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     enabled: boolean,
+    hidesAddon?: string,
     hidden?: boolean,
+    hiddenName?: string,
+    overrideAddonWhileHidden?: string,
     gitHubReleaseBaseURL?: string,
 }
 

@@ -15,7 +15,6 @@ import { NavLink, Redirect, Route, useHistory } from "react-router-dom";
 import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
-import FBWTail from "renderer/assets/FBW-Tail.svg";
 import { PageSider } from "../App/styles";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
@@ -29,6 +28,7 @@ import { setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { GitVersions } from "@flybywiresim/api-client";
 import { setReleases } from "renderer/redux/features/releaseNotes";
+import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -100,11 +100,26 @@ const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
 export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: Publisher }) => {
     const history = useHistory();
     const [selectedAddon, setSelectedAddon] = useState<Addon>(props.publisher.addons[0]);
+    const [hiddenAddon, setHiddenAddon] = useState<Addon | undefined>(undefined);
     const dispatch = useAppDispatch();
 
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTrack);
     const installStatus = useAppSelector(state => state.installStatus);
+
+    useEffect(() => {
+        const hiddenAddon = props.publisher.addons.find((it) => it.key === selectedAddon.hidesAddon);
+
+        if (hiddenAddon) {
+            setHiddenAddon(hiddenAddon);
+
+            history.push('/aircraft-section/hidden-addon-cover');
+        } else {
+            setHiddenAddon(undefined);
+
+            history.push('/aircraft-section/main/configure');
+        }
+    }, [selectedAddon]);
 
     useEffect(() => {
         settings.set("cache.main.sectionToShow", history.location.pathname);
@@ -213,27 +228,24 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
-    const [wait, setWait] = useState(1);
-
     useEffect(() => {
-        getAddonReleases(selectedAddon).then(() => {
-            setWait((wait) => wait - 1);
-            findInstalledTrack();
-        });
+        getAddonReleases(selectedAddon).then(() => findInstalledTrack());
 
         // Update the Release Notes
-        GitVersions.getReleases(selectedAddon.repoOwner, selectedAddon.repoName).then(res => {
-            res.forEach(release => console.log(release));
+        if (selectedAddon.repoOwner && selectedAddon.repoName) {
+            GitVersions.getReleases(selectedAddon.repoOwner, selectedAddon.repoName).then(res => {
+                res.forEach(release => console.log(release));
 
-            const content = res.map(release => ({
-                name: release.name,
-                publishedAt: release.publishedAt.getTime() / 1000,
-                htmlUrl: release.htmlUrl,
-                body: release.body,
-            }));
+                const content = res.map(release => ({
+                    name: release.name,
+                    publishedAt: release.publishedAt.getTime() / 1000,
+                    htmlUrl: release.htmlUrl,
+                    body: release.body,
+                }));
 
-            dispatch(setReleases({ releases: content }));
-        });
+                dispatch(setReleases({ releases: content }));
+            });
+        }
     }, [selectedAddon]);
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
@@ -267,9 +279,15 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
         }
     }, [download]);
 
-    const [addonDiscovered, setAddonDiscovered] = useSetting<boolean>(
-        "cache.main.discoveredAddons." + selectedAddon.key
+    const [addonDiscovered] = useSetting<boolean>(
+        "cache.main.discoveredAddons." + hiddenAddon?.key
     );
+
+    useEffect(() => {
+        if (addonDiscovered) {
+            setSelectedAddon(hiddenAddon);
+        }
+    }, [addonDiscovered]);
 
     const getInstallStatus = async (): Promise<InstallStatus> => {
         if (selectedAddon.hidden && !addonDiscovered) {
@@ -660,7 +678,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                         {props.publisher.addons.map((addon) => (
                             <AddonBarItem
                                 selected={selectedAddon.key === addon.key && addon.enabled}
-                                enabled={addon.enabled}
+                                enabled={addon.enabled || !!addon.hidesAddon}
                                 className="h-32"
                                 addon={addon}
                                 key={addon.key}
@@ -671,25 +689,36 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                 </div>
             </PageSider>
             <div
-                className={`bg-navy-light w-full flex flex-col h-full ${wait || (selectedAddon.hidden && !addonDiscovered)
-                    ? "hidden"
-                    : "visible"
-                } ${selectedAddon.name}`}
+                className={`bg-navy-light w-full flex flex-col h-full`}
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
                         <Route path="/aircraft-section">
                             <Redirect to="/aircraft-section/main/configure" />
                         </Route>
+
                         <Route path="/aircraft-section/no-available-addons">
                             <NoAvailableAddonsSection />
                         </Route>
+
+                        <Route path="/aircraft-section/hidden-addon-cover">
+                            {addonDiscovered ? (
+                                <Redirect to="/aircraft-section/main/configure" />
+                            ) : (
+                                hiddenAddon ? (
+                                    <HiddenAddonCover addon={hiddenAddon} />
+                                ) : (
+                                    <Redirect to="/aircraft-section/main/configure" />
+                                )
+                            )}
+                        </Route>
+
                         <Route path="/aircraft-section/main">
                             <div className="h-full">
                                 <div
                                     className="h-1/2 relative bg-cover bg-center"
                                     style={{
-                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${selectedAddon.backgroundImageUrl})`,
+                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${selectedAddon.backgroundImageUrls[0]})`,
                                     }}
                                 >
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
@@ -801,24 +830,6 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                             </SideBarLink>
                                         </div>
                                         <div>{activeInstallButton()}</div>
-                                        <div
-                                            className={`bg-navy text-white flex h-full justify-center items-center ${!wait && selectedAddon.hidden && !addonDiscovered
-                                                ? "visible"
-                                                : "hidden"
-                                            } ${selectedAddon.name}`}
-                                        >
-                                            <div className="h-1/5 w-1/5">
-                                                <img
-                                                    onClick={() => {
-                                                        setAddonDiscovered(true);
-                                                    }}
-                                                    src={FBWTail}
-                                                    alt="FlyByWire Logo"
-                                                    id="fbw-logo"
-                                                    style={{ transform: "scale(1.35)" }}
-                                                />
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

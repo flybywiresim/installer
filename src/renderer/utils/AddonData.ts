@@ -4,7 +4,7 @@ import { Directories } from "./Directories";
 import fs from 'fs-extra';
 import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
 import { InstallStatus } from "renderer/components/AircraftSection";
-import { useSetting } from "common/settings";
+import settings from "common/settings";
 import { store } from "renderer/redux/store";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
@@ -18,10 +18,17 @@ export type ReleaseInfo = {
 
 export class AddonData {
     static async latestVersionForTrack(addon: Addon, track: AddonTrack): Promise<ReleaseInfo> {
-        if (track.releaseModel.type === 'githubRelease') {
-            return this.latestVersionForReleasedTrack(addon);
-        } else if (track.releaseModel.type === 'githubBranch') {
-            return this.latestVersionForRollingTrack(addon, track.releaseModel);
+        switch (track.releaseModel.type) {
+            case 'githubRelease':
+                return this.latestVersionForReleasedTrack(addon);
+            case 'githubBranch':
+                return this.latestVersionForRollingTrack(addon, track.releaseModel);
+            case 'CDN':
+                return {
+                    name: 'v1.0.0',
+                    releaseDate: Date.now(),
+                    changelogUrl: 'https://flybywiresim.com',
+                };
         }
     }
 
@@ -57,7 +64,7 @@ export class AddonData {
             dispatch(setInstallStatus({ addonKey: addon.key, installStatus: new_state }));
         };
 
-        let selectedTrack: AddonTrack = null;
+        let selectedTrack: AddonTrack;
         if (!Directories.isFragmenterInstall(addon)) {
             console.log (addon.key, 'is not installed');
             selectedTrack = addon.tracks[0];
@@ -84,7 +91,7 @@ export class AddonData {
             }
         }
 
-        const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + addon.key);
+        const addonDiscovered = settings.get('cache.main.discoveredAddons.' + addon.key);
 
         if (addon.hidden && !addonDiscovered) {
             setCurrentInstallStatus(InstallStatus.Hidden);

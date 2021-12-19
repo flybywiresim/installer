@@ -64,11 +64,9 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
     for (const track of addon.tracks) {
         const trackLatestVersionName = await AddonData.latestVersionForTrack(addon, track);
         dispatch(setAddonAndTrackLatestReleaseInfo({
-            addonTrackAndInfo: [{
-                addonKey: addon.key,
-                trackKey: track.key,
-                info: trackLatestVersionName,
-            }],
+            addonKey: addon.key,
+            trackKey: track.key,
+            info: trackLatestVersionName,
         }));
     }
 };
@@ -91,12 +89,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         addons.forEach(fetchLatestVersionNames);
     }, []);
 
-    const [selectedAddon, setSelectedAddon] = useState(addons[0]);
     const [selectedPublisher, setSelectedPublisher] = useState(configuration.publishers[0]);
-
-    useEffect(() => {
-        settings.set('cache.main.sectionToShow', history.location.pathname);
-    }, [selectedAddon]);
 
     useEffect(() => {
         if (settings.get('cache.main.sectionToShow')) {
