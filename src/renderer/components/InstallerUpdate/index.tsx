@@ -33,9 +33,9 @@ function index(): JSX.Element {
         <div
             className="flex items-center place-self-start justify-center px-4 h-full bg-yellow-500 hover:bg-yellow-600 z-50 cursor-pointer transition duration-200"
             hidden={!updateNeeded}
-            onClick={() => ipcRenderer.send('restart')}
+            onClick={buttonText !== 'Downloading update' && (() => ipcRenderer.send('restart'))}
         >
-            <div className="text-white font-semibold text-lg">{buttonText}Restart to Update</div>
+            <div className="text-white font-semibold text-lg">{buttonText}</div>
         </div>
     );
 }
