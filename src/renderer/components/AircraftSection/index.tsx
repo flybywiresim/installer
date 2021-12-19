@@ -28,6 +28,8 @@ import { deleteDownload, registerNewDownload, updateDownloadProgress } from 'ren
 import { callWarningModal } from "renderer/redux/features/warningModal";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
+import { GitVersions } from "@flybywiresim/api-client";
+import { setReleases } from "renderer/redux/features/releaseNotes";
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -219,6 +221,20 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
         getAddonReleases(selectedAddon).then(() => {
             setWait((wait) => wait - 1);
             findInstalledTrack();
+        });
+
+        // Update the Release Notes
+        GitVersions.getReleases(selectedAddon.repoOwner, selectedAddon.repoName).then(res => {
+            res.forEach(release => console.log(release));
+
+            const content = res.map(release => ({
+                name: release.name,
+                publishedAt: release.publishedAt.getTime() / 1000,
+                htmlUrl: release.htmlUrl,
+                body: release.body,
+            }));
+
+            dispatch(setReleases({ releases: content }));
         });
     }, [selectedAddon]);
 
@@ -762,7 +778,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                         </div>
                                     </Route>
                                     <Route path="/aircraft-section/main/release-notes">
-                                        <ReleaseNotes addon={selectedAddon} />
+                                        <ReleaseNotes />
                                     </Route>
                                     <Route path="/aircraft-section/main/about">
                                         <About addon={selectedAddon}/>

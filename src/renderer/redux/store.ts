@@ -1,5 +1,11 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { ChangelogState, DownloadsState, AddonAndTrackLatestVersionNamesState, ShowWarningModalState } from "renderer/redux/types";
+import {
+    ChangelogState,
+    DownloadsState,
+    AddonAndTrackLatestVersionNamesState,
+    ShowWarningModalState,
+    ReleaseNotesState
+} from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { configureStore } from '@reduxjs/toolkit';
@@ -28,6 +34,7 @@ export type InstallerStore = {
     selectedTracks: Record<string, AddonTrack>,
     installedTracks: Record<string, AddonTrack>,
     latestVersionNames: AddonAndTrackLatestVersionNamesState,
+    releaseNotes: ReleaseNotesState
 };
 
 export const useAppDispatch: CallableFunction = () => useDispatch<AppDispatch>();

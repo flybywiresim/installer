@@ -6,6 +6,8 @@ import installedTrackReducer from "renderer/redux/features/installedTrack";
 import latestVersionNamesReducer from "renderer/redux/features/latestVersionNames";
 import selectedTrackReducer from "renderer/redux/features/selectedTrack";
 import warningModalReducer from "renderer/redux/features/warningModal";
+import releaseNotesReducer from "renderer/redux/features/releaseNotes";
+
 import { RootState } from "renderer/redux/store";
 
 export const combinedReducer = combineReducers({
@@ -16,6 +18,7 @@ export const combinedReducer = combineReducers({
     latestVersionNames: latestVersionNamesReducer,
     selectedTrack: selectedTrackReducer,
     warningModal: warningModalReducer,
+    releaseNotes: releaseNotesReducer,
 });
 
 export const rootReducer: Reducer = (state: RootState, action: AnyAction) => combinedReducer(state, action);

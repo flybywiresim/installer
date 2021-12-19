@@ -15,6 +15,15 @@ export interface ShowWarningModalState {
     selectedAddon: Addon
 }
 
+export interface ReleaseData {
+    name: string;
+    publishedAt: number;
+    htmlUrl: string;
+    body: string;
+}
+
+export type ReleaseNotesState = ReleaseData[];
+
 export type AddonAndTrackLatestVersionNamesState = { addonKey: string, trackKey: string, info: ReleaseInfo }[]
 
 export interface ChangelogState {

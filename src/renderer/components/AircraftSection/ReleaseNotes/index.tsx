@@ -1,17 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
-import { ReleaseInfo, GitVersions } from '@flybywiresim/api-client';
-import { Addon } from 'renderer/utils/InstallerConfiguration';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useAppSelector } from "renderer/redux/store";
 
-export const ReleaseNotes: FC<{addon: Addon}> = ({ addon }) => {
-    const [releases, setReleases] = useState<ReleaseInfo[]>([]);
-
-    useEffect(() => {
-        GitVersions.getReleases(addon.repoOwner, addon.repoName).then(res => setReleases((res)));
-    }, []);
-
-    console.log(releases);
+export const ReleaseNotes = () => {
+    const releases = useAppSelector(state => state.releaseNotes);
 
     return (
         <div className="w-full h-full p-7 overflow-y-scroll">
