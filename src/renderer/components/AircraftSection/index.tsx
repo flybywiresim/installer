@@ -693,7 +693,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                             />
                         ))}
 
-                        {props.publisher.defs.filter((it) => it.kind === 'addonCategory').map((category) => {
+                        {props.publisher.defs?.filter((it) => it.kind === 'addonCategory').map((category) => {
                             const categoryAddons = props.publisher.addons.filter((it) => it.category?.substring(1) === category.key);
 
                             if (categoryAddons.length === 0) {
