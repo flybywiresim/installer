@@ -1,5 +1,4 @@
 import React from 'react';
-import store from '../../redux/store';
 import { setupInstallPath, setupLiveriesPath } from 'renderer/actions/install-path.utils';
 import {
     Container,
@@ -12,14 +11,14 @@ import {
     ResetButton,
 } from './styles';
 import * as packageInfo from '../../../../package.json';
-import * as actionTypes from '../../redux/actionTypes';
-import { clearLiveries, reloadLiveries } from '../AircraftSection/LiveryConversion';
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
 import { Directories } from "renderer/utils/Directories";
 import { shell } from "electron";
 import path from "path";
 import * as fs from "fs";
+import { useAppDispatch } from "renderer/redux/store";
+import { callChangelog } from "renderer/redux/features/changelog";
 
 const InstallPathSettingItem = (props: { path: string, setPath: (path: string) => void }): JSX.Element => {
     async function handleClick() {
@@ -27,9 +26,6 @@ const InstallPathSettingItem = (props: { path: string, setPath: (path: string) =
 
         if (path) {
             props.setPath(path);
-            if (!settings.get('mainSettings.separateLiveriesPath') && !settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
-                reloadLiveries();
-            }
         }
     }
 
@@ -47,9 +43,6 @@ const LiveriesPathSettingItem = (props: { path: string, setPath: (path: string) 
 
         if (path) {
             props.setPath(path);
-            if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
-                reloadLiveries();
-            }
         }
     }
 
@@ -65,14 +58,11 @@ const SeparateLiveriesPathSettingItem = (props: {separateLiveriesPath: boolean, 
         props.setLiveriesPath(Directories.community());
         const newState = !props.separateLiveriesPath;
         props.setSeperateLiveriesPath(newState);
-        if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
-            reloadLiveries();
-        }
     };
 
     return (
         <>
-            <div className="h-0.5 bg-gray-700"></div>
+            <div className="h-0.5 bg-gray-700"/>
             <div className="flex items-center mb-3.5 mt-3.5">
                 <span className="text-base">Separate Liveries Directory</span>
                 <div className="ml-auto">
@@ -95,37 +85,9 @@ const DisableWarningSettingItem = (props: {disableWarning: boolean, setDisableWa
 
     return (
         <>
-            <div className="h-0.5 bg-gray-700"></div>
+            <div className="h-0.5 bg-gray-700"/>
             <div className="flex items-center mb-3.5 mt-3.5">
                 <span className="text-base">Disable Version Warnings</span>
-                <div className="ml-auto">
-                    <Toggle
-                        value={props.disableWarning}
-                        onToggle={handleClick}
-                    />
-                </div>
-            </div>
-        </>
-    );
-};
-
-const DisableLiveryWarningItem = (props: {disableWarning: boolean, setDisableWarning: CallableFunction}) => {
-    const handleClick = () => {
-        const newState = !props.disableWarning;
-        props.setDisableWarning(newState);
-        settings.set('mainSettings.disabledIncompatibleLiveriesWarning', newState);
-        if (!newState) {
-            reloadLiveries();
-        } else {
-            clearLiveries();
-        }
-    };
-
-    return (
-        <>
-            <div className="h-0.5 bg-gray-700"></div>
-            <div className="flex items-center mb-3.5 mt-3.5">
-                <span className="text-base">Disable Incompatible Livery Warnings</span>
                 <div className="ml-auto">
                     <Toggle
                         value={props.disableWarning}
@@ -146,7 +108,7 @@ const UseCdnSettingItem = (props: {useCdnCache: boolean, setUseCdnCache: Callabl
 
     return (
         <>
-            <div className="h-0.5 bg-gray-700"></div>
+            <div className="h-0.5 bg-gray-700"/>
             <div className="flex items-center mb-3.5 mt-3.5">
                 <span className="text-base">Use CDN Cache (Faster Downloads)</span>
                 <div className="ml-auto">
@@ -169,7 +131,7 @@ const DateLayoutItem = (props: {dateLayout: string, setDateLayout: CallableFunct
 
     return (
         <>
-            <div className="h-0.5 bg-gray-700"></div>
+            <div className="h-0.5 bg-gray-700"/>
             <div className="flex flex-row justify-between mb-3.5 mt-3.5 mr-2">
                 <SettingItemName>{'Date Layout'}</SettingItemName>
                 <select
@@ -193,7 +155,6 @@ function index(): JSX.Element {
     const [separateLiveriesPath, setSeparateLiveriesPath] = useSetting<boolean>('mainSettings.separateLiveriesPath');
     const [liveriesPath, setLiveriesPath] = useSetting<string>('mainSettings.liveriesPath');
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
-    const [disableLiveryWarning, setDisableLiveryWarning] = useSetting<boolean>('mainSettings.disabledIncompatibleLiveriesWarning');
     const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
     const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
 
@@ -202,7 +163,6 @@ function index(): JSX.Element {
 
         // Workaround to flush the defaults
         settings.set('metaInfo.lastVersion', packageInfo.version);
-        reloadLiveries();
     };
 
     return (
@@ -214,7 +174,6 @@ function index(): JSX.Element {
                     <SeparateLiveriesPathSettingItem separateLiveriesPath={separateLiveriesPath} setSeperateLiveriesPath={setSeparateLiveriesPath} setLiveriesPath={setLiveriesPath} />
                     {separateLiveriesPath ? (<LiveriesPathSettingItem path={liveriesPath} setPath={setLiveriesPath} />) : (<></>)}
                     <DisableWarningSettingItem disableWarning={disableVersionWarning} setDisableWarning={setDisableVersionWarning} />
-                    <DisableLiveryWarningItem disableWarning={disableLiveryWarning} setDisableWarning={setDisableLiveryWarning} />
                     <UseCdnSettingItem useCdnCache={useCdnCache} setUseCdnCache={setUseCdnCache} />
                     <DateLayoutItem dateLayout={dateLayout} setDateLayout={setDateLayout} />
                 </SettingsItems>
@@ -232,9 +191,8 @@ function index(): JSX.Element {
 }
 
 const showChangelog = () => {
-    store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
-        showChangelog: true
-    } });
+    const dispatch = useAppDispatch();
+    dispatch(callChangelog({ showChangelog: true }));
 };
 
 const openThirdPartyLicenses = () => {

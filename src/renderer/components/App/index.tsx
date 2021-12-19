@@ -4,16 +4,13 @@ import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
-import AircraftSection from 'renderer/components/AircraftSection';
+import { AircraftSection } from 'renderer/components/AircraftSection';
 
 import { Container, MainLayout, PageHeader } from './styles';
 import ChangelogModal from '../ChangelogModal';
-import WarningModal from '../WarningModal';
+import { WarningModal } from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
-import * as actionTypes from '../../redux/actionTypes';
-import store from '../../redux/store';
-import { SetAddonAndTrackLatestReleaseInfo } from "renderer/redux/types";
 import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
 import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
@@ -23,6 +20,8 @@ import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import settings from 'common/settings';
 import Snowfall from 'react-snowfall';
+import { store } from 'renderer/redux/store';
+import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -60,18 +59,18 @@ export const getAddonReleases = async (addon: Addon): Promise<AddonVersion[]> =>
 };
 
 export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
-    addon.tracks.forEach(async (track) => {
-        const trackLatestVersionName = await AddonData.latestVersionForTrack(addon, track);
+    const dispatch = store.dispatch;
 
-        store.dispatch<SetAddonAndTrackLatestReleaseInfo>({
-            type: actionTypes.SET_ADDON_AND_TRACK_LATEST_RELEASE_INFO,
-            payload: {
+    for (const track of addon.tracks) {
+        const trackLatestVersionName = await AddonData.latestVersionForTrack(addon, track);
+        dispatch(setAddonAndTrackLatestReleaseInfo({
+            addonTrackAndInfo: [{
                 addonKey: addon.key,
                 trackKey: track.key,
                 info: trackLatestVersionName,
-            }
-        });
-    });
+            }],
+        }));
+    }
 };
 
 const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {

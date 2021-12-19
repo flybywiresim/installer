@@ -80,7 +80,7 @@ export const defaultConfiguration: Configuration = {
                                 branch: 'master',
                             },
                         },
-                        /* {
+                        {
                             name: 'Experimental',
                             key: 'experimental',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
@@ -100,7 +100,7 @@ export const defaultConfiguration: Configuration = {
                                 type: 'githubBranch',
                                 branch: 'experimental',
                             },
-                        }, */
+                        },
                     ],
                 },
                 {

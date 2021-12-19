@@ -79,7 +79,6 @@
     "eslint-plugin-tailwindcss": "^1.17.2",
     "fork-ts-checker-webpack-plugin": "^6.4.0",
     "html-webpack-plugin": "^5.5.0",
-    "husky": "^4.3.8",
     "inspectpack": "^4.7.1",
     "less": "^3.13.1",
     "less-loader": "^7.3.0",
@@ -89,6 +88,7 @@
     "postcss": "^8.1.0",
     "postcss-loader": "~4.2.0",
     "react-svg-loader": "^3.0.3",
+    "redux-devtools-extension": "^2.13.9",
     "style-loader": "^1.3.0",
     "tailwindcss": "^2.2.19",
     "ts-loader": "^8.0.15",
@@ -103,6 +103,7 @@
     "@ant-design/icons": "^4.4.0",
     "@flybywiresim/fragmenter": "^0.5.2",
     "@flybywiresim/react-components": "^0.2.5",
+    "@reduxjs/toolkit": "^1.7.1",
     "antd": "^4.12.2",
     "config-ini-parser": "~1.5.9",
     "dateformat": "^5.0.1",
@@ -131,11 +132,6 @@
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
     "walkdir": "^0.4.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npx lint-staged"
-    }
   },
   "lint-staged": {
     "*.{ts,tsx}": [

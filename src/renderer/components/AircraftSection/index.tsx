@@ -1,77 +1,38 @@
 import React, { FC, useEffect, useState } from "react";
-import { DialogContainer } from "./styles";
 import fs from "fs-extra";
 import * as path from "path";
-import {
-    fetchLatestVersionNames,
-    getAddonReleases,
-} from "renderer/components/App";
+import { fetchLatestVersionNames, getAddonReleases, } from "renderer/components/App";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
-import {
-    DownloadItem,
-    AddonAndTrackLatestVersionNamesState,
-} from "renderer/redux/types";
-import { connect, useDispatch, useSelector } from "react-redux";
-import {
-    deleteDownload,
-    registerDownload,
-    updateDownloadProgress,
-} from "renderer/redux/actions/downloads.actions";
-import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
+import { DownloadItem } from "renderer/redux/types";
+import { useSelector } from "react-redux";
 import _ from "lodash";
-import {
-    Track,
-    Tracks,
-} from "renderer/components/AircraftSection/TrackSelector";
-import {
-    FragmenterInstaller,
-    needsUpdate,
-    getCurrentInstall,
-} from "@flybywiresim/fragmenter";
-import store, { InstallerStore } from "../../redux/store";
-import * as actionTypes from "../../redux/actionTypes";
-import {
-    Addon,
-    AddonTrack,
-    AddonVersion,
-    Publisher,
-} from "renderer/utils/InstallerConfiguration";
+import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
+import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
+import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
+import { Addon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
-import { LiveryConversionDialog } from "renderer/components/AircraftSection/LiveryConversion";
-import { LiveryDefinition } from "renderer/utils/LiveryConversion";
 import { NavLink, Redirect, Route, useHistory } from "react-router-dom";
-import {
-    CardText,
-    InfoCircle,
-    JournalText,
-    Sliders,
-} from "react-bootstrap-icons";
-import "./index.css";
+import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
 import FBWTail from "renderer/assets/FBW-Tail.svg";
 import { PageSider } from "../App/styles";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
-import { GitVersions, ReleaseInfo } from "@flybywiresim/api-client";
-import remarkGfm from "remark-gfm";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { ReleaseNotes } from "./ReleaseNotes";
+import "./index.css";
+
+import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
+import { deleteDownload, registerNewDownload, updateDownloadProgress } from 'renderer/redux/features/downloads';
+import { callWarningModal } from "renderer/redux/features/warningModal";
+import { setInstallStatus } from "renderer/redux/features/installStatus";
+import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 
 // Props coming from renderer/components/App
 type TransferredProps = {
     publisher: Publisher;
 };
-
-// Props coming from Redux' connect function
-type ConnectedAircraftSectionProps = {
-    selectedTracks: Record<string, AddonTrack>;
-    installedTracks: Record<string, AddonTrack>;
-    installStatus: Record<string, InstallStatus>;
-    latestVersionNames: AddonAndTrackLatestVersionNamesState;
-};
-
-type AircraftSectionProps = TransferredProps & ConnectedAircraftSectionProps;
 
 let abortController: AbortController;
 
@@ -135,9 +96,14 @@ const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
     </NavLink>
 );
 
-const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
+export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: Publisher }) => {
     const history = useHistory();
     const [selectedAddon, setSelectedAddon] = useState<Addon>(props.publisher.addons[0]);
+    const dispatch = useAppDispatch();
+
+    const installedTracks = useAppSelector(state => state.installedTracks);
+    const selectedTracks = useAppSelector(state => state.selectedTrack);
+    const installStatus = useAppSelector(state => state.installStatus);
 
     useEffect(() => {
         settings.set("cache.main.sectionToShow", history.location.pathname);
@@ -167,7 +133,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 selectAndSetTrack(selectedTrack().key);
                 return selectedTrack();
             } else {
-                setSelectedTrack(selectedAddon.tracks[0]);
+                setCurrentlySelectedTrack(selectedAddon.tracks[0]);
                 return selectedAddon.tracks[0];
             }
         }
@@ -185,12 +151,12 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 });
             }
             console.log("Currently installed", track);
-            setInstalledTrack(track);
+            setCurrentlyInstalledTrack(track);
             if (selectedTrack()) {
                 selectAndSetTrack(selectedTrack().key);
                 return selectedTrack();
             } else {
-                setSelectedTrack(track);
+                setCurrentlySelectedTrack(track);
                 return track;
             }
         } catch (e) {
@@ -200,7 +166,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 selectAndSetTrack(selectedTrack().key);
                 return selectedTrack();
             } else {
-                setSelectedTrack(selectedAddon.tracks[0]);
+                setCurrentlySelectedTrack(selectedAddon.tracks[0]);
                 return selectedAddon.tracks[0];
             }
         }
@@ -208,63 +174,49 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     const installedTrack = (): AddonTrack => {
         try {
-            return props.installedTracks[selectedAddon.key] as AddonTrack;
+            return installedTracks[selectedAddon.key] as AddonTrack;
         } catch (e) {
-            setInstalledTrack(null);
+            setCurrentlyInstalledTrack(null);
             return null;
         }
     };
-    const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
-        store.dispatch({
-            type: actionTypes.SET_INSTALLED_TRACK,
-            addonKey: selectedAddon.key,
-            payload: newInstalledTrack,
-        });
+
+    const setCurrentlyInstalledTrack = (newInstalledTrack: AddonTrack) => {
+        dispatch(setInstalledTrack({ addonKey: selectedAddon.key, installedTrack: newInstalledTrack }));
     };
 
     const selectedTrack = (): AddonTrack => {
         try {
-            return props.selectedTracks[selectedAddon.key] as AddonTrack;
+            return selectedTracks[selectedAddon.key] as AddonTrack;
         } catch (e) {
-            setSelectedTrack(null);
+            setCurrentlySelectedTrack(null);
             return null;
         }
     };
 
-    const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
-        store.dispatch({
-            type: actionTypes.SET_SELECTED_TRACK,
-            addonKey: selectedAddon.key,
-            payload: newSelectedTrack,
-        });
+    const setCurrentlySelectedTrack = (newSelectedTrack: AddonTrack) => {
+        dispatch(setSelectedTrack({ addonKey: selectedAddon.key, track: newSelectedTrack }));
     };
 
-    const installStatus = (): InstallStatus => {
+    const getCurrentInstallStatus = (): InstallStatus => {
         try {
-            return props.installStatus[selectedAddon.key] as InstallStatus;
+            return installStatus[selectedAddon.key] as InstallStatus;
         } catch (e) {
-            setInstallStatus(InstallStatus.Unknown);
+            setCurrentInstallStatus(InstallStatus.Unknown);
             return InstallStatus.Unknown;
         }
     };
 
-    const setInstallStatus = (new_state: InstallStatus) => {
-        store.dispatch({
-            type: actionTypes.SET_INSTALL_STATUS,
-            addonKey: selectedAddon.key,
-            payload: new_state,
-        });
+    const setCurrentInstallStatus = (new_state: InstallStatus) => {
+        dispatch(setInstallStatus({ addonKey: selectedAddon.key, installStatus: new_state }));
     };
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
 
     const [wait, setWait] = useState(1);
 
-    const [, setReleases] = useState<AddonVersion[]>([]);
-
     useEffect(() => {
-        getAddonReleases(selectedAddon).then((releases) => {
-            setReleases(releases);
+        getAddonReleases(selectedAddon).then(() => {
             setWait((wait) => wait - 1);
             findInstalledTrack();
         });
@@ -273,7 +225,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
     const download: DownloadItem = useSelector((state: InstallerStore) =>
         _.find(state.downloads, { id: selectedAddon.name })
     );
-    const dispatch = useDispatch();
 
     const isDownloading = download?.progress >= 0;
 
@@ -289,8 +240,8 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
     useEffect(() => {
         findInstalledTrack();
-        if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
-            getInstallStatus().then(setInstallStatus);
+        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep) {
+            getInstallStatus().then(setCurrentInstallStatus);
         }
     }, [selectedTrack(), installedTrack()]);
 
@@ -369,7 +320,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         // Copy current install to temporary directory
         console.log("Checking for existing install");
         if (Directories.isFragmenterInstall(installDir)) {
-            setInstallStatus(InstallStatus.DownloadPrep);
+            setCurrentInstallStatus(InstallStatus.DownloadPrep);
             console.log("Found existing install at", installDir);
             console.log("Copying existing install to", tempDir);
             await fs.copy(installDir, tempDir);
@@ -382,44 +333,43 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
 
         try {
             let lastPercent = 0;
-            setInstallStatus(InstallStatus.Downloading);
-            dispatch(registerDownload(selectedAddon.name, ""));
+            setCurrentInstallStatus(InstallStatus.Downloading);
+            dispatch(registerNewDownload({ id: selectedAddon.name, module: "" }));
 
             // Perform the fragmenter download
             const installer = new FragmenterInstaller(track.url, tempDir);
 
             installer.on("downloadStarted", (module) => {
                 console.log("Downloading started for module", module.name);
-                setInstallStatus(InstallStatus.Downloading);
+                setCurrentInstallStatus(InstallStatus.Downloading);
             });
             installer.on("downloadProgress", (module, progress) => {
                 if (lastPercent !== progress.percent) {
                     lastPercent = progress.percent;
                     dispatch(
-                        updateDownloadProgress(
-                            selectedAddon.name,
-                            module.name,
-                            progress.percent
-                        )
-                    );
+                        updateDownloadProgress({
+                            id: selectedAddon.name,
+                            module: module.name,
+                            progress: progress.percent
+                        }));
                 }
             });
             installer.on("unzipStarted", (module) => {
                 console.log("Started unzipping module", module.name);
-                setInstallStatus(InstallStatus.Decompressing);
+                setCurrentInstallStatus(InstallStatus.Decompressing);
             });
             installer.on("retryScheduled", (module, retryCount, waitSeconds) => {
                 console.log("Scheduling a retry for module", module.name);
                 console.log("Retry count", retryCount);
                 console.log("Waiting for", waitSeconds, "seconds");
 
-                setInstallStatus(InstallStatus.DownloadRetry);
+                setCurrentInstallStatus(InstallStatus.DownloadRetry);
             });
             installer.on("retryStarted", (module, retryCount) => {
                 console.log("Starting a retry for module", module.name);
                 console.log("Retry count", retryCount);
 
-                setInstallStatus(InstallStatus.Downloading);
+                setCurrentInstallStatus(InstallStatus.Downloading);
             });
 
             console.log("Starting fragmenter download for URL", track.url);
@@ -431,7 +381,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             console.log("Fragmenter download finished for URL", track.url);
 
             // Copy files from temp dir
-            setInstallStatus(InstallStatus.DownloadEnding);
+            setCurrentInstallStatus(InstallStatus.DownloadEnding);
             Directories.removeTargetForAddon(selectedAddon);
             console.log("Copying files from", tempDir, "to", installDir);
             await fs.copy(tempDir, installDir, { recursive: true });
@@ -444,46 +394,44 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                 "Finished removing installs existing under alternative names"
             );
 
-            dispatch(deleteDownload(selectedAddon.name));
+            dispatch(deleteDownload({ id: selectedAddon.name }));
             notifyDownload(true);
 
             // Flash completion text
-            setInstalledTrack(track);
-            setInstallStatus(InstallStatus.DownloadDone);
+            setCurrentlyInstalledTrack(track);
+            setCurrentInstallStatus(InstallStatus.DownloadDone);
 
             console.log("Finished download", installResult);
         } catch (e) {
             if (signal.aborted) {
-                setInstallStatus(InstallStatus.DownloadCanceled);
+                setCurrentInstallStatus(InstallStatus.DownloadCanceled);
             } else {
                 console.error(e);
-                setInstallStatus(InstallStatus.DownloadError);
+                setCurrentInstallStatus(InstallStatus.DownloadError);
                 notifyDownload(false);
             }
-            setTimeout(async () => setInstallStatus(await getInstallStatus()), 3_000);
+            setTimeout(async () => setCurrentInstallStatus(await getInstallStatus()), 3_000);
         }
 
-        dispatch(deleteDownload(selectedAddon.name));
+        dispatch(deleteDownload({ id: selectedAddon.name }));
 
         // Clean up temp dir
         Directories.removeAllTemp();
     };
 
-    const selectAndSetTrack = async (key: string) => {
+    const selectAndSetTrack = (key: string) => {
         const newTrack = selectedAddon.tracks.find((x) => x.key === key);
-        setSelectedTrack(newTrack);
+        setCurrentlySelectedTrack(newTrack);
     };
 
     const handleTrackSelection = (track: AddonTrack) => {
-        if (!isDownloading && installStatus() !== InstallStatus.DownloadPrep) {
+        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep) {
             dispatch(
-                callWarningModal(
-                    track.isExperimental,
-                    track,
-                    !track.isExperimental,
-                    () => selectAndSetTrack(track.key)
-                )
-            );
+                callWarningModal({
+                    showWarningModal: track.isExperimental,
+                    track: track,
+                    selectedAddon: selectedAddon,
+                }));
         } else {
             selectAndSetTrack(selectedTrack().key);
         }
@@ -503,7 +451,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         if (isDownloading) {
             console.log("Cancel download");
             abortController.abort();
-            dispatch(deleteDownload(selectedAddon.name));
+            dispatch(deleteDownload({ id: selectedAddon.name }));
         }
     };
 
@@ -546,7 +494,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             );
         }
 
-        switch (installStatus()) {
+        switch (getCurrentInstallStatus()) {
             case InstallStatus.UpToDate:
                 return <></>;
             case InstallStatus.NeedsUpdate:
@@ -587,7 +535,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
             );
         }
 
-        switch (installStatus()) {
+        switch (getCurrentInstallStatus()) {
             case InstallStatus.UpToDate:
                 return (
                     <InstallButton className="pointer-events-none bg-green-500">
@@ -687,10 +635,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
         }
     };
 
-    const liveries = useSelector<InstallerStore, LiveryDefinition[]>((state) => {
-        return state.liveries.map((entry) => entry.livery);
-    });
-
     return (
         <div className="flex flex-row w-full h-full">
             <PageSider
@@ -705,6 +649,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                 enabled={addon.enabled}
                                 className="h-32"
                                 addon={addon}
+                                key={addon.key}
                                 onClick={() => setSelectedAddon(addon)}
                             />
                         ))}
@@ -737,11 +682,11 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                         <div>
                                             {activeState()}
                                             {/* TODO: Actually calculate this value */}
-                                            {installStatus() === InstallStatus.Downloading && (
+                                            {getCurrentInstallStatus() === InstallStatus.Downloading && (
                                                 <div className="text-white text-2xl">98.7 mb/s</div>
                                             )}
                                         </div>
-                                        {installStatus() === InstallStatus.Downloading && (
+                                        {getCurrentInstallStatus() === InstallStatus.Downloading && (
                                             // TODO: Replace this with a JIT value
                                             <div
                                                 className="text-white font-semibold"
@@ -751,7 +696,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                             </div>
                                         )}
                                     </div>
-                                    {installStatus() === InstallStatus.Downloading && (
+                                    {getCurrentInstallStatus() === InstallStatus.Downloading && (
                                         <div
                                             className="absolute -bottom-1 w-full h-2 z-10 bg-cyan progress-bar-animated"
                                             style={{ width: `${download?.progress}%` }}
@@ -759,11 +704,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                     )}
                                 </div>
                                 <div className="flex flex-row h-1/2">
-                                    {liveries.length > 0 && (
-                                        <DialogContainer>
-                                            <LiveryConversionDialog />
-                                        </DialogContainer>
-                                    )}
                                     <Route path="/aircraft-section/main/configure">
                                         <div className="p-7 overflow-y-scroll">
                                             <h2 className="text-white font-extrabold">
@@ -822,12 +762,7 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                         </div>
                                     </Route>
                                     <Route path="/aircraft-section/main/release-notes">
-                                        <div>
-                                            <ReleaseNotes addon={selectedAddon} />
-                                        </div>
-                                    </Route>
-                                    <Route path="/aircraft-section/main/changelog">
-                                        <Changelog />
+                                        <ReleaseNotes addon={selectedAddon} />
                                     </Route>
                                     <Route path="/aircraft-section/main/about">
                                         <About addon={selectedAddon}/>
@@ -841,11 +776,6 @@ const index: React.FC<TransferredProps> = (props: AircraftSectionProps) => {
                                             <SideBarLink to="/aircraft-section/main/release-notes">
                                                 <JournalText size={24} />
                                                 Release Notes
-                                            </SideBarLink>
-                                            <SideBarLink to="/aircraft-section/main/changelog">
-                                                {/* <ListColumnsReverse size={24} /> TODO: USE THIS INSTEAD */}
-                                                <CardText size={24} />
-                                                Change Log
                                             </SideBarLink>
                                             {/* <SideBarLink to="/aircraft-section/main/liveries">
                                                 <Palette size={24} />
@@ -909,72 +839,3 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
         )}
     </div>
 );
-
-const ReleaseNotes: FC<{addon: Addon}> = ({ addon }) => {
-    const [releases, setReleases] = useState<ReleaseInfo[]>([]);
-
-    useEffect(() => {
-        GitVersions.getReleases(addon.repoOwner, addon.repoName).then((res) => res.slice(0, 5)).then(res => setReleases((res)));
-    }, []);
-
-    return (
-        <div className="w-full h-full p-7 overflow-y-scroll">
-            <div className="flex flex-row items-center justify-between">
-                <h2 className="text-white font-extrabold">
-                    Release Notes
-                </h2>
-                {/*    Dropdown will go here*/}
-            </div>
-            <div className="flex flex-col gap-y-7">
-                {releases.map(release =>
-                    <div className="rounded-md bg-navy p-7 ">
-                        <h3 className="text-white font-semibold">{release.name}</h3>
-                        <ReactMarkdown
-                            className="text-lg text-gray-300"
-                            children={release.body ?? ''}
-                            remarkPlugins={[remarkGfm]}
-                            linkTarget={"_blank"}
-                        />
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
-
-const Changelog = () => {
-    const URL = 'https://api.github.com/repos/flybywiresim/a32nx/contents/.github/CHANGELOG.md';
-    const [arr, setArr] = useState<string[]>([]);
-
-    useEffect(() => {
-        fetch(URL, {
-            headers: {
-                'accept': 'application/vnd.github.v3.raw',
-            }
-        })
-            .then(res => res.text())
-            .then(text => text.split('1.').slice(3))
-            .then(lines => setArr(lines));
-    }, []);
-
-    return (
-        <div className="h-full p-7 overflow-y-scroll">
-            <h2 className="text-white font-extrabold">Changelog</h2>
-            <ol className="text-white">
-                {arr.map(entry => (
-                    <li className="font-mono">
-                        {entry}
-                    </li>
-                ))}
-            </ol>
-        </div>
-    );
-};
-
-const mapStateToProps = (state: ConnectedAircraftSectionProps) => {
-    return {
-        ...state,
-    };
-};
-
-export default connect(mapStateToProps)(index);

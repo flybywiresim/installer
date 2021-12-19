@@ -1,30 +1,40 @@
 import React, { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
-import { callWarningModal } from "renderer/redux/actions/warningModal.actions";
+import { useDispatch } from 'react-redux';
 import { WarningModalBase } from "./styles";
-import { ExperimentalAddonTrack } from "renderer/utils/InstallerConfiguration";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useSetting } from "common/settings";
+import { callWarningModal } from "renderer/redux/features/warningModal";
+import { useAppSelector } from "renderer/redux/store";
+import { ExperimentalAddonTrack } from "renderer/utils/InstallerConfiguration";
+import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 
-type WarningModalProps = {
-    track: ExperimentalAddonTrack,
-    trackHandler: CallableFunction,
-    showWarningModal: boolean
-};
-
-const WarningModal = (props: WarningModalProps) => {
+export const WarningModal = (): JSX.Element => {
     const dispatch = useDispatch();
+
+    const track = useAppSelector(state => state.warningModal.track);
+    const selectedAddon = useAppSelector(state => state.warningModal.selectedAddon);
+
+    const showWarningModal = useAppSelector(state => state.warningModal.showWarningModal);
 
     const [dontShowAgain, setDontShowAgain] = useState<boolean>(false);
     const [disableWarning, setDisableWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
+
+    let warningContent;
+
+    try {
+        warningContent = (track as ExperimentalAddonTrack).warningContent;
+    } catch (_) {
+        return null;
+    }
 
     const handleDisableWarning = () => {
         setDisableWarning(dontShowAgain);
     };
 
     const handleTrackSelected = () => {
-        dispatch(callWarningModal(false, props.track, true, props.trackHandler));
+        dispatch(callWarningModal({ showWarningModal: false, track: null, selectedAddon: null }));
+        dispatch(setSelectedTrack({ addonKey: selectedAddon.key, track: selectedAddon.tracks.find((x) => x.key === track.key) }));
     };
 
     const handleOk = () => {
@@ -35,7 +45,7 @@ const WarningModal = (props: WarningModalProps) => {
 
     const handleCancel = () => {
         setDontShowAgain(false);
-        dispatch(callWarningModal(false, null));
+        dispatch(callWarningModal({ showWarningModal: false, track: null, selectedAddon: null }));
     };
 
     const handleOnChange = () => {
@@ -47,7 +57,7 @@ const WarningModal = (props: WarningModalProps) => {
             handleTrackSelected();
             return false;
         } else {
-            return props.showWarningModal;
+            return showWarningModal;
         }
     };
 
@@ -65,7 +75,7 @@ const WarningModal = (props: WarningModalProps) => {
         >
             <ReactMarkdown
                 className="text-lg text-gray-300"
-                children={props.track?.warningContent}
+                children={warningContent}
                 remarkPlugins={[remarkGfm]}
                 linkTarget={"_blank"}
             />
@@ -81,5 +91,3 @@ const WarningModal = (props: WarningModalProps) => {
         </WarningModalBase>
     );
 };
-
-export default connect((state: { warningModal: WarningModalProps }) => ({ ...state.warningModal, }))(WarningModal);

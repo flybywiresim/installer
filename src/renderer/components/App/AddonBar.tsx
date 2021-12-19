@@ -30,8 +30,8 @@ export const AddonBar: FC<AddonBarProps> = ({ publisher, children }) => {
             <>
                 {groups.map((group) => (
                     <div className="flex flex-row gap-x-4">
-                        {group.map((button) => (
-                            <AddonBarPublisherButton button={button} />
+                        {group.map((button, index) => (
+                            <AddonBarPublisherButton button={button} key={index} />
                         ))}
                     </div>
                 ))}

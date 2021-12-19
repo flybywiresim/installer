@@ -1,23 +1,21 @@
-import { createStore } from 'redux';
-import rootReducer from './reducers';
-import {
-    ChangelogState,
-    DownloadsState,
-    AddonAndTrackLatestVersionNamesState,
-    ShowWarningModalState,
-} from "renderer/redux/types";
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { ChangelogState, DownloadsState, AddonAndTrackLatestVersionNamesState, ShowWarningModalState } from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { AddonTrack } from "renderer/utils/InstallerConfiguration";
-import { LiveriesState } from "renderer/redux/reducers/liveries.reducer";
+import { configureStore } from '@reduxjs/toolkit';
+import { combinedReducer, rootReducer } from "renderer/redux/reducer";
 
-// eslint-disable-next-line  @typescript-eslint/no-explicit-any
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
+export type TypedAction<T> = { type: string, payload: T };
+export type RootState = ReturnType<typeof combinedReducer>;
+export type AppDispatch = typeof store.dispatch;
 
-const store = createStore(rootReducer, composeEnhancers);
+export const store = configureStore({
+    reducer: rootReducer,
+});
 
 if (module.hot) {
-    module.hot.accept('./reducers', () => {
-        const nextRootReducer = require('./reducers/index').default;
+    module.hot.accept('./reducer', () => {
+        const nextRootReducer = require('./reducer').default;
         store.replaceReducer(nextRootReducer);
     });
 }
@@ -30,7 +28,7 @@ export type InstallerStore = {
     selectedTracks: Record<string, AddonTrack>,
     installedTracks: Record<string, AddonTrack>,
     latestVersionNames: AddonAndTrackLatestVersionNamesState,
-    liveries: LiveriesState,
 };
 
-export default store;
+export const useAppDispatch: CallableFunction = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

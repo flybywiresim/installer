@@ -29,44 +29,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from 'renderer/components/App';
-import store from 'renderer/redux/store';
 import { Configuration, InstallerConfiguration } from 'renderer/utils/InstallerConfiguration';
 import { ipcRenderer } from "electron";
 
 import './index.css';
 import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
-import { LiveryConversion } from "renderer/utils/LiveryConversion";
-import * as actionTypes from "renderer/redux/actionTypes";
-import { LiveryAction } from "renderer/redux/types";
-import { LiveryState } from "renderer/redux/reducers/liveries.reducer";
 import { Directories } from "renderer/utils/Directories";
-import settings from "common/settings";
 import channels from "common/channels";
 import { MemoryRouter } from 'react-router-dom';
-
-// Check for A32NX incompatible liveries if not disabled
-
-const disableLiveryWarningSetting = settings.get('mainSettings.disabledIncompatibleLiveriesWarning');
-
-if (!disableLiveryWarningSetting) {
-    LiveryConversion.getIncompatibleLiveries().then((liveries) => {
-        liveries.forEach((livery) => store.dispatch<LiveryAction>({
-            type: actionTypes.SET_LIVERY_STATE,
-            payload: {
-                livery,
-                state: LiveryState.DETECTED,
-            },
-        }));
-    });
-}
+import { store } from "renderer/redux/store";
 
 // Obtain configuration and use it
-
 InstallerConfiguration.obtain().then((config: Configuration) => {
     console.log(config);
     Directories.removeAllTemp();
-
     ReactDOM.render(
         <Provider store={store}>
             <MemoryRouter>

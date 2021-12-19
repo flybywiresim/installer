@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import store from '../../redux/store';
 import { InnerContainer, Close } from './styles';
 import * as packageInfo from '../../../../package.json';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import ReactHtmlParser from 'react-html-parser';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import changelog from '../../../../.github/CHANGELOG.md';
-import * as actionTypes from '../../redux/actionTypes';
 import settings from "common/settings";
+import { useAppDispatch } from "renderer/redux/store";
+import { callChangelog } from "renderer/redux/features/changelog";
 
 type ChangelogProps = {
     showChangelog: boolean
@@ -38,21 +38,19 @@ const ShowChangelog = (props: ChangelogProps) => {
     } else {
         return (<></>);
     }
-
 };
 
 const hideChangelog = () => {
-    store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
-        showChangelog: false,
-    } });
+    const dispatch = useAppDispatch();
+    dispatch(callChangelog({ showChangelog: false }));
 };
 
 const didVersionChange = () => {
+    const dispatch = useAppDispatch();
+
     if (packageInfo.version !== settings.get<string>('metaInfo.lastVersion')) {
         settings.set('metaInfo.lastVersion', packageInfo.version);
-        store.dispatch({ type: actionTypes.CALL_CHANGELOG, payload: {
-            showChangelog: true
-        } });
+        dispatch(callChangelog({ showChangelog: true }));
     }
 };
 

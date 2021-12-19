@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { setupInstallPath, setupLiveriesPath } from 'renderer/actions/install-path.utils';
-import { reloadLiveries } from '../AircraftSection/LiveryConversion';
 import settings from "common/settings";
 import { Directories } from "renderer/utils/Directories";
 import * as fs from "fs";
@@ -16,18 +15,11 @@ export const ErrorModal = (): JSX.Element => {
         setLinuxError(false);
     };
 
-    const reloadLiveriesIfNeeded = () => {
-        if (!settings.get('mainSettings.disabledIncompatibleLiveriesWarning')) {
-            reloadLiveries();
-        }
-    };
-
     const handleSelectPath = async () => {
         const path = await setupInstallPath();
         if (path) {
             settings.set('mainSettings.liveriesPath', path);
             settings.set('mainSettings.separateLiveriesPath', false);
-            reloadLiveriesIfNeeded();
             handleClose();
         }
     };
@@ -36,7 +28,6 @@ export const ErrorModal = (): JSX.Element => {
         if (path) {
             settings.set('mainSettings.liveriesPath', path);
             settings.set('mainSettings.separateLiveriesPath', true);
-            reloadLiveriesIfNeeded();
             handleClose();
         }
     };
