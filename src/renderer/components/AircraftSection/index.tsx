@@ -439,7 +439,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
     };
 
     const handleTrackSelection = (track: AddonTrack) => {
-        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep) {
+        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep && track.isExperimental) {
             dispatch(
                 callWarningModal({
                     showWarningModal: track.isExperimental,
@@ -447,7 +447,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                     selectedAddon: selectedAddon,
                 }));
         } else {
-            selectAndSetTrack(selectedTrack().key);
+            selectAndSetTrack(track.key);
         }
     };
 
