@@ -29,8 +29,8 @@ export const ReleaseNotes = () => {
         <div className="flex flex-col gap-y-7">
             {[...Array(10)].map(_ => (
                 <div className="rounded-md bg-navy p-7 animate-pulse">
-                    <h3 className="bg-navy-light h-4 w-32"/>
-                    <div className="h-44 w-full bg-navy-light"/>
+                    <h3 className="bg-navy-light h-8 w-32"/>
+                    <div className="h-64 w-full bg-navy-light"/>
                 </div>
             ))}
         </div>
