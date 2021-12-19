@@ -4,13 +4,13 @@ import remarkGfm from 'remark-gfm';
 import { useAppSelector } from "renderer/redux/store";
 
 export const ReleaseNotes = () => {
-    const releases = useAppSelector(state => state.releaseNotes);
+    const releaseNotes = useAppSelector(state => state.releaseNotes);
     const [releaseComponent, setReleaseComponent] = useState<JSX.Element>(undefined);
 
     useEffect(() => {
         setReleaseComponent(
             <div className="flex flex-col gap-y-7">
-                {releases.map((release, index) =>
+                {releaseNotes.map((release, index) =>
                     <div className="rounded-md bg-navy p-7" key={index}>
                         <h3 className="text-white font-semibold">{release.name}</h3>
                         <ReactMarkdown

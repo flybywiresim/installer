@@ -149,6 +149,7 @@ export const defaultConfiguration: Configuration = {
                             releaseModel: {
                                 type: 'CDN',
                             },
+                            description: 'FlyByWire Headquarters is transformed into a winter wonderland - complete with a plethora of festive decorations in addition to the standard progress showcase.'
                         },
                     ],
                 },

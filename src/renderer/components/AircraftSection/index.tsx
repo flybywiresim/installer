@@ -107,6 +107,8 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
     const selectedTracks = useAppSelector(state => state.selectedTrack);
     const installStatus = useAppSelector(state => state.installStatus);
 
+    const releaseNotes = useAppSelector(state => state.releaseNotes);
+
     useEffect(() => {
         const hiddenAddon = props.publisher.addons.find((it) => it.key === selectedAddon.hidesAddon);
 
@@ -234,8 +236,6 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
         // Update the Release Notes
         if (selectedAddon.repoOwner && selectedAddon.repoName) {
             GitVersions.getReleases(selectedAddon.repoOwner, selectedAddon.repoName).then(res => {
-                res.forEach(release => console.log(release));
-
                 const content = res.map(release => ({
                     name: release.name,
                     publishedAt: release.publishedAt.getTime() / 1000,
@@ -243,8 +243,14 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                     body: release.body,
                 }));
 
-                dispatch(setReleases({ releases: content }));
+                if (content.length) {
+                    dispatch(setReleases({ releases: content }));
+                } else {
+                    dispatch(setReleases({ releases: [] }));
+                }
             });
+        } else {
+            dispatch(setReleases({ releases: [] }));
         }
     }, [selectedAddon]);
 
@@ -725,9 +731,9 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                         <div>
                                             {activeState()}
                                             {/* TODO: Actually calculate this value */}
-                                            {getCurrentInstallStatus() === InstallStatus.Downloading && (
-                                                <div className="text-white text-2xl">98.7 mb/s</div>
-                                            )}
+                                            {/*{getCurrentInstallStatus() === InstallStatus.Downloading && (*/}
+                                            {/*    <div className="text-white text-2xl">98.7 mb/s</div>*/}
+                                            {/*)}*/}
                                         </div>
                                         {getCurrentInstallStatus() === InstallStatus.Downloading && (
                                             // TODO: Replace this with a JIT value
@@ -796,12 +802,14 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                                     )}
                                                 </div>
                                             </div>
+                                            {selectedTrack() && selectedTrack().description &&
                                             <div className="mt-10">
                                                 <h2 className="text-white font-extrabold">Description</h2>
                                                 <p className="text-xl text-white font-manrope leading-relaxed">
-                                                    {selectedTrack() ? selectedTrack().description : ''}
+                                                    {selectedTrack().description}
                                                 </p>
                                             </div>
+                                            }
                                         </div>
                                     </Route>
                                     <Route path="/aircraft-section/main/release-notes">
@@ -816,10 +824,12 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                                 <Sliders size={24} />
                                                 Configure
                                             </SideBarLink>
-                                            <SideBarLink to="/aircraft-section/main/release-notes">
-                                                <JournalText size={24} />
+                                            {!!releaseNotes.length && (
+                                                <SideBarLink to="/aircraft-section/main/release-notes">
+                                                    <JournalText size={24} />
                                                 Release Notes
-                                            </SideBarLink>
+                                                </SideBarLink>
+                                            )}
                                             {/* <SideBarLink to="/aircraft-section/main/liveries">
                                                 <Palette size={24} />
                                                 Liveries
