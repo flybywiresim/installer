@@ -564,7 +564,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
         }
     };
 
-    const activeInstallButton = (): JSX.Element => {
+    const ActiveInstallButton = (): JSX.Element => {
         if (msfsIsOpen !== MsfsStatus.Closed) {
             return (
                 <InstallButton className="bg-gray-700 text-grey-medium pointer-events-none">
@@ -839,7 +839,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                                 About
                                             </SideBarLink>
                                         </div>
-                                        <div>{activeInstallButton()}</div>
+                                        <ActiveInstallButton />
                                     </div>
                                 </div>
                             </div>
