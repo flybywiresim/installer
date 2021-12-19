@@ -3,7 +3,6 @@ import { GitVersions } from "@flybywiresim/api-client";
 import { Directories } from "./Directories";
 import fs from 'fs-extra';
 import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
-import _ from "lodash";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import { useSetting } from "common/settings";
 import { store } from "renderer/redux/store";
@@ -69,9 +68,9 @@ export class AddonData {
                 const manifest = getCurrentInstall(Directories.inCommunity(addon.targetDirectory));
                 console.log('Currently installed', manifest);
 
-                let track = _.find(addon.tracks, { url: manifest.source });
+                let track = addon.tracks.find(track => track.url === manifest.source);
                 if (!track) {
-                    track = _.find(addon.tracks, { alternativeUrls: [manifest.source] });
+                    track = addon.tracks.find(track => track.alternativeUrls === [manifest.source]);
                 }
                 console.log('Currently installed', track);
                 setCurrentlyInstalledTrack(track);

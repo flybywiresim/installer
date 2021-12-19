@@ -146,11 +146,10 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
             );
             console.log("Currently installed", manifest);
 
-            let track = _.find(selectedAddon.tracks, { url: manifest.source });
+            let track = selectedAddon.tracks.find(track => track.url === manifest.source);
+
             if (!track) {
-                track = _.find(selectedAddon.tracks, {
-                    alternativeUrls: [manifest.source],
-                });
+                track = selectedAddon.tracks.find(track => track.alternativeUrls === [manifest.source]);
             }
             console.log("Currently installed", track);
             setCurrentlyInstalledTrack(track);
@@ -239,7 +238,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
     }, [selectedAddon]);
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
-        _.find(state.downloads, { id: selectedAddon.name })
+        state.downloads.find(download => download.id === selectedAddon.name)
     );
 
     const isDownloading = download?.progress >= 0;
