@@ -36,7 +36,7 @@ export class AddonData {
         return GitVersions.getReleases('flybywiresim', addon.repoName)
             .then((releases) => ({
                 name: releases[0].name,
-                releaseDate: Math.floor(releases[0].publishedAt.getTime() / 1000),
+                releaseDate: releases[0].publishedAt.getTime(),
                 changelogUrl: releases[0].htmlUrl,
             }));
     }
@@ -45,7 +45,7 @@ export class AddonData {
         return GitVersions.getNewestCommit('flybywiresim', addon.repoName, releaseModel.branch)
             .then((commit) => ({
                 name: commit.sha.substring(0, 7),
-                releaseDate: Math.floor(commit.timestamp.getTime() / 1000),
+                releaseDate: commit.timestamp.getTime(),
             }));
     }
 

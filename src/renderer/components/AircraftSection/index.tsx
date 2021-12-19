@@ -238,7 +238,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
             GitVersions.getReleases(selectedAddon.repoOwner, selectedAddon.repoName).then(res => {
                 const content = res.map(release => ({
                     name: release.name,
-                    publishedAt: release.publishedAt.getTime() / 1000,
+                    publishedAt: release.publishedAt.getTime(),
                     htmlUrl: release.htmlUrl,
                     body: release.body,
                 }));
