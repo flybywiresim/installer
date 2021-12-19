@@ -747,7 +747,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
 
                                                     {selectedAddon.tracks.filter((track) => track.isExperimental)
                                                         .length > 0 && (
-                                                        <h5 className="text-base text-teal-50 ">
+                                                        <h5 className="text-base text-teal-50 mt-2">
                                                     Experimental versions
                                                         </h5>
                                                     )}

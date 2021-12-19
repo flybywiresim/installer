@@ -80,27 +80,27 @@ export const defaultConfiguration: Configuration = {
                                 branch: 'master',
                             },
                         },
-                        {
-                            name: 'Experimental',
-                            key: 'experimental',
-                            url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
-                            alternativeUrls: [],
-                            description: 'This version is similar to the development version, but contains custom systems ' +
-                                'still being developed, including the new FBW Custom Flight Management System (cFMS). ' +
-                                'Experimental will be updated with the latest changes from both the ' +
-                                '\'autopilot-custom-fpm\' branch and development version regularly. ' +
-                                'No support will be offered via Discord for this version.',
-                            isExperimental: true,
-                            warningContent: 'The experimental version contains custom systems that more closely matches ' +
-                                'real-life behaviour of an A320neo. Those are in development and bugs are to be expected.\n\n' +
-                                'To understand what you are getting into and the potential issues you might experience, ' +
-                                'please read [this guide](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n' +
-                                '**Please be aware that no support will be offered via Discord support channels.**',
-                            releaseModel: {
-                                type: 'githubBranch',
-                                branch: 'experimental',
-                            },
-                        },
+                        // {
+                        //     name: 'Experimental',
+                        //     key: 'experimental',
+                        //     url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
+                        //     alternativeUrls: [],
+                        //     description: 'This version is similar to the development version, but contains custom systems ' +
+                        //         'still being developed, including the new FBW Custom Flight Management System (cFMS). ' +
+                        //         'Experimental will be updated with the latest changes from both the ' +
+                        //         '\'autopilot-custom-fpm\' branch and development version regularly. ' +
+                        //         'No support will be offered via Discord for this version.',
+                        //     isExperimental: true,
+                        //     warningContent: 'The experimental version contains custom systems that more closely matches ' +
+                        //         'real-life behaviour of an A320neo. Those are in development and bugs are to be expected.\n\n' +
+                        //         'To understand what you are getting into and the potential issues you might experience, ' +
+                        //         'please read [this guide](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n' +
+                        //         '**Please be aware that no support will be offered via Discord support channels.**',
+                        //     releaseModel: {
+                        //         type: 'githubBranch',
+                        //         branch: 'experimental',
+                        //     },
+                        // },
                     ],
                 },
                 {
