@@ -5,7 +5,6 @@ import { fetchLatestVersionNames, getAddonReleases, } from "renderer/components/
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
-import _ from "lodash";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
