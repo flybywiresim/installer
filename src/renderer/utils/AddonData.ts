@@ -75,9 +75,9 @@ export class AddonData {
                 const manifest = getCurrentInstall(Directories.inCommunity(addon.targetDirectory));
                 console.log('Currently installed', manifest);
 
-                let track = addon.tracks.find(track => track.url === manifest.source);
+                let track = addon.tracks.find(track => track.url.includes(manifest.source));
                 if (!track) {
-                    track = addon.tracks.find(track => track.alternativeUrls === [manifest.source]);
+                    track = addon.tracks.find(track => track.alternativeUrls.includes(manifest.source));
                 }
                 console.log('Currently installed', track);
                 setCurrentlyInstalledTrack(track);

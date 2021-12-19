@@ -110,7 +110,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
     const releaseNotes = useAppSelector(state => state.releaseNotes);
 
     useEffect(() => {
-        const hiddenAddon = props.publisher.addons.find((it) => it.key === selectedAddon.hidesAddon);
+        const hiddenAddon = props.publisher.addons.find((addon) => addon.key === selectedAddon.hidesAddon);
 
         if (hiddenAddon) {
             setHiddenAddon(hiddenAddon);
@@ -162,10 +162,10 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
             );
             console.log("Currently installed", manifest);
 
-            let track = selectedAddon.tracks.find(track => track.url === manifest.source);
+            let track = selectedAddon.tracks.find(track => track.url.includes(manifest.source));
 
             if (!track) {
-                track = selectedAddon.tracks.find(track => track.alternativeUrls === [manifest.source]);
+                track = selectedAddon.tracks.find(track => track.alternativeUrls.includes(manifest.source));
             }
             console.log("Currently installed", track);
             setCurrentlyInstalledTrack(track);
@@ -458,7 +458,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
     };
 
     const selectAndSetTrack = (key: string) => {
-        const newTrack = selectedAddon.tracks.find((x) => x.key === key);
+        const newTrack = selectedAddon.tracks.find((track) => track.key === key);
         setCurrentlySelectedTrack(newTrack);
     };
 
