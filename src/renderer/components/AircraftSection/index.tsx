@@ -670,6 +670,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                         Error
                     </InstallButton>
                 );
+            default: return <></>;
         }
     };
 
