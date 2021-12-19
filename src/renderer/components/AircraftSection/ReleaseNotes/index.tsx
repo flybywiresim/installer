@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAppSelector } from "renderer/redux/store";
+import "./index.css";
 
 export const ReleaseNotes = () => {
     const releaseNotes = useAppSelector(state => state.releaseNotes);
@@ -14,7 +15,7 @@ export const ReleaseNotes = () => {
                     <div className="rounded-md bg-navy p-7" key={index}>
                         <h3 className="text-white font-semibold">{release.name}</h3>
                         <ReactMarkdown
-                            className="text-lg text-gray-300"
+                            className="markdown-body"
                             children={release.body ?? ''}
                             remarkPlugins={[remarkGfm]}
                             linkTarget={"_blank"}
