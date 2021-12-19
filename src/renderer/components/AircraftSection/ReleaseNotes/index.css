@@ -97,6 +97,7 @@
 
 .markdown-body a:active,
 .markdown-body a:hover {
+    color: var(--color-accent-fg);
     outline-width: 0;
 }
 
