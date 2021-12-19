@@ -13,7 +13,14 @@ export const ReleaseNotes = () => {
             <div className="flex flex-col gap-y-7">
                 {releaseNotes.map((release, index) =>
                     <div className="rounded-md bg-navy p-7" key={index}>
-                        <h1 className="text-white text-4xl font-semibold">{release.name}</h1>
+                        <div className="flex flex-row items-center mb-3.5 gap-x-4">
+                            <h1 className="text-white text-4xl font-semibold mb-0">{release.name}</h1>
+                            {release === releaseNotes[0] && (
+                                <div className="text-white border border-cyan bg-teal-medium rounded-md px-6">
+                                Latest
+                                </div>
+                            )}
+                        </div>
                         <ReactMarkdown
                             className="markdown-body"
                             children={release.body ?? ''}
