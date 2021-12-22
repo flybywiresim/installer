@@ -223,20 +223,20 @@ export const defaultConfiguration: Configuration = {
                     text: 'Discord',
                     icon: 'Link45deg',
                     action: 'openBrowser',
-                    url: 'bruh',
+                    url: 'https://discord.gg/acQkSvrePG',
                 },
                 {
                     text: 'Twitter',
                     icon: 'Link45deg',
                     action: 'openBrowser',
-                    url: 'bruh',
+                    url: 'https://twitter.com/synapticsim',
                     inline: true,
                 },
                 {
                     text: 'Website',
                     icon: 'BlockquoteLeft',
                     action: 'openBrowser',
-                    url: 'bruh',
+                    url: 'https://www.synapticsim.com/',
                 }
             ]
         },
