@@ -19,8 +19,6 @@ import { PageSider } from "../App/styles";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
-import "./index.css";
-
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
 import { deleteDownload, registerNewDownload, updateDownloadProgress } from 'renderer/redux/features/downloads';
 import { callWarningModal } from "renderer/redux/features/warningModal";
@@ -29,6 +27,8 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { GitVersions } from "@flybywiresim/api-client";
 import { setReleases } from "renderer/redux/features/releaseNotes";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
+
+import "./index.css";
 
 // Props coming from renderer/components/App
 type TransferredProps = {
@@ -592,10 +592,10 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
             case InstallStatus.FreshInstall:
                 return (
                     <InstallButton
-                        className="pointer-events-none bg-green-500"
+                        className="bg-green-500"
                         onClick={handleInstall}
                     >
-                        Installed
+                        Install
                     </InstallButton>
                 );
             case InstallStatus.GitInstall:
@@ -864,6 +864,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                                 About
                                             </SideBarLink>
                                         </div>
+
                                         <ActiveInstallButton />
                                     </div>
                                 </div>
