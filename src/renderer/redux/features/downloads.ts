@@ -24,7 +24,11 @@ export const downloadSlice = createSlice({
             });
         },
         deleteDownload: (state, action: TypedAction<{ id: string }>) => {
-            state.filter(download => download.id !== action.payload.id);
+            const index = state.findIndex(download => download.id === action.payload.id);
+
+            if (index !== -1) {
+                state.splice(index, 1);
+            }
         }
     }
 });
