@@ -4,6 +4,7 @@ import FBWLogo from "renderer/assets/FBW-Tail.svg";
 import SynapticLogo from "renderer/assets/Synaptic-Logo.png";
 import A320NoseSVG from "renderer/assets/a32nx_nose.svg";
 import A380NoseSVG from "renderer/assets/a380x_nose.svg";
+import KFBWBackground from "renderer/assets/kfbw-background.png";
 
 export const defaultConfiguration: Configuration = {
     publishers: [
@@ -126,7 +127,6 @@ export const defaultConfiguration: Configuration = {
                     titleImageUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/922008938571005982/A380X-LightBG1.svg',
                     titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/921974898279206932/A380X-DarkBG-Mono.png',
                     enabled: false,
-                    // hidesAddon: 'KFBW',
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: ['https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'],
                     shortDescription: 'Airbus A380-800',
@@ -140,11 +140,11 @@ export const defaultConfiguration: Configuration = {
                     category: '@scenery',
                     aircraftName: 'FBW Headquarters',
                     enabled: true,
-                    hidden: true,
-                    hiddenName: 'A380X',
                     overrideAddonWhileHidden: 'A380X',
                     menuIconUrl: A380NoseSVG,
-                    backgroundImageUrls: [],
+                    backgroundImageUrls: [
+                        KFBWBackground,
+                    ],
                     titleImageUrl: 'https://cdn.discordapp.com/attachments/845070631644430359/922010902176358410/KFBW3.svg',
                     titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/922007327924707328/KFBW1.svg',
                     shortDescription: 'FlyByWire Headquarters',
