@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';

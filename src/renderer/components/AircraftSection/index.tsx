@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import fs from "fs-extra";
 import * as path from "path";
-import { fetchLatestVersionNames, getAddonReleases, } from "renderer/components/App";
+import { fetchLatestVersionNames } from "renderer/components/App";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
@@ -24,8 +24,6 @@ import { deleteDownload, registerNewDownload, updateDownloadProgress } from 'ren
 import { callWarningModal } from "renderer/redux/features/warningModal";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
-import { GitVersions } from "@flybywiresim/api-client";
-import { setReleases } from "renderer/redux/features/releaseNotes";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 
 import "./index.css";
@@ -109,7 +107,7 @@ export const AircraftSection = () => {
     const selectedTracks = useAppSelector(state => state.selectedTrack);
     const installStatus = useAppSelector(state => state.installStatus);
 
-    const releaseNotes = useAppSelector(state => state.releaseNotes);
+    const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
 
     useEffect(() => {
         const hiddenAddon = publisherData.addons.find((addon) => addon.key === selectedAddon.hidesAddon);
@@ -227,30 +225,6 @@ export const AircraftSection = () => {
     };
 
     const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
-
-    useEffect(() => {
-        getAddonReleases(selectedAddon).then(() => findInstalledTrack());
-
-        // Update the Release Notes
-        if (selectedAddon.repoOwner && selectedAddon.repoName) {
-            GitVersions.getReleases(selectedAddon.repoOwner, selectedAddon.repoName).then(res => {
-                const content = res.map(release => ({
-                    name: release.name,
-                    publishedAt: release.publishedAt.getTime(),
-                    htmlUrl: release.htmlUrl,
-                    body: release.body,
-                }));
-
-                if (content.length) {
-                    dispatch(setReleases({ releases: content }));
-                } else {
-                    dispatch(setReleases({ releases: [] }));
-                }
-            });
-        } else {
-            dispatch(setReleases({ releases: [] }));
-        }
-    }, [selectedAddon]);
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
         state.downloads.find(download => download.id === selectedAddon.name)
@@ -841,7 +815,11 @@ export const AircraftSection = () => {
                                         </div>
                                     </Route>
                                     <Route path={`/aircraft-section/${publisherName}/main/release-notes`}>
-                                        <ReleaseNotes />
+                                        {releaseNotes && releaseNotes.length > 0 ? (
+                                            <ReleaseNotes addon={selectedAddon}/>
+                                        ) :
+                                            <Redirect to={`/aircraft-section/${publisherName}/main/configure`}/>
+                                        }
                                     </Route>
                                     <Route path={`/aircraft-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon}/>
@@ -852,7 +830,7 @@ export const AircraftSection = () => {
                                                 <Sliders size={24} />
                                                 Configure
                                             </SideBarLink>
-                                            {!!releaseNotes.length && (
+                                            {releaseNotes && releaseNotes.length > 0 && (
                                                 <SideBarLink to={`/aircraft-section/${publisherName}/main/release-notes`}>
                                                     <JournalText size={24} />
                                                     Release Notes

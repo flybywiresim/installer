@@ -2,17 +2,21 @@ import { createSlice } from '@reduxjs/toolkit';
 import { TypedAction } from "renderer/redux/store";
 import { ReleaseData } from "renderer/redux/types";
 
-const initialState: ReleaseData[] = [];
+const initialState: Record<string, ReleaseData[]> = {};
 
 export const releaseNotesSlice = createSlice({
     name: "releaseNotes",
     initialState,
     reducers: {
-        setReleases: (state, action: TypedAction<{ releases: ReleaseData[] }>) => {
-            state.splice(0, state.length, ...action.payload.releases);
+        addReleases: (state, action: TypedAction<{ key: string, releases: ReleaseData[] }>) => {
+            if (!state[action.payload.key]) {
+                state[action.payload.key] = action.payload.releases;
+            } else {
+                state[action.payload.key].push(...action.payload.releases);
+            }
         }
     }
 });
 
-export const { setReleases } = releaseNotesSlice.actions;
+export const { addReleases } = releaseNotesSlice.actions;
 export default releaseNotesSlice.reducer;

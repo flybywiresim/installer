@@ -40,10 +40,35 @@ import channels from "common/channels";
 import { MemoryRouter } from 'react-router-dom';
 import { store } from "renderer/redux/store";
 import { setConfiguration } from './redux/features/configuration';
+import { GitVersions } from "@flybywiresim/api-client";
+import { addReleases } from "renderer/redux/features/releaseNotes";
 
 // Obtain configuration and use it
 InstallerConfiguration.obtain().then((config: Configuration) => {
     store.dispatch(setConfiguration({ configuration: config }));
+
+    for (const publisher of config.publishers) {
+        for (const addon of publisher.addons) {
+            if (addon.repoOwner && addon.repoName) {
+                GitVersions.getReleases(addon.repoOwner, addon.repoName, false, 0, 5).then(res => {
+                    const content = res.map(release => ({
+                        name: release.name,
+                        publishedAt: release.publishedAt.getTime(),
+                        htmlUrl: release.htmlUrl,
+                        body: release.body,
+                    }));
+
+                    if (content.length) {
+                        store.dispatch(addReleases({ key: addon.key, releases: content }));
+                    } else {
+                        store.dispatch(addReleases({ key: addon.key, releases: [] }));
+                    }
+                });
+            } else {
+                store.dispatch(addReleases({ key: addon.key, releases: [] }));
+            }
+        }
+    }
 
     console.log(config);
     Directories.removeAllTemp();

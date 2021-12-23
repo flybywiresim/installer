@@ -1,37 +1,78 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { useAppSelector } from "renderer/redux/store";
+import { store, useAppSelector } from "renderer/redux/store";
 import "./index.css";
+import { Addon } from "renderer/utils/InstallerConfiguration";
+import { useInView } from "react-intersection-observer";
+import { ReleaseData } from "renderer/redux/types";
+import { GitVersions } from "@flybywiresim/api-client";
+import { addReleases } from "renderer/redux/features/releaseNotes";
 
-export const ReleaseNotes = () => {
-    const releaseNotes = useAppSelector(state => state.releaseNotes);
+interface ReleaseNoteCardProps {
+    release: ReleaseData;
+    isLatest?: boolean;
+}
+
+const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ release, isLatest }, ref) => {
+    return (
+        <div ref={ref} className="rounded-md bg-navy p-7">
+            <div className="flex flex-row items-center mb-3.5 gap-x-4">
+                <h1 className="text-white text-4xl font-semibold mb-0">{release.name}</h1>
+                {isLatest && (
+                    <div className="text-white border border-cyan bg-teal-medium rounded-md px-6">
+                        Latest
+                    </div>
+                )}
+            </div>
+            <ReactMarkdown
+                className="markdown-body"
+                children={release.body ?? ''}
+                remarkPlugins={[remarkGfm]}
+                linkTarget={"_blank"}
+            />
+        </div>
+    );
+});
+
+export const ReleaseNotes = ({ addon }: {addon: Addon}) => {
+    const { ref, inView } = useInView({
+        threshold: 0,
+    });
+
+    const releaseNotes = useAppSelector(state => state.releaseNotes[addon.key]);
     const [releaseComponent, setReleaseComponent] = useState<JSX.Element>(undefined);
 
     useEffect(() => {
         setReleaseComponent(
             <div className="flex flex-col gap-y-7">
                 {releaseNotes.map((release, index) =>
-                    <div className="rounded-md bg-navy p-7" key={index}>
-                        <div className="flex flex-row items-center mb-3.5 gap-x-4">
-                            <h1 className="text-white text-4xl font-semibold mb-0">{release.name}</h1>
-                            {release === releaseNotes[0] && (
-                                <div className="text-white border border-cyan bg-teal-medium rounded-md px-6">
-                                Latest
-                                </div>
-                            )}
-                        </div>
-                        <ReactMarkdown
-                            className="markdown-body"
-                            children={release.body ?? ''}
-                            remarkPlugins={[remarkGfm]}
-                            linkTarget={"_blank"}
-                        />
-                    </div>
+                    <ReleaseNoteCard ref={releaseNotes.length - 1 === index ? ref : undefined} release={release} />
                 )}
             </div>
         );
-    }, []);
+    }, [releaseNotes]);
+
+    useEffect(() => {
+        if (inView) {
+            if (addon.repoOwner && addon.repoName) {
+                GitVersions.getReleases(addon.repoOwner, addon.repoName, false, releaseNotes.length, 5).then(res => {
+                    const content = res.map(release => ({
+                        name: release.name,
+                        publishedAt: release.publishedAt.getTime(),
+                        htmlUrl: release.htmlUrl,
+                        body: release.body,
+                    }));
+
+                    if (content.length) {
+                        store.dispatch(addReleases({ key: addon.key, releases: content }));
+                    }
+                });
+            } else {
+                store.dispatch(addReleases({ key: addon.key, releases: [] }));
+            }
+        }
+    }, [inView]);
 
     const DummyComponent = () => (
         <div className="flex flex-col gap-y-7">
