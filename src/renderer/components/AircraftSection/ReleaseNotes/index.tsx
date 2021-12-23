@@ -35,8 +35,8 @@ export const ReleaseNotes = () => {
 
     const DummyComponent = () => (
         <div className="flex flex-col gap-y-7">
-            {[...Array(10)].map(_ => (
-                <div className="rounded-md bg-navy p-7 animate-pulse">
+            {[...Array(10)].map(index => (
+                <div className="rounded-md bg-navy p-7 animate-pulse" key={index}>
                     <h3 className="bg-navy-light h-8 w-32"/>
                     <div className="h-64 w-full bg-navy-light"/>
                 </div>

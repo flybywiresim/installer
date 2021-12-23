@@ -17,7 +17,7 @@ import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConf
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import settings from 'common/settings';
 import Snowfall from 'react-snowfall';
 import { store } from 'renderer/redux/store';
@@ -83,19 +83,17 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
 
     useEffect(() => {
         addons.forEach(AddonData.configureInitialAddonState);
-    }, []);
-
-    useEffect(() => {
         addons.forEach(fetchLatestVersionNames);
-    }, []);
 
-    const [selectedPublisher, setSelectedPublisher] = useState(configuration.publishers[0]);
-
-    useEffect(() => {
         if (settings.get('cache.main.sectionToShow')) {
             history.push(settings.get('cache.main.sectionToShow'));
         }
-    }, [selectedPublisher]);
+
+        // Let's listen for a route change and set the last shown section to the incoming route pathname
+        history.listen((location) => {
+            settings.set("cache.main.sectionToShow", location.pathname);
+        });
+    }, []);
 
     const [snowRate, setSnowRate] = useState(1000);
 
@@ -134,9 +132,8 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                 <NavBar>
                                     {configuration.publishers.map((publisher) => (
                                         <NavBarPublisher
-                                            selected={selectedPublisher === publisher}
-                                            publisher={publisher}
-                                            onClick={() => setSelectedPublisher(publisher)}
+                                            to={`/aircraft-section/${publisher.name}`}
+                                            logoUrl={publisher.logoUrl}
                                         />
                                     ))}
                                 </NavBar>
@@ -150,15 +147,15 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                             <div className="bg-navy m-0 w-full">
                                 <Switch>
                                     <Route exact path="/">
-                                        <Redirect to="/aircraft-section"/>
+                                        <Redirect to={`/aircraft-section/${configuration.publishers[0].name}`}/>
                                     </Route>
-                                    <Route path="/aircraft-section">
-                                        <AircraftSection publisher={selectedPublisher} />;
+                                    <Route path="/aircraft-section/:publisherName">
+                                        <AircraftSection />;
                                     </Route>
-                                    <Route path="/debug">
+                                    <Route exact path="/debug">
                                         <DebugSection/>
                                     </Route>
-                                    <Route path="/settings">
+                                    <Route exact path="/settings">
                                         <SettingsSection/>
                                     </Route>
                                 </Switch>

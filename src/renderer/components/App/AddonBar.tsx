@@ -3,12 +3,18 @@ import { Addon, Publisher, PublisherButton } from "renderer/utils/InstallerConfi
 import { shell } from 'electron';
 import * as BootstrapIcons from 'react-bootstrap-icons';
 import { Icon } from "react-bootstrap-icons";
+import { useParams } from "react-router-dom";
+import { useAppSelector } from "renderer/redux/store";
+import { AircraftSectionURLParams } from "../AircraftSection";
 
 export interface AddonBarProps {
     publisher: Publisher,
 }
 
-export const AddonBar: FC<AddonBarProps> = ({ publisher, children }) => {
+export const AddonBar: FC = ({ children }) => {
+    const { publisherName } = useParams<AircraftSectionURLParams>();
+    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName));
+
     const PublisherButtons = (buttons: PublisherButton[]) => {
         const groups: PublisherButton[][] = [];
 
@@ -42,15 +48,15 @@ export const AddonBar: FC<AddonBarProps> = ({ publisher, children }) => {
     return (
         <div className="flex flex-col gap-y-5 bg-quasi-white px-6 py-7 h-full">
             <div className="flex flex-col -space-y-7">
-                <h2 className="font-extrabold">{publisher.name}</h2>
+                <h2 className="font-extrabold">{publisherData.name}</h2>
                 <h3 className="font-extrabold">Addons</h3>
             </div>
 
             {children}
 
             <div className="flex flex-col gap-y-4 mt-auto">
-                {publisher.buttons && (
-                    PublisherButtons(publisher.buttons)
+                {publisherData.buttons && (
+                    PublisherButtons(publisherData.buttons)
                 )}
             </div>
         </div>

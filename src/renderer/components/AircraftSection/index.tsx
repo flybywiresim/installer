@@ -8,10 +8,10 @@ import { useSelector } from "react-redux";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
 import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
 import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
-import { Addon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
-import { NavLink, Redirect, Route, useHistory } from "react-router-dom";
+import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
 import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
@@ -29,11 +29,6 @@ import { setReleases } from "renderer/redux/features/releaseNotes";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 
 import "./index.css";
-
-// Props coming from renderer/components/App
-type TransferredProps = {
-    publisher: Publisher;
-};
 
 let abortController: AbortController;
 
@@ -97,11 +92,18 @@ const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
     </NavLink>
 );
 
-export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: Publisher }) => {
+export interface AircraftSectionURLParams {
+    publisherName: string;
+}
+
+export const AircraftSection = () => {
+    const { publisherName } = useParams<AircraftSectionURLParams>();
+    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName));
     const history = useHistory();
-    const [selectedAddon, setSelectedAddon] = useState<Addon>(props.publisher.addons[0]);
-    const [hiddenAddon, setHiddenAddon] = useState<Addon | undefined>(undefined);
     const dispatch = useAppDispatch();
+
+    const [selectedAddon, setSelectedAddon] = useState<Addon>(publisherData.addons[0]);
+    const [hiddenAddon, setHiddenAddon] = useState<Addon | undefined>(undefined);
 
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTrack);
@@ -110,39 +112,35 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
     const releaseNotes = useAppSelector(state => state.releaseNotes);
 
     useEffect(() => {
-        const hiddenAddon = props.publisher.addons.find((addon) => addon.key === selectedAddon.hidesAddon);
+        const hiddenAddon = publisherData.addons.find((addon) => addon.key === selectedAddon.hidesAddon);
 
         if (hiddenAddon) {
             setHiddenAddon(hiddenAddon);
-
-            history.push('/aircraft-section/hidden-addon-cover');
+            history.push(`/aircraft-section/${publisherName}/hidden-addon-cover`);
         } else {
             setHiddenAddon(undefined);
-
-            history.push('/aircraft-section/main/configure');
+            history.push(`/aircraft-section/${publisherName}/main/configure`);
         }
     }, [selectedAddon]);
 
     useEffect(() => {
-        settings.set("cache.main.sectionToShow", history.location.pathname);
-
         let firstAvailableAddon: Addon;
 
-        props.publisher.addons.forEach((addon) => {
+        publisherData.addons.forEach((addon) => {
             if (addon.enabled) {
                 firstAvailableAddon = addon;
             }
         });
 
         if (!firstAvailableAddon) {
-            history.push("/aircraft-section/no-available-addons");
+            history.push(`/aircraft-section/${publisherName}/no-available-addons`);
             return;
         }
 
         fetchLatestVersionNames(firstAvailableAddon).then(() => {
             setSelectedAddon(firstAvailableAddon);
         });
-    }, []);
+    }, [publisherName]);
 
     const findInstalledTrack = (): AddonTrack => {
         if (!Directories.isFragmenterInstall(selectedAddon)) {
@@ -521,7 +519,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
             .catch((e) => console.log(e));
     };
 
-    const activeState = (): JSX.Element => {
+    const ActiveState = (): JSX.Element => {
         if (msfsIsOpen !== MsfsStatus.Closed) {
             return (
                 <StateText>
@@ -561,6 +559,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                 return <StateText>Download canceled</StateText>;
             case InstallStatus.Unknown:
                 return <StateText>Unknown state</StateText>;
+            default: return <></>;
         }
     };
 
@@ -568,7 +567,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
         if (msfsIsOpen !== MsfsStatus.Closed) {
             return (
                 <InstallButton className="bg-gray-700 text-grey-medium pointer-events-none">
-                    Update
+                    Unavailable
                 </InstallButton>
             );
         }
@@ -674,6 +673,10 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
         }
     };
 
+    if (!publisherData) {
+        return null;
+    }
+
     return (
         <div className="flex flex-row w-full h-full">
             <PageSider
@@ -681,8 +684,8 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                 style={{ width: "28rem" }}
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
-                    <AddonBar publisher={props.publisher}>
-                        {props.publisher.addons.filter((it) => !it.category).map((addon) => (
+                    <AddonBar>
+                        {publisherData.addons.filter((it) => !it.category).map((addon) => (
                             <AddonBarItem
                                 selected={selectedAddon.key === addon.key && addon.enabled}
                                 enabled={addon.enabled || !!addon.hidesAddon}
@@ -693,8 +696,8 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                             />
                         ))}
 
-                        {props.publisher.defs?.filter((it) => it.kind === 'addonCategory').map((category) => {
-                            const categoryAddons = props.publisher.addons.filter((it) => it.category?.substring(1) === category.key);
+                        {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category) => {
+                            const categoryAddons = publisherData.addons.filter((it) => it.category?.substring(1) === category.key);
 
                             if (categoryAddons.length === 0) {
                                 return null;
@@ -704,7 +707,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                 <>
                                     <span className="text-3xl font-manrope font-bold">{category.title}</span>
 
-                                    {props.publisher.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
+                                    {publisherData.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
                                         <AddonBarItem
                                             selected={selectedAddon.key === addon.key && addon.enabled}
                                             enabled={addon.enabled || !!addon.hidesAddon}
@@ -725,27 +728,27 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
-                        <Route path="/aircraft-section">
-                            <Redirect to="/aircraft-section/main/configure" />
+                        <Route path={`/aircraft-section/${publisherName}`}>
+                            <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
                         </Route>
 
-                        <Route path="/aircraft-section/no-available-addons">
+                        <Route path={`/aircraft-section/${publisherName}/no-available-addons`}>
                             <NoAvailableAddonsSection />
                         </Route>
 
-                        <Route path="/aircraft-section/hidden-addon-cover">
+                        <Route path={`/aircraft-section/${publisherName}/hidden-addon-cover`}>
                             {addonDiscovered ? (
-                                <Redirect to="/aircraft-section/main/configure" />
+                                <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
                             ) : (
                                 hiddenAddon ? (
                                     <HiddenAddonCover addon={hiddenAddon} />
                                 ) : (
-                                    <Redirect to="/aircraft-section/main/configure" />
+                                    <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
                                 )
                             )}
                         </Route>
 
-                        <Route path="/aircraft-section/main">
+                        <Route path={`/aircraft-section/${publisherName}/main`}>
                             <div className="h-full">
                                 <div
                                     className="h-1/2 relative bg-cover bg-center"
@@ -755,7 +758,7 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                 >
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
                                         <div>
-                                            {activeState()}
+                                            <ActiveState />
                                             {/* TODO: Actually calculate this value */}
                                             {/*{getCurrentInstallStatus() === InstallStatus.Downloading && (*/}
                                             {/*    <div className="text-white text-2xl">98.7 mb/s</div>*/}
@@ -779,10 +782,10 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                     )}
                                 </div>
                                 <div className="flex flex-row h-1/2">
-                                    <Route path="/aircraft-section/main/configure">
+                                    <Route path={`/aircraft-section/${publisherName}/main/configure`}>
                                         <div className="p-7 overflow-y-scroll">
                                             <h2 className="text-white font-extrabold">
-                                            Choose Your Version
+                                                Choose Your Version
                                             </h2>
                                             <div className="flex flex-row gap-x-8">
                                                 <div>
@@ -837,29 +840,29 @@ export const AircraftSection: React.FC<TransferredProps> = (props: { publisher: 
                                             }
                                         </div>
                                     </Route>
-                                    <Route path="/aircraft-section/main/release-notes">
+                                    <Route path={`/aircraft-section/${publisherName}/main/release-notes`}>
                                         <ReleaseNotes />
                                     </Route>
-                                    <Route path="/aircraft-section/main/about">
+                                    <Route path={`/aircraft-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon}/>
                                     </Route>
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">
                                         <div className="flex flex-col items-start place-self-start space-y-7">
-                                            <SideBarLink to="/aircraft-section/main/configure">
+                                            <SideBarLink to={`/aircraft-section/${publisherName}/main/configure`}>
                                                 <Sliders size={24} />
                                                 Configure
                                             </SideBarLink>
                                             {!!releaseNotes.length && (
-                                                <SideBarLink to="/aircraft-section/main/release-notes">
+                                                <SideBarLink to={`/aircraft-section/${publisherName}/main/release-notes`}>
                                                     <JournalText size={24} />
-                                                Release Notes
+                                                    Release Notes
                                                 </SideBarLink>
                                             )}
                                             {/* <SideBarLink to="/aircraft-section/main/liveries">
                                                 <Palette size={24} />
                                                 Liveries
                                             </SideBarLink> */}
-                                            <SideBarLink to="/aircraft-section/main/about">
+                                            <SideBarLink to={`/aircraft-section/${publisherName}/main/about`}>
                                                 <InfoCircle size={24} />
                                                 About
                                             </SideBarLink>

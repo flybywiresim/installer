@@ -39,9 +39,12 @@ import { Directories } from "renderer/utils/Directories";
 import channels from "common/channels";
 import { MemoryRouter } from 'react-router-dom';
 import { store } from "renderer/redux/store";
+import { setConfiguration } from './redux/features/configuration';
 
 // Obtain configuration and use it
 InstallerConfiguration.obtain().then((config: Configuration) => {
+    store.dispatch(setConfiguration({ configuration: config }));
+
     console.log(config);
     Directories.removeAllTemp();
     ReactDOM.render(
