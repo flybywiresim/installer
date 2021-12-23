@@ -50,7 +50,7 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
     ReactDOM.render(
         <Provider store={store}>
             <MemoryRouter>
-                <App configuration={config} />
+                <App />
             </MemoryRouter>
         </Provider>,
         document.getElementById('root')

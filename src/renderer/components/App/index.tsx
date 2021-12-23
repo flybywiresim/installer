@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
@@ -13,14 +13,14 @@ import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
 import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
-import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import settings from 'common/settings';
 import Snowfall from 'react-snowfall';
-import { store } from 'renderer/redux/store';
+import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
@@ -71,8 +71,9 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
     }
 };
 
-const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
+const App = () => {
     const history = useHistory();
+    const configuration = useAppSelector(state => state.configuration);
 
     const [addons] = useState<Addon[]>(
         configuration.publishers.reduce((arr, curr) => {
@@ -139,9 +140,7 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
                                 </NavBar>
                             </div>
                             <Snowfall
-                                // Applied to the canvas element
                                 style={{ position: 'absolute', inset: 0, zIndex: 100 }}
-                                // Controls the number of snowflakes that are created (default 150)
                                 snowflakeCount={snowRate}
                             />
                             <div className="bg-navy m-0 w-full">
