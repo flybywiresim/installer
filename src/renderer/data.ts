@@ -171,22 +171,22 @@ export const defaultConfiguration: Configuration = {
                 },
             ],
             buttons: [
-                {
-                    text: 'MCDU',
-                    action: 'internal',
-                    call: 'fbw-remote-mcdu',
-                    icon: 'Tablet',
-                    inop: true,
-                    inline: true,
-                },
-                {
-                    text: 'flyPad',
-                    action: 'internal',
-                    call: 'fbw-remote-flypad',
-                    icon: 'TabletLandscape',
-                    inop: true,
-                    inline: true,
-                },
+                // {
+                //     text: 'MCDU',
+                //     action: 'internal',
+                //     call: 'fbw-remote-mcdu',
+                //     icon: 'Tablet',
+                //     inop: true,
+                //     inline: true,
+                // },
+                // {
+                //     text: 'flyPad',
+                //     action: 'internal',
+                //     call: 'fbw-remote-flypad',
+                //     icon: 'TabletLandscape',
+                //     inop: true,
+                //     inline: true,
+                // },
                 {
                     text: 'Documentation',
                     action: 'openBrowser',
