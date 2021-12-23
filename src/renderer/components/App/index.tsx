@@ -129,7 +129,7 @@ const App = () => {
                         </div>
 
                         <div className="h-full pt-10 flex flex-row justify-start">
-                            <div className="z-50 flex flex-row">
+                            <div className="z-40 h-full">
                                 <NavBar>
                                     {configuration.publishers.map((publisher) => (
                                         <NavBarPublisher

@@ -654,7 +654,7 @@ export const AircraftSection = () => {
     return (
         <div className="flex flex-row w-full h-full">
             <PageSider
-                className="flex-none bg-navy-medium shadow-2xl h-full"
+                className="flex-none bg-navy-medium z-40 shadow-2xl h-full"
                 style={{ width: "28rem" }}
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
