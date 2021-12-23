@@ -96,11 +96,19 @@ export interface AircraftSectionURLParams {
 
 export const AircraftSection = () => {
     const { publisherName } = useParams<AircraftSectionURLParams>();
+
     const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName));
     const history = useHistory();
     const dispatch = useAppDispatch();
 
-    const [selectedAddon, setSelectedAddon] = useState<Addon>(publisherData.addons[0]);
+    const [selectedAddon, setSelectedAddon] = useState<Addon>(() => {
+        try {
+            return publisherData.addons[0];
+        } catch (e) {
+            throw new Error('Invalid publisher key: ' + publisherName);
+        }
+    });
+
     const [hiddenAddon, setHiddenAddon] = useState<Addon | undefined>(undefined);
 
     const installedTracks = useAppSelector(state => state.installedTracks);
