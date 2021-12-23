@@ -5,9 +5,8 @@ import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
 import { AircraftSection } from 'renderer/components/AircraftSection';
-
 import { Container, MainLayout, PageHeader } from './styles';
-import ChangelogModal from '../ChangelogModal';
+import { ChangelogModal } from '../ChangelogModal';
 import { WarningModal } from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';

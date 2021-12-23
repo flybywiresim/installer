@@ -1,5 +1,4 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { FC } from 'react';
 import { InnerContainer, Close } from './styles';
 import * as packageInfo from '../../../../package.json';
 // @ts-ignore: Disabling ts check here because this package has no @types
@@ -7,22 +6,27 @@ import ReactHtmlParser from 'react-html-parser';
 // @ts-ignore: Disabling ts check here because this package has no @types
 import changelog from '../../../../.github/CHANGELOG.md';
 import settings from "common/settings";
-import { useAppDispatch } from "renderer/redux/store";
+import { useAppDispatch, useAppSelector } from "renderer/redux/store";
 import { callChangelog } from "renderer/redux/features/changelog";
 
-type ChangelogProps = {
-    showChangelog: boolean
-}
+export const ChangelogModal: FC = () => {
+    const dispatch = useAppDispatch();
+    const showChangelog = useAppSelector((state) => state.changelog.showChangelog);
 
-const ShowChangelog = (props: ChangelogProps) => {
+    const handleHideChangelog = () => {
+        dispatch(callChangelog({ showChangelog: false }));
+    };
+
     didVersionChange();
-    if (props.showChangelog) {
+
+    if (showChangelog) {
         const marked = require("marked");
         const html = marked(changelog);
+
         return (
             <div className="flex justify-center items-center fixed z-20 left-0 top-0 w-screen h-screen overflow-auto bg-black bg-opacity-40">
                 <div className="relative w-700px h-450px bg-navy-lighter flex flex-col rounded-lg text-teal-50 p-5">
-                    <Close className="absolute right-5 text-xl h-8 w-8 cursor-pointer" onClick={hideChangelog}>
+                    <Close className="absolute right-5 text-xl h-8 w-8 cursor-pointer" onClick={handleHideChangelog}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-x" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <line x1="18" y1="6" x2="6" y2="18" />
@@ -40,11 +44,6 @@ const ShowChangelog = (props: ChangelogProps) => {
     }
 };
 
-const hideChangelog = () => {
-    const dispatch = useAppDispatch();
-    dispatch(callChangelog({ showChangelog: false }));
-};
-
 const didVersionChange = () => {
     const dispatch = useAppDispatch();
 
@@ -53,11 +52,3 @@ const didVersionChange = () => {
         dispatch(callChangelog({ showChangelog: true }));
     }
 };
-
-const mapStateToProps = (state: { changelog: ChangelogProps }) => {
-    return {
-        ...state.changelog,
-    };
-};
-
-export default connect(mapStateToProps)(ShowChangelog);
