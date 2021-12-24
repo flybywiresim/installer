@@ -4,7 +4,6 @@ import FBWLogo from "renderer/assets/FBW-Tail.svg";
 import SynapticLogo from "renderer/assets/Synaptic-Logo.png";
 import A320NoseSVG from "renderer/assets/a32nx_nose.svg";
 import A380NoseSVG from "renderer/assets/a380x_nose.svg";
-import KFBWBackground from "renderer/assets/kfbw-background.png";
 
 export const defaultConfiguration: Configuration = {
     publishers: [
@@ -36,7 +35,7 @@ export const defaultConfiguration: Configuration = {
                     enabled: true,
                     menuIconUrl: A320NoseSVG,
                     // TODO: Change this
-                    backgroundImageUrls: ['https://media.discordapp.net/attachments/742814829680656496/916731692096561183/unknown.png?width=1404&height=670'],
+                    backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-a32nx/0.png'],
                     shortDescription: 'Airbus A320neo Series',
                     description: 'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
                         'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +
@@ -142,9 +141,7 @@ export const defaultConfiguration: Configuration = {
                     enabled: true,
                     overrideAddonWhileHidden: 'A380X',
                     menuIconUrl: A380NoseSVG,
-                    backgroundImageUrls: [
-                        KFBWBackground,
-                    ],
+                    backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-kfbw/0.png'],
                     titleImageUrl: 'https://cdn.discordapp.com/attachments/845070631644430359/922010902176358410/KFBW3.svg',
                     titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/922007327924707328/KFBW1.svg',
                     shortDescription: 'FlyByWire Headquarters',
