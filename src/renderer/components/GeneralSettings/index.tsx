@@ -24,13 +24,13 @@ interface SettingItemProps<T> {
 }
 
 const InstallPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => {
-    async function handleClick() {
+    const handleClick = async () => {
         const path = await setupInstallPath();
 
         if (path) {
             setValue(path);
         }
-    }
+    };
 
     return (
         <SettingsItem name="Install Directory">
@@ -103,7 +103,6 @@ const DateLayoutItem = ({ value, setValue }: SettingItemProps<string>) => {
                 value={value}
                 onChange={event => handleSelect(event.currentTarget.value)}
                 name="Date Layout"
-                id="datelayout-list"
                 className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
             >
                 <option value={'yyyy/mm/dd'}>YYYY/MM/DD</option>
@@ -157,6 +156,24 @@ const index = (): JSX.Element => {
     const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
     const [autoStart, setAutoStart] = useSetting<boolean>('mainSettings.autoStartApp');
 
+    const dispatch = useAppDispatch();
+
+    const showChangelog = () => {
+        dispatch(callChangelog({ showChangelog: true }));
+    };
+
+    const openThirdPartyLicenses = () => {
+        const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
+
+        if (!fs.existsSync(licensesPath)) {
+            alert('The requested file does not exist.');
+            return;
+        }
+
+        shell.openExternal(licensesPath)
+            .catch(console.error);
+    };
+
     const handleReset = async () => {
         settings.reset('mainSettings' as never);
 
@@ -202,23 +219,6 @@ const index = (): JSX.Element => {
             </div>
         </div>
     );
-};
-
-const showChangelog = () => {
-    const dispatch = useAppDispatch();
-    dispatch(callChangelog({ showChangelog: true }));
-};
-
-const openThirdPartyLicenses = () => {
-    const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
-
-    if (!fs.existsSync(licensesPath)) {
-        alert('The requested file does not exist.');
-        return;
-    }
-
-    shell.openExternal(licensesPath)
-        .catch(console.error);
 };
 
 export default index;

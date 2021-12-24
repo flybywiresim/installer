@@ -5,7 +5,6 @@ import { Logo } from "renderer/components/Logo";
 import SettingsSection from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
 import { AircraftSection } from 'renderer/components/AircraftSection';
-import { Container, MainLayout, PageHeader } from './styles';
 import { ChangelogModal } from '../ChangelogModal';
 import { WarningModal } from '../WarningModal';
 import { GitVersions } from "@flybywiresim/api-client";
@@ -121,12 +120,12 @@ const App = () => {
             <ChangelogModal />
             <WarningModal />
             <SimpleBar>
-                <Container className="flex flex-row">
-                    <MainLayout className="flex flex-col overflow-hidden">
+                <div className="flex flex-col h-screen w-full">
+                    <div className="flex flex-col h-full overflow-hidden">
                         <div className="absolute w-full h-10 z-50 flex flex-row pl-4 items-center bg-navy-dark shadow-xl">
-                            <PageHeader className="h-full flex-1 flex flex-row items-stretch">
+                            <div className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
-                            </PageHeader>
+                            </div>
 
                             <InstallerUpdate />
                             <WindowButtons />
@@ -168,8 +167,8 @@ const App = () => {
                                 </Switch>
                             </div>
                         </div>
-                    </MainLayout>
-                </Container>
+                    </div>
+                </div>
             </SimpleBar>
         </>
     );

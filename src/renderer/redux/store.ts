@@ -38,5 +38,5 @@ export type InstallerStore = {
     configuration: Configuration
 };
 
-export const useAppDispatch: CallableFunction = () => useDispatch<AppDispatch>();
+export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

@@ -1,27 +1,24 @@
 import React from 'react';
-import { Layout } from 'antd';
-import { Menu, PageSider } from './styles';
+import { Menu } from './styles';
 
 import GeneralSettings from 'renderer/components/GeneralSettings';
 
-function index(): JSX.Element {
+const index = (): JSX.Element => {
     return (
         <div className="bg-navy-lighter text-white flex items-center justify-center m-8 rounded-xl overflow-hidden p-8">
-            <Layout>
-                <PageSider>
-                    <Menu theme="dark" mode="inline" style={{ width: 256, backgroundColor: '#222c3d', color: 'white' }}
-                        defaultSelectedKeys={['general-settings']}>
-                        <Menu.Item key="general-settings" style={{ backgroundColor: '#009ba2', }}>
+            <div className="w-full flex flex-row">
+                <Menu theme="dark" mode="inline" style={{ width: 256, marginBottom: 'auto', backgroundColor: '#222c3d', color: 'white' }}
+                    defaultSelectedKeys={['general-settings']}>
+                    <Menu.Item key="general-settings" style={{ backgroundColor: 'rgba(0, 224, 254, 0.2)', }}>
                             General Settings
-                        </Menu.Item>
-                    </Menu>
-                </PageSider>
-                <Layout.Content className="pl-24 bg-navy-lighter">
+                    </Menu.Item>
+                </Menu>
+                <div className="pl-24 w-full bg-navy-lighter">
                     <GeneralSettings />
-                </Layout.Content>
-            </Layout>
+                </div>
+            </div>
         </div>
     );
-}
+};
 
 export default index;

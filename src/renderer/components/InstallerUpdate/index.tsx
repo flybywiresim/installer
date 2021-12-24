@@ -3,7 +3,7 @@ import { ipcRenderer } from "electron";
 import * as path from 'path';
 import channels from "common/channels";
 
-function index(): JSX.Element {
+const index = (): JSX.Element => {
     const [buttonText, setButtonText] = useState('');
     const [updateNeeded, setUpdateNeeded] = useState(false);
 
@@ -19,7 +19,7 @@ function index(): JSX.Element {
         ipcRenderer.on(channels.update.downloaded, (_, args) => {
             console.log('Update downloaded', args);
             setButtonText('Restart to update');
-            Notification.requestPermission().then(function () {
+            Notification.requestPermission().then(() => {
                 console.log('Showing Update notification');
                 new Notification('Restart to update!', {
                     'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
@@ -33,11 +33,15 @@ function index(): JSX.Element {
         <div
             className="flex items-center place-self-start justify-center px-4 h-full bg-yellow-500 hover:bg-yellow-600 z-50 cursor-pointer transition duration-200"
             hidden={!updateNeeded}
-            onClick={buttonText !== 'Downloading update' && (() => ipcRenderer.send('restart'))}
+            onClick={() => {
+                if (buttonText === 'Restart to update') {
+                    ipcRenderer.send('restart');
+                }
+            }}
         >
             <div className="text-white font-semibold text-lg">{buttonText}</div>
         </div>
     );
-}
+};
 
 export default index;

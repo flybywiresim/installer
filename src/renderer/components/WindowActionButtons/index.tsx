@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { shell } from 'electron';
 import { ipcRenderer } from 'electron';

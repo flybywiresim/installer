@@ -15,7 +15,6 @@ import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-do
 import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
-import { PageSider } from "../App/styles";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
@@ -470,7 +469,7 @@ export const AircraftSection = () => {
     const notifyDownload = (successful: boolean) => {
         console.log("Requesting notification");
         Notification.requestPermission()
-            .then(function () {
+            .then(() => {
                 console.log("Showing notification");
                 if (successful) {
                     new Notification("Download complete!", {
@@ -655,7 +654,7 @@ export const AircraftSection = () => {
 
     return (
         <div className="flex flex-row w-full h-full">
-            <PageSider
+            <div
                 className="flex-none bg-navy-medium z-40 shadow-2xl h-full"
                 style={{ width: "28rem" }}
             >
@@ -698,7 +697,7 @@ export const AircraftSection = () => {
                         })}
                     </AddonBar>
                 </div>
-            </PageSider>
+            </div>
             <div
                 className={`bg-navy-light w-full flex flex-col h-full`}
             >
