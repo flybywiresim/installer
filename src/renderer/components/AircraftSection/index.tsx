@@ -431,6 +431,37 @@ export const AircraftSection = () => {
         Directories.removeAllTemp();
     };
 
+    const uninstallAddon = async () => {
+        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
+        const tempDir = Directories.temp();
+        console.log('uninstalling ', installedTrack);
+
+        if (fs.existsSync(installDir)) {
+            fs.removeSync(installDir);
+        }
+        if (fs.existsSync(tempDir)) {
+            fs.removeSync(tempDir);
+        }
+        setCurrentInstallStatus(InstallStatus.FreshInstall);
+        setCurrentlyInstalledTrack(null);
+        if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
+            await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
+                .then((f) => Promise.all(f.map(e => {
+                    if (e != 'work') {
+                        fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory), e));
+                    }
+                })));
+        }
+        if (fs.existsSync(Directories.inPackagesSteam(selectedAddon.targetDirectory))) {
+            await fs.promises.readdir(Directories.inPackagesSteam(selectedAddon.targetDirectory))
+                .then((f) => Promise.all(f.map(e => {
+                    if (e != 'work') {
+                        fs.promises.unlink(path.join(Directories.inPackagesSteam(selectedAddon.targetDirectory), e));
+                    }
+                })));
+        }
+    };
+
     const selectAndSetTrack = (key: string) => {
         const newTrack = selectedAddon.tracks.find((track) => track.key === key);
         setCurrentlySelectedTrack(newTrack);
@@ -649,6 +680,23 @@ export const AircraftSection = () => {
         }
     };
 
+    const UninstallButton = (): JSX.Element => {
+        switch (getCurrentInstallStatus()) {
+            case InstallStatus.UpToDate:
+            case InstallStatus.NeedsUpdate:
+            case InstallStatus.TrackSwitch:
+                return (
+                    <InstallButton
+                        className="bg-red-600 hover:bg-red-500"
+                        onClick={uninstallAddon}
+                    >
+                        Uninstall
+                    </InstallButton>
+                );
+            default: return <></>;
+        }
+    };
+
     if (!publisherData) {
         return null;
     }
@@ -857,7 +905,10 @@ export const AircraftSection = () => {
                                             </SideBarLink>
                                         </div>
 
-                                        <ActiveInstallButton />
+                                        <div className="space-y-4">
+                                            <UninstallButton />
+                                            <ActiveInstallButton />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
