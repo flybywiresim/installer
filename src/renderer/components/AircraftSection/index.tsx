@@ -345,7 +345,7 @@ export const AircraftSection = () => {
         try {
             let lastPercent = 0;
             setCurrentInstallStatus(InstallStatus.Downloading);
-            dispatch(registerNewDownload({ id: selectedAddon.name, module: "" }));
+            dispatch(registerNewDownload({ id: selectedAddon.key, module: "" }));
 
             // Perform the fragmenter download
             const installer = new FragmenterInstaller(track.url, tempDir);
@@ -359,7 +359,7 @@ export const AircraftSection = () => {
                     lastPercent = progress.percent;
                     dispatch(
                         updateDownloadProgress({
-                            id: selectedAddon.name,
+                            id: selectedAddon.key,
                             module: module.name,
                             progress: progress.percent
                         }));
@@ -405,7 +405,7 @@ export const AircraftSection = () => {
                 "Finished removing installs existing under alternative names"
             );
 
-            dispatch(deleteDownload({ id: selectedAddon.name }));
+            dispatch(deleteDownload({ id: selectedAddon.key }));
             notifyDownload(true);
 
             // Flash completion text
@@ -424,7 +424,7 @@ export const AircraftSection = () => {
             setTimeout(async () => setCurrentInstallStatus(await getInstallStatus()), 3_000);
         }
 
-        dispatch(deleteDownload({ id: selectedAddon.name }));
+        dispatch(deleteDownload({ id: selectedAddon.key }));
 
         // Clean up temp dir
         Directories.removeAllTemp();
@@ -462,7 +462,7 @@ export const AircraftSection = () => {
         if (isDownloading) {
             console.log("Cancel download");
             abortController.abort();
-            dispatch(deleteDownload({ id: selectedAddon.name }));
+            dispatch(deleteDownload({ id: selectedAddon.key }));
         }
     };
 
