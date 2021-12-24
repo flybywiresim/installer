@@ -136,7 +136,7 @@ const schema: Schema<unknown> = {
                         type: "boolean",
                         default: false,
                     },
-                    sectionToShow: {
+                    lastShownSection: {
                         type: "string",
                         default: "",
                     }

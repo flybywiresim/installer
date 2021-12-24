@@ -16,11 +16,11 @@ import { Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Snowfall from 'react-snowfall';
 import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
-import { useSetting } from 'common/settings';
+import settings, { useSetting } from 'common/settings';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -71,6 +71,8 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
 };
 
 const App = () => {
+    const history = useHistory();
+
     const configuration = useAppSelector(state => state.configuration);
 
     const [addons] = useState<Addon[]>(
@@ -83,6 +85,15 @@ const App = () => {
     useEffect(() => {
         addons.forEach(AddonData.configureInitialAddonState);
         addons.forEach(fetchLatestVersionNames);
+
+        if (settings.get('cache.main.lastShownSection')) {
+            history.push(settings.get('cache.main.lastShownSection'));
+        }
+
+        // Let's listen for a route change and set the last shown section to the incoming route pathname
+        history.listen((location) => {
+            settings.set("cache.main.lastShownSection", location.pathname);
+        });
     }, []);
 
     const [snowRate, setSnowRate] = useState(1000);

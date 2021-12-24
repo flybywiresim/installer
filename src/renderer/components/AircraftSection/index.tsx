@@ -130,13 +130,7 @@ export const AircraftSection = () => {
     }, [selectedAddon]);
 
     useEffect(() => {
-        let firstAvailableAddon: Addon;
-
-        publisherData.addons.forEach((addon) => {
-            if (addon.enabled) {
-                firstAvailableAddon = addon;
-            }
-        });
+        const firstAvailableAddon = publisherData.addons.find((addon) => addon.enabled);
 
         if (!firstAvailableAddon) {
             history.push(`/aircraft-section/${publisherName}/no-available-addons`);
