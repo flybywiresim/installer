@@ -146,7 +146,7 @@ const App = () => {
                                         <Redirect to={`/aircraft-section/${configuration.publishers[0].name}`}/>
                                     </Route>
                                     <Route path="/aircraft-section/:publisherName">
-                                        <AircraftSection />;
+                                        <AircraftSection />
                                     </Route>
                                     <Route exact path="/debug">
                                         <DebugSection/>
