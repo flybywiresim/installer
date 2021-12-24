@@ -91,28 +91,6 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     );
 };
 
-const DateLayoutItem = ({ value, setValue }: SettingItemProps<string>) => {
-    const handleSelect = (value: string) => {
-        settings.set('mainSettings.dateLayout', value);
-        setValue(value);
-    };
-
-    return (
-        <SettingsItem name="Date Layout">
-            <select
-                value={value}
-                onChange={event => handleSelect(event.currentTarget.value)}
-                name="Date Layout"
-                className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
-            >
-                <option value={'yyyy/mm/dd'}>YYYY/MM/DD</option>
-                <option value={'mm/dd/yyyy'}>MM/DD/YYYY</option>
-                <option value={'dd/mm/yyyy'}>DD/MM/YYYY</option>
-            </select>
-        </SettingsItem>
-    );
-};
-
 const DarkThemeItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     const handleClick = () => {
         const newState = !value;
@@ -147,14 +125,53 @@ const SeasonalEffectsItem = ({ value, setValue }: SettingItemProps<boolean>) => 
     );
 };
 
+const DateLayoutItem = ({ value, setValue }: SettingItemProps<string>) => {
+    const handleSelect = (value: string) => {
+        settings.set('mainSettings.dateLayout', value);
+        setValue(value);
+    };
+
+    return (
+        <SettingsItem name="Date Layout">
+            <select
+                value={value}
+                onChange={event => handleSelect(event.currentTarget.value)}
+                name="Date Layout"
+                className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
+            >
+                <option value={'yyyy/mm/dd'}>YYYY/MM/DD</option>
+                <option value={'mm/dd/yyyy'}>MM/DD/YYYY</option>
+                <option value={'dd/mm/yyyy'}>DD/MM/YYYY</option>
+            </select>
+        </SettingsItem>
+    );
+};
+
+const LongDateFormatItem = ({ value, setValue }: SettingItemProps<boolean>) => {
+    const handleClick = (value: boolean) => {
+        settings.set('mainSettings.useLongDateFormat', value);
+        setValue(value);
+    };
+
+    return (
+        <SettingsItem name="Use Long Date Format">
+            <Toggle
+                value={value}
+                onToggle={handleClick}
+            />
+        </SettingsItem>
+    );
+};
+
 const index = (): JSX.Element => {
     const [installPath, setInstallPath] = useSetting<string>('mainSettings.msfsPackagePath');
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
     const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
     const [useDarkTheme, setUseDarkTheme] = useSetting<boolean>('mainSettings.useDarkTheme');
     const [seasonalEffects, setSeasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
-    const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
     const [autoStart, setAutoStart] = useSetting<boolean>('mainSettings.autoStartApp');
+    const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
+    const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
 
     const dispatch = useAppDispatch();
 
@@ -193,6 +210,7 @@ const index = (): JSX.Element => {
                     <DarkThemeItem value={useDarkTheme} setValue={setUseDarkTheme} />
                     <SeasonalEffectsItem value={seasonalEffects} setValue={setSeasonalEffects} />
                     <DateLayoutItem value={dateLayout} setValue={setDateLayout} />
+                    <LongDateFormatItem value={useLongDate} setValue={setUseLongDate} />
                 </div>
             </div>
             <div className="flex flex-row justify-between mt-6">

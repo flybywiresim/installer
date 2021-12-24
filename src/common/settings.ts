@@ -104,6 +104,10 @@ const schema: Schema<unknown> = {
                 type: "string",
                 default: "yyyy/mm/dd"
             },
+            useLongDateFormat: {
+                type: "boolean",
+                default: false,
+            },
             useDarkTheme: {
                 type: "boolean",
                 default: false,

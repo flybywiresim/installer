@@ -8,6 +8,8 @@ import { useInView } from "react-intersection-observer";
 import { ReleaseData } from "renderer/redux/types";
 import { GitVersions } from "@flybywiresim/api-client";
 import { addReleases } from "renderer/redux/features/releaseNotes";
+import { useSetting } from 'common/settings';
+import dateFormat from 'dateformat';
 
 interface ReleaseNoteCardProps {
     release: ReleaseData;
@@ -15,15 +17,30 @@ interface ReleaseNoteCardProps {
 }
 
 const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ release, isLatest }, ref) => {
+    let [dateLayout] = useSetting<string>('mainSettings.dateLayout');
+    const [useLongDateFormat] = useSetting<boolean>('mainSettings.useLongDateFormat');
+
+    if (useLongDateFormat) {
+        dateLayout = dateLayout.
+            replace('mm', 'mmmm').
+            replace('dd', 'dddd').
+            replace(/\//g, ' ');
+    }
+
     return (
         <div ref={ref} className="rounded-md bg-navy p-7">
-            <div className="flex flex-row items-center mb-3.5 gap-x-4">
-                <h1 className="text-white text-4xl font-semibold mb-0">{release.name}</h1>
-                {isLatest && (
-                    <div className="text-cyan bg-cyan bg-opacity-20 font-semibold rounded-full px-6">
+            <div className="flex flex-row items-center justify-between mb-3.5">
+                <div className="flex flex-row items-center  gap-x-4">
+                    <h1 className="text-4xl text-white font-semibold mb-0">{release.name}</h1>
+                    {isLatest && (
+                        <div className="text-cyan bg-cyan bg-opacity-20 font-semibold rounded-full px-6">
                         Latest
-                    </div>
-                )}
+                        </div>
+                    )}
+                </div>
+                <div className="text-white">
+                    {dateFormat(new Date(release.publishedAt), dateLayout)}
+                </div>
             </div>
             <ReactMarkdown
                 className="markdown-body"
@@ -78,7 +95,10 @@ export const ReleaseNotes = ({ addon }: {addon: Addon}) => {
         <div className="flex flex-col gap-y-7">
             {[...Array(10)].map(index => (
                 <div className="rounded-md bg-navy p-7" key={index}>
-                    <h3 className="bg-navy-light h-8 w-32 animate-pulse"/>
+                    <div className="flex flex-row justify-between">
+                        <h3 className="bg-navy-light h-8 w-32 animate-pulse"/>
+                        <h3 className="bg-navy-light h-8 w-48 animate-pulse"/>
+                    </div>
                     <div className="h-64 w-full bg-navy-light animate-pulse"/>
                 </div>
             ))}
