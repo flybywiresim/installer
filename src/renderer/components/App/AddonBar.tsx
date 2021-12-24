@@ -59,7 +59,6 @@ export const AddonBar: FC = ({ children }) => {
         <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
                 <h2 className={`${textClass} font-extrabold`}>{publisherData.name}</h2>
-                <h3 className={`${textClass} font-extrabold`}>Addons</h3>
             </div>
 
             {children}
