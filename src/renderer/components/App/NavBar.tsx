@@ -26,7 +26,7 @@ export interface NavBarPublisherProps extends NavBarItemProps {
 }
 
 export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', children }) => {
-    const BASE_STYLE = "w-16 h-16 shadow-md hover:shadow-lg flex flex-col justify-center items-center rounded-md border-2 border-navy-light bg-transparent hover:bg-navy-light transition duration-200";
+    const BASE_STYLE = "w-20 h-20 shadow-md hover:shadow-lg flex flex-col justify-center items-center rounded-md border-2 border-navy-light bg-transparent hover:bg-navy-light transition duration-200";
 
     return (
         <NavLink
@@ -41,6 +41,6 @@ export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', children }) => {
 
 export const NavBarPublisher: FC<NavBarPublisherProps> = ({ to, logoUrl }) => (
     <NavbarItem to={to}>
-        <img width={32} src={logoUrl} />
+        <img width={34} src={logoUrl} />
     </NavbarItem>
 );

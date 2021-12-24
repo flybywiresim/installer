@@ -6,12 +6,20 @@ import { Icon } from "react-bootstrap-icons";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "renderer/redux/store";
 import { AircraftSectionURLParams } from "../AircraftSection";
+import { useIsDarkTheme, useSetting } from "common/settings";
 
 export interface AddonBarProps {
     publisher: Publisher,
 }
 
+export enum UITheme {
+    Light = 'light',
+    Dark = 'dark',
+}
+
 export const AddonBar: FC = ({ children }) => {
+    const darkTheme = useIsDarkTheme();
+
     const { publisherName } = useParams<AircraftSectionURLParams>();
     const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName));
 
@@ -45,11 +53,13 @@ export const AddonBar: FC = ({ children }) => {
         );
     };
 
+    const textClass = darkTheme ? 'text-quasi-white' : 'text-navy';
+
     return (
-        <div className="flex flex-col gap-y-5 bg-quasi-white px-6 py-7 h-full">
+        <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
-                <h2 className="font-extrabold">{publisherData.name}</h2>
-                <h3 className="font-extrabold">Addons</h3>
+                <h2 className={`${textClass} font-extrabold`}>{publisherData.name}</h2>
+                <h3 className={`${textClass} font-extrabold`}>Addons</h3>
             </div>
 
             {children}
@@ -72,15 +82,21 @@ export interface AddonBarItemProps {
 }
 
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
-    const dependantStyles = selected ? "bg-gradient-to-l from-cyan to-blue-500 text-white" : `bg-grey-medium text-black ${enabled && 'hover:border-cyan'}`;
+    const darkTheme = useIsDarkTheme();
+
+    const defaultBorderStyle = darkTheme ? 'border-navy' : 'border-quasi-white';
+
+    const enabledUnselectedStyle = darkTheme ? 'bg-navy-light text-quasi-white' : 'bg-grey-medium text-navy';
+
+    const dependantStyles = selected ? ` bg-gradient-to-l from-cyan to-blue-500 text-white` : `${enabledUnselectedStyle} ${enabled && 'hover:border-cyan'}`;
 
     return (
         <div
-            className={`w-full p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 border-quasi-white ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={enabled ? onClick : undefined}
         >
             <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
-            <img className="h-10 w-max mt-1" src={selected ? addon.titleImageUrlSelected : addon.titleImageUrl} />
+            <img className="h-10 w-max mt-1" src={selected || darkTheme ? addon.titleImageUrlSelected : addon.titleImageUrl} />
             {/*<span className="text-5xl font-semibold">A32NX</span>*/}
         </div>
     );
@@ -91,6 +107,8 @@ interface AddonBarPublisherButtonProps {
 }
 
 const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) => {
+    const darkTheme = useIsDarkTheme();
+
     const handleClick = async () => {
         switch (button.action) {
             case 'openBrowser':
@@ -103,9 +121,11 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
 
     const ButtonIcon = (BootstrapIcons as Record<string, Icon>)[button.icon] ?? 'span';
 
+    const backgroundStyle = darkTheme ? 'bg-navy-light hover:bg-navy-lightest' : 'bg-gray-200 hover:bg-gray-300';
+
     return (
         <button
-            className="w-full h-16 flex flex-row justify-center items-center px-5 py-3 bg-gray-200 hover:bg-gray-300 rounded-md"
+            className={`w-full h-16 flex flex-row justify-center items-center px-5 py-3 ${backgroundStyle} rounded-md`}
             disabled={button.inop}
             onClick={handleClick}
         >
