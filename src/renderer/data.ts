@@ -30,8 +30,8 @@ export const defaultConfiguration: Configuration = {
                     repoName: 'a32nx',
                     category: '@aircraft',
                     aircraftName: 'A320-251N',
-                    titleImageUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/922008764507373628/A32NX-Logo-LightBG1.svg',
-                    titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/921976603548975144/A32NX-Logo-DarkBG-Mono.svg',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/light.svg',
                     enabled: true,
                     menuIconUrl: A320NoseSVG,
                     // TODO: Change this
@@ -123,8 +123,8 @@ export const defaultConfiguration: Configuration = {
                     repoName: 'a380x',
                     category: '@aircraft',
                     aircraftName: 'A380-841',
-                    titleImageUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/922008938571005982/A380X-LightBG1.svg',
-                    titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/921974898279206932/A380X-DarkBG-Mono.png',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/light.svg',
                     enabled: false,
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: ['https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'],
@@ -142,8 +142,8 @@ export const defaultConfiguration: Configuration = {
                     overrideAddonWhileHidden: 'A380X',
                     menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-kfbw/0.png'],
-                    titleImageUrl: 'https://cdn.discordapp.com/attachments/845070631644430359/922010902176358410/KFBW3.svg',
-                    titleImageUrlSelected: 'https://cdn.discordapp.com/attachments/806767835355152394/922007327924707328/KFBW1.svg',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/light.svg',
                     shortDescription: 'FlyByWire Headquarters',
                     description: 'Welcome to KFBW! \n\n' +
                         'This is a showcase of the A380 project. Spawn at KFBW or fly there! The nearest airport is KTNP (Twenty-Nine Palms, California, USA). ' +
