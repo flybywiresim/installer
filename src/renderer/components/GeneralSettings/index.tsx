@@ -8,6 +8,7 @@ import path from "path";
 import * as fs from "fs";
 import { useAppDispatch } from "renderer/redux/store";
 import { callChangelog } from "renderer/redux/features/changelog";
+import { ipcRenderer } from 'electron';
 
 const SettingsItem: FC<{name: string}> = ({ name, children }) => (
     <div className="flex flex-row items-center justify-between py-3.5">
@@ -34,6 +35,24 @@ const InstallPathSettingItem = ({ value, setValue }: SettingItemProps<string>): 
     return (
         <SettingsItem name="Install Directory">
             <div className="text-white hover:text-gray-400 cursor-pointer underline transition duration-200" onClick={handleClick}>{value}</div>
+        </SettingsItem>
+    );
+};
+
+const AutoStartSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
+    const handleClick = () => {
+        const newState = !value;
+        setValue(newState);
+        settings.set('mainSettings.autoStartApp', newState);
+        ipcRenderer.send('request-startup-at-login-changed', newState);
+    };
+
+    return (
+        <SettingsItem name="Automatically Start Application on Login">
+            <Toggle
+                value={value}
+                onToggle={handleClick}
+            />
         </SettingsItem>
     );
 };
@@ -136,6 +155,7 @@ const index = (): JSX.Element => {
     const [useDarkTheme, setUseDarkTheme] = useSetting<boolean>('mainSettings.useDarkTheme');
     const [seasonalEffects, setSeasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
     const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
+    const [autoStart, setAutoStart] = useSetting<boolean>('mainSettings.autoStartApp');
 
     const handleReset = async () => {
         settings.reset('mainSettings' as never);
@@ -150,6 +170,7 @@ const index = (): JSX.Element => {
                 <h2 className="text-white">General Settings</h2>
                 <div className="flex flex-col divide-y divide-gray-600">
                     <InstallPathSettingItem value={installPath} setValue={setInstallPath} />
+                    <AutoStartSettingItem value={autoStart} setValue={setAutoStart} />
                     <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />
                     <UseCdnSettingItem value={useCdnCache} setValue={setUseCdnCache} />
                     <DarkThemeItem value={useDarkTheme} setValue={setUseDarkTheme} />

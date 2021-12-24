@@ -88,6 +88,10 @@ const schema: Schema<unknown> = {
         // Empty defaults are required when using type: "object" (https://github.com/sindresorhus/conf/issues/85#issuecomment-531651424)
         default: {},
         properties: {
+            autoStartApp: {
+                type: "boolean",
+                default: false,
+            },
             disableExperimentalWarning: {
                 type: "boolean",
                 default: false,

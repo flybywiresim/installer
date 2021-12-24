@@ -66,6 +66,12 @@ const createWindow = (): void => {
         event.sender.send(channels.window.isMaximized, mainWindow.isMaximized());
     });
 
+    ipcMain.on('request-startup-at-login-changed', (_, value: boolean) => {
+        app.setLoginItemSettings({
+            openAtLogin: value,
+        });
+    });
+
     /*
      * Setting the value of the program's taskbar progress bar.
      * value: The value to set the progress bar to. ( [0 - 1.0], -1 to hide the progress bar )

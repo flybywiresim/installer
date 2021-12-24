@@ -6,7 +6,7 @@ import { Icon } from "react-bootstrap-icons";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "renderer/redux/store";
 import { AircraftSectionURLParams } from "../AircraftSection";
-import { useIsDarkTheme, useSetting } from "common/settings";
+import { useIsDarkTheme } from "common/settings";
 
 export interface AddonBarProps {
     publisher: Publisher,
