@@ -137,7 +137,7 @@ const App = () => {
                                     {configuration.publishers.map((publisher) => (
                                         <NavBarPublisher
                                             to={`/aircraft-section/${publisher.name}`}
-                                            logoUrl={publisher.logoUrl}
+                                            publisher={publisher}
                                         />
                                     ))}
                                 </NavBar>
