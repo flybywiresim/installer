@@ -1,10 +1,10 @@
-import Store from "electron-store";
+import Store, { Schema } from "electron-store";
 import * as fs from "fs-extra";
 import walk from "walkdir";
 import * as path from "path";
 import * as os from 'os';
-import { Schema } from "electron-store";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { UITheme } from "renderer/components/App/AddonBar";
 
 const defaultCommunityDir = (): string => {
     if (os.platform().toString() === 'linux') {
@@ -75,6 +75,12 @@ export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => 
     };
 
     return [storedValue, setValue];
+};
+
+export const useIsDarkTheme = (): boolean => {
+    const [val] = useSetting<UITheme>('mainSettings.theme');
+
+    return val === UITheme.Dark;
 };
 
 const schema: Schema<unknown> = {
