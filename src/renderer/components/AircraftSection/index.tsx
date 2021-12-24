@@ -26,6 +26,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 
 import "./index.css";
+import ReactMarkdown from "react-markdown";
 
 let abortController: AbortController;
 
@@ -703,6 +704,7 @@ export const AircraftSection = () => {
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
+
                         <Route exact path={`/aircraft-section/${publisherName}`}>
                             <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
                         </Route>
@@ -757,6 +759,7 @@ export const AircraftSection = () => {
                                     )}
                                 </div>
                                 <div className="flex flex-row h-1/2">
+
                                     <Route path={`/aircraft-section/${publisherName}/main/configure`}>
                                         <div className="p-7 overflow-y-scroll">
                                             <h2 className="text-white font-extrabold">
@@ -809,12 +812,17 @@ export const AircraftSection = () => {
                                             <div className="mt-10">
                                                 <h2 className="text-white font-extrabold">Description</h2>
                                                 <p className="text-xl text-white font-manrope leading-relaxed">
-                                                    {selectedTrack().description}
+                                                    <ReactMarkdown
+                                                        className="text-xl text-white font-light font-manrope leading-relaxed"
+                                                        children={selectedTrack().description}
+                                                        linkTarget={"_blank"}
+                                                    />
                                                 </p>
                                             </div>
                                             }
                                         </div>
                                     </Route>
+
                                     <Route path={`/aircraft-section/${publisherName}/main/release-notes`}>
                                         {releaseNotes && releaseNotes.length > 0 ? (
                                             <ReleaseNotes addon={selectedAddon}/>
@@ -822,9 +830,11 @@ export const AircraftSection = () => {
                                             <Redirect to={`/aircraft-section/${publisherName}/main/configure`}/>
                                         }
                                     </Route>
+
                                     <Route path={`/aircraft-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon}/>
                                     </Route>
+
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">
                                         <div className="flex flex-col items-start place-self-start space-y-7">
                                             <SideBarLink to={`/aircraft-section/${publisherName}/main/configure`}>
@@ -862,9 +872,11 @@ export const AircraftSection = () => {
 const About: FC<{ addon: Addon }> = ({ addon }) => (
     <div className="h-full p-7 overflow-y-scroll">
         <h2 className="text-white font-extrabold">About</h2>
-        <p className="text-xl text-white font-manrope leading-relaxed">
-            {addon.description}
-        </p>
+        <ReactMarkdown
+            className="text-xl text-white font-light font-manrope leading-relaxed"
+            children={addon.description}
+            linkTarget={"_blank"}
+        />
 
         {addon.techSpecs && addon.techSpecs.length > 0 && (
             <>

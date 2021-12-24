@@ -2,10 +2,10 @@ import React, { FC } from "react";
 import { Addon, Publisher, PublisherButton } from "renderer/utils/InstallerConfiguration";
 import { shell } from 'electron';
 import * as BootstrapIcons from 'react-bootstrap-icons';
-import { Icon } from "react-bootstrap-icons";
+import { ArrowRepeat, Check2, CloudArrowDownFill, Icon } from "react-bootstrap-icons";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "renderer/redux/store";
-import { AircraftSectionURLParams } from "../AircraftSection";
+import { AircraftSectionURLParams, InstallStatus } from "../AircraftSection";
 import { useIsDarkTheme } from "common/settings";
 
 export interface AddonBarProps {
@@ -58,7 +58,7 @@ export const AddonBar: FC = ({ children }) => {
     return (
         <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
-                <h2 className={`${textClass} font-extrabold`}>{publisherData.name}</h2>
+                <h2 className={`${textClass} font-extrabold -mb-1`}>{publisherData.name}</h2>
             </div>
 
             {children}
@@ -73,14 +73,16 @@ export const AddonBar: FC = ({ children }) => {
 };
 
 export interface AddonBarItemProps {
-    addon: Addon,
-    enabled?: boolean,
-    selected?: boolean
-    className?: string,
-    onClick?: () => void,
+    addon: Addon;
+    enabled?: boolean;
+    selected?: boolean;
+    className?: string;
+    onClick?: () => void;
 }
 
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
+    const installStatus = useAppSelector(state => state.installStatus[addon.key]);
+
     const darkTheme = useIsDarkTheme();
 
     const defaultBorderStyle = darkTheme ? 'border-navy' : 'border-quasi-white';
@@ -89,14 +91,34 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
 
     const dependantStyles = selected ? ` bg-gradient-to-l from-cyan to-blue-500 text-white` : `${enabledUnselectedStyle} ${enabled && 'hover:border-cyan'}`;
 
+    const StatusComponent = (): JSX.Element => {
+        switch (installStatus) {
+            case InstallStatus.UpToDate:
+            case InstallStatus.FreshInstall:
+            case InstallStatus.TrackSwitch:
+            case InstallStatus.GitInstall:
+                return <Check2 className="mt-1.5" size={32}/>;
+            case InstallStatus.DownloadPrep:
+            case InstallStatus.Decompressing:
+            case InstallStatus.Downloading:
+            case InstallStatus.DownloadEnding:
+                return <ArrowRepeat className="mt-0.5 animate-spin" size={32}/>;
+            case InstallStatus.NeedsUpdate:
+                return <CloudArrowDownFill className="mt-2" size={32}/>;
+            default: return <></>;
+        }
+    };
+
     return (
         <div
-            className={`w-full p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full relative p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={enabled ? onClick : undefined}
         >
             <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
-            <img className="h-10 w-max mt-1" src={selected || darkTheme ? addon.titleImageUrlSelected : addon.titleImageUrl} />
-            {/*<span className="text-5xl font-semibold">A32NX</span>*/}
+            <div className="flex flex-row justify-between mt-1">
+                <img className="h-10 w-max" src={selected || darkTheme ? addon.titleImageUrlSelected : addon.titleImageUrl} />
+                <StatusComponent />
+            </div>
         </div>
     );
 };
