@@ -26,6 +26,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 
 import "./index.css";
+import ReactMarkdown from "react-markdown";
 
 let abortController: AbortController;
 
@@ -811,7 +812,11 @@ export const AircraftSection = () => {
                                             <div className="mt-10">
                                                 <h2 className="text-white font-extrabold">Description</h2>
                                                 <p className="text-xl text-white font-manrope leading-relaxed">
-                                                    {selectedTrack().description}
+                                                    <ReactMarkdown
+                                                        className="text-xl text-white font-light font-manrope leading-relaxed"
+                                                        children={selectedTrack().description}
+                                                        linkTarget={"_blank"}
+                                                    />
                                                 </p>
                                             </div>
                                             }
@@ -867,9 +872,11 @@ export const AircraftSection = () => {
 const About: FC<{ addon: Addon }> = ({ addon }) => (
     <div className="h-full p-7 overflow-y-scroll">
         <h2 className="text-white font-extrabold">About</h2>
-        <p className="text-xl text-white font-manrope leading-relaxed">
-            {addon.description}
-        </p>
+        <ReactMarkdown
+            className="text-xl text-white font-light font-manrope leading-relaxed"
+            children={addon.description}
+            linkTarget={"_blank"}
+        />
 
         {addon.techSpecs && addon.techSpecs.length > 0 && (
             <>
