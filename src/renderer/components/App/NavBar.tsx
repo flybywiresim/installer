@@ -2,10 +2,15 @@ import React from "react";
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { Settings } from "tabler-icons-react";
+import { useIsDarkTheme } from "common/settings";
 
 export const NavBar: FC = ({ children }) => {
+    const darkTheme = useIsDarkTheme();
+
+    const bg = darkTheme ? 'bg-navy-dark' : 'bg-navy';
+
     return (
-        <div className="bg-navy p-5 flex flex-col justify-between h-full">
+        <div className={`${bg} p-5 flex flex-col justify-between h-full`}>
             <div className="flex flex-col gap-y-5">
                 {children}
             </div>

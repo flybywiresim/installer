@@ -4,7 +4,6 @@ import walk from "walkdir";
 import * as path from "path";
 import * as os from 'os';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UITheme } from "renderer/components/App/AddonBar";
 
 const defaultCommunityDir = (): string => {
     if (os.platform().toString() === 'linux') {
@@ -78,9 +77,9 @@ export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => 
 };
 
 export const useIsDarkTheme = (): boolean => {
-    const [val] = useSetting<UITheme>('mainSettings.theme');
+    const [val] = useSetting<boolean>('mainSettings.useDarkTheme');
 
-    return val === UITheme.Dark;
+    return val;
 };
 
 const schema: Schema<unknown> = {
@@ -89,15 +88,7 @@ const schema: Schema<unknown> = {
         // Empty defaults are required when using type: "object" (https://github.com/sindresorhus/conf/issues/85#issuecomment-531651424)
         default: {},
         properties: {
-            separateLiveriesPath: {
-                type: "boolean",
-                default: false
-            },
             disableExperimentalWarning: {
-                type: "boolean",
-                default: false,
-            },
-            disabledIncompatibleLiveriesWarning: {
                 type: "boolean",
                 default: false,
             },
@@ -109,14 +100,18 @@ const schema: Schema<unknown> = {
                 type: "string",
                 default: "yyyy/mm/dd"
             },
+            useDarkTheme: {
+                type: "boolean",
+                default: false,
+            },
+            allowSeasonalEffects: {
+                type: "boolean",
+                default: true,
+            },
             msfsPackagePath: {
                 type: "string",
                 default: defaultCommunityDir(),
             },
-            liveriesPath: {
-                type: "string",
-                default: defaultCommunityDir(),
-            }
         }
     },
     cache: {

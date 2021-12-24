@@ -3,7 +3,6 @@ import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import * as packageInfo from '../../../../package.json';
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
-import { Directories } from "renderer/utils/Directories";
 import { shell } from "electron";
 import path from "path";
 import * as fs from "fs";
@@ -96,10 +95,46 @@ const DateLayoutItem = ({ value, setValue }: SettingItemProps<string>) => {
     );
 };
 
+const DarkThemeItem = ({ value, setValue }: SettingItemProps<boolean>) => {
+    const handleClick = () => {
+        const newState = !value;
+        setValue(newState);
+        settings.set('mainSettings.useDarkTheme', newState);
+    };
+
+    return (
+        <SettingsItem name="Dark Theme">
+            <Toggle
+                value={value}
+                onToggle={handleClick}
+            />
+        </SettingsItem>
+    );
+};
+
+const SeasonalEffectsItem = ({ value, setValue }: SettingItemProps<boolean>) => {
+    const handleClick = () => {
+        const newState = !value;
+        setValue(newState);
+        settings.set('mainSettings.allowSeasonalEffects', newState);
+    };
+
+    return (
+        <SettingsItem name="Seasonal Effects">
+            <Toggle
+                value={value}
+                onToggle={handleClick}
+            />
+        </SettingsItem>
+    );
+};
+
 const index = (): JSX.Element => {
     const [installPath, setInstallPath] = useSetting<string>('mainSettings.msfsPackagePath');
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
     const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
+    const [useDarkTheme, setUseDarkTheme] = useSetting<boolean>('mainSettings.useDarkTheme');
+    const [seasonalEffects, setSeasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
     const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
 
     const handleReset = async () => {
@@ -117,6 +152,8 @@ const index = (): JSX.Element => {
                     <InstallPathSettingItem value={installPath} setValue={setInstallPath} />
                     <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />
                     <UseCdnSettingItem value={useCdnCache} setValue={setUseCdnCache} />
+                    <DarkThemeItem value={useDarkTheme} setValue={setUseDarkTheme} />
+                    <SeasonalEffectsItem value={seasonalEffects} setValue={setSeasonalEffects} />
                     <DateLayoutItem value={dateLayout} setValue={setDateLayout} />
                 </div>
             </div>

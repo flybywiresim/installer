@@ -20,6 +20,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Snowfall from 'react-snowfall';
 import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
+import { useSetting } from 'common/settings';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -85,19 +86,23 @@ const App = () => {
     }, []);
 
     const [snowRate, setSnowRate] = useState(1000);
+    const [seasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
 
     useEffect(() => {
-        setInterval(() => {
-            setSnowRate(sr => {
-                if (sr >= 60) {
-                    console.log(sr);
-                    return sr - 20;
-                } else {
-                    return sr;
-                }
-            });
-        }, 250);
-    }, []);
+        if (seasonalEffects) {
+            const id = setInterval(() => {
+                setSnowRate(sr => {
+                    if (sr >= 60) {
+                        return sr - 20;
+                    } else {
+                        return sr;
+                    }
+                });
+            }, 250);
+
+            return () => clearInterval(id);
+        }
+    }, [seasonalEffects]);
 
     return (
         <>
@@ -127,10 +132,14 @@ const App = () => {
                                     ))}
                                 </NavBar>
                             </div>
-                            <Snowfall
-                                style={{ position: 'absolute', inset: 0, zIndex: 100 }}
-                                snowflakeCount={snowRate}
-                            />
+
+                            {seasonalEffects && (
+                                <Snowfall
+                                    style={{ position: 'absolute', inset: 0, zIndex: 100 }}
+                                    snowflakeCount={snowRate}
+                                />
+                            )}
+
                             <div className="bg-navy m-0 w-full">
                                 <Switch>
                                     <Route exact path="/">
