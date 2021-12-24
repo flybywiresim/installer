@@ -23,7 +23,6 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
     if (useLongDateFormat) {
         dateLayout = dateLayout.
             replace('mm', 'mmmm').
-            replace('dd', 'dddd').
             replace(/\//g, ' ');
     }
 
