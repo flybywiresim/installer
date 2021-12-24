@@ -20,7 +20,7 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
             <div className="flex flex-row items-center mb-3.5 gap-x-4">
                 <h1 className="text-white text-4xl font-semibold mb-0">{release.name}</h1>
                 {isLatest && (
-                    <div className="text-white border border-cyan bg-teal-medium rounded-md px-6">
+                    <div className="text-cyan bg-cyan bg-opacity-20 font-semibold rounded-full px-6">
                         Latest
                     </div>
                 )}
