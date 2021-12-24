@@ -703,6 +703,7 @@ export const AircraftSection = () => {
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
+
                         <Route exact path={`/aircraft-section/${publisherName}`}>
                             <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
                         </Route>
@@ -757,6 +758,7 @@ export const AircraftSection = () => {
                                     )}
                                 </div>
                                 <div className="flex flex-row h-1/2">
+
                                     <Route path={`/aircraft-section/${publisherName}/main/configure`}>
                                         <div className="p-7 overflow-y-scroll">
                                             <h2 className="text-white font-extrabold">
@@ -815,6 +817,7 @@ export const AircraftSection = () => {
                                             }
                                         </div>
                                     </Route>
+
                                     <Route path={`/aircraft-section/${publisherName}/main/release-notes`}>
                                         {releaseNotes && releaseNotes.length > 0 ? (
                                             <ReleaseNotes addon={selectedAddon}/>
@@ -822,9 +825,11 @@ export const AircraftSection = () => {
                                             <Redirect to={`/aircraft-section/${publisherName}/main/configure`}/>
                                         }
                                     </Route>
+
                                     <Route path={`/aircraft-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon}/>
                                     </Route>
+
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">
                                         <div className="flex flex-col items-start place-self-start space-y-7">
                                             <SideBarLink to={`/aircraft-section/${publisherName}/main/configure`}>
