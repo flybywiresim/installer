@@ -55,7 +55,7 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
                     setStatusText('Not Available');
                     setIcon('notAvailable');
                     break;
-                case InstallStatus.FreshInstall:
+                case InstallStatus.NotInstalled:
                 case InstallStatus.Unknown:
                     setStatusText('Not Installed');
                     setIcon('install');

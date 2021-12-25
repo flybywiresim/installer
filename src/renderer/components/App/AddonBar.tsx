@@ -94,7 +94,6 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
     const StatusComponent = (): JSX.Element => {
         switch (installStatus) {
             case InstallStatus.UpToDate:
-            case InstallStatus.FreshInstall:
             case InstallStatus.TrackSwitch:
             case InstallStatus.GitInstall:
                 return <Check2 className="mt-1.5" size={32}/>;
