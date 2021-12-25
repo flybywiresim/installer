@@ -1,11 +1,11 @@
 import React from "react";
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { Settings } from "tabler-icons-react";
 import { useIsDarkTheme } from "common/settings";
 import { Publisher } from "renderer/utils/InstallerConfiguration";
 import { useAppSelector } from "renderer/redux/store";
 import { InstallStatus } from "renderer/components/AircraftSection";
+import { Gear, Wrench } from "react-bootstrap-icons";
 
 export const NavBar: FC = ({ children }) => {
     const darkTheme = useIsDarkTheme();
@@ -19,8 +19,13 @@ export const NavBar: FC = ({ children }) => {
             </div>
 
             <div className="mt-auto flex flex-col gap-y-5">
+                {process.env.NODE_ENV === 'development' && (
+                    <NavbarItem to="/debug">
+                        <Wrench className="text-gray-100" size={28} strokeWidth={1} />
+                    </NavbarItem>
+                )}
                 <NavbarItem to="/settings">
-                    <Settings className="text-gray-100" size={34} strokeWidth={1} />
+                    <Gear className="text-gray-100" size={28} strokeWidth={1} />
                 </NavbarItem>
             </div>
         </div>
