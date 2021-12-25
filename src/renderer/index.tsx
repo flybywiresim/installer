@@ -28,7 +28,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import App from 'renderer/components/App';
+import App, { fetchLatestVersionNames } from 'renderer/components/App';
 import { Configuration, InstallerConfiguration } from 'renderer/utils/InstallerConfiguration';
 import { ipcRenderer } from "electron";
 
@@ -67,6 +67,8 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
             } else {
                 store.dispatch(addReleases({ key: addon.key, releases: [] }));
             }
+
+            fetchLatestVersionNames(addon);
         }
     }
 

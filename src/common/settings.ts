@@ -143,6 +143,10 @@ const schema: Schema<unknown> = {
                     lastShownSection: {
                         type: "string",
                         default: "",
+                    },
+                    lastShownAddonKey: {
+                        type: "string",
+                        default: "",
                     }
                 }
             }

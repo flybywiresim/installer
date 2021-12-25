@@ -127,6 +127,8 @@ export const AircraftSection = () => {
             setHiddenAddon(undefined);
             history.push(`/aircraft-section/${publisherName}/main/configure`);
         }
+
+        settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
     }, [selectedAddon]);
 
     useEffect(() => {
@@ -137,9 +139,9 @@ export const AircraftSection = () => {
             return;
         }
 
-        fetchLatestVersionNames(firstAvailableAddon).then(() => {
-            setSelectedAddon(firstAvailableAddon);
-        });
+        const lastSeenAddonKey = settings.get('cache.main.lastShownAddonKey', firstAvailableAddon.key);
+
+        setSelectedAddon(publisherData.addons.find(addon => addon.key === lastSeenAddonKey));
     }, [publisherName]);
 
     const findInstalledTrack = (): AddonTrack => {
