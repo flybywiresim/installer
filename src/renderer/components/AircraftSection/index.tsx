@@ -33,7 +33,7 @@ let abortController: AbortController;
 export enum InstallStatus {
     UpToDate,
     NeedsUpdate,
-    FreshInstall,
+    NotInstalled,
     GitInstall,
     TrackSwitch,
     DownloadPrep,
@@ -282,7 +282,7 @@ export const AircraftSection = () => {
         const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
 
         if (!fs.existsSync(installDir)) {
-            return InstallStatus.FreshInstall;
+            return InstallStatus.NotInstalled;
         }
 
         console.log("Checking for git install");
@@ -300,7 +300,7 @@ export const AircraftSection = () => {
                 return InstallStatus.TrackSwitch;
             }
             if (updateInfo.isFreshInstall) {
-                return InstallStatus.FreshInstall;
+                return InstallStatus.NotInstalled;
             }
 
             if (updateInfo.needsUpdate) {
@@ -511,7 +511,7 @@ export const AircraftSection = () => {
                 return <></>;
             case InstallStatus.NeedsUpdate:
                 return <StateText>New release available</StateText>;
-            case InstallStatus.FreshInstall:
+            case InstallStatus.NotInstalled:
                 return <></>;
             case InstallStatus.GitInstall:
                 return <></>;
@@ -564,7 +564,7 @@ export const AircraftSection = () => {
                         Update
                     </InstallButton>
                 );
-            case InstallStatus.FreshInstall:
+            case InstallStatus.NotInstalled:
                 return (
                     <InstallButton
                         className="bg-green-500"

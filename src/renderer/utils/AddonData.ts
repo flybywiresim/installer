@@ -110,7 +110,7 @@ export class AddonData {
 
         if (!fs.existsSync(installDir)) {
             console.log ('no existing install dir for', addon.key);
-            setCurrentInstallStatus(InstallStatus.FreshInstall);
+            setCurrentInstallStatus(InstallStatus.NotInstalled);
             return;
         }
 
@@ -127,7 +127,7 @@ export class AddonData {
             console.log('Update info for', addon.key, updateInfo);
 
             if (updateInfo.isFreshInstall) {
-                setCurrentInstallStatus(InstallStatus.FreshInstall);
+                setCurrentInstallStatus(InstallStatus.NotInstalled);
                 return;
             }
 
