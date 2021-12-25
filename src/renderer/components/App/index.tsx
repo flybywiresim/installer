@@ -20,6 +20,7 @@ import Snowfall from 'react-snowfall';
 import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import settings, { useSetting } from 'common/settings';
+import "./index.css";
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -122,7 +123,7 @@ const App = () => {
             <SimpleBar>
                 <div className="flex flex-col h-screen w-full">
                     <div className="flex flex-col h-full overflow-hidden">
-                        <div className="absolute w-full h-10 z-50 flex flex-row pl-4 items-center bg-navy-dark shadow-xl">
+                        <div className="absolute w-full h-10 z-50 flex flex-row pl-4 items-center bg-navy-dark shadow-xl draggable">
                             <div className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
                             </div>
