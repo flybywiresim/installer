@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import fs from "fs-extra";
 import * as path from "path";
-import { fetchLatestVersionNames } from "renderer/components/App";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
@@ -94,7 +93,7 @@ export interface AircraftSectionURLParams {
     publisherName: string;
 }
 
-export const AircraftSection = () => {
+export const AircraftSection = (): JSX.Element => {
     const { publisherName } = useParams<AircraftSectionURLParams>();
 
     const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName));
@@ -139,9 +138,9 @@ export const AircraftSection = () => {
             return;
         }
 
-        const lastSeenAddonKey = settings.get('cache.main.lastShownAddonKey', firstAvailableAddon.key);
+        const lastSeenAddonKey = settings.get('cache.main.lastShownAddonKey');
 
-        setSelectedAddon(publisherData.addons.find(addon => addon.key === lastSeenAddonKey));
+        setSelectedAddon(publisherData.addons.find(addon => addon.key === lastSeenAddonKey || addon.key === firstAvailableAddon.key));
     }, [publisherName]);
 
     const findInstalledTrack = (): AddonTrack => {

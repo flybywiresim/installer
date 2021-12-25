@@ -40,24 +40,21 @@ export interface NavBarItemProps {
     notificationColor?: string;
 }
 
-export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', showNotification = false, notificationColor = 'orange', children }) => {
+export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', showNotification = false, notificationColor = 'orange', children }) => (
+    <NavLink
+        to={to}
+        className={BASE_STYLE}
+        activeClassName={`${BASE_STYLE} bg-navy-light`}
+    >
+        {children}
 
-    return (
-        <NavLink
-            to={to}
-            className={BASE_STYLE}
-            activeClassName={`${BASE_STYLE} bg-navy-light`}
-        >
-            {children}
-
-            <span className="absolute w-0 h-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
-                <svg className="relative w-3.5" viewBox="0 0 10 10" style={{ left: '24px', bottom: '35px' }}>
-                    <circle cx={5} cy={5} r={5} fill={notificationColor} />
-                </svg>
-            </span>
-        </NavLink>
-    );
-};
+        <span className="absolute w-0 h-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
+            <svg className="relative w-3.5" viewBox="0 0 10 10" style={{ left: '24px', bottom: '35px' }}>
+                <circle cx={5} cy={5} r={5} fill={notificationColor} />
+            </svg>
+        </span>
+    </NavLink>
+);
 
 export interface NavBarPublisherProps extends NavBarItemProps {
     publisher: Publisher;
@@ -72,7 +69,7 @@ export const NavBarPublisher: FC<NavBarPublisherProps> = ({ to, publisher }) => 
             showNotification={hasAvailableUpdates}
             notificationColor="orange"
         >
-            <img width={34} src={publisher.logoUrl}/>
+            <img width={34} src={publisher.logoUrl} alt={`${publisher.name} Logo`}/>
         </NavbarItem>
     );
 };
