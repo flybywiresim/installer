@@ -442,7 +442,7 @@ export const AircraftSection = () => {
         if (fs.existsSync(tempDir)) {
             fs.removeSync(tempDir);
         }
-        setCurrentInstallStatus(InstallStatus.FreshInstall);
+        setCurrentInstallStatus(InstallStatus.NotInstalled);
         setCurrentlyInstalledTrack(null);
         if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
             await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
