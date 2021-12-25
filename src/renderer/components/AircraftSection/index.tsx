@@ -503,13 +503,13 @@ export const AircraftSection = () => {
             .then(() => {
                 console.log("Showing notification");
                 if (successful) {
-                    new Notification("Download complete!", {
+                    new Notification(`${publisherData.name} ${selectedAddon.name} download complete!`, {
                         icon: path.join(
                             process.resourcesPath,
                             "extraResources",
                             "icon.ico"
                         ),
-                        body: "You're ready to fly",
+                        body: "Take to the skies!",
                     });
                 } else {
                     new Notification("Download failed!", {
