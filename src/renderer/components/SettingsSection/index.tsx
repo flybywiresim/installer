@@ -1,24 +1,39 @@
 import React from 'react';
-import { Menu } from './styles';
-
 import GeneralSettings from 'renderer/components/GeneralSettings';
+import { Route } from "react-router-dom";
+import { AboutSettings } from "renderer/components/SettingsSection/About";
+import { SideBar, SideBarLink, SideBarTitle } from "renderer/components/SideBar";
 
-const index = (): JSX.Element => {
+export const SettingsSection = (): JSX.Element => {
     return (
-        <div className="bg-navy-lighter text-white flex items-center justify-center m-8 rounded-xl overflow-hidden p-8">
-            <div className="w-full flex flex-row">
-                <Menu theme="dark" mode="inline" style={{ width: 256, marginBottom: 'auto', backgroundColor: '#222c3d', color: 'white' }}
-                    defaultSelectedKeys={['general-settings']}>
-                    <Menu.Item key="general-settings" style={{ backgroundColor: 'rgba(0, 224, 254, 0.2)', }}>
+        <div className="w-full bg-navy-lighter text-white overflow-hidden">
+            <div className="w-full h-full flex flex-row items-stretch">
+                <SideBar className="flex-shrink-0">
+                    <SideBarTitle>Settings</SideBarTitle>
+
+                    <SideBarLink to="/settings/general">
+                        <span className="text-2xl font-manrope font-bold">
                             General Settings
-                    </Menu.Item>
-                </Menu>
-                <div className="pl-24 w-full bg-navy-lighter">
-                    <GeneralSettings />
+                        </span>
+                    </SideBarLink>
+
+                    <SideBarLink to="/settings/about">
+                        <span className="text-2xl font-manrope font-bold">
+                            About
+                        </span>
+                    </SideBarLink>
+                </SideBar>
+
+                <div className="flex-grow px-12 py-8 bg-navy-light border-l border-gray-700">
+                    <Route path="/settings/general">
+                        <GeneralSettings />
+                    </Route>
+
+                    <Route path="/settings/about">
+                        <AboutSettings />
+                    </Route>
                 </div>
             </div>
         </div>
     );
 };
-
-export default index;

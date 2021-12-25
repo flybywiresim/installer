@@ -2,7 +2,7 @@ import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
-import SettingsSection from 'renderer/components/SettingsSection';
+import { SettingsSection } from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
 import { AircraftSection } from 'renderer/components/AircraftSection';
 import { ChangelogModal } from '../ChangelogModal';
@@ -152,7 +152,7 @@ const App = () => {
                                 />
                             )}
 
-                            <div className="bg-navy m-0 w-full">
+                            <div className="bg-navy m-0 w-full flex">
                                 <Switch>
                                     <Route exact path="/">
                                         <Redirect to={`/aircraft-section/${configuration.publishers[0].name}`}/>
@@ -161,10 +161,10 @@ const App = () => {
                                         <AircraftSection />
                                     </Route>
                                     <Route exact path="/debug">
-                                        <DebugSection/>
+                                        <DebugSection />
                                     </Route>
-                                    <Route exact path="/settings">
-                                        <SettingsSection/>
+                                    <Route path="/settings">
+                                        <SettingsSection />
                                     </Route>
                                 </Switch>
                             </div>

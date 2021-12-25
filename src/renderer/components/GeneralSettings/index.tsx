@@ -3,11 +3,6 @@ import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import * as packageInfo from '../../../../package.json';
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
-import { shell } from "electron";
-import path from "path";
-import * as fs from "fs";
-import { useAppDispatch } from "renderer/redux/store";
-import { callChangelog } from "renderer/redux/features/changelog";
 import { ipcRenderer } from 'electron';
 
 const SettingsItem: FC<{name: string}> = ({ name, children }) => (
@@ -173,24 +168,6 @@ const index = (): JSX.Element => {
     const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
     const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
 
-    const dispatch = useAppDispatch();
-
-    const showChangelog = () => {
-        dispatch(callChangelog({ showChangelog: true }));
-    };
-
-    const openThirdPartyLicenses = () => {
-        const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
-
-        if (!fs.existsSync(licensesPath)) {
-            alert('The requested file does not exist.');
-            return;
-        }
-
-        shell.openExternal(licensesPath)
-            .catch(console.error);
-    };
-
     const handleReset = async () => {
         settings.reset('mainSettings' as never);
 
@@ -213,21 +190,7 @@ const index = (): JSX.Element => {
                     <LongDateFormatItem value={useLongDate} setValue={setUseLongDate} />
                 </div>
             </div>
-            <div className="flex flex-row justify-between mt-6">
-                <div className="flex flex-row justify-start gap-3">
-                    <div
-                        className="text-gray-600 hover:text-gray-700 cursor-pointer"
-                        onClick={showChangelog}
-                    >
-                        v{packageInfo.version}
-                    </div>
-                    <h6 className="text-gray-600">|</h6>
-                    <div
-                        className="text-gray-600 hover:text-gray-700 cursor-pointer"
-                        onClick={openThirdPartyLicenses}
-                    >
-                        Third party licenses</div>
-                </div>
+            <div className="flex flex-row justify-end mt-6">
                 <div
                     className="flex items-center justify-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 cursor-pointer transition duration-200 rounded-md"
                     onClick={handleReset}
