@@ -433,17 +433,12 @@ export const AircraftSection = () => {
 
     const uninstallAddon = async () => {
         const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-        const tempDir = Directories.temp();
         console.log('uninstalling ', installedTrack);
 
         if (fs.existsSync(installDir)) {
             fs.removeSync(installDir);
         }
-        if (fs.existsSync(tempDir)) {
-            fs.removeSync(tempDir);
-        }
-        setCurrentInstallStatus(InstallStatus.NotInstalled);
-        setCurrentlyInstalledTrack(null);
+        Directories.removeAllTemp();
         if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
             await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
                 .then((f) => Promise.all(f.map(e => {
@@ -460,6 +455,8 @@ export const AircraftSection = () => {
                     }
                 })));
         }
+        setCurrentInstallStatus(InstallStatus.NotInstalled);
+        setCurrentlyInstalledTrack(null);
     };
 
     const selectAndSetTrack = (key: string) => {
