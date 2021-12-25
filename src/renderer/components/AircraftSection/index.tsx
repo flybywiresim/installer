@@ -447,7 +447,7 @@ export const AircraftSection = () => {
         if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
             await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
                 .then((f) => Promise.all(f.map(e => {
-                    if (e != 'work') {
+                    if (e !== 'work') {
                         fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory), e));
                     }
                 })));
@@ -455,7 +455,7 @@ export const AircraftSection = () => {
         if (fs.existsSync(Directories.inPackagesSteam(selectedAddon.targetDirectory))) {
             await fs.promises.readdir(Directories.inPackagesSteam(selectedAddon.targetDirectory))
                 .then((f) => Promise.all(f.map(e => {
-                    if (e != 'work') {
+                    if (e !== 'work') {
                         fs.promises.unlink(path.join(Directories.inPackagesSteam(selectedAddon.targetDirectory), e));
                     }
                 })));
