@@ -752,7 +752,10 @@ export const AircraftSection = (): JSX.Element => {
                     <div className="w-full">
 
                         <Route exact path={`/aircraft-section/${publisherName}`}>
-                            <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
+                            {publisherData.addons.every(addon => !addon.enabled) ?
+                                <Redirect to={`/aircraft-section/${publisherName}/no-available-addons`} /> :
+                                <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
+                            }
                         </Route>
 
                         <Route path={`/aircraft-section/${publisherName}/no-available-addons`}>
