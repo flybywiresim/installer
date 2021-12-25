@@ -687,7 +687,7 @@ export const AircraftSection = () => {
             case InstallStatus.TrackSwitch:
                 return (
                     <InstallButton
-                        className="bg-red-600 hover:bg-red-500"
+                        className="border-2 border-red-600 text-red-600 hover:bg-red-500 hover:border-red-500 hover:text-white"
                         onClick={uninstallAddon}
                     >
                         Uninstall
