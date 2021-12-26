@@ -502,7 +502,7 @@ export const AircraftSection = (): JSX.Element => {
             .then(() => {
                 console.log("Showing notification");
                 if (successful) {
-                    new Notification(`${publisherData.name} ${selectedAddon.name} download complete!`, {
+                    new Notification(`${selectedAddon.name} download complete!`, {
                         icon: path.join(
                             process.resourcesPath,
                             "extraResources",
