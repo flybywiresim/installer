@@ -139,8 +139,9 @@ export const AircraftSection = (): JSX.Element => {
         }
 
         const lastSeenAddonKey = settings.get('cache.main.lastShownAddonKey');
+        const addonToSelect = publisherData.addons.find(addon => addon.key === lastSeenAddonKey) || publisherData.addons.find(addon => addon.key === firstAvailableAddon.key);
 
-        setSelectedAddon(publisherData.addons.find(addon => addon.key === lastSeenAddonKey || addon.key === firstAvailableAddon.key));
+        setSelectedAddon(addonToSelect);
     }, [publisherName]);
 
     const findInstalledTrack = (): AddonTrack => {
