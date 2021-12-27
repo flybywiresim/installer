@@ -47,7 +47,7 @@ export class Directories {
                 const fullPath = Directories.inCommunity(dir.name);
 
                 console.log('[CLEANUP] Removing', fullPath);
-                fs.rmdirSync(fullPath, { recursive: true });
+                fs.removeSync(fullPath);
                 console.log('[CLEANUP] Removed', fullPath);
             });
         console.log('[CLEANUP] Finished removing all temp directories');
@@ -59,7 +59,7 @@ export class Directories {
 
             if (fs.existsSync(altDir)) {
                 console.log('Removing alternative', altDir);
-                fs.rmdirSync(altDir, { recursive: true });
+                fs.removeSync(altDir);
             }
         });
     }
@@ -69,7 +69,7 @@ export class Directories {
 
         if (fs.existsSync(dir)) {
             console.log('Removing', dir);
-            fs.rmdirSync(dir, { recursive: true });
+            fs.removeSync(dir);
         }
     }
 

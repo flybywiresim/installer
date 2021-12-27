@@ -4,6 +4,7 @@ import { shell } from 'electron';
 import { ipcRenderer } from 'electron';
 import { WindowsControl } from 'react-windows-controls';
 import channels from 'common/channels';
+import { Directories } from 'renderer/utils/Directories';
 
 export type ButtonProps = { id?: string, className?: string, onClick?: () => void, isClose?: boolean }
 
@@ -31,6 +32,7 @@ export const WindowButtons: React.FC = () => {
     };
 
     const handleClose = () => {
+        Directories.removeAllTemp();
         ipcRenderer.send(channels.window.close);
     };
 

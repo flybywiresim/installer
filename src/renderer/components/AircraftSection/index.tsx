@@ -326,9 +326,7 @@ export const AircraftSection = (): JSX.Element => {
         console.log("Installing into", installDir, "using temp dir", tempDir);
 
         // Prepare temporary directory
-        if (fs.existsSync(tempDir)) {
-            fs.rmdirSync(tempDir, { recursive: true });
-        }
+        fs.removeSync(tempDir);
         fs.mkdirSync(tempDir);
 
         // Copy current install to temporary directory
@@ -430,7 +428,7 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(deleteDownload({ id: selectedAddon.key }));
 
         // Clean up temp dir
-        Directories.removeAllTemp();
+        fs.removeSync(tempDir);
     };
 
     const uninstallAddon = async () => {
@@ -440,7 +438,6 @@ export const AircraftSection = (): JSX.Element => {
         if (fs.existsSync(installDir)) {
             fs.removeSync(installDir);
         }
-        Directories.removeAllTemp();
         if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
             await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
                 .then((f) => Promise.all(f.map(e => {
