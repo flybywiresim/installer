@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { store, useAppSelector } from "renderer/redux/store";
@@ -10,6 +10,7 @@ import { GitVersions } from "@flybywiresim/api-client";
 import { addReleases } from "renderer/redux/features/releaseNotes";
 import { useSetting } from 'common/settings';
 import dateFormat from 'dateformat';
+import { ArrowUp } from "react-bootstrap-icons";
 
 interface ReleaseNoteCardProps {
     release: ReleaseData;
@@ -58,6 +59,14 @@ export const ReleaseNotes = ({ addon }: {addon: Addon}) => {
 
     const releaseNotes = useAppSelector(state => state.releaseNotes[addon.key]);
     const [releaseComponent, setReleaseComponent] = useState<JSX.Element>(undefined);
+    const releaseNotesRef = useRef<HTMLDivElement>(null);
+    const [scrollButtonShown, setScrollButtonShown] = useState(false);
+
+    const handleScrollUp = () => {
+        if (releaseNotesRef) {
+            releaseNotesRef.current.scroll({ top: 0, behavior: "smooth" });
+        }
+    };
 
     useEffect(() => {
         setReleaseComponent(
@@ -90,6 +99,20 @@ export const ReleaseNotes = ({ addon }: {addon: Addon}) => {
         }
     }, [inView]);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            if (releaseNotesRef.current) {
+                setScrollButtonShown(!!releaseNotesRef.current.scrollTop);
+            }
+        };
+
+        if (releaseNotesRef.current) {
+            releaseNotesRef.current.addEventListener('scroll', handleScroll);
+        }
+
+        return () => releaseNotesRef.current.removeEventListener('scroll', handleScroll);
+    }, [releaseNotesRef.current]);
+
     const DummyComponent = () => (
         <div className="flex flex-col gap-y-7">
             {[...Array(10)].map(index => (
@@ -105,14 +128,26 @@ export const ReleaseNotes = ({ addon }: {addon: Addon}) => {
     );
 
     return (
-        <div className="w-full h-full p-7 overflow-y-scroll">
-            <div className="flex flex-row items-center justify-between">
-                <h2 className="text-white font-extrabold">
-                    Release Notes
-                </h2>
-                {/*    Dropdown will go here*/}
+        <div className="relative w-full">
+            {scrollButtonShown && releaseComponent && (
+                <div className="absolute inset-0">
+                    <div
+                        className="absolute p-4 z-30 right-0 bottom-0 text-white m-4 bg-cyan bg-opacity-40 hover:bg-opacity-100 transition duration-200 rounded-md cursor-pointer"
+                        onClick={handleScrollUp}
+                    >
+                        <ArrowUp className="stroke-current" size={20} />
+                    </div>
+                </div>
+            )}
+            <div className="w-full h-full p-7 overflow-y-scroll relative" ref={releaseNotesRef}>
+                <div className="flex flex-row items-center justify-between">
+                    <h2 className="text-white font-extrabold">
+                        Release Notes
+                    </h2>
+                    {/*    Dropdown will go here    */}
+                </div>
+                { releaseComponent ?? <DummyComponent/> }
             </div>
-            {releaseComponent ?? <DummyComponent/>}
         </div>
     );
 };
