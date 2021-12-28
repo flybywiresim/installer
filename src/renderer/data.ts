@@ -188,7 +188,27 @@ export const defaultConfiguration: Configuration = {
                     text: 'Documentation',
                     action: 'openBrowser',
                     url: 'https://docs.flybywiresim.com/',
-                    icon: 'BlockquoteLeft',
+                    icon: 'Book',
+                    inline: false,
+                },
+                {
+                    text: 'Discord',
+                    icon: 'Discord',
+                    action: 'openBrowser',
+                    url: 'https://discord.gg/flybywire',
+                },
+                {
+                    text: 'Twitter',
+                    icon: 'Twitter',
+                    action: 'openBrowser',
+                    url: 'https://twitter.com/FlyByWireSim',
+                    inline: true
+                },
+                {
+                    text: 'Website',
+                    icon: 'Globe2',
+                    action: 'openBrowser',
+                    url: 'https://flybywiresim.com/',
                     inline: false,
                 },
             ]
@@ -218,20 +238,20 @@ export const defaultConfiguration: Configuration = {
             buttons: [
                 {
                     text: 'Discord',
-                    icon: 'Link45deg',
+                    icon: 'Discord',
                     action: 'openBrowser',
                     url: 'https://discord.gg/acQkSvrePG',
                 },
                 {
                     text: 'Twitter',
-                    icon: 'Link45deg',
+                    icon: 'Twitter',
                     action: 'openBrowser',
                     url: 'https://twitter.com/synapticsim',
                     inline: true,
                 },
                 {
                     text: 'Website',
-                    icon: 'BlockquoteLeft',
+                    icon: 'Globe2',
                     action: 'openBrowser',
                     url: 'https://www.synapticsim.com/',
                 }
