@@ -464,15 +464,17 @@ export const AircraftSection = (): JSX.Element => {
     };
 
     const handleTrackSelection = (track: AddonTrack) => {
-        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep && track.isExperimental) {
-            dispatch(
-                callWarningModal({
-                    showWarningModal: track.isExperimental,
-                    track: track,
-                    selectedAddon: selectedAddon,
-                }));
-        } else {
-            selectAndSetTrack(track.key);
+        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep) {
+            if (track.isExperimental) {
+                dispatch(
+                    callWarningModal({
+                        showWarningModal: track.isExperimental,
+                        track: track,
+                        selectedAddon: selectedAddon,
+                    }));
+            } else {
+                selectAndSetTrack(track.key);
+            }
         }
     };
 
