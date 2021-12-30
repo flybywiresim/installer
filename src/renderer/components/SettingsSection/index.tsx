@@ -1,5 +1,7 @@
 import React from 'react';
 import GeneralSettings from 'renderer/components/GeneralSettings';
+import DownloadSettings from 'renderer/components/DownloadSettings';
+import CustomizationSettings from '../CustomizationSettings';
 import { Redirect, Route } from "react-router-dom";
 import { AboutSettings } from "renderer/components/SettingsSection/About";
 import { SideBar, SideBarLink, SideBarTitle } from "renderer/components/SideBar";
@@ -17,6 +19,18 @@ export const SettingsSection = (): JSX.Element => {
                         </span>
                     </SideBarLink>
 
+                    <SideBarLink to="/settings/download">
+                        <span className="text-2xl font-manrope font-bold">
+                            Download Settings
+                        </span>
+                    </SideBarLink>
+
+                    <SideBarLink to="/settings/customization">
+                        <span className="text-2xl font-manrope font-bold">
+                            Customization Settings
+                        </span>
+                    </SideBarLink>
+
                     <SideBarLink to="/settings/about">
                         <span className="text-2xl font-manrope font-bold">
                             About
@@ -31,6 +45,14 @@ export const SettingsSection = (): JSX.Element => {
 
                     <Route path="/settings/general">
                         <GeneralSettings />
+                    </Route>
+
+                    <Route path="/settings/download">
+                        <DownloadSettings />
+                    </Route>
+
+                    <Route path="/settings/customization">
+                        <CustomizationSettings />
                     </Route>
 
                     <Route path="/settings/about">
