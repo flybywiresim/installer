@@ -5,6 +5,9 @@
 <!-- Use the following format below -->
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
+## 2.2.2
+1. [ADDONS] Enable experimental version for A32NX - @Benjozork
+
 ## 2.2.1
 
 1. [ADDONS] KFBW is now visible to everyone  - @FoxtrotSierra6829
