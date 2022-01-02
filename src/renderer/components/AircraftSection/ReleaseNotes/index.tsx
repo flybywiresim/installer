@@ -52,7 +52,7 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
     );
 });
 
-export const ReleaseNotes = ({ addon }: {addon: Addon}) => {
+export const ReleaseNotes = ({ addon }: {addon: Addon}): JSX.Element => {
     const { ref, inView } = useInView({
         threshold: 0,
     });

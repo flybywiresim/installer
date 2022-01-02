@@ -127,10 +127,10 @@ const App = () => {
                             <div className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
                             </div>
-                            <span className="not-draggable">
+                            <div className="flex flex-row not-draggable h-full">
                                 <InstallerUpdate />
                                 <WindowButtons />
-                            </span>
+                            </div>
                         </div>
 
                         <div className="h-full pt-10 flex flex-row justify-start">
