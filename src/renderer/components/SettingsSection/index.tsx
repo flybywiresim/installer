@@ -15,19 +15,19 @@ export const SettingsSection = (): JSX.Element => {
 
                     <SideBarLink to="/settings/general">
                         <span className="text-2xl font-manrope font-bold">
-                            General Settings
+                            General
                         </span>
                     </SideBarLink>
 
                     <SideBarLink to="/settings/download">
                         <span className="text-2xl font-manrope font-bold">
-                            Download Settings
+                            Download
                         </span>
                     </SideBarLink>
 
                     <SideBarLink to="/settings/customization">
                         <span className="text-2xl font-manrope font-bold">
-                            Customization Settings
+                            Customization
                         </span>
                     </SideBarLink>
 
