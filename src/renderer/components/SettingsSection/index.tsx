@@ -1,5 +1,5 @@
 import React from 'react';
-import GeneralSettings from 'renderer/components/GeneralSettings';
+import GeneralSettings from 'renderer/components/SettingsSection/General';
 import { Redirect, Route } from "react-router-dom";
 import { AboutSettings } from "renderer/components/SettingsSection/About";
 import { SideBar, SideBarLink, SideBarTitle } from "renderer/components/SideBar";
