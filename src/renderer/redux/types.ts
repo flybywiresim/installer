@@ -5,6 +5,7 @@ export interface DownloadItem {
     id: string
     progress: number
     module: string,
+    abortControllerID: number,
 }
 
 export type DownloadsState = DownloadItem[];
