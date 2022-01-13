@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import * as packageInfo from '../../../../package.json';
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from 'electron';
@@ -78,13 +77,6 @@ const index = (): JSX.Element => {
     const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
     const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
 
-    const handleReset = async () => {
-        settings.reset('mainSettings' as never);
-
-        // Workaround to flush the defaults
-        settings.set('metaInfo.lastVersion', packageInfo.version);
-    };
-
     return (
         <div>
             <div className="flex flex-col">
@@ -93,14 +85,6 @@ const index = (): JSX.Element => {
                     <AutoStartSettingItem value={autoStart} setValue={setAutoStart} />
                     <DateLayoutItem value={dateLayout} setValue={setDateLayout} />
                     <LongDateFormatItem value={useLongDate} setValue={setUseLongDate} />
-                </div>
-            </div>
-            <div className="flex flex-row justify-end mt-6">
-                <div
-                    className="flex items-center justify-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 cursor-pointer transition duration-200 rounded-md"
-                    onClick={handleReset}
-                >
-                    Reset settings to default
                 </div>
             </div>
         </div>

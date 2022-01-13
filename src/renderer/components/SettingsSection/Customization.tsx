@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import * as packageInfo from '../../../../package.json';
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
 
@@ -54,13 +53,6 @@ const index = (): JSX.Element => {
     const [useDarkTheme, setUseDarkTheme] = useSetting<boolean>('mainSettings.useDarkTheme');
     const [seasonalEffects, setSeasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
 
-    const handleReset = async () => {
-        settings.reset('mainSettings' as never);
-
-        // Workaround to flush the defaults
-        settings.set('metaInfo.lastVersion', packageInfo.version);
-    };
-
     return (
         <div>
             <div className="flex flex-col">
@@ -68,14 +60,6 @@ const index = (): JSX.Element => {
                 <div className="flex flex-col divide-y divide-gray-600">
                     <DarkThemeItem value={useDarkTheme} setValue={setUseDarkTheme} />
                     <SeasonalEffectsItem value={seasonalEffects} setValue={setSeasonalEffects} />
-                </div>
-            </div>
-            <div className="flex flex-row justify-end mt-6">
-                <div
-                    className="flex items-center justify-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 cursor-pointer transition duration-200 rounded-md"
-                    onClick={handleReset}
-                >
-                    Reset settings to default
                 </div>
             </div>
         </div>

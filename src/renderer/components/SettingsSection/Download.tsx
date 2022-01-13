@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import * as packageInfo from '../../../../package.json';
 import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
 
@@ -72,13 +71,6 @@ const index = (): JSX.Element => {
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
     const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
 
-    const handleReset = async () => {
-        settings.reset('mainSettings' as never);
-
-        // Workaround to flush the defaults
-        settings.set('metaInfo.lastVersion', packageInfo.version);
-    };
-
     return (
         <div>
             <div className="flex flex-col">
@@ -87,14 +79,6 @@ const index = (): JSX.Element => {
                     <InstallPathSettingItem value={installPath} setValue={setInstallPath} />
                     <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />
                     <UseCdnSettingItem value={useCdnCache} setValue={setUseCdnCache} />
-                </div>
-            </div>
-            <div className="flex flex-row justify-end mt-6">
-                <div
-                    className="flex items-center justify-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 cursor-pointer transition duration-200 rounded-md"
-                    onClick={handleReset}
-                >
-                    Reset settings to default
                 </div>
             </div>
         </div>
