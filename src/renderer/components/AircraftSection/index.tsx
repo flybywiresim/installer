@@ -695,6 +695,8 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.UpToDate:
             case InstallStatus.NeedsUpdate:
             case InstallStatus.TrackSwitch:
+            case InstallStatus.DownloadDone:
+            case InstallStatus.GitInstall:
                 return (
                     <InstallButton
                         className="border-2 border-red-600 text-red-600 hover:bg-red-500 hover:border-red-500 hover:text-white"
