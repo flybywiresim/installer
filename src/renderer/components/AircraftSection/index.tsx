@@ -27,7 +27,8 @@ import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddo
 import "./index.css";
 import ReactMarkdown from "react-markdown";
 
-let abortController: AbortController;
+const abortControllers = new Array<AbortController>(20);
+abortControllers.fill(new AbortController);
 
 export enum InstallStatus {
     UpToDate,
@@ -236,6 +237,14 @@ export const AircraftSection = (): JSX.Element => {
 
     const isDownloading = download?.progress >= 0;
 
+    const lowestAvailableAbortControllerID: number = useSelector((state: InstallerStore) => {
+        for (let i = 0; i < abortControllers.length; i++) {
+            if (!state.downloads.map(download => download.abortControllerID).includes(i)) {
+                return i;
+            }
+        }
+    });
+
     useEffect(() => {
         const checkMsfsInterval = setInterval(async () => {
             setMsfsIsOpen(
@@ -319,6 +328,14 @@ export const AircraftSection = (): JSX.Element => {
     console.log(selectedTrack());
 
     const downloadAddon = async (track: AddonTrack) => {
+        // Initialize abort controller for downloads
+        const abortControllerID = lowestAvailableAbortControllerID;
+
+        abortControllers[abortControllerID] = new AbortController;
+        const signal = abortControllers[abortControllerID].signal;
+
+        dispatch(registerNewDownload({ id: selectedAddon.key, module: "", abortControllerID: abortControllerID }));
+
         const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
         const tempDir = Directories.temp();
 
@@ -339,14 +356,9 @@ export const AircraftSection = (): JSX.Element => {
             console.log("Finished copying");
         }
 
-        // Initialize abort controller for downloads
-        abortController = new AbortController();
-        const signal = abortController.signal;
-
         try {
             let lastPercent = 0;
             setCurrentInstallStatus(InstallStatus.Downloading);
-            dispatch(registerNewDownload({ id: selectedAddon.key, module: "" }));
 
             // Perform the fragmenter download
             const installer = new FragmenterInstaller(track.url, tempDir);
@@ -362,7 +374,7 @@ export const AircraftSection = (): JSX.Element => {
                         updateDownloadProgress({
                             id: selectedAddon.key,
                             module: module.name,
-                            progress: progress.percent
+                            progress: progress.percent,
                         }));
                 }
             });
@@ -491,7 +503,7 @@ export const AircraftSection = (): JSX.Element => {
     const handleCancel = () => {
         if (isDownloading) {
             console.log("Cancel download");
-            abortController.abort();
+            abortControllers[download.abortControllerID].abort();
             dispatch(deleteDownload({ id: selectedAddon.key }));
         }
     };

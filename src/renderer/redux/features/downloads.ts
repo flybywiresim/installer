@@ -16,11 +16,12 @@ export const downloadSlice = createSlice({
                 }
             });
         },
-        registerNewDownload: (state, action: TypedAction<{ id: string, module: string }>) => {
+        registerNewDownload: (state, action: TypedAction<{ id: string, module: string, abortControllerID: number }>) => {
             state.push({
                 id: action.payload.id,
                 progress: 0,
                 module: action.payload.module,
+                abortControllerID: action.payload.abortControllerID
             });
         },
         deleteDownload: (state, action: TypedAction<{ id: string }>) => {
