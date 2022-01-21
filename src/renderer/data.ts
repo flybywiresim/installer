@@ -67,7 +67,7 @@ export const defaultConfiguration: Configuration = {
                             key: 'a32nx-stable',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
                             description: 'Stable is our variant that has the least bugs and best performance. ' +
-                                'This version will not always be up to date but we guarantee it\'s compatibility ' +
+                                'This version will not always be up to date but we guarantee its compatibility ' +
                                 'with each major patch from MSFS.',
                             isExperimental: false,
                             releaseModel: {
