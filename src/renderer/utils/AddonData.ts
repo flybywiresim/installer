@@ -9,6 +9,7 @@ import { store } from "renderer/redux/store";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
+import yaml from 'js-yaml';
 
 export type ReleaseInfo = {
     name: string,
@@ -24,11 +25,7 @@ export class AddonData {
             case 'githubBranch':
                 return this.latestVersionForRollingTrack(addon, track.releaseModel);
             case 'CDN':
-                return {
-                    name: 'v1.0.0',
-                    releaseDate: Date.now(),
-                    changelogUrl: 'https://flybywiresim.com',
-                };
+                return this.latestVersionForCDN(track);
         }
     }
 
@@ -46,6 +43,16 @@ export class AddonData {
             .then((commit) => ({
                 name: commit.sha.substring(0, 7),
                 releaseDate: commit.timestamp.getTime(),
+            }));
+    }
+
+    private static async latestVersionForCDN(track: AddonTrack): Promise<ReleaseInfo> {
+        return fetch(track.url + '/releases.yaml')
+            .then(res => res.blob())
+            .then(blob => blob.text())
+            .then(stream => ({
+                name: 'v' + (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].name,
+                releaseDate: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].date.getTime(),
             }));
     }
 
