@@ -96,6 +96,11 @@ const App = () => {
         });
     }, []);
 
+    setInterval(() => {
+        addons.forEach(AddonData.checkForUpdates);
+        addons.forEach(fetchLatestVersionNames);
+    }, 5 * 60 * 1000);
+
     const [snowRate, setSnowRate] = useState(1000);
     const [seasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
 

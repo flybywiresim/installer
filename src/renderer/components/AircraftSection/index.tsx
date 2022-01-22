@@ -112,7 +112,7 @@ export const AircraftSection = (): JSX.Element => {
     const [hiddenAddon, setHiddenAddon] = useState<Addon | undefined>(undefined);
 
     const installedTracks = useAppSelector(state => state.installedTracks);
-    const selectedTracks = useAppSelector(state => state.selectedTrack);
+    const selectedTracks = useAppSelector(state => state.selectedTracks);
     const installStatus = useAppSelector(state => state.installStatus);
 
     const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
