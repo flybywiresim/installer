@@ -21,6 +21,8 @@ import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import settings, { useSetting } from 'common/settings';
 import "./index.css";
+import { ipcRenderer } from 'electron';
+import channels from 'common/channels';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -97,6 +99,7 @@ const App = () => {
     }, []);
 
     setInterval(() => {
+        ipcRenderer.send(channels.checkForInstallerUpdate);
         addons.forEach(AddonData.checkForUpdates);
         addons.forEach(fetchLatestVersionNames);
     }, 5 * 60 * 1000);
