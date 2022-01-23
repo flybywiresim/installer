@@ -108,7 +108,6 @@ const App = () => {
         return () => clearInterval(updateCheck);
     }, []);
 
-
     const [snowRate, setSnowRate] = useState(1000);
     const [seasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
 
