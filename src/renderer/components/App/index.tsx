@@ -98,11 +98,16 @@ const App = () => {
         });
     }, []);
 
-    setInterval(() => {
-        ipcRenderer.send(channels.checkForInstallerUpdate);
-        addons.forEach(AddonData.checkForUpdates);
-        addons.forEach(fetchLatestVersionNames);
-    }, 5 * 60 * 1000);
+    useEffect(() => {
+        const updateCheck = setInterval(() => {
+            ipcRenderer.send(channels.checkForInstallerUpdate);
+            addons.forEach(AddonData.checkForUpdates);
+            addons.forEach(fetchLatestVersionNames);
+        }, 5 * 60 * 1000);
+
+        return () => clearInterval(updateCheck);
+    }, []);
+
 
     const [snowRate, setSnowRate] = useState(1000);
     const [seasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
