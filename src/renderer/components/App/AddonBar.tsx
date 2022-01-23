@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, memo } from "react";
 import { Addon, Publisher, PublisherButton } from "renderer/utils/InstallerConfiguration";
 import { shell } from 'electron';
 import * as BootstrapIcons from 'react-bootstrap-icons';
@@ -91,23 +91,6 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
 
     const dependantStyles = selected ? ` bg-gradient-to-l from-cyan to-blue-500 text-white` : `${enabledUnselectedStyle} ${enabled && 'hover:border-cyan'}`;
 
-    const StatusComponent = (): JSX.Element => {
-        switch (installStatus) {
-            case InstallStatus.UpToDate:
-            case InstallStatus.TrackSwitch:
-            case InstallStatus.GitInstall:
-                return <Check2 className="mt-1.5" size={32}/>;
-            case InstallStatus.DownloadPrep:
-            case InstallStatus.Decompressing:
-            case InstallStatus.Downloading:
-            case InstallStatus.DownloadEnding:
-                return <ArrowRepeat className="mt-0.5 animate-spin" size={32}/>;
-            case InstallStatus.NeedsUpdate:
-                return <CloudArrowDownFill className="mt-2" size={32}/>;
-            default: return <></>;
-        }
-    };
-
     return (
         <div
             className={`w-full relative p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
@@ -116,11 +99,32 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
             <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
             <div className="flex flex-row justify-between mt-1">
                 <img className="h-10 w-max" src={selected || darkTheme ? addon.titleImageUrlSelected : addon.titleImageUrl} />
-                <StatusComponent />
+                <AddonBarItemStatus status={installStatus} />
             </div>
         </div>
     );
 };
+
+interface AddonBarItemStatusProps {
+    status: InstallStatus;
+}
+
+const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
+    switch (status) {
+        case InstallStatus.UpToDate:
+        case InstallStatus.TrackSwitch:
+        case InstallStatus.GitInstall:
+            return <Check2 className="mt-1.5" size={32}/>;
+        case InstallStatus.DownloadPrep:
+        case InstallStatus.Decompressing:
+        case InstallStatus.Downloading:
+        case InstallStatus.DownloadEnding:
+            return <ArrowRepeat className="mt-0.5 animate-spin" size={32}/>;
+        case InstallStatus.NeedsUpdate:
+            return <CloudArrowDownFill className="mt-2" size={32}/>;
+        default: return <></>;
+    }
+});
 
 interface AddonBarPublisherButtonProps {
     button: PublisherButton,
