@@ -17,7 +17,7 @@ export const combinedReducer = combineReducers({
     installStatus: installStatusReducer,
     installedTracks: installedTrackReducer,
     latestVersionNames: latestVersionNamesReducer,
-    selectedTrack: selectedTrackReducer,
+    selectedTracks: selectedTrackReducer,
     warningModal: warningModalReducer,
     releaseNotes: releaseNotesReducer,
     configuration: configurationReducer,

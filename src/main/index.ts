@@ -161,7 +161,13 @@ const createWindow = (): void => {
         });
 
         // tell autoupdater to check for updates
-        autoUpdater.checkForUpdates().then();
+        mainWindow.once('show', () => {
+            autoUpdater.checkForUpdates().then();
+        });
+
+        ipcMain.on(channels.checkForInstallerUpdate, () => {
+            autoUpdater.checkForUpdates().then();
+        });
     }
 };
 

@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
 import { InstallStatus } from "renderer/components/AircraftSection";
 import settings from "common/settings";
-import { store } from "renderer/redux/store";
+import { store, InstallerStore } from "renderer/redux/store";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
@@ -149,6 +149,30 @@ export class AddonData {
             console.error(e);
             setCurrentInstallStatus(InstallStatus.Unknown);
             return;
+        }
+    }
+
+    static async checkForUpdates(addon: Addon): Promise<void> {
+        console.log("Checking for updates for " + addon.key);
+
+        const dispatch = store.dispatch;
+
+        const setCurrentInstallStatus = (new_state: InstallStatus) => {
+            dispatch(setInstallStatus({ addonKey: addon.key, installStatus: new_state }));
+        };
+
+        const installDir = Directories.inCommunity(addon.targetDirectory);
+
+        const state: InstallerStore = store.getState();
+
+        if (state.installStatus[addon.key] === InstallStatus.UpToDate) {
+            const updateInfo = await needsUpdate(state.selectedTracks[addon.key].url, installDir, {
+                forceCacheBust: true,
+            });
+            console.log("Update info", addon.key, updateInfo);
+            if (updateInfo.needsUpdate) {
+                setCurrentInstallStatus(InstallStatus.NeedsUpdate);
+            }
         }
     }
 
