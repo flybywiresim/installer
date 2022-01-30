@@ -42,6 +42,7 @@ import { store } from "renderer/redux/store";
 import { setConfiguration } from './redux/features/configuration';
 import { GitVersions } from "@flybywiresim/api-client";
 import { addReleases } from "renderer/redux/features/releaseNotes";
+import { ModalProvider } from "renderer/components/Modal";
 
 // Obtain configuration and use it
 InstallerConfiguration.obtain().then((config: Configuration) => {
@@ -77,7 +78,9 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
     ReactDOM.render(
         <Provider store={store}>
             <MemoryRouter>
-                <App />
+                <ModalProvider>
+                    <App />
+                </ModalProvider>
             </MemoryRouter>
         </Provider>,
         document.getElementById('root')

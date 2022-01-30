@@ -23,6 +23,7 @@ import settings, { useSetting } from 'common/settings';
 import "./index.css";
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
+import { ModalContainer } from '../Modal';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -132,6 +133,9 @@ const App = () => {
             <ErrorModal/>
             <ChangelogModal />
             <WarningModal />
+
+            <ModalContainer />
+
             <SimpleBar>
                 <div className="flex flex-col h-screen w-full">
                     <div className="flex flex-col h-full overflow-hidden">

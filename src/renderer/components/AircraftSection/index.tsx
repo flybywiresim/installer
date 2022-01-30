@@ -23,8 +23,7 @@ import { callWarningModal } from "renderer/redux/features/warningModal";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
-
-import "./index.css";
+import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 
 const abortControllers = new Array<AbortController>(20);
@@ -59,7 +58,7 @@ interface InstallButtonProps {
     onClick?: () => void;
 }
 
-const InstallButton: FC<InstallButtonProps> = ({
+export const InstallButton: FC<InstallButtonProps> = ({
     children,
     className,
     onClick,
@@ -443,31 +442,40 @@ export const AircraftSection = (): JSX.Element => {
         fs.removeSync(tempDir);
     };
 
-    const uninstallAddon = async () => {
-        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-        console.log('uninstalling ', installedTrack);
+    const { showModal } = useModals();
 
-        if (fs.existsSync(installDir)) {
-            fs.removeSync(installDir);
-        }
-        if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
-            await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
-                .then((f) => Promise.all(f.map(e => {
-                    if (e !== 'work') {
-                        fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory), e));
+    const uninstallAddon = async () => {
+        showModal(
+            <PromptModal
+                title="Are you sure you want to do this?"
+                bodyText={`You are about to uninstall the addon ${selectedAddon.name}. You cannot undo this, except by reinstalling.`}
+                onConfirm={async () => {
+                    const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
+                    console.log('uninstalling ', installedTrack);
+
+                    if (fs.existsSync(installDir)) {
+                        fs.removeSync(installDir);
                     }
-                })));
-        }
-        if (fs.existsSync(Directories.inPackagesSteam(selectedAddon.targetDirectory))) {
-            await fs.promises.readdir(Directories.inPackagesSteam(selectedAddon.targetDirectory))
-                .then((f) => Promise.all(f.map(e => {
-                    if (e !== 'work') {
-                        fs.promises.unlink(path.join(Directories.inPackagesSteam(selectedAddon.targetDirectory), e));
+                    if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
+                        await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
+                            .then((f) => Promise.all(f.map(e => {
+                                if (e !== 'work') {
+                                    fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory), e));
+                                }
+                            })));
                     }
-                })));
-        }
-        setCurrentInstallStatus(InstallStatus.NotInstalled);
-        setCurrentlyInstalledTrack(null);
+                    if (fs.existsSync(Directories.inPackagesSteam(selectedAddon.targetDirectory))) {
+                        await fs.promises.readdir(Directories.inPackagesSteam(selectedAddon.targetDirectory))
+                            .then((f) => Promise.all(f.map(e => {
+                                if (e !== 'work') {
+                                    fs.promises.unlink(path.join(Directories.inPackagesSteam(selectedAddon.targetDirectory), e));
+                                }
+                            })));
+                    }
+                    setCurrentInstallStatus(InstallStatus.NotInstalled);
+                    setCurrentlyInstalledTrack(null);
+                }}/>
+        );
     };
 
     const selectAndSetTrack = (key: string) => {

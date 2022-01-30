@@ -62,6 +62,8 @@ module.exports = {
     },
     variants: {
         extend: {
+            boxShadow: ['active'],
+            translate: ['active'],
             brightness: ['hover', 'focus'],
             backgroundColor: ['first'],
         }
