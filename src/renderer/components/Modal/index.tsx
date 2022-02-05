@@ -36,6 +36,7 @@ interface BaseModalProps {
 interface PromptModalProps extends BaseModalProps {
     onConfirm?: () => void;
     onCancel?: () => void;
+    confirmColor?: string;
     confirmText?: string;
     cancelText?: string;
 }
@@ -52,8 +53,22 @@ export const PromptModal: FC<PromptModalProps> = ({
     onConfirm,
     onCancel,
     confirmText,
+    confirmColor,
     cancelText,
 }) => {
+
+    const colors = (color: string) => {
+        switch (color) {
+            case 'red':
+                return 'bg-red-600 text-white';
+            case 'cyan':
+                return 'bg-cyan text-navy';
+            case 'green':
+            default:
+                return 'bg-green-500 text-white';
+        }
+    };
+
     const { popModal } = useModals();
 
     const handleConfirm = () => {
@@ -79,7 +94,7 @@ export const PromptModal: FC<PromptModalProps> = ({
                     {cancelText ?? 'Cancel'}
                 </div>
                 <div
-                    className="py-2 px-8 w-full text-xl text-center rounded-md bg-cyan font-bold text-navy cursor-pointer hover:bg-opacity-60"
+                    className={'py-2 px-8 w-full text-xl text-center rounded-md ' + colors(confirmColor) + ' font-bold  cursor-pointer hover:bg-opacity-60'}
                     onClick={handleConfirm}
                 >
                     {confirmText ?? 'Confirm'}

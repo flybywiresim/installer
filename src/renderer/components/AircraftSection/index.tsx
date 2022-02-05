@@ -447,8 +447,9 @@ export const AircraftSection = (): JSX.Element => {
     const uninstallAddon = async () => {
         showModal(
             <PromptModal
-                title="Are you sure you want to do this?"
+                title='Are you sure you want to do this?'
                 bodyText={`You are about to uninstall the addon ${selectedAddon.name}. You cannot undo this, except by reinstalling.`}
+                confirmColor='red'
                 onConfirm={async () => {
                     const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
                     console.log('uninstalling ', installedTrack);
