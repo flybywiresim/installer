@@ -82,7 +82,7 @@ export const PromptModal: FC<PromptModalProps> = ({
     };
 
     return (
-        <div className="p-8 w-5/12 rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
+        <div className="p-8 w-5/12 max-w-screen-sm rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
             <h2 className="font-bold text-quasi-white">{title}</h2>
             <p className="mt-4">{bodyText}</p>
 
