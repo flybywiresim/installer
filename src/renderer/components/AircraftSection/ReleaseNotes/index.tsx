@@ -43,7 +43,7 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
                 </div>
             </div>
             <ReactMarkdown
-                className="markdown-body"
+                className="markdown-body-releasenotes"
                 children={release.body ?? ''}
                 remarkPlugins={[remarkGfm]}
                 linkTarget={"_blank"}

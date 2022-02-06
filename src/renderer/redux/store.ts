@@ -3,7 +3,6 @@ import {
     ChangelogState,
     DownloadsState,
     AddonAndTrackLatestVersionNamesState,
-    ShowWarningModalState,
     ReleaseNotesState
 } from "renderer/redux/types";
 import { InstallStatus } from "renderer/components/AircraftSection";
@@ -29,7 +28,6 @@ if (module.hot) {
 export type InstallerStore = {
     downloads: DownloadsState,
     changelog: ChangelogState,
-    warningModal: ShowWarningModalState,
     installStatus: Record<string, InstallStatus>,
     selectedTracks: Record<string, AddonTrack>,
     installedTracks: Record<string, AddonTrack>,

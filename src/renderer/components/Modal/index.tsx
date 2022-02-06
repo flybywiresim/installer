@@ -1,4 +1,8 @@
+import { useSetting } from 'common/settings';
 import React, { createContext, FC, useContext, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import "./index.css";
 
 interface ModalContextInterface{
     showModal: (modal: JSX.Element) => void;
@@ -31,6 +35,7 @@ export const ModalProvider: FC = ({ children }) => {
 interface BaseModalProps {
     title: string;
     bodyText: string;
+    dontShowAgainSettingName?: string;
 }
 
 interface PromptModalProps extends BaseModalProps {
@@ -55,7 +60,11 @@ export const PromptModal: FC<PromptModalProps> = ({
     confirmText,
     confirmColor,
     cancelText,
+    dontShowAgainSettingName
 }) => {
+
+    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
+    const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
     const colors = (color: string) => {
         switch (color) {
@@ -72,6 +81,9 @@ export const PromptModal: FC<PromptModalProps> = ({
     const { popModal } = useModals();
 
     const handleConfirm = () => {
+        if (dontShowAgainSettingName) {
+            setDontShowAgain(checkMark);
+        }
         onConfirm?.();
         popModal();
     };
@@ -81,10 +93,29 @@ export const PromptModal: FC<PromptModalProps> = ({
         popModal();
     };
 
+    if (dontShowAgain) {
+        handleConfirm();
+    }
+
     return (
         <div className="p-8 w-5/12 max-w-screen-sm rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
             <h2 className="font-bold text-quasi-white">{title}</h2>
-            <p className="mt-4">{bodyText}</p>
+            <ReactMarkdown
+                className="mt-4 markdown-body-modal"
+                children={bodyText}
+                remarkPlugins={[remarkGfm]}
+                linkTarget={"_blank"}
+            />
+
+            {dontShowAgainSettingName ? <div className="w-auto space-x-4 mt-8">
+                <input
+                    type="checkbox"
+                    checked={checkMark}
+                    onChange={() => setCheckMark(!checkMark)}
+                    className=" w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
+                />
+                <span className="ml-2">Don't show me this again</span>
+            </div> : <div></div>}
 
             <div className="flex flex-row mt-8 space-x-4">
                 <div
@@ -109,18 +140,46 @@ export const AlertModal: FC<AlertModalProps> = ({
     bodyText,
     onAcknowledge,
     acknowledgeText,
+    dontShowAgainSettingName
 }) => {
+
+    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
+    const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
+
     const { popModal } = useModals();
 
     const handleAcknowledge = () => {
+        if (dontShowAgainSettingName) {
+            setDontShowAgain(checkMark);
+        }
         onAcknowledge?.();
         popModal();
     };
 
+    if (dontShowAgain) {
+        handleAcknowledge();
+    }
+
     return (
         <div className="p-8 w-5/12 rounded-xl border-2 bg-theme-body border-theme-accent">
             <h1 className="font-bold">{title}</h1>
-            <p className="mt-4">{bodyText}</p>
+            <ReactMarkdown
+                className="mt-4 markdown-body-modal"
+                children={bodyText}
+                remarkPlugins={[remarkGfm]}
+                linkTarget={"_blank"}
+            />
+
+            {dontShowAgainSettingName ? <div className="w-auto space-x-4 mt-8">
+                <input
+                    type="checkbox"
+                    checked={checkMark}
+                    onChange={() => setCheckMark(!checkMark)}
+                    className=" w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
+                />
+                <span className="ml-2">Don't show me this again</span>
+            </div> : <div></div>}
+
             <div
                 className="py-2 px-8 mt-8 text-center rounded-md bg-theme-highlight text-theme-body"
                 onClick={handleAcknowledge}

@@ -1,4 +1,3 @@
-import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { ReleaseInfo } from "renderer/utils/AddonData";
 
 export interface DownloadItem {
@@ -9,12 +8,6 @@ export interface DownloadItem {
 }
 
 export type DownloadsState = DownloadItem[];
-
-export interface ShowWarningModalState {
-    showWarningModal: boolean,
-    track: null | AddonTrack,
-    selectedAddon: Addon
-}
 
 export interface ReleaseData {
     name: string;
