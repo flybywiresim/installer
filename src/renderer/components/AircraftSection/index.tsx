@@ -19,7 +19,6 @@ import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
 import { deleteDownload, registerNewDownload, updateDownloadProgress } from 'renderer/redux/features/downloads';
-import { callWarningModal } from "renderer/redux/features/warningModal";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
@@ -447,8 +446,9 @@ export const AircraftSection = (): JSX.Element => {
     const uninstallAddon = async () => {
         showModal(
             <PromptModal
-                title="Are you sure you want to do this?"
+                title='Are you sure you want to do this?'
                 bodyText={`You are about to uninstall the addon ${selectedAddon.name}. You cannot undo this, except by reinstalling.`}
+                confirmColor='red'
                 onConfirm={async () => {
                     const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
                     console.log('uninstalling ', installedTrack);
@@ -486,12 +486,16 @@ export const AircraftSection = (): JSX.Element => {
     const handleTrackSelection = (track: AddonTrack) => {
         if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep) {
             if (track.isExperimental) {
-                dispatch(
-                    callWarningModal({
-                        showWarningModal: track.isExperimental,
-                        track: track,
-                        selectedAddon: selectedAddon,
-                    }));
+                showModal(
+                    <PromptModal
+                        title='Warning!'
+                        bodyText={track.warningContent}
+                        confirmColor='green'
+                        onConfirm={()=> {
+                            selectAndSetTrack(track.key);
+                        }}
+                        dontShowAgainSettingName='mainSettings.disableExperimentalWarning'
+                    />);
             } else {
                 selectAndSetTrack(track.key);
             }
