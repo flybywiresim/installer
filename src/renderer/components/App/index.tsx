@@ -109,24 +109,7 @@ const App = () => {
         return () => clearInterval(updateCheck);
     }, []);
 
-    const [snowRate, setSnowRate] = useState(1000);
     const [seasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
-
-    useEffect(() => {
-        if (seasonalEffects) {
-            const id = setInterval(() => {
-                setSnowRate(sr => {
-                    if (sr >= 60) {
-                        return sr - 20;
-                    } else {
-                        return sr;
-                    }
-                });
-            }, 250);
-
-            return () => clearInterval(id);
-        }
-    }, [seasonalEffects]);
 
     return (
         <>
@@ -160,13 +143,6 @@ const App = () => {
                                     ))}
                                 </NavBar>
                             </div>
-
-                            {seasonalEffects && (
-                                <Snowfall
-                                    style={{ position: 'absolute', inset: 0, zIndex: 100 }}
-                                    snowflakeCount={snowRate}
-                                />
-                            )}
 
                             <div className="bg-navy m-0 w-full flex">
                                 <Switch>
