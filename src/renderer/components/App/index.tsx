@@ -15,7 +15,6 @@ import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
-import Snowfall from 'react-snowfall';
 import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import settings, { useSetting } from 'common/settings';
