@@ -5,7 +5,6 @@ import { Logo } from "renderer/components/Logo";
 import { SettingsSection } from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
 import { AircraftSection } from 'renderer/components/AircraftSection';
-import { ChangelogModal } from '../ChangelogModal';
 import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
 import InstallerUpdate from "renderer/components/InstallerUpdate";
@@ -112,7 +111,6 @@ const App = () => {
     return (
         <>
             <ErrorModal/>
-            <ChangelogModal />
 
             <ModalContainer />
 

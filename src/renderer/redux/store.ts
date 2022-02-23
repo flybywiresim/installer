@@ -1,6 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import {
-    ChangelogState,
     DownloadsState,
     AddonAndTrackLatestVersionNamesState,
     ReleaseNotesState
@@ -27,7 +26,6 @@ if (module.hot) {
 
 export type InstallerStore = {
     downloads: DownloadsState,
-    changelog: ChangelogState,
     installStatus: Record<string, InstallStatus>,
     selectedTracks: Record<string, AddonTrack>,
     installedTracks: Record<string, AddonTrack>,
