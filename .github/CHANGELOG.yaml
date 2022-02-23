@@ -1,0 +1,212 @@
+# Changelog
+
+# ⚠⚠ Please follow the format provided ⚠⚠
+#  - name: version number
+#    changes:
+#      - title: Title of changes
+#        categories: [CHANGED AREA]
+#        authors: [YourName]
+
+
+releases:
+  - name: 3.0.0
+    changes:
+      - title: Complete Redesign of the installer UI
+        cateories: [UI]
+        authors: [holland, Erick, FoxtrotSierra, GhostEagle68]
+      - title: Add ReleaseNotes Tab
+        cateories: [Features]
+        authors: [Erick]
+      - title: Add publisher quicklinks to the sidebar
+        cateories: [UX]
+        authors: [holland, Erick, GhostEagle68]
+      - title: Add autostart functionality
+        categories: [Features]
+        authors: [Erick]
+      - title: Add uninstall functionality
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+      - title: Fix only last started download abortable on parallel downloads
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+      - title: Search for updates every 5 minutes
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+  - name: 2.2.2
+    changes:
+      - title: Enable experimental version for A32NX
+        categories: [ADDONS]
+        authors: [holland]
+  - name: 2.2.1
+    changes:
+      - title: KFBW is now visible to everyone
+        categories: [ADDONS]
+        authors: [FoxtrotSierra]
+  - name: 2.2.0
+    changes:
+      - title: Prepare Installer to be able to handle multiple addons
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+  - name: 2.1.1
+    changes:
+      - title: Fix error during configuration of community directory
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+      - title: Disable experimental version for A32NX
+        categories: [ADDONS]
+        authors: [FoxtrotSierra]
+  - name: 2.1.0
+    changes:
+      - title: Add ability to change date layout
+        categories: [UX]
+        authors: [FoxtrotSierra]
+      - title: Add progress bar to taskbar tab to show installation progress
+        categories: [UX]
+        authors: [Erick]
+      - title: Add ability to show third party licenses
+        categories: [LOGIC]
+        authors: [nistei]
+      - title: Add Synaptic Simulations A22X placeholder
+        categories: [ADDONS]
+        authors: [MikeRomaa]
+  - name: 2.0.1
+    changes:
+      - title: Fix error during configuration of settings on first installation
+        categories: [LOGIC]
+        authors: [nistei]
+      - title: Change link to experimental guide
+        categories: [ADDONS]
+        authors: [FoxtrotSierra]
+  - name: 2.0.0
+    changes:
+      - title: Installation method changed from Electron-Forge/Squirel to electron-builder/NSIS to prevent future memory leaks during update
+        categories: [LOGIC]
+        authors: [holland, FoxtrotSierra]
+      - title: Remove converted livery packages if conversion failed
+        categories: [LOGIC]
+        authors: [holland]
+      - title: "Rename #help to #support to adopt current Discord channel naming"
+        categories: [UI]
+        authors: [SjotgunSjonnie, FoxtrotSierra]
+      - title: Request the user to set 'Community' folder manually if it cannot be found, fixes error message
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+      - title: Update 'Experimental' version text for A32NX
+        categories: [ADDONS]
+        authors: [FoxtrotSierra]
+  - name: 1.2.0
+    changes:
+      - title: Complete redesign of the installer
+        categories: [UI]
+        authors: [holland, FoxtrotSierra]
+      - title: Add livery conversion tool
+        categories: [LOGIC]
+        authors: [holland]
+      - title: Cleanup of old temporary directories on installer close and startup
+        categories: [LOGIC]
+        authors: [nistei]
+  - name: 1.1.4
+    changes:
+      - title: Improved error prevention while downloading an update
+        categories: [LOGIC]
+        authors: [nistei]
+      - title: Fix click on cancel causing a retry
+        categories: [LOGIC]
+        authors: [nistei]
+  - name: 1.1.3
+    changes:
+      - title: Fix downloads failing in encrypted directories
+        categories: [LOGIC]
+        authors: [nistei]
+      - title: Add retries for failed installs
+        categories: [LOGIC]
+        authors: [nistei]
+      - title: Add "Experimental" version for A32NX
+        categories: [ADDONS]
+        authors: [holland]
+  - name: 1.1.1
+    changes:
+      - title: Fix full downloads broken for some users
+        categories: [LOGIC]
+        authors: [nistei]
+  - name: 1.1.0
+    changes:
+      - title: Prevent text selection
+        categories: [UI]
+        authors: [FoxtrotSierra]
+      - title: Prevent image dragging
+        categories: [UI]
+        authors: [FoxtrotSierra]
+      - title: Disable preselecting different versions while downloading
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+        - title: Add Windows notification when download complete
+        categories: [UX]
+        authors: [FoxtotSierra]
+      - title: Add changelog for the installer
+        categories: [UX]
+        authors: [FoxtrotSierra]
+      - title: Fix button styling in settings menu
+        categories: [UI]
+        authors: [FoxtrotSierra]
+      - title: Add report issue button at top right corner of installer
+        categories: [UX]
+        authors: [Armankir]
+      - title: Improved scrollbar color for eased visibility
+        categories: [UI]
+        authors: [Armankir]
+      - title: New version selector UI
+        categories: [UI]
+        authors: [Marcsoler, Falcon]
+      - title: Add warning message for experimental versions
+        categories: [UX]
+        authors: [Falcon]
+      - title: Implement modular download
+        categories: [LOGIC]
+        authors: [nistei]
+      - title: Fix background image remaining black
+        categories: [UI]
+        authors: [FoxtrotSierra]
+      - title: Fix window icon on hover
+        categories: [UI]
+        authors: [FoxtrotSierra]
+      - title: Fix unknown download state after switching tabs
+        categories: [LOGIC]
+        authors: [FoxtrotSierra]
+  - name: 1.0.5
+    changes:
+      - title: Disable offline modal due to issues
+        categories: [UX]
+        authors: [Falcon]
+  - name: 1.0.4
+    changes:
+      - title: Change CDN (download server)
+        categories: [LOGIC]
+        authors: [Falcon]
+  - name: 1.0.3
+    changes:
+      - title: Improve 'MSFS is open' logic
+        categories: [LOGIC]
+        authors: [Falcon]
+  - name: 1.0.2
+    changes:
+      - title: Kill unnecessary child processes
+        categories: [LOGIC]
+        authors: [nistei]
+  - name: 1.0.1
+    changes:
+      - title: Fix side menu install state - @Benjozork (Benjamin Dupont)
+        categories: [LOGIC]
+        authors: [holland]
+      - title: Change A380X status from 'not installed' to 'not available'
+        categories: [UI]
+        authors: [Falcon]
+      - title: More accurate 'is installed' logic
+        categories: [LOGIC]
+        authors: [Falcon]
+      - title: Change version name from 'FBW' to 'Custom FBW'
+        categories: [UI]
+        authors: [Falcon]
+  - name: 1.0.0
+    changes:
+      - title: Initial Release
