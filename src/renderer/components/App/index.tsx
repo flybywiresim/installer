@@ -107,8 +107,6 @@ const App = () => {
         return () => clearInterval(updateCheck);
     }, []);
 
-    const [seasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
-
     return (
         <>
             <ErrorModal/>
