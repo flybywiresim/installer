@@ -27,4 +27,8 @@ module.exports = [
         test: /\.md$/i,
         use: 'raw-loader',
     },
+    {
+        test: /\.ya?ml$/,
+        use: 'js-yaml-loader',
+    },
 ];

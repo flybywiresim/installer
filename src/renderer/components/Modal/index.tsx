@@ -1,8 +1,12 @@
-import { useSetting } from 'common/settings';
+import settings, { useSetting } from 'common/settings';
 import React, { createContext, FC, useContext, useState } from 'react';
+import { Dot, X } from 'react-bootstrap-icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import "./index.css";
+// @ts-ignore
+import changelog from './../../../../.github/CHANGELOG.yaml';
+import * as packageInfo from '../../../../package.json';
 
 interface ModalContextInterface{
     showModal: (modal: JSX.Element) => void;
@@ -190,7 +194,75 @@ export const AlertModal: FC<AlertModalProps> = ({
     );
 };
 
+export const ChangelogModal: React.FC = () => {
+    interface ChangelogType {
+        releases: Release[];
+    }
+    interface Release {
+        name: string;
+        changes: Change[];
+    }
+    interface Change {
+        title: string;
+        categories: string[];
+        authors: string[];
+    }
+    const { popModal } = useModals();
+
+    const handleClose = () => {
+        popModal();
+    };
+
+    return (
+        <div className="p-8 w-5/12 max-w-screen-sm rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
+            <div className="flex flex-row w-full justify-between items-center">
+                <h2 className="font-bold text-quasi-white">{'Changelog'}</h2>
+                <div
+                    onClick={handleClose}
+                >
+                    <X className="text-red-600 hover:text-red-500" size={50} strokeWidth={1} />
+                </div>
+            </div>
+            <div className="mt-4 h-96 overflow-y-scroll">
+                {(changelog as ChangelogType).releases.map((release) => <div className="mb-6">
+                    <div className="text-4xl font-bold mb-2">{release.name}</div>
+                    {release.changes.map((change) => <div className="mb-4 flex">
+                        <div className="w-7">
+                            <Dot className="" size={20} strokeWidth={1}/>
+                        </div>
+                        <div className="flex-1">
+                            <div className="inline-block">
+                                {change.categories ? change.categories.map((category) =>
+                                    <div className="bg-navy-light border-2 border-cyan rounded-md px-1 py-0 w-auto text-center inline-block mr-2">
+                                        {category}
+                                    </div>) : <></>}
+                                {change.title}
+                            </div>
+                            <div className="flex flex-row justify-start mt-1">
+                                {change.authors ? change.authors.map((author, index) =>
+                                    <div>
+                                        {index == 0 ? 'by ' + author : ', ' + author}
+                                    </div>) : <></>}
+                            </div>
+                        </div>
+                    </div>)}
+                </div>)}
+            </div>
+        </div>
+    );
+};
+
 export const ModalContainer: FC = () => {
+
+    const onVersionChanged = () => {
+        const { showModal } = useModals();
+
+        if (packageInfo.version !== settings.get<string>('metaInfo.lastVersion')) {
+            settings.set('metaInfo.lastVersion', packageInfo.version);
+            showModal(<ChangelogModal/>);
+        }
+    };
+    onVersionChanged();
     const { modal } = useModals();
 
     return (
