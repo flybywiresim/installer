@@ -215,12 +215,13 @@ export const ChangelogModal: React.FC = () => {
 
     return (
         <div className="p-8 w-5/12 max-w-screen-sm rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
-            <div className="flex flex-row w-full justify-between items-center">
-                <h2 className="font-bold text-quasi-white">{'Changelog'}</h2>
+            <div className="flex flex-row w-full justify-between items-start">
+                <h2 className="leading-none font-bold text-quasi-white">{'Changelog'}</h2>
                 <div
+                    className=""
                     onClick={handleClose}
                 >
-                    <X className="text-red-600 hover:text-red-500" size={50} strokeWidth={1} />
+                    <X className="text-red-600 hover:text-red-500 -my-14.06px -mx-14.06px" size={50} strokeWidth={1} />
                 </div>
             </div>
             <div className="mt-4 h-96 overflow-y-scroll">
@@ -232,11 +233,11 @@ export const ChangelogModal: React.FC = () => {
                         </div>
                         <div className="flex-1">
                             <div className="inline-block">
+                                {change.title}
                                 {change.categories ? change.categories.map((category) =>
-                                    <div className="bg-navy-light border-2 border-cyan rounded-md px-1 py-0 w-auto text-center inline-block mr-2">
+                                    <div className="bg-navy-light border border-cyan rounded-md px-1 py-0 w-auto text-center inline-block ml-2 leading-tight">
                                         {category}
                                     </div>) : <></>}
-                                {change.title}
                             </div>
                             <div className="flex flex-row justify-start mt-1">
                                 {change.authors ? change.authors.map((author, index) =>
