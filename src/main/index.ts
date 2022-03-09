@@ -24,10 +24,10 @@ const serve = process.argv.slice(1).some((arg) => arg === "--serve");
 const createWindow = (): void => {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        height: 1000,
         width: 1400,
+        height: 950,
         minWidth: 1300,
-        minHeight: 700,
+        minHeight: 880,
         frame: false,
         icon: 'src/main/icons/icon.ico',
         backgroundColor: '#1b2434',
