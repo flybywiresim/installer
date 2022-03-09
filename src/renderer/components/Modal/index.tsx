@@ -103,9 +103,9 @@ export const PromptModal: FC<PromptModalProps> = ({
 
     return (
         <div className="p-8 w-5/12 max-w-screen-sm rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
-            <h2 className="font-bold text-quasi-white">{title}</h2>
+            <h2 className="leading-none font-bold text-quasi-white">{title}</h2>
             <ReactMarkdown
-                className="mt-4 markdown-body-modal"
+                className="mt-6 markdown-body-modal"
                 children={bodyText}
                 remarkPlugins={[remarkGfm]}
                 linkTarget={"_blank"}
@@ -166,9 +166,9 @@ export const AlertModal: FC<AlertModalProps> = ({
 
     return (
         <div className="p-8 w-5/12 rounded-xl border-2 bg-theme-body border-theme-accent">
-            <h1 className="font-bold">{title}</h1>
+            <h1 className="leading-none font-bold">{title}</h1>
             <ReactMarkdown
-                className="mt-4 markdown-body-modal"
+                className="mt-6 markdown-body-modal"
                 children={bodyText}
                 remarkPlugins={[remarkGfm]}
                 linkTarget={"_blank"}
