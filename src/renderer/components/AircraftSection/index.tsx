@@ -805,7 +805,7 @@ export const AircraftSection = (): JSX.Element => {
                                 <div
                                     className="h-1/2 relative bg-cover bg-center"
                                     style={{
-                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url(${selectedAddon.backgroundImageUrls[0]})`,
+                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)), url(${selectedAddon.backgroundImageUrls[0]})`,
                                     }}
                                 >
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">

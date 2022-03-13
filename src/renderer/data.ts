@@ -35,7 +35,7 @@ export const defaultConfiguration: Configuration = {
                     enabled: true,
                     menuIconUrl: A320NoseSVG,
                     // TODO: Change this
-                    backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-a32nx/0.png'],
+                    backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-a32nx/1.png'],
                     shortDescription: 'Airbus A320neo Series',
                     description: 'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
                         'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +
