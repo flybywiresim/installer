@@ -19,7 +19,3 @@ export interface ReleaseData {
 export type ReleaseNotesState = ReleaseData[];
 
 export type AddonAndTrackLatestVersionNamesState = { [addonKey: string]: { [trackKey: string]: ReleaseInfo } }
-
-export interface ChangelogState {
-    showChangelog: boolean
-}

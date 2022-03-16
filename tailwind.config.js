@@ -21,6 +21,10 @@ module.exports = {
                 '520px': '520px',
                 '700px': '700px',
             },
+            spacing: {
+                '14.06px': '14.06px',
+                '17.01px': '17.01px',
+            },
             colors: {
                 'quasi-white': '#FAFAFA',
                 grey:  {

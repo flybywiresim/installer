@@ -4,11 +4,9 @@ import * as packageInfo from "../../../../package.json";
 import path from "path";
 import fs from "fs";
 import { shell } from "electron";
-import { callChangelog } from "renderer/redux/features/changelog";
-import { useAppDispatch } from "renderer/redux/store";
+import { ChangelogModal, useModals } from "../Modal";
 
 export const AboutSettings: FC = () => {
-    const dispatch = useAppDispatch();
 
     const [logoRotation, setLogoRotation] = useState(0);
 
@@ -19,10 +17,6 @@ export const AboutSettings: FC = () => {
             setLogoRotation(0);
         }
     });
-
-    const handleShowChangelog = () => {
-        dispatch(callChangelog({ showChangelog: true }));
-    };
 
     const handleOpenThirdPartyLicenses = () => {
         const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
@@ -40,6 +34,8 @@ export const AboutSettings: FC = () => {
         setLogoRotation((old) => old + 360);
     };
 
+    const { showModal } = useModals();
+
     return (
         <div className="h-full flex flex-col gap-y-8 px-16 justify-center">
             <div className="flex flex-row items-center gap-x-10">
@@ -47,7 +43,9 @@ export const AboutSettings: FC = () => {
 
                 <div className="flex flex-col gap-y-3">
                     <span className="text-4xl font-manrope font-bold">FlyByWire Installer</span>
-                    <a className="text-2xl text-gray-400 hover:text-gray-600 font-manrope font-bold" onClick={handleShowChangelog}>v{packageInfo.version}</a>
+                    <a className="text-2xl text-gray-400 hover:text-gray-600 font-manrope font-bold" onClick={() => {
+                        showModal(<ChangelogModal/>);
+                    }}>v{packageInfo.version}</a>
                 </div>
             </div>
 
