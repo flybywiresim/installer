@@ -13,7 +13,7 @@ export const NavBar: FC = ({ children }) => {
     const bg = darkTheme ? 'bg-navy-dark' : 'bg-navy';
 
     return (
-        <div className={`${bg} p-5 flex flex-col justify-between h-full`}>
+        <div className={`${bg} px-6 py-7 border-r border-navy-light flex flex-col justify-between h-full`}>
             <div className="flex flex-col gap-y-5">
                 {children}
             </div>
@@ -32,7 +32,7 @@ export const NavBar: FC = ({ children }) => {
     );
 };
 
-const BASE_STYLE = "w-20 h-20 shadow-md hover:shadow-lg flex flex-col justify-center items-center rounded-md border-2 border-navy-light bg-transparent hover:bg-navy-light transition duration-200";
+const BASE_STYLE = "w-20 h-20 flex flex-col justify-center items-center rounded-md bg-transparent hover:bg-navy-light transition duration-200";
 
 export interface NavBarItemProps {
     to: string;

@@ -80,7 +80,8 @@ export type Definition = AddonCategoryDefinition
 
 interface BasePublisherButton {
     text: string,
-    icon: string,
+    style?: 'normal' | 'big',
+    icon?: string,
     inline?: boolean,
     inop?: true,
     forceStroke?: true,

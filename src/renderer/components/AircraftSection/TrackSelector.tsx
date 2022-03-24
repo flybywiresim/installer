@@ -28,13 +28,13 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
 
     return (
         <div
-            className={`w-60 flex flex-row items-center relative bg-navy text-white rounded-sm-md border-2 border-transparent transition-all duration-200 cursor-pointer ${isSelected && 'border-cyan text-cyan'}`}
+            className={`w-60 flex flex-row items-center relative text-white rounded-sm-md border-2 border-gray-700 hover:border-gray-300 hover:text-gray-300 transition-all duration-200 cursor-pointer ${isSelected && 'border-cyan text-cyan'}`}
             onClick={() => handleSelected(track)}
         >
             <div className={`w-1 h-12 rounded-r-xl transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
             <div className="flex flex-col px-3 py-2.5">
                 <span className="text-xl text-current">{track.name}</span>
-                <span className="text-2xl font-manrope font-bold text-current mt-0.5">{latestVersionName}</span>
+                <span className="text-3xl font-manrope font-medium text-current mt-0.5">{latestVersionName}</span>
             </div>
             {isInstalled && (
                 <Check className={`absolute right-4 text-cyan stroke-current`} strokeWidth={3}/>

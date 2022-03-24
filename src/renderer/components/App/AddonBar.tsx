@@ -7,6 +7,8 @@ import { useParams } from "react-router-dom";
 import { useAppSelector } from "renderer/redux/store";
 import { AircraftSectionURLParams, InstallStatus } from "../AircraftSection";
 import { useIsDarkTheme } from "common/settings";
+import { Button } from "renderer/components/Button";
+import { ChevronRight } from "tabler-icons-react";
 
 export interface AddonBarProps {
     publisher: Publisher,
@@ -56,9 +58,9 @@ export const AddonBar: FC = ({ children }) => {
     const textClass = darkTheme ? 'text-quasi-white' : 'text-navy';
 
     return (
-        <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy' : 'bg-quasi-white'} px-6 py-7 h-full`}>
+        <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
-                <h2 className={`${textClass} font-extrabold -mb-1`}>{publisherData.name}</h2>
+                <h2 className={`${textClass} font-bold -mb-1`}>{publisherData.name}</h2>
             </div>
 
             {children}
@@ -83,22 +85,17 @@ export interface AddonBarItemProps {
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
     const installStatus = useAppSelector(state => state.installStatus[addon.key]);
 
-    const darkTheme = useIsDarkTheme();
-
-    const defaultBorderStyle = darkTheme ? 'border-navy' : 'border-quasi-white';
-
-    const enabledUnselectedStyle = darkTheme ? 'bg-navy-light text-quasi-white' : 'bg-grey-medium text-navy';
-
-    const dependantStyles = selected ? ` bg-gradient-to-l from-cyan to-blue-500 text-white` : `${enabledUnselectedStyle} ${enabled && 'hover:border-cyan'}`;
+    const background = selected ? `bg-cyan text-navy-dark` : `bg-transparent text-quasi-white`;
+    const border = `${selected ? 'border-cyan' : 'border-navy-light'} ${enabled ? 'hover:border-cyan' : ''}`;
 
     return (
         <div
-            className={`w-full relative p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full p-6 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${border} ${background} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={enabled ? onClick : undefined}
         >
-            <h1 className="text-xl text-current font-bold">{addon.aircraftName}</h1>
+            <span className="text-2xl text-current font-manrope font-medium mb-2.5">{addon.aircraftName}</span>
             <div className="flex flex-row justify-between mt-1">
-                <img className="h-10 w-max" src={selected || darkTheme ? addon.titleImageUrlSelected : addon.titleImageUrl} />
+                <img className="h-10 w-max" src={selected ? addon.titleImageUrl : addon.titleImageUrlSelected} />
                 <AddonBarItemStatus status={installStatus} />
             </div>
         </div>
@@ -114,7 +111,7 @@ const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
         case InstallStatus.UpToDate:
         case InstallStatus.TrackSwitch:
         case InstallStatus.GitInstall:
-            return <Check2 className="mt-1.5" size={32}/>;
+            return <Check2 size={27} />;
         case InstallStatus.DownloadPrep:
         case InstallStatus.Decompressing:
         case InstallStatus.Downloading:
@@ -131,8 +128,6 @@ interface AddonBarPublisherButtonProps {
 }
 
 const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) => {
-    const darkTheme = useIsDarkTheme();
-
     const handleClick = async () => {
         switch (button.action) {
             case 'openBrowser':
@@ -145,25 +140,37 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
 
     const ButtonIcon = (BootstrapIcons as Record<string, Icon>)[button.icon] ?? 'span';
 
-    const backgroundStyle = darkTheme ? 'bg-navy-light hover:bg-navy-lightest' : 'bg-gray-200 hover:bg-gray-300';
+    if (!button.style || button.style === 'normal') {
+        return (
+            <Button
+                className="w-full flex flex-row justify-center items-center"
+                disabled={button.inop}
+                onClick={handleClick}
+            >
+                <span className="w-0 relative">
+                    {button.forceStroke ? (
+                        <ButtonIcon size={24} fill="none" stroke="black" strokeWidth={.75} />
+                    ) : (
+                        <ButtonIcon size={24} />
+                    )}
+                </span>
 
-    return (
-        <button
-            className={`w-full h-16 flex flex-row justify-center items-center px-5 py-3 ${backgroundStyle} rounded-md`}
-            disabled={button.inop}
-            onClick={handleClick}
-        >
-            <span className="w-full h-12 flex flex-row justify-start items-center">
-                {button.forceStroke ? (
-                    <ButtonIcon size={24} fill="none" stroke="black" strokeWidth={.75} />
-                ) : (
-                    <ButtonIcon size={24} />
-                )}
+                {button.text}
+            </Button>
+        );
+    } else {
 
-                {button.text.length > 0 && (
-                    <span className="font-manrope font-bold ml-4" style={{ fontSize: '18px' }}>{button.text}</span>
-                )}
-            </span>
-        </button>
-    );
+        return (
+            <button
+                className="w-full flex flex-row justify-between items-center px-8 py-6 text-4xl border-2 border-navy-light hover:border-cyan transition duration-200 rounded-md"
+                disabled={button.inop}
+                onClick={handleClick}
+            >
+                <span className="pt-1">{button.text}</span>
+
+                <ChevronRight size={32} />
+            </button>
+        );
+    }
+
 };

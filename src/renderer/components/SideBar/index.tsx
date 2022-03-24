@@ -36,7 +36,7 @@ export const SideBarItem: FC<SideBarItemProps> = ({ enabled = true, selected = f
 
     return (
         <div
-            className={`w-full relative p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full relative p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} no-underline ${className}`}
             onClick={enabled ? onClick : undefined}
         >
             {children}
@@ -51,7 +51,7 @@ export const SideBarTitle: FC = ({ children }) => {
 
     return (
         <div className="flex flex-col -space-y-7">
-            <h2 className={`${textClass} font-extrabold -mb-1`}>{children}</h2>
+            <h2 className={`${textClass} font-bold -mb-1`}>{children}</h2>
         </div>
     );
 };
@@ -64,7 +64,7 @@ export const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => {
     const match = useRouteMatch(to);
 
     return (
-        <NavLink to={to}>
+        <NavLink to={to} className="no-underline">
             <SideBarItem selected={!!match}>
                 {children}
             </SideBarItem>
