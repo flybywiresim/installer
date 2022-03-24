@@ -5,7 +5,7 @@ import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
 import { Track, Tracks } from "renderer/components/AircraftSection/TrackSelector";
-import { FragmenterInstaller, needsUpdate, getCurrentInstall } from "@flybywiresim/fragmenter";
+import { FragmenterInstaller, getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
 import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
 import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
@@ -24,6 +24,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
+import { Button, ButtonType } from "renderer/components/Button";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -53,21 +54,26 @@ enum MsfsStatus {
 }
 
 interface InstallButtonProps {
+    type?: ButtonType,
+    disabled?: boolean,
     className?: string;
     onClick?: () => void;
 }
 
 export const InstallButton: FC<InstallButtonProps> = ({
-    children,
-    className,
+    type = ButtonType.Neutral,
+    disabled = false,
     onClick,
+    children,
 }) => (
-    <div
-        className={`w-64 h-16 text-white font-bold text-2xl rounded-md p-4 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer transition duration-200 ${className}`}
+    <Button
+        type={type}
+        disabled={disabled}
+        className={`w-64`}
         onClick={onClick}
     >
         {children}
-    </div>
+    </Button>
 );
 
 const StateText: FC = ({ children }) => (
@@ -80,7 +86,7 @@ interface SideBarLinkProps {
 
 const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
     <NavLink
-        className="flex flex-row items-center gap-x-5 justify-center text-2xl text-white hover:text-cyan"
+        className="w-full flex flex-row items-center gap-x-5 text-2xl text-white font-manrope font-bold hover:text-cyan no-underline"
         activeClassName="text-cyan"
         to={to}
     >
@@ -446,9 +452,9 @@ export const AircraftSection = (): JSX.Element => {
     const uninstallAddon = async () => {
         showModal(
             <PromptModal
-                title='Are you sure you want to do this?'
+                title='Are you sure?'
                 bodyText={`You are about to uninstall the addon ${selectedAddon.name}. You cannot undo this, except by reinstalling.`}
-                confirmColor='red'
+                confirmColor={ButtonType.Danger}
                 onConfirm={async () => {
                     const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
                     console.log('uninstalling ', installedTrack);
@@ -490,7 +496,7 @@ export const AircraftSection = (): JSX.Element => {
                     <PromptModal
                         title='Warning!'
                         bodyText={track.warningContent}
-                        confirmColor='green'
+                        confirmColor={ButtonType.Caution}
                         onConfirm={()=> {
                             selectAndSetTrack(track.key);
                         }}
@@ -595,106 +601,74 @@ export const AircraftSection = (): JSX.Element => {
     const ActiveInstallButton = (): JSX.Element => {
         if (msfsIsOpen !== MsfsStatus.Closed) {
             return (
-                <InstallButton className="bg-gray-700 text-grey-medium pointer-events-none">
+                <InstallButton disabled>
                     Unavailable
                 </InstallButton>
             );
         }
 
         switch (getCurrentInstallStatus()) {
+            case InstallStatus.DownloadDone:
             case InstallStatus.UpToDate:
                 return (
-                    <InstallButton className="pointer-events-none bg-green-500">
+                    <InstallButton disabled type={ButtonType.Positive}>
                         Installed
                     </InstallButton>
                 );
             case InstallStatus.NeedsUpdate:
                 return (
-                    <InstallButton
-                        className="bg-yellow-500 hover:bg-yellow-400"
-                        onClick={handleInstall}
-                    >
+                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
                         Update
                     </InstallButton>
                 );
             case InstallStatus.NotInstalled:
                 return (
-                    <InstallButton
-                        className="bg-green-500"
-                        onClick={handleInstall}
-                    >
+                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
                         Install
                     </InstallButton>
                 );
             case InstallStatus.GitInstall:
                 return (
-                    <InstallButton className="pointer-events-none bg-green-500">
+                    <InstallButton disabled type={ButtonType.Positive} onClick={handleInstall}>
                         Installed (git)
                     </InstallButton>
                 );
             case InstallStatus.TrackSwitch:
                 return (
-                    <InstallButton
-                        className="bg-purple-600 hover:bg-purple-700"
-                        onClick={handleInstall}
-                    >
+                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
                         Switch Version
                     </InstallButton>
                 );
             case InstallStatus.DownloadPrep:
                 return (
-                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                    <InstallButton disabled type={ButtonType.Neutral}>
                         Cancel
                     </InstallButton>
                 );
             case InstallStatus.Downloading:
                 return (
-                    <InstallButton
-                        className="bg-red-600 hover:bg-red-500"
-                        onClick={handleCancel}
-                    >
+                    <InstallButton type={ButtonType.Danger} onClick={handleCancel}>
                         Cancel
                     </InstallButton>
                 );
             case InstallStatus.Decompressing:
-                return (
-                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
-                        Cancel
-                    </InstallButton>
-                );
             case InstallStatus.DownloadEnding:
                 return (
-                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                    <InstallButton disabled type={ButtonType.Neutral}>
                         Cancel
-                    </InstallButton>
-                );
-            case InstallStatus.DownloadDone:
-                return (
-                    <InstallButton className="pointer-events-none bg-green-500">
-                        Installed
-                    </InstallButton>
-                );
-            case InstallStatus.DownloadRetry:
-                return (
-                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
-                        Error
-                    </InstallButton>
-                );
-            case InstallStatus.DownloadError:
-                return (
-                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
-                        Error
                     </InstallButton>
                 );
             case InstallStatus.DownloadCanceled:
                 return (
-                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
-                        Error
+                    <InstallButton disabled type={ButtonType.Neutral}>
+                        Cancelled
                     </InstallButton>
                 );
+            case InstallStatus.DownloadRetry:
+            case InstallStatus.DownloadError:
             case InstallStatus.Unknown:
                 return (
-                    <InstallButton className="bg-gray-700 text-grey-medium cursor-not-allowed">
+                    <InstallButton disabled type={ButtonType.Neutral}>
                         Error
                     </InstallButton>
                 );
@@ -728,8 +702,8 @@ export const AircraftSection = (): JSX.Element => {
     return (
         <div className="flex flex-row w-full h-full">
             <div
-                className="flex-none bg-navy-medium z-40 shadow-2xl h-full"
-                style={{ width: "28rem" }}
+                className="flex-none bg-navy-medium z-40 h-full"
+                style={{ width: "28.5rem" }}
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
                     <AddonBar>
@@ -737,7 +711,6 @@ export const AircraftSection = (): JSX.Element => {
                             <AddonBarItem
                                 selected={selectedAddon.key === addon.key && addon.enabled}
                                 enabled={addon.enabled || !!addon.hidesAddon}
-                                className="h-32"
                                 addon={addon}
                                 key={addon.key}
                                 onClick={() => setSelectedAddon(addon)}
@@ -753,13 +726,12 @@ export const AircraftSection = (): JSX.Element => {
 
                             return (
                                 <>
-                                    <span className="text-3xl font-manrope font-bold">{category.title}</span>
+                                    <span className="text-3xl font-manrope font-medium">{category.title}</span>
 
                                     {publisherData.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
                                         <AddonBarItem
                                             selected={selectedAddon.key === addon.key && addon.enabled}
                                             enabled={addon.enabled || !!addon.hidesAddon}
-                                            className="h-32"
                                             addon={addon}
                                             key={addon.key}
                                             onClick={() => setSelectedAddon(addon)}
@@ -772,7 +744,7 @@ export const AircraftSection = (): JSX.Element => {
                 </div>
             </div>
             <div
-                className={`bg-navy-light w-full flex flex-col h-full`}
+                className={`bg-navy w-full flex flex-col h-full`}
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
@@ -837,7 +809,7 @@ export const AircraftSection = (): JSX.Element => {
 
                                     <Route path={`/aircraft-section/${publisherName}/main/configure`}>
                                         <div className="p-7 overflow-y-scroll">
-                                            <h2 className="text-white font-extrabold">
+                                            <h2 className="text-white font-bold">
                                                 Choose Your Version
                                             </h2>
                                             <div className="flex flex-row gap-x-8">
@@ -856,9 +828,9 @@ export const AircraftSection = (): JSX.Element => {
                                                                 />
                                                             ))}
                                                     </Tracks>
-                                                    <h5 className="text-xl text-quasi-white ml-0.5 mt-3">
+                                                    <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
                                                         Mainline Releases
-                                                    </h5>
+                                                    </span>
                                                 </div>
                                                 <div>
                                                     <Tracks>
@@ -877,15 +849,15 @@ export const AircraftSection = (): JSX.Element => {
                                                     </Tracks>
 
                                                     {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
-                                                        <h5 className="text-xl text-quasi-white ml-0.5 mt-3">
+                                                        <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
                                                             Experimental versions
-                                                        </h5>
+                                                        </span>
                                                     )}
                                                 </div>
                                             </div>
                                             {selectedTrack() && selectedTrack().description &&
                                             <div className="mt-10">
-                                                <h2 className="text-white font-extrabold">Description</h2>
+                                                <h2 className="text-white font-bold">Description</h2>
                                                 <p className="text-xl text-white font-manrope leading-relaxed">
                                                     <ReactMarkdown
                                                         className="text-xl text-white font-light font-manrope leading-relaxed"
@@ -910,15 +882,15 @@ export const AircraftSection = (): JSX.Element => {
                                         <About addon={selectedAddon}/>
                                     </Route>
 
-                                    <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">
-                                        <div className="flex flex-col items-start place-self-start space-y-7">
+                                    <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy-dark p-7 flex-shrink-0">
+                                        <div className="w-full flex flex-col items-start place-self-start space-y-7">
                                             <SideBarLink to={`/aircraft-section/${publisherName}/main/configure`}>
-                                                <Sliders size={24} />
+                                                <Sliders size={22} />
                                                 Configure
                                             </SideBarLink>
                                             {releaseNotes && releaseNotes.length > 0 && (
                                                 <SideBarLink to={`/aircraft-section/${publisherName}/main/release-notes`}>
-                                                    <JournalText size={24} />
+                                                    <JournalText size={22} />
                                                     Release Notes
                                                 </SideBarLink>
                                             )}
@@ -927,12 +899,12 @@ export const AircraftSection = (): JSX.Element => {
                                                 Liveries
                                             </SideBarLink> */}
                                             <SideBarLink to={`/aircraft-section/${publisherName}/main/about`}>
-                                                <InfoCircle size={24} />
+                                                <InfoCircle size={22} />
                                                 About
                                             </SideBarLink>
                                         </div>
 
-                                        <div className="space-y-4">
+                                        <div className="flex flex-col gap-y-4">
                                             <UninstallButton />
                                             <ActiveInstallButton />
                                         </div>
@@ -948,8 +920,12 @@ export const AircraftSection = (): JSX.Element => {
 };
 
 const About: FC<{ addon: Addon }> = ({ addon }) => (
-    <div className="h-full p-7 overflow-y-scroll">
-        <h2 className="text-white font-extrabold">About</h2>
+    <div className="h-full p-7">
+        <div className="flex justify-between items-center">
+            <h2 className="text-white font-bold">About</h2>
+
+            <h2 className="text-white">{addon.aircraftName}</h2>
+        </div>
         <ReactMarkdown
             className="text-xl text-white font-light font-manrope leading-relaxed"
             children={addon.description}
@@ -958,13 +934,13 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
 
         {addon.techSpecs && addon.techSpecs.length > 0 && (
             <>
-                <h2 className="text-white font-extrabold">Tech Specs</h2>
+                <h2 className="text-white font-bold">Tech Specs</h2>
 
                 <div className="flex flex-row gap-x-16">
                     {addon.techSpecs.map((spec) => (
                         <span className="flex flex-col items-start">
-                            <span className="text-2xl text-quasi-white">{spec.name}</span>
-                            <span className="text-3xl font-manrope font-semibold text-cyan">{spec.value}</span>
+                            <span className="text-2xl text-quasi-white mb-1">{spec.name}</span>
+                            <span className="text-4xl font-manrope font-semibold text-cyan">{spec.value}</span>
                         </span>
                     ))}
                 </div>

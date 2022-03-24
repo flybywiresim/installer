@@ -7,6 +7,7 @@ import "./index.css";
 // @ts-ignore
 import changelog from './../../../../.github/CHANGELOG.yaml';
 import * as packageInfo from '../../../../package.json';
+import { Button, ButtonType } from "renderer/components/Button";
 
 interface ModalContextInterface{
     showModal: (modal: JSX.Element) => void;
@@ -45,7 +46,7 @@ interface BaseModalProps {
 interface PromptModalProps extends BaseModalProps {
     onConfirm?: () => void;
     onCancel?: () => void;
-    confirmColor?: string;
+    confirmColor?: ButtonType;
     confirmText?: string;
     cancelText?: string;
 }
@@ -78,7 +79,7 @@ export const PromptModal: FC<PromptModalProps> = ({
                 return 'bg-cyan text-navy';
             case 'green':
             default:
-                return 'bg-green-500 text-white';
+                return 'bg-utility-green text-navy font-extrabold';
         }
     };
 
@@ -102,8 +103,8 @@ export const PromptModal: FC<PromptModalProps> = ({
     }
 
     return (
-        <div className="p-8 w-5/12 max-w-screen-sm rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
-            <h2 className="leading-none font-bold text-quasi-white">{title}</h2>
+        <div className="modal">
+            <h2 className="modal-title">{title}</h2>
             <ReactMarkdown
                 className="mt-6 markdown-body-modal"
                 children={bodyText}
@@ -111,29 +112,26 @@ export const PromptModal: FC<PromptModalProps> = ({
                 linkTarget={"_blank"}
             />
 
-            {dontShowAgainSettingName ? <div className="w-auto space-x-4 mt-8">
-                <input
-                    type="checkbox"
-                    checked={checkMark}
-                    onChange={() => setCheckMark(!checkMark)}
-                    className=" w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
-                />
-                <span className="ml-2">Don't show me this again</span>
-            </div> : <div></div>}
+            {dontShowAgainSettingName && (
+                <div className="w-auto gap-x-4 mt-8">
+                    <input
+                        type="checkbox"
+                        checked={checkMark}
+                        onChange={() => setCheckMark(!checkMark)}
+                        className=" w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
+                    />
 
-            <div className="flex flex-row mt-8 space-x-4">
-                <div
-                    className="py-2 px-8 w-full text-xl text-center rounded-md bg-navy-light font-bold text-quasi-white cursor-pointer hover:bg-opacity-60"
-                    onClick={handleCancel}
-                >
+                    <span className="ml-2 text-2xl">Don't show me this again</span>
+                </div>
+            )}
+
+            <div className="flex flex-row mt-8 gap-x-4">
+                <Button className="flex-grow" onClick={handleCancel}>
                     {cancelText ?? 'Cancel'}
-                </div>
-                <div
-                    className={'py-2 px-8 w-full text-xl text-center rounded-md ' + colors(confirmColor) + ' font-bold  cursor-pointer hover:bg-opacity-60'}
-                    onClick={handleConfirm}
-                >
+                </Button>
+                <Button className="flex-grow" type={confirmColor} onClick={handleConfirm}>
                     {confirmText ?? 'Confirm'}
-                </div>
+                </Button>
             </div>
         </div>
     );
@@ -185,7 +183,7 @@ export const AlertModal: FC<AlertModalProps> = ({
             </div> : <div></div>}
 
             <div
-                className="py-2 px-8 mt-8 text-center rounded-md bg-theme-highlight text-theme-body"
+                className="py-3 px-8 mt-8 text-xl text-center rounded-md bg-theme-highlight text-theme-body"
                 onClick={handleAcknowledge}
             >
                 {acknowledgeText ?? 'Okay'}

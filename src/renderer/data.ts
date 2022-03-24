@@ -188,28 +188,24 @@ export const defaultConfiguration: Configuration = {
                     text: 'Documentation',
                     action: 'openBrowser',
                     url: 'https://docs.flybywiresim.com/',
-                    icon: 'Book',
+                    inline: false,
+                },
+                {
+                    text: 'Website',
+                    action: 'openBrowser',
+                    url: 'https://flybywiresim.com/',
                     inline: false,
                 },
                 {
                     text: 'Discord',
-                    icon: 'Discord',
                     action: 'openBrowser',
                     url: 'https://discord.gg/flybywire',
                 },
                 {
                     text: 'Twitter',
-                    icon: 'Twitter',
                     action: 'openBrowser',
                     url: 'https://twitter.com/FlyByWireSim',
                     inline: true
-                },
-                {
-                    text: 'Website',
-                    icon: 'Globe2',
-                    action: 'openBrowser',
-                    url: 'https://flybywiresim.com/',
-                    inline: false,
                 },
             ]
         },

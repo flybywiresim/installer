@@ -28,7 +28,7 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
     }
 
     return (
-        <div ref={ref} className="rounded-md bg-navy p-7">
+        <div ref={ref} className="border-2 border-navy-light p-7 rounded-lg">
             <div className="flex flex-row items-center justify-between mb-3.5">
                 <div className="flex flex-row items-center  gap-x-4">
                     <h1 className="text-4xl text-white font-semibold mb-0">{release.name}</h1>
@@ -139,12 +139,13 @@ export const ReleaseNotes = ({ addon }: {addon: Addon}): JSX.Element => {
                     </div>
                 </div>
             )}
-            <div className="w-full h-full p-7 overflow-y-scroll relative" ref={releaseNotesRef}>
+            <div className="w-full h-full p-7 overflow-y-auto relative" ref={releaseNotesRef}>
                 <div className="flex flex-row items-center justify-between">
-                    <h2 className="text-white font-extrabold">
+                    <h2 className="text-white font-bold">
                         Release Notes
                     </h2>
-                    {/*    Dropdown will go here    */}
+
+                    <h2 className="text-white">Stable Version</h2>
                 </div>
                 { releaseComponent ?? <DummyComponent/> }
             </div>

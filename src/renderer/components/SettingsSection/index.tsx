@@ -34,11 +34,11 @@ export const SettingsSection = (): JSX.Element => {
                         </span>
                     </SideBarLink>
 
-                    <SideBarLink to="/settings/customization">
-                        <span className="text-2xl font-manrope font-bold">
-                            Customization
-                        </span>
-                    </SideBarLink>
+                    {/*<SideBarLink to="/settings/customization">*/}
+                    {/*    <span className="text-2xl font-manrope font-bold">*/}
+                    {/*        Customization*/}
+                    {/*    </span>*/}
+                    {/*</SideBarLink>*/}
 
                     <SideBarLink to="/settings/about">
                         <span className="text-2xl font-manrope font-bold">

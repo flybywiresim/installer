@@ -32,7 +32,6 @@ import App, { fetchLatestVersionNames } from 'renderer/components/App';
 import { Configuration, InstallerConfiguration } from 'renderer/utils/InstallerConfiguration';
 import { ipcRenderer } from "electron";
 
-import './index.css';
 import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
 import { Directories } from "renderer/utils/Directories";
@@ -43,6 +42,8 @@ import { setConfiguration } from './redux/features/configuration';
 import { GitVersions } from "@flybywiresim/api-client";
 import { addReleases } from "renderer/redux/features/releaseNotes";
 import { ModalProvider } from "renderer/components/Modal";
+
+import './index.scss';
 
 // Obtain configuration and use it
 InstallerConfiguration.obtain().then((config: Configuration) => {

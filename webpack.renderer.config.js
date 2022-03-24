@@ -5,7 +5,7 @@ const plugins = require('./webpack.plugins');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 rules.push({
-    test: /\.css$/,
+    test: /\.s?css$/,
     use: [
         {
             loader: 'style-loader'
@@ -20,7 +20,7 @@ rules.push({
                     use: {
                         sass: {},
                     },
-                    plugins: [require("tailwindcss"),],
+                    plugins: [require('postcss-import'), require('@csstools/postcss-sass'), require("tailwindcss")],
                 },
             },
         },

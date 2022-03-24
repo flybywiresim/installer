@@ -1,17 +1,17 @@
 .markdown-body-modal {
-        color-scheme: dark;
-        --color-accent-fg: #58a6ff;
+    font-size: 100px;
+    color-scheme: dark;
     }
 
 .markdown-body-modal a {
     background-color: transparent;
-    color: var(--color-accent-fg);
+    color: var(--color-brand-cyan-main);
     text-decoration: none;
 }
 
 .markdown-body-modal a:active,
 .markdown-body-modal a:hover {
-    color: var(--color-accent-fg);
+    color: var(--color-brand-cyan-main);
     outline-width: 0;
 }
 
