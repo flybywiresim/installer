@@ -11,7 +11,7 @@ import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
-import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
+import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
@@ -24,6 +24,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
+import { Properties } from "./Properties";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -910,6 +911,14 @@ export const AircraftSection = (): JSX.Element => {
                                         <About addon={selectedAddon}/>
                                     </Route>
 
+                                    <Route path={`/aircraft-section/:publisherName/main/properties`}>
+                                        {selectedAddon.properties.length > 0 ? (
+                                            <Properties addon={selectedAddon}/>
+                                        ) :
+                                            <Redirect to={`/aircraft-section/${publisherName}/main/configure`}/>
+                                        }
+                                    </Route>
+
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">
                                         <div className="flex flex-col items-start place-self-start space-y-7">
                                             <SideBarLink to={`/aircraft-section/${publisherName}/main/configure`}>
@@ -922,6 +931,10 @@ export const AircraftSection = (): JSX.Element => {
                                                     Release Notes
                                                 </SideBarLink>
                                             )}
+                                            <SideBarLink to={`/aircraft-section/${publisherName}/main/properties`}>
+                                                <Gear size={24} />
+                                                    Properties
+                                            </SideBarLink>
                                             {/* <SideBarLink to="/aircraft-section/main/liveries">
                                                 <Palette size={24} />
                                                 Liveries

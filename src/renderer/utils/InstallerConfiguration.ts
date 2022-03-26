@@ -1,3 +1,4 @@
+import { Schema } from "electron-store";
 import { defaultConfiguration } from "renderer/data";
 
 export type AddonVersion = {
@@ -36,6 +37,13 @@ export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true, wa
 
 export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
+type PropertySpec = {
+    name: string;
+    alias?: string;
+    parentPath: string;
+    schema: Record<string, any>;
+}
+
 export interface Addon {
     key: string,
     name: string,
@@ -59,6 +67,7 @@ export interface Addon {
     hiddenName?: string,
     overrideAddonWhileHidden?: string,
     gitHubReleaseBaseURL?: string,
+    properties: PropertySpec[],
 }
 
 export interface AddonTechSpec {

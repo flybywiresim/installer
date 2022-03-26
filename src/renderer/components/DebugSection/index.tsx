@@ -29,8 +29,8 @@ export const DebugSection = (): JSX.Element => {
             <button className="bg-cyan p-3 font-bold" onClick={sendNotification}>Send test notification</button>
 
             <h3 className="text-white mt-5">Send IPC message</h3>
-            <div className="flex flex-row">
-                <input value={ipcMessage} onChange={event => setIpcMessage(event.target.value)} className="p-1 outline-none" />
+            <div className="flex flex-row space-x-4">
+                <input value={ipcMessage} onChange={event => setIpcMessage(event.target.value)} className="p-1 outline-none bg-white" />
                 <button className="bg-cyan p-3 font-bold" onClick={sendIpcMessage}>Send message</button>
             </div>
         </div>

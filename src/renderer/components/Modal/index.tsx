@@ -38,14 +38,14 @@ export const ModalProvider: FC = ({ children }) => {
 
 interface BaseModalProps {
     title: string;
-    bodyText: string;
+    bodyText?: string;
     dontShowAgainSettingName?: string;
 }
 
 interface PromptModalProps extends BaseModalProps {
     onConfirm?: () => void;
     onCancel?: () => void;
-    confirmColor?: string;
+    confirmColor?: 'red' | 'cyan' | 'green';
     confirmText?: string;
     cancelText?: string;
 }
