@@ -101,6 +101,7 @@ const PropertyEditUI = ({ addon }: PropertyEditUI) => {
 
     const handleConfigSave = () => {
         PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, config);
+        setConfig({ ...config });
     };
 
     const handleDiscard = () => {
