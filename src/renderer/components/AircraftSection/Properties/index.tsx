@@ -132,8 +132,9 @@ export const PropertyEditUI = (): JSX.Element => {
     return (
         <div className="h-full p-7 overflow-y-scroll w-full">
             <div className='flex flex-row items-center justify-between gap-x-4'>
-                <Link to={`/aircraft-section/${publisherName}/main/properties`} >
-                    <div className='flex flex-row items-center space-x-4 text-white'>
+                <Link to={`/aircraft-section/${publisherName}/main/configure`} >
+                    <div className='flex flex-row items-center space-x-4 text-white transition duration-100 hover:text-cyan'>
+                        <ArrowLeft size={20}/>
                         <h2 className="text-current font-extrabold mb-0">Properties - {displayName}</h2>
                     </div>
                 </Link>
