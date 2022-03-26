@@ -11,7 +11,7 @@ import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
-import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
+import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
@@ -24,7 +24,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
-import { PropertyEditUI } from "./Properties";
+import { PublisherConfigurationEditUI } from "./Properties";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -741,7 +741,11 @@ export const AircraftSection = (): JSX.Element => {
                                 className="h-32"
                                 addon={addon}
                                 key={addon.key}
-                                onClick={() => setSelectedAddon(addon)}
+                                onClick={() => {
+                                    history.push(`/aircraft-section/${publisherData.name}/`);
+
+                                    setSelectedAddon(addon);
+                                }}
                             />
                         ))}
 
@@ -763,7 +767,11 @@ export const AircraftSection = (): JSX.Element => {
                                             className="h-32"
                                             addon={addon}
                                             key={addon.key}
-                                            onClick={() => setSelectedAddon(addon)}
+                                            onClick={() => {
+                                                history.push(`/aircraft-section/${publisherData.name}/`);
+
+                                                setSelectedAddon(addon);
+                                            }}
                                         />
                                     ))}
                                 </>
@@ -779,7 +787,7 @@ export const AircraftSection = (): JSX.Element => {
                     <div className="w-full">
 
                         <Route path={`/aircraft-section/:publisherName/configuration/:propertyName`}>
-                            <PropertyEditUI />
+                            <PublisherConfigurationEditUI />
                         </Route>
 
                         <Route exact path={`/aircraft-section/${publisherName}`}>

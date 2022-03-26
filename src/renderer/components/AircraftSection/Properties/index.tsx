@@ -11,7 +11,7 @@ import { useAppSelector } from 'renderer/redux/store';
 
 const correctCamelCase = (str: string) => str.split(/(?=[A-Z])/).map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
 
-class PropertyConfigurationHandler {
+class PublisherConfigurationHandler {
     static getPropertyConfiguration(propertyName: string, publisher: Publisher): Record<string, unknown> {
         const property = publisher.configurations.find(property => property.name === propertyName);
         const prospectiveConfigurationFilePath = path.join(Directories.community(),`${property.name}.json`);
@@ -27,7 +27,7 @@ class PropertyConfigurationHandler {
                 console.log(`${property.name} configuration is missing some properties.`);
 
                 missingKeys.forEach(key => config[key] = property.defaults[key]);
-                PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
+                PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
             }
 
             const extranneousKeys = Object.keys(config).filter(key => !(key in property.defaults));
@@ -36,7 +36,7 @@ class PropertyConfigurationHandler {
                 console.log(`${property.name} configuration has some extraneous properties.`);
 
                 extranneousKeys.forEach(key => delete config[key]);
-                PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
+                PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
             }
 
             return config;
@@ -85,7 +85,7 @@ const InputElement = ({ value, onChange }: InputElementProps) => {
     }
 };
 
-export const PropertyEditUI = (): JSX.Element => {
+export const PublisherConfigurationEditUI = (): JSX.Element => {
     const { publisherName, propertyName } = useParams<{ publisherName: string, propertyName: string }>();
 
     const { showModal } = useModals();
@@ -93,20 +93,20 @@ export const PropertyEditUI = (): JSX.Element => {
     const { publishers } = useAppSelector(state => state.configuration);
     const publisher = publishers.find(publisher => publisher.name === publisherName);
 
-    const [config, setConfig] = useState(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
+    const [config, setConfig] = useState(PublisherConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
 
     const property = publisher.configurations.find(property => property.name === propertyName);
     const displayName = property.alias ?? propertyName;
 
     const handleConfigSave = () => {
-        PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
+        PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
         setConfig({ ...config });
     };
 
     const handleDiscard = () => {
-        const currentlySavedConfig = PropertyConfigurationHandler.getPropertyConfiguration(propertyName, publisher);
+        const currentlySavedConfig = PublisherConfigurationHandler.getPropertyConfiguration(propertyName, publisher);
 
-        PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, currentlySavedConfig);
+        PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, currentlySavedConfig);
         setConfig(currentlySavedConfig);
     };
 
@@ -117,7 +117,7 @@ export const PropertyEditUI = (): JSX.Element => {
                 bodyText='This will reset the configuration to the default values and cannot be undone.'
                 confirmColor='red'
                 onConfirm={() => {
-                    PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, property.defaults);
+                    PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, property.defaults);
                     setConfig(property.defaults);
                 }}
             />
@@ -125,17 +125,17 @@ export const PropertyEditUI = (): JSX.Element => {
     };
 
     const changesBeenMade = JSON.stringify(config)
-        !== JSON.stringify(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
+        !== JSON.stringify(PublisherConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
 
     const isDefaultConfig = JSON.stringify(config) === JSON.stringify(property.defaults);
 
     return (
         <div className="h-full p-7 overflow-y-scroll w-full">
             <div className='flex flex-row items-center justify-between gap-x-4'>
-                <Link to={`/aircraft-section/${publisherName}/main/configure`} >
+                <Link to={`/aircraft-section/${publisherName}/`}>
                     <div className='flex flex-row items-center space-x-4 text-white transition duration-100 hover:text-cyan'>
                         <ArrowLeft size={20}/>
-                        <h2 className="text-current font-extrabold mb-0">Properties - {displayName}</h2>
+                        <h2 className="text-current font-extrabold mb-0">Configuration - {displayName}</h2>
                     </div>
                 </Link>
 
