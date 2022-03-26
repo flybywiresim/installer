@@ -41,7 +41,7 @@ type PropertySpec = {
     name: string;
     alias?: string;
     parentPath: string;
-    schema: Record<string, any>;
+    defaults: Record<string, unknown>;
 }
 
 export interface Addon {

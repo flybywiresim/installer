@@ -119,7 +119,7 @@ export const defaultConfiguration: Configuration = {
                         name: 'local-api',
                         alias: 'Local Api',
                         parentPath: 'resources',
-                        schema: {
+                        defaults: {
                             server: {
                                 port: 8380
                             },

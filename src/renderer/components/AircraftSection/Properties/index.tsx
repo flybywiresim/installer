@@ -21,16 +21,16 @@ class PropertyConfigurationHandler {
 
             const config = JSON.parse(fs.readFileSync(path.join(parentDir, `${property.name}.json`), "utf8"));
 
-            const missingKeys = Object.keys(property.schema).filter(key => !(key in config));
+            const missingKeys = Object.keys(property.defaults).filter(key => !(key in config));
 
             if (missingKeys.length > 0) {
                 console.log(`${property.name} configuration is missing some properties.`);
 
-                missingKeys.forEach(key => config[key] = property.schema[key]);
+                missingKeys.forEach(key => config[key] = property.defaults[key]);
                 PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, config);
             }
 
-            const extranneousKeys = Object.keys(config).filter(key => !(key in property.schema));
+            const extranneousKeys = Object.keys(config).filter(key => !(key in property.defaults));
 
             if (extranneousKeys.length > 0) {
                 console.log(`${property.name} configuration has some extraneous properties.`);
@@ -46,13 +46,15 @@ class PropertyConfigurationHandler {
             if (fs.existsSync(parentDir)) {
                 console.log(`Creating ${property.name} configuration in ${parentDir}`);
 
-                fs.writeFileSync(path.join(Directories.community(),addon.targetDirectory, property.parentPath, `${property.name}.json`), JSON.stringify(property.schema));
+                fs.writeFileSync(
+                    path.join(parentDir, `${property.name}.json`),
+                    JSON.stringify(property.defaults));
             }
         }
 
-        console.log('Returning Default Configuration', property.schema);
+        console.log('Returning Default Configuration', property.defaults);
 
-        return property.schema;
+        return property.defaults;
     }
 
     static savePropertyConfiguration(propertyName: string, addon: Addon, propertyConfiguration: unknown) {
@@ -115,8 +117,8 @@ const PropertyEditUI = ({ addon }: PropertyEditUI) => {
                 bodyText='This will reset the configuration to the default values and cannot be undone.'
                 confirmColor='red'
                 onConfirm={() => {
-                    PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, property.schema);
-                    setConfig(property.schema);
+                    PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, property.defaults);
+                    setConfig(property.defaults);
                 }}/>
         );
     };

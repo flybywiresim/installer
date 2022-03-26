@@ -933,7 +933,7 @@ export const AircraftSection = (): JSX.Element => {
                                             )}
                                             <SideBarLink to={`/aircraft-section/${publisherName}/main/properties`}>
                                                 <Gear size={24} />
-                                                    Properties
+                                                Properties
                                             </SideBarLink>
                                             {/* <SideBarLink to="/aircraft-section/main/liveries">
                                                 <Palette size={24} />
