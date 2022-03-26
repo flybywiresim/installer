@@ -786,7 +786,7 @@ export const AircraftSection = (): JSX.Element => {
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
 
-                        <Route path={`/aircraft-section/:publisherName/configuration/:propertyName`}>
+                        <Route path={`/aircraft-section/:publisherName/configuration/:configurationName`}>
                             <PublisherConfigurationEditUI />
                         </Route>
 

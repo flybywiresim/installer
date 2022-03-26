@@ -86,27 +86,27 @@ const InputElement = ({ value, onChange }: InputElementProps) => {
 };
 
 export const PublisherConfigurationEditUI = (): JSX.Element => {
-    const { publisherName, propertyName } = useParams<{ publisherName: string, propertyName: string }>();
+    const { publisherName, configurationName } = useParams<{ publisherName: string, configurationName: string }>();
 
     const { showModal } = useModals();
 
     const { publishers } = useAppSelector(state => state.configuration);
     const publisher = publishers.find(publisher => publisher.name === publisherName);
 
-    const [config, setConfig] = useState(PublisherConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
+    const [config, setConfig] = useState(PublisherConfigurationHandler.getPropertyConfiguration(configurationName, publisher));
 
-    const property = publisher.configurations.find(property => property.name === propertyName);
-    const displayName = property.alias ?? propertyName;
+    const configuration = publisher.configurations.find(conf => conf.name === configurationName);
+    const displayName = configuration.alias ?? configurationName;
 
     const handleConfigSave = () => {
-        PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
+        PublisherConfigurationHandler.savePropertyConfiguration(configurationName, publisher, config);
         setConfig({ ...config });
     };
 
     const handleDiscard = () => {
-        const currentlySavedConfig = PublisherConfigurationHandler.getPropertyConfiguration(propertyName, publisher);
+        const currentlySavedConfig = PublisherConfigurationHandler.getPropertyConfiguration(configurationName, publisher);
 
-        PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, currentlySavedConfig);
+        PublisherConfigurationHandler.savePropertyConfiguration(configurationName, publisher, currentlySavedConfig);
         setConfig(currentlySavedConfig);
     };
 
@@ -117,27 +117,22 @@ export const PublisherConfigurationEditUI = (): JSX.Element => {
                 bodyText='This will reset the configuration to the default values and cannot be undone.'
                 confirmColor='red'
                 onConfirm={() => {
-                    PublisherConfigurationHandler.savePropertyConfiguration(propertyName, publisher, property.defaults);
-                    setConfig(property.defaults);
+                    PublisherConfigurationHandler.savePropertyConfiguration(configurationName, publisher, configuration.defaults);
+                    setConfig(configuration.defaults);
                 }}
             />
         );
     };
 
     const changesBeenMade = JSON.stringify(config)
-        !== JSON.stringify(PublisherConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
+        !== JSON.stringify(PublisherConfigurationHandler.getPropertyConfiguration(configurationName, publisher));
 
-    const isDefaultConfig = JSON.stringify(config) === JSON.stringify(property.defaults);
+    const isDefaultConfig = JSON.stringify(config) === JSON.stringify(configuration.defaults);
 
     return (
         <div className="h-full p-7 overflow-y-scroll w-full">
             <div className='flex flex-row items-center justify-between gap-x-4'>
-                <Link to={`/aircraft-section/${publisherName}/`}>
-                    <div className='flex flex-row items-center space-x-4 text-white transition duration-100 hover:text-cyan'>
-                        <ArrowLeft size={20}/>
-                        <h2 className="text-current font-extrabold mb-0">Configuration - {displayName}</h2>
-                    </div>
-                </Link>
+                <h2 className="font-extrabold mb-0 text-white">Configuration - {displayName}</h2>
 
                 <div className='flex flex-row space-x-4'>
                     {changesBeenMade && (
