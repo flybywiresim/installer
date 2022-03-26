@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
-import { Link, Route, useParams } from 'react-router-dom';
-import { Addon } from 'renderer/utils/InstallerConfiguration';
+import { Link, useParams } from 'react-router-dom';
+import { Publisher } from 'renderer/utils/InstallerConfiguration';
 import fs from 'fs';
 import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
 import { Toggle } from '@flybywiresim/react-components';
-import { ArrowLeft, ChevronRight } from 'react-bootstrap-icons';
+import { ArrowLeft } from 'react-bootstrap-icons';
 import { PromptModal, useModals } from 'renderer/components/Modal';
+import { useAppSelector } from 'renderer/redux/store';
 
 const correctCamelCase = (str: string) => str.split(/(?=[A-Z])/).map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
 
 class PropertyConfigurationHandler {
-    static getPropertyConfiguration(propertyName: string, addon: Addon): Record<string, unknown> {
-        const property = addon.properties.find(property => property.name === propertyName);
+    static getPropertyConfiguration(propertyName: string, publisher: Publisher): Record<string, unknown> {
+        const property = publisher.configurations.find(property => property.name === propertyName);
+        const prospectiveConfigurationFilePath = path.join(Directories.community(),`${property.name}.json`);
 
-        const parentDir = path.join(Directories.community(),addon.targetDirectory, property.parentPath);
+        if (fs.existsSync(prospectiveConfigurationFilePath)) {
+            console.log(`Loading ${property.name} configuration from ${Directories.community()}`);
 
-        if (fs.existsSync(path.join(parentDir, `${property.name}.json`))) {
-            console.log(`Loading ${property.name} configuration from ${parentDir}`);
-
-            const config = JSON.parse(fs.readFileSync(path.join(parentDir, `${property.name}.json`), "utf8"));
+            const config = JSON.parse(fs.readFileSync(path.join(prospectiveConfigurationFilePath), "utf8"));
 
             const missingKeys = Object.keys(property.defaults).filter(key => !(key in config));
 
@@ -27,7 +27,7 @@ class PropertyConfigurationHandler {
                 console.log(`${property.name} configuration is missing some properties.`);
 
                 missingKeys.forEach(key => config[key] = property.defaults[key]);
-                PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, config);
+                PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
             }
 
             const extranneousKeys = Object.keys(config).filter(key => !(key in property.defaults));
@@ -36,18 +36,18 @@ class PropertyConfigurationHandler {
                 console.log(`${property.name} configuration has some extraneous properties.`);
 
                 extranneousKeys.forEach(key => delete config[key]);
-                PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, config);
+                PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
             }
 
             return config;
         } else {
-            console.log(`No ${property.name} configuration found in ${parentDir}`);
+            console.log(`No ${property.name} configuration found in ${Directories.community()}`);
 
-            if (fs.existsSync(parentDir)) {
-                console.log(`Creating ${property.name} configuration in ${parentDir}`);
+            if (fs.existsSync(Directories.community())) {
+                console.log(`Creating ${property.name} configuration in ${Directories.community()}`);
 
                 fs.writeFileSync(
-                    path.join(parentDir, `${property.name}.json`),
+                    path.join(prospectiveConfigurationFilePath),
                     JSON.stringify(property.defaults));
             }
         }
@@ -57,9 +57,9 @@ class PropertyConfigurationHandler {
         return property.defaults;
     }
 
-    static savePropertyConfiguration(propertyName: string, addon: Addon, propertyConfiguration: unknown) {
-        const property = addon.properties.find(property => property.name === propertyName);
-        const configJsonPath = path.join(Directories.community(),addon.targetDirectory, property.parentPath,`${property.name}.json`);
+    static savePropertyConfiguration(propertyName: string, publisher: Publisher, propertyConfiguration: unknown) {
+        const property = publisher.configurations.find(property => property.name === propertyName);
+        const configJsonPath = path.join(Directories.community(),`${property.name}.json`);
 
         if (fs.existsSync(configJsonPath)) {
             fs.writeFileSync(configJsonPath, JSON.stringify(propertyConfiguration));
@@ -85,29 +85,28 @@ const InputElement = ({ value, onChange }: InputElementProps) => {
     }
 };
 
-interface PropertyEditUI {
-    addon : Addon;
-}
-
-const PropertyEditUI = ({ addon }: PropertyEditUI) => {
+export const PropertyEditUI = (): JSX.Element => {
     const { publisherName, propertyName } = useParams<{ publisherName: string, propertyName: string }>();
 
     const { showModal } = useModals();
 
-    const [config, setConfig] = useState(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, addon));
+    const { publishers } = useAppSelector(state => state.configuration);
+    const publisher = publishers.find(publisher => publisher.name === publisherName);
 
-    const property = addon.properties.find(property => property.name === propertyName);
+    const [config, setConfig] = useState(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
+
+    const property = publisher.configurations.find(property => property.name === propertyName);
     const displayName = property.alias ?? propertyName;
 
     const handleConfigSave = () => {
-        PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, config);
+        PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, config);
         setConfig({ ...config });
     };
 
     const handleDiscard = () => {
-        const currentlySavedConfig = PropertyConfigurationHandler.getPropertyConfiguration(propertyName, addon);
+        const currentlySavedConfig = PropertyConfigurationHandler.getPropertyConfiguration(propertyName, publisher);
 
-        PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, currentlySavedConfig);
+        PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, currentlySavedConfig);
         setConfig(currentlySavedConfig);
     };
 
@@ -118,21 +117,23 @@ const PropertyEditUI = ({ addon }: PropertyEditUI) => {
                 bodyText='This will reset the configuration to the default values and cannot be undone.'
                 confirmColor='red'
                 onConfirm={() => {
-                    PropertyConfigurationHandler.savePropertyConfiguration(propertyName, addon, property.defaults);
+                    PropertyConfigurationHandler.savePropertyConfiguration(propertyName, publisher, property.defaults);
                     setConfig(property.defaults);
-                }}/>
+                }}
+            />
         );
     };
 
-    const changesBeenMade = JSON.stringify(config) !== JSON.stringify(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, addon));
+    const changesBeenMade = JSON.stringify(config)
+        !== JSON.stringify(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, publisher));
+
     const isDefaultConfig = JSON.stringify(config) === JSON.stringify(property.defaults);
 
     return (
-        <div>
+        <div className="h-full p-7 overflow-y-scroll w-full">
             <div className='flex flex-row items-center justify-between gap-x-4'>
                 <Link to={`/aircraft-section/${publisherName}/main/properties`} >
-                    <div className='flex flex-row items-center space-x-4 text-white transition duration-100 hover:text-cyan'>
-                        <ArrowLeft size={20}/>
+                    <div className='flex flex-row items-center space-x-4 text-white'>
                         <h2 className="text-current font-extrabold mb-0">Properties - {displayName}</h2>
                     </div>
                 </Link>
@@ -219,38 +220,6 @@ const PropertyEditUI = ({ addon }: PropertyEditUI) => {
                     );
                 })}
             </div>
-        </div>
-    );
-};
-
-interface PropertiesProps {
-    addon: Addon;
-}
-
-export const Properties = ({ addon }: PropertiesProps) => {
-    const { publisherName } = useParams<{publisherName: string}>();
-
-    return (
-        <div className="h-full p-7 overflow-y-scroll w-full">
-            <Route exact path={`/aircraft-section/${publisherName}/main/properties/`}>
-                <h2 className="text-white font-extrabold">Properties</h2>
-
-                <div className='space-y-16'>
-                    {addon.properties.map((property) => (
-                        <Link to={`/aircraft-section/${publisherName}/main/properties/${property.name}`}>
-                            <div className="flex flex-row items-center justify-between rounded-md bg-navy p-7 border-2 border-transparent transition duration-100 hover:border-cyan">
-                                <h2 className='text-white mb-0'>{property.alias ?? property.name}</h2>
-
-                                <ChevronRight className="text-white"size={30} />
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </Route>
-
-            <Route path={`/aircraft-section/:publisherName/main/properties/:propertyName`}>
-                <PropertyEditUI addon={addon}/>
-            </Route>
         </div>
     );
 };

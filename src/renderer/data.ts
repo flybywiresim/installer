@@ -22,6 +22,22 @@ export const defaultConfiguration: Configuration = {
                     title: 'Scenery',
                 }
             ],
+            configurations: [{
+                name: 'local-api-config',
+                alias: 'Local API',
+                defaults: {
+                    server: {
+                        port: 8380
+                    },
+                    printer: {
+                        enabled: false,
+                        printerName: null,
+                        fontSize: 19,
+                        paperSize: "A4",
+                        margin: 30
+                    },
+                }
+            }],
             addons: [
                 {
                     key: 'A32NX',
@@ -115,23 +131,6 @@ export const defaultConfiguration: Configuration = {
                             },
                         },
                     ],
-                    properties: [{
-                        name: 'local-api',
-                        alias: 'Local Api',
-                        parentPath: 'resources',
-                        defaults: {
-                            server: {
-                                port: 8380
-                            },
-                            printer: {
-                                enabled: false,
-                                printerName: null,
-                                fontSize: 19,
-                                paperSize: "A4",
-                                margin: 30
-                            },
-                        }
-                    }],
                 },
                 {
                     name: 'A380X',
@@ -149,7 +148,6 @@ export const defaultConfiguration: Configuration = {
                     description: '',
                     targetDirectory: 'A380',
                     tracks: [],
-                    properties: [],
                 },
                 {
                     name: 'KFBW',
@@ -183,7 +181,6 @@ export const defaultConfiguration: Configuration = {
                             description: 'FlyByWire Headquarters is transformed into a winter wonderland - complete with a plethora of festive decorations in addition to the standard progress showcase.'
                         },
                     ],
-                    properties: [],
                 },
             ],
             buttons: [
@@ -203,6 +200,12 @@ export const defaultConfiguration: Configuration = {
                 //     inop: true,
                 //     inline: true,
                 // },
+                {
+                    text: "Local API",
+                    action: 'internal',
+                    call: 'fbw-local-api-config',
+                    icon: 'Cpu',
+                },
                 {
                     text: 'Documentation',
                     action: 'openBrowser',
@@ -252,7 +255,6 @@ export const defaultConfiguration: Configuration = {
                     targetDirectory: 'A22X',
                     alternativeNames: [],
                     tracks: [],
-                    properties: [],
                 },
             ],
             buttons: [

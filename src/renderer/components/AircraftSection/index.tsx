@@ -24,7 +24,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
-import { Properties } from "./Properties";
+import { PropertyEditUI } from "./Properties";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -778,6 +778,10 @@ export const AircraftSection = (): JSX.Element => {
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
 
+                        <Route path={`/aircraft-section/:publisherName/configuration/:propertyName`}>
+                            <PropertyEditUI />
+                        </Route>
+
                         <Route exact path={`/aircraft-section/${publisherName}`}>
                             {publisherData.addons.every(addon => !addon.enabled) ?
                                 <Redirect to={`/aircraft-section/${publisherName}/no-available-addons`} /> :
@@ -909,14 +913,6 @@ export const AircraftSection = (): JSX.Element => {
 
                                     <Route path={`/aircraft-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon}/>
-                                    </Route>
-
-                                    <Route path={`/aircraft-section/:publisherName/main/properties`}>
-                                        {selectedAddon.properties.length > 0 ? (
-                                            <Properties addon={selectedAddon}/>
-                                        ) :
-                                            <Redirect to={`/aircraft-section/${publisherName}/main/configure`}/>
-                                        }
                                     </Route>
 
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy p-7 flex-shrink-0">

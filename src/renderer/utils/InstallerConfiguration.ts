@@ -1,4 +1,3 @@
-import { Schema } from "electron-store";
 import { defaultConfiguration } from "renderer/data";
 
 export type AddonVersion = {
@@ -37,10 +36,9 @@ export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true, wa
 
 export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
-type PropertySpec = {
+type ConfigurationSpec = {
     name: string;
     alias?: string;
-    parentPath: string;
     defaults: Record<string, unknown>;
 }
 
@@ -67,7 +65,6 @@ export interface Addon {
     hiddenName?: string,
     overrideAddonWhileHidden?: string,
     gitHubReleaseBaseURL?: string,
-    properties: PropertySpec[],
 }
 
 export interface AddonTechSpec {
@@ -103,7 +100,7 @@ type UrlPublisherButton = BasePublisherButton & {
 
 type InternalAction = BasePublisherButton & {
     action: 'internal',
-    call: 'fbw-remote-mcdu' | 'fbw-remote-flypad',
+    call: 'fbw-local-api-config',
 }
 
 export type PublisherButton = UrlPublisherButton | InternalAction
@@ -114,6 +111,7 @@ export type Publisher = {
     defs?: Definition[],
     addons: Addon[],
     buttons?: PublisherButton[],
+    configurations?: ConfigurationSpec[]
 }
 
 export type Configuration = {
