@@ -125,6 +125,7 @@ const PropertyEditUI = ({ addon }: PropertyEditUI) => {
     };
 
     const changesBeenMade = JSON.stringify(config) !== JSON.stringify(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, addon));
+    const isDefaultConfig = JSON.stringify(config) === JSON.stringify(property.defaults);
 
     return (
         <div>
@@ -138,28 +139,30 @@ const PropertyEditUI = ({ addon }: PropertyEditUI) => {
 
                 <div className='flex flex-row space-x-4'>
                     {changesBeenMade && (
-                        <>
-                            <button
-                                className='flex items-center justify-center px-8 py-2 border-2 border-red-500 rounded-md transition duration-100 bg-red-500 text-navy hover:bg-navy hover:text-red-500'
-                                onClick={handleDiscard}
-                            >
-                                <p>Discard</p>
-                            </button>
+                        <button
+                            className='flex items-center justify-center px-8 py-2 border-2 border-red-500 rounded-md transition duration-100 bg-red-500 text-navy hover:bg-navy hover:text-red-500'
+                            onClick={handleDiscard}
+                        >
+                            <p>Discard</p>
+                        </button>
+                    )}
 
-                            <button
-                                className='flex items-center justify-center px-8 py-2 border-2 border-red-500 rounded-md transition duration-100 bg-red-500 text-navy hover:bg-navy hover:text-red-500'
-                                onClick={handleReset}
-                            >
-                                <p>Reset</p>
-                            </button>
+                    {!isDefaultConfig && (
+                        <button
+                            className='flex items-center justify-center px-8 py-2 border-2 border-red-500 rounded-md transition duration-100 bg-red-500 text-navy hover:bg-navy hover:text-red-500'
+                            onClick={handleReset}
+                        >
+                            <p>Reset</p>
+                        </button>
+                    )}
 
-                            <button
-                                className='flex items-center justify-center px-16 py-2 border-2 border-green-400 rounded-md transition duration-100 bg-green-400 text-navy hover:bg-navy hover:text-green-400'
-                                onClick={handleConfigSave}
-                            >
-                                <p>Save</p>
-                            </button>
-                        </>
+                    {changesBeenMade && (
+                        <button
+                            className='flex items-center justify-center px-16 py-2 border-2 border-green-400 rounded-md transition duration-100 bg-green-400 text-navy hover:bg-navy hover:text-green-400'
+                            onClick={handleConfigSave}
+                        >
+                            <p>Save</p>
+                        </button>
                     )}
                 </div>
             </div>
