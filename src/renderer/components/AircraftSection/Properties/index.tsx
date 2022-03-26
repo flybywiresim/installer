@@ -83,7 +83,11 @@ const InputElement = ({ value, onChange }: InputElementProps) => {
     }
 };
 
-const PropertyDisplay = ({ addon }: {addon: Addon}) => {
+interface PropertyEditUI {
+    addon : Addon;
+}
+
+const PropertyEditUI = ({ addon }: PropertyEditUI) => {
     const { publisherName, propertyName } = useParams<{ publisherName: string, propertyName: string }>();
 
     const { showModal } = useModals();
@@ -117,7 +121,7 @@ const PropertyDisplay = ({ addon }: {addon: Addon}) => {
         );
     };
 
-    const changesMade = JSON.stringify(config) !== JSON.stringify(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, addon));
+    const changesBeenMade = JSON.stringify(config) !== JSON.stringify(PropertyConfigurationHandler.getPropertyConfiguration(propertyName, addon));
 
     return (
         <div>
@@ -130,7 +134,7 @@ const PropertyDisplay = ({ addon }: {addon: Addon}) => {
                 </Link>
 
                 <div className='flex flex-row space-x-4'>
-                    {changesMade && (
+                    {changesBeenMade && (
                         <>
                             <button
                                 className='flex items-center justify-center px-8 py-2 border-2 border-red-500 rounded-md transition duration-100 bg-red-500 text-navy hover:bg-navy hover:text-red-500'
@@ -239,7 +243,7 @@ export const Properties = ({ addon }: PropertiesProps) => {
             </Route>
 
             <Route path={`/aircraft-section/:publisherName/main/properties/:propertyName`}>
-                <PropertyDisplay addon={addon}/>
+                <PropertyEditUI addon={addon}/>
             </Route>
         </div>
     );
