@@ -77,9 +77,7 @@ export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => 
 };
 
 export const useIsDarkTheme = (): boolean => {
-    const [val] = useSetting<boolean>('mainSettings.useDarkTheme');
-
-    return val;
+    return true;
 };
 
 const schema: Schema<unknown> = {
