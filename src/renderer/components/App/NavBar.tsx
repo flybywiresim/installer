@@ -20,11 +20,11 @@ export const NavBar: FC = ({ children }) => {
 
             <div className="mt-auto flex flex-col gap-y-5">
                 {process.env.NODE_ENV === 'development' && (
-                    <NavbarItem to="/debug">
+                    <NavbarItem to="/debug" className="border-none">
                         <Wrench className="text-gray-100" size={28} strokeWidth={1} />
                     </NavbarItem>
                 )}
-                <NavbarItem to="/settings">
+                <NavbarItem to="/settings" className="border-none">
                     <Gear className="text-gray-100" size={28} strokeWidth={1} />
                 </NavbarItem>
             </div>
@@ -32,18 +32,19 @@ export const NavBar: FC = ({ children }) => {
     );
 };
 
-const BASE_STYLE = "w-20 h-20 flex flex-col justify-center items-center rounded-md bg-transparent hover:bg-navy-light transition duration-200";
+const BASE_STYLE = "w-20 h-20 flex flex-col justify-center items-center rounded-md bg-transparent hover:bg-navy-light transition duration-200 border-2 border-navy-light";
 
 export interface NavBarItemProps {
     to: string;
     showNotification?: boolean;
     notificationColor?: string;
+    className?: string;
 }
 
-export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', showNotification = false, notificationColor = 'orange', children }) => (
+export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', showNotification = false, notificationColor = 'orange', className, children }) => (
     <NavLink
         to={to}
-        className={BASE_STYLE}
+        className={`${BASE_STYLE} ${className}`}
         activeClassName={`${BASE_STYLE} bg-navy-light`}
     >
         {children}
