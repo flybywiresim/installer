@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import GeneralSettings from 'renderer/components/SettingsSection/General';
 import { Redirect, Route } from "react-router-dom";
 import { AboutSettings } from "renderer/components/SettingsSection/About";
@@ -7,6 +7,30 @@ import CustomizationSettings from './Customization';
 import DownloadSettings from './Download';
 import settings from 'common/settings';
 import * as packageInfo from '../../../../package.json';
+import { Button, ButtonType } from '../Button';
+
+interface InstallButtonProps {
+    type?: ButtonType,
+    disabled?: boolean,
+    className?: string;
+    onClick?: () => void;
+}
+
+export const InstallButton: FC<InstallButtonProps> = ({
+    type = ButtonType.Neutral,
+    disabled = false,
+    onClick,
+    children,
+}) => (
+    <Button
+        type={type}
+        disabled={disabled}
+        className={`w-full`}
+        onClick={onClick}
+    >
+        {children}
+    </Button>
+);
 
 export const SettingsSection = (): JSX.Element => {
     const handleReset = async () => {
@@ -45,19 +69,14 @@ export const SettingsSection = (): JSX.Element => {
                             About
                         </span>
                     </SideBarLink>
-                    <div className="w-full relative bottom-5 mt-auto">
-                        <div>
-                            <div
-                                className="w-full relative p-5 flex flex-col justify-between rounded-lg items-center border-2 border-red-600 text-red-600 hover:bg-red-500 hover:border-red-500 hover:text-white cursor-pointer transition duration-200 text-2xl font-manrope font-bold "
-                                onClick={handleReset}
-                            >
-                    Reset settings to default
-                            </div>
-                        </div>
+                    <div className="relative bottom-5 mt-auto">
+                        <InstallButton type={ButtonType.Danger} onClick={handleReset}>
+                        Reset Settings To Default
+                        </InstallButton>
                     </div>
                 </SideBar>
 
-                <div className="flex-grow px-12 py-8 bg-navy-light border-l border-gray-700">
+                <div className="flex-grow px-12 py-8 bg-navy border-l border-gray-700">
                     <Route exact path="/settings">
                         <Redirect to="/settings/general"/>
                     </Route>
