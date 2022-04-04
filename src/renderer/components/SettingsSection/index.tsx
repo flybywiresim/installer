@@ -16,15 +16,13 @@ interface InstallButtonProps {
     onClick?: () => void;
 }
 
-export const InstallButton: FC<InstallButtonProps> = ({
+export const ResetButton: FC<InstallButtonProps> = ({
     type = ButtonType.Neutral,
-    disabled = false,
     onClick,
     children,
 }) => (
     <Button
         type={type}
-        disabled={disabled}
         className={`w-full`}
         onClick={onClick}
     >
@@ -70,9 +68,9 @@ export const SettingsSection = (): JSX.Element => {
                         </span>
                     </SideBarLink>
                     <div className="relative bottom-5 mt-auto">
-                        <InstallButton type={ButtonType.Danger} onClick={handleReset}>
+                        <ResetButton type={ButtonType.Danger} onClick={handleReset}>
                         Reset Settings To Default
-                        </InstallButton>
+                        </ResetButton>
                     </div>
                 </SideBar>
 
