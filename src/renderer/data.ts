@@ -234,20 +234,17 @@ export const defaultConfiguration: Configuration = {
             buttons: [
                 {
                     text: 'Discord',
-                    icon: 'Discord',
                     action: 'openBrowser',
                     url: 'https://discord.gg/acQkSvrePG',
                 },
                 {
                     text: 'Twitter',
-                    icon: 'Twitter',
                     action: 'openBrowser',
                     url: 'https://twitter.com/synapticsim',
                     inline: true,
                 },
                 {
                     text: 'Website',
-                    icon: 'Globe2',
                     action: 'openBrowser',
                     url: 'https://www.synapticsim.com/',
                 }
