@@ -33,7 +33,7 @@ module.exports = {
                 },
                 cyan: {
                     DEFAULT: '#00E0FE',
-                    medium: '00C4F5',
+                    medium: '#00C4F5',
                     dark: 'var(--color-brand-cyan-dark)',
                 },
                 navy: {
