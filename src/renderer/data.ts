@@ -233,21 +233,23 @@ export const defaultConfiguration: Configuration = {
             ],
             buttons: [
                 {
-                    text: 'Discord',
+                    text: 'Website',
                     action: 'openBrowser',
-                    url: 'https://discord.gg/acQkSvrePG',
+                    url: 'https://www.synapticsim.com/',
+                    inline: false,
                 },
                 {
                     text: 'Twitter',
                     action: 'openBrowser',
                     url: 'https://twitter.com/synapticsim',
-                    inline: true,
+
                 },
                 {
-                    text: 'Website',
+                    text: 'Discord',
                     action: 'openBrowser',
-                    url: 'https://www.synapticsim.com/',
-                }
+                    url: 'https://discord.gg/acQkSvrePG',
+                    inline: true,
+                },
             ]
         },
     ],
