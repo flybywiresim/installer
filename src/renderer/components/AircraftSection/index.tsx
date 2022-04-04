@@ -617,13 +617,13 @@ export const AircraftSection = (): JSX.Element => {
                 );
             case InstallStatus.NeedsUpdate:
                 return (
-                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
+                    <InstallButton type={ButtonType.Caution} onClick={handleInstall}>
                         Update
                     </InstallButton>
                 );
             case InstallStatus.NotInstalled:
                 return (
-                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
+                    <InstallButton type={ButtonType.Caution} onClick={handleInstall}>
                         Install
                     </InstallButton>
                 );
@@ -635,13 +635,13 @@ export const AircraftSection = (): JSX.Element => {
                 );
             case InstallStatus.TrackSwitch:
                 return (
-                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
+                    <InstallButton type={ButtonType.Caution} onClick={handleInstall}>
                         Switch Version
                     </InstallButton>
                 );
             case InstallStatus.DownloadPrep:
                 return (
-                    <InstallButton disabled type={ButtonType.Neutral}>
+                    <InstallButton disabled type={ButtonType.Danger}>
                         Cancel
                     </InstallButton>
                 );
@@ -685,7 +685,7 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.GitInstall:
                 return (
                     <InstallButton
-                        className="border-2 border-red-600 text-red-600 hover:bg-red-500 hover:border-red-500 hover:text-white"
+                        type={ButtonType.Danger}
                         onClick={uninstallAddon}
                     >
                         Uninstall
