@@ -12,7 +12,7 @@ export const SideBar: FC<SideBarProps> = ({ className, children }) => {
     const textClass = darkTheme ? 'text-quasi-white' : 'text-navy';
 
     return (
-        <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy' : 'bg-quasi-white'} px-6 py-7 h-full ${className}`} style={{ width: '28rem' }}>
+        <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full ${className}`} style={{ width: '28rem' }}>
             {children}
         </div>
     );
@@ -28,11 +28,11 @@ export interface SideBarItemProps {
 export const SideBarItem: FC<SideBarItemProps> = ({ enabled = true, selected = false, onClick = () => {}, className, children }) => {
     const darkTheme = useIsDarkTheme();
 
-    const defaultBorderStyle = darkTheme ? 'border-navy' : 'border-quasi-white';
+    const defaultBorderStyle = darkTheme ? 'border-navy-dark' : 'border-quasi-white';
 
-    const enabledUnselectedStyle = darkTheme ? 'bg-navy-light text-quasi-white' : 'bg-grey-medium text-navy';
+    const enabledUnselectedStyle = darkTheme ? 'bg-navy-dark border-navy-light text-quasi-white' : 'bg-grey-medium text-navy';
 
-    const dependantStyles = selected ? ` bg-gradient-to-l from-cyan to-blue-500 text-white` : `${enabledUnselectedStyle} ${enabled && 'hover:border-cyan'}`;
+    const dependantStyles = selected ? ` bg-cyan-medium text-navy-dark` : `${enabledUnselectedStyle} ${enabled && 'hover:border-cyan'}`;
 
     return (
         <div

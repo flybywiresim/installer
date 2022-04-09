@@ -85,7 +85,7 @@ export interface AddonBarItemProps {
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
     const installStatus = useAppSelector(state => state.installStatus[addon.key]);
 
-    const background = selected ? `bg-cyan text-navy-dark` : `bg-transparent text-quasi-white`;
+    const background = selected ? `bg-cyan-medium text-navy-dark` : `bg-transparent text-quasi-white`;
     const border = `${selected ? 'border-cyan' : 'border-navy-light'} ${enabled ? 'hover:border-cyan' : ''}`;
 
     return (
