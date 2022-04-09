@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
+import { Toggle } from '../Toggle';
 
 const SettingsItem: FC<{name: string}> = ({ name, children }) => (
     <div className="flex flex-row items-center justify-between py-3.5">

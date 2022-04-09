@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { Toggle } from '@flybywiresim/react-components';
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from 'electron';
+import { Toggle } from '../Toggle';
 
 const SettingsItem: FC<{name: string}> = ({ name, children }) => (
     <div className="flex flex-row items-center justify-between py-3.5">
@@ -46,7 +46,7 @@ const DateLayoutItem = ({ value, setValue }: SettingItemProps<string>) => {
                 value={value}
                 onChange={event => handleSelect(event.currentTarget.value)}
                 name="Date Layout"
-                className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
+                className="text-base text-white w-60 px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy rounded-md cursor-pointer"
             >
                 <option value={'yyyy/mm/dd'}>YYYY/MM/DD</option>
                 <option value={'mm/dd/yyyy'}>MM/DD/YYYY</option>
