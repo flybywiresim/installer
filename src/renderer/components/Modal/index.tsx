@@ -71,18 +71,6 @@ export const PromptModal: FC<PromptModalProps> = ({
     const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
-    const colors = (color: string) => {
-        switch (color) {
-            case 'red':
-                return 'bg-red-600 text-white';
-            case 'cyan':
-                return 'bg-cyan text-navy';
-            case 'green':
-            default:
-                return 'bg-utility-green text-navy font-extrabold';
-        }
-    };
-
     const { popModal } = useModals();
 
     const handleConfirm = () => {
