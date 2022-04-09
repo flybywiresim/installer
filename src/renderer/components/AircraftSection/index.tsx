@@ -623,7 +623,7 @@ export const AircraftSection = (): JSX.Element => {
                 );
             case InstallStatus.NotInstalled:
                 return (
-                    <InstallButton type={ButtonType.Caution} onClick={handleInstall}>
+                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
                         Install
                     </InstallButton>
                 );
