@@ -86,7 +86,7 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
     const installStatus = useAppSelector(state => state.installStatus[addon.key]);
 
     const background = selected ? `bg-cyan-medium text-navy-dark` : `bg-transparent text-quasi-white`;
-    const border = `${selected ? 'border-cyan' : 'border-navy-light'} ${enabled ? 'hover:border-cyan' : ''}`;
+    const border = `${selected ? 'border-cyan-medium' : 'border-navy-light'} ${enabled ? 'hover:border-cyan-medium' : ''}`;
 
     return (
         <div
@@ -118,7 +118,7 @@ const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
         case InstallStatus.DownloadEnding:
             return <ArrowRepeat className="mt-0.5 animate-spin" size={27} />;
         case InstallStatus.NeedsUpdate:
-            return <CloudArrowDownFill className="mt-2" size={27} />;
+            return <CloudArrowDownFill className="mt-0.5" size={27} />;
         default: return <></>;
     }
 });
