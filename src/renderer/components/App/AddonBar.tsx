@@ -5,10 +5,11 @@ import * as BootstrapIcons from 'react-bootstrap-icons';
 import { ArrowRepeat, Check2, CloudArrowDownFill, Icon } from "react-bootstrap-icons";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "renderer/redux/store";
-import { AircraftSectionURLParams, InstallStatus } from "../AircraftSection";
+import { AircraftSectionURLParams } from "../AircraftSection";
 import { useIsDarkTheme } from "common/settings";
 import { Button } from "renderer/components/Button";
 import { ChevronRight } from "tabler-icons-react";
+import { InstallStatus } from "renderer/components/AircraftSection/Enums";
 
 export interface AddonBarProps {
     publisher: Publisher,

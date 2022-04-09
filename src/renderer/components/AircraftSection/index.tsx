@@ -25,33 +25,12 @@ import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddo
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
+import { MainActionButton } from "renderer/components/AircraftSection/MainActionButton";
+import { InstallStatus, MsfsStatus } from "renderer/components/AircraftSection/Enums";
+import { ActiveStateText } from "renderer/components/AircraftSection/ActiveStateText";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
-
-export enum InstallStatus {
-    UpToDate,
-    NeedsUpdate,
-    NotInstalled,
-    GitInstall,
-    TrackSwitch,
-    DownloadPrep,
-    Downloading,
-    Decompressing,
-    DownloadEnding,
-    DownloadDone,
-    DownloadRetry,
-    DownloadError,
-    DownloadCanceled,
-    Unknown,
-    Hidden,
-}
-
-enum MsfsStatus {
-    Open,
-    Closed,
-    Checking,
-}
 
 interface InstallButtonProps {
     type?: ButtonType,
@@ -60,7 +39,7 @@ interface InstallButtonProps {
     onClick?: () => void;
 }
 
-export const InstallButton: FC<InstallButtonProps> = ({
+export const SidebarButton: FC<InstallButtonProps> = ({
     type = ButtonType.Neutral,
     disabled = false,
     onClick,
@@ -74,10 +53,6 @@ export const InstallButton: FC<InstallButtonProps> = ({
     >
         {children}
     </Button>
-);
-
-const StateText: FC = ({ children }) => (
-    <div className="text-white text-2xl font-bold">{children}</div>
 );
 
 interface SideBarLinkProps {
@@ -554,128 +529,6 @@ export const AircraftSection = (): JSX.Element => {
             .catch((e) => console.log(e));
     };
 
-    const ActiveState = (): JSX.Element => {
-        if (msfsIsOpen !== MsfsStatus.Closed) {
-            return (
-                <StateText>
-                    {msfsIsOpen === MsfsStatus.Open
-                        ? "Please close MSFS"
-                        : "Checking status..."}
-                </StateText>
-            );
-        }
-
-        switch (getCurrentInstallStatus()) {
-            case InstallStatus.UpToDate:
-                return <></>;
-            case InstallStatus.NeedsUpdate:
-                return <StateText>New release available</StateText>;
-            case InstallStatus.NotInstalled:
-                return <></>;
-            case InstallStatus.GitInstall:
-                return <></>;
-            case InstallStatus.TrackSwitch:
-                return <></>;
-            case InstallStatus.DownloadPrep:
-                return <StateText>Preparing update</StateText>;
-            case InstallStatus.Downloading:
-                return <StateText>{`Downloading ${download?.module.toLowerCase()} module`}</StateText>;
-            case InstallStatus.Decompressing:
-                return <StateText>Decompressing</StateText>;
-            case InstallStatus.DownloadEnding:
-                return <StateText>Finishing update</StateText>;
-            case InstallStatus.DownloadDone:
-                return <StateText>Completed!</StateText>;
-            case InstallStatus.DownloadRetry:
-                return <StateText>Retrying {download?.module.toLowerCase()} module</StateText>;
-            case InstallStatus.DownloadError:
-                return <StateText>Failed to install</StateText>;
-            case InstallStatus.DownloadCanceled:
-                return <StateText>Download canceled</StateText>;
-            case InstallStatus.Unknown:
-                return <StateText>Unknown state</StateText>;
-            default: return <></>;
-        }
-    };
-
-    const ActiveInstallButton = (): JSX.Element => {
-        if (msfsIsOpen !== MsfsStatus.Closed) {
-            return (
-                <InstallButton disabled>
-                    Unavailable
-                </InstallButton>
-            );
-        }
-
-        switch (getCurrentInstallStatus()) {
-            case InstallStatus.DownloadDone:
-            case InstallStatus.UpToDate:
-                return (
-                    <InstallButton disabled type={ButtonType.Positive}>
-                        Installed
-                    </InstallButton>
-                );
-            case InstallStatus.NeedsUpdate:
-                return (
-                    <InstallButton type={ButtonType.Caution} onClick={handleInstall}>
-                        Update
-                    </InstallButton>
-                );
-            case InstallStatus.NotInstalled:
-                return (
-                    <InstallButton type={ButtonType.Positive} onClick={handleInstall}>
-                        Install
-                    </InstallButton>
-                );
-            case InstallStatus.GitInstall:
-                return (
-                    <InstallButton disabled type={ButtonType.Positive} onClick={handleInstall}>
-                        Installed (git)
-                    </InstallButton>
-                );
-            case InstallStatus.TrackSwitch:
-                return (
-                    <InstallButton type={ButtonType.Caution} onClick={handleInstall}>
-                        Switch Version
-                    </InstallButton>
-                );
-            case InstallStatus.DownloadPrep:
-                return (
-                    <InstallButton disabled type={ButtonType.Danger}>
-                        Cancel
-                    </InstallButton>
-                );
-            case InstallStatus.Downloading:
-                return (
-                    <InstallButton type={ButtonType.Danger} onClick={handleCancel}>
-                        Cancel
-                    </InstallButton>
-                );
-            case InstallStatus.Decompressing:
-            case InstallStatus.DownloadEnding:
-                return (
-                    <InstallButton disabled type={ButtonType.Neutral}>
-                        Cancel
-                    </InstallButton>
-                );
-            case InstallStatus.DownloadCanceled:
-                return (
-                    <InstallButton disabled type={ButtonType.Neutral}>
-                        Cancelled
-                    </InstallButton>
-                );
-            case InstallStatus.DownloadRetry:
-            case InstallStatus.DownloadError:
-            case InstallStatus.Unknown:
-                return (
-                    <InstallButton disabled type={ButtonType.Neutral}>
-                        Error
-                    </InstallButton>
-                );
-            default: return <></>;
-        }
-    };
-
     const UninstallButton = (): JSX.Element => {
         switch (getCurrentInstallStatus()) {
             case InstallStatus.UpToDate:
@@ -684,12 +537,12 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.DownloadDone:
             case InstallStatus.GitInstall:
                 return (
-                    <InstallButton
+                    <SidebarButton
                         type={ButtonType.Danger}
                         onClick={uninstallAddon}
                     >
                         Uninstall
-                    </InstallButton>
+                    </SidebarButton>
                 );
             default: return <></>;
         }
@@ -782,11 +635,11 @@ export const AircraftSection = (): JSX.Element => {
                                 >
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
                                         <div>
-                                            <ActiveState />
-                                            {/* TODO: Actually calculate this value */}
-                                            {/*{getCurrentInstallStatus() === InstallStatus.Downloading && (*/}
-                                            {/*    <div className="text-white text-2xl">98.7 mb/s</div>*/}
-                                            {/*)}*/}
+                                            <ActiveStateText
+                                                msfsIsOpen={msfsIsOpen}
+                                                installStatus={installStatus[selectedAddon.key]}
+                                                download={download}
+                                            />
                                         </div>
                                         {getCurrentInstallStatus() === InstallStatus.Downloading && (
                                             // TODO: Replace this with a JIT value
@@ -906,7 +759,12 @@ export const AircraftSection = (): JSX.Element => {
 
                                         <div className="flex flex-col gap-y-4">
                                             <UninstallButton />
-                                            <ActiveInstallButton />
+                                            <MainActionButton
+                                                msfsIsOpen={msfsIsOpen}
+                                                installStatus={installStatus[selectedAddon.key]}
+                                                onInstall={handleInstall}
+                                                onCancel={handleCancel}
+                                            />
                                         </div>
                                     </div>
                                 </div>

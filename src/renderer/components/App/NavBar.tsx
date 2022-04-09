@@ -4,8 +4,8 @@ import { NavLink } from "react-router-dom";
 import { useIsDarkTheme } from "common/settings";
 import { Publisher } from "renderer/utils/InstallerConfiguration";
 import { useAppSelector } from "renderer/redux/store";
-import { InstallStatus } from "renderer/components/AircraftSection";
 import { Gear, Wrench } from "react-bootstrap-icons";
+import { InstallStatus } from "renderer/components/AircraftSection/Enums";
 
 export const NavBar: FC = ({ children }) => {
     const darkTheme = useIsDarkTheme();

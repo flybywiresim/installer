@@ -4,10 +4,10 @@ import {
     AddonAndTrackLatestVersionNamesState,
     ReleaseNotesState
 } from "renderer/redux/types";
-import { InstallStatus } from "renderer/components/AircraftSection";
 import { AddonTrack, Configuration } from "renderer/utils/InstallerConfiguration";
 import { configureStore } from '@reduxjs/toolkit';
 import { combinedReducer, rootReducer } from "renderer/redux/reducer";
+import { InstallStatus } from "renderer/components/AircraftSection/Enums";
 
 export type TypedAction<T> = { type: string, payload: T };
 export type RootState = ReturnType<typeof combinedReducer>;
