@@ -215,6 +215,7 @@ export const AircraftSection = (): JSX.Element => {
     );
 
     const isDownloading = download?.progress >= 0;
+    const isInstalling = getCurrentInstallStatus() === InstallStatus.Downloading || getCurrentInstallStatus() === InstallStatus.DownloadPrep || getCurrentInstallStatus() === InstallStatus.Decompressing || getCurrentInstallStatus() === InstallStatus.DownloadEnding || getCurrentInstallStatus() === InstallStatus.DownloadRetry;
 
     const lowestAvailableAbortControllerID: number = useSelector((state: InstallerStore) => {
         for (let i = 0; i < abortControllers.length; i++) {
@@ -236,7 +237,7 @@ export const AircraftSection = (): JSX.Element => {
 
     useEffect(() => {
         findInstalledTrack();
-        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep) {
+        if (isInstalling) {
             getInstallStatus().then(setCurrentInstallStatus);
         }
     }, [selectedTrack(), installedTrack()]);
@@ -465,7 +466,7 @@ export const AircraftSection = (): JSX.Element => {
     };
 
     const handleTrackSelection = (track: AddonTrack) => {
-        if (!isDownloading && getCurrentInstallStatus() !== InstallStatus.DownloadPrep) {
+        if (!isInstalling) {
             if (track.isExperimental) {
                 showModal(
                     <PromptModal
@@ -651,11 +652,13 @@ export const AircraftSection = (): JSX.Element => {
                                             </div>
                                         )}
                                     </div>
-                                    {getCurrentInstallStatus() === InstallStatus.Downloading && (
-                                        <div
-                                            className="absolute -bottom-1 w-full h-2 z-10 bg-cyan progress-bar-animated"
-                                            style={{ width: `${download?.progress}%` }}
-                                        />
+                                    {isInstalling && (
+                                        <div className="absolute -bottom-1 w-full h-2 z-1 bg-black">
+                                            <div
+                                                className="absolute h-2 z-11 bg-cyan progress-bar-animated"
+                                                style={{ width: `${download?.progress}%` }}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                                 <div className="flex flex-row h-1/2">
