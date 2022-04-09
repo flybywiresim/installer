@@ -94,7 +94,7 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
             onClick={enabled ? onClick : undefined}
         >
             <span className="text-2xl text-current font-manrope font-medium mb-2.5">{addon.aircraftName}</span>
-            <div className="flex flex-row justify-between mt-1">
+            <div className="flex flex-row justify-between mt-1 h-11">
                 <img className="h-10 w-max" src={selected ? addon.titleImageUrl : addon.titleImageUrlSelected} />
                 <AddonBarItemStatus status={installStatus} />
             </div>
@@ -116,9 +116,9 @@ const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
         case InstallStatus.Decompressing:
         case InstallStatus.Downloading:
         case InstallStatus.DownloadEnding:
-            return <ArrowRepeat className="mt-0.5 animate-spin" size={32}/>;
+            return <ArrowRepeat className="mt-0.5 animate-spin" size={27} />;
         case InstallStatus.NeedsUpdate:
-            return <CloudArrowDownFill className="mt-2" size={32}/>;
+            return <CloudArrowDownFill className="mt-2" size={27} />;
         default: return <></>;
     }
 });
