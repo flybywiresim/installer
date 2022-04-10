@@ -32,7 +32,7 @@ export const SideBarItem: FC<SideBarItemProps> = ({ enabled = true, selected = f
 
     const enabledUnselectedStyle = darkTheme ? 'bg-navy-dark border-navy-light text-quasi-white' : 'bg-grey-medium text-navy';
 
-    const dependantStyles = selected ? ` bg-cyan-medium text-navy-dark` : `${enabledUnselectedStyle} ${enabled && 'hover:border-cyan'}`;
+    const dependantStyles = selected ? ` bg-dodger-light text-navy-dark` : `${enabledUnselectedStyle} ${enabled && 'hover:border-dodger-light'}`;
 
     return (
         <div

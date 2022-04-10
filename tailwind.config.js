@@ -36,6 +36,9 @@ module.exports = {
                     medium: '#00C4F5',
                     dark: 'var(--color-brand-cyan-dark)',
                 },
+                dodger: {
+                    light: '#00BBFF'
+                },
                 navy: {
                     DEFAULT: '#171E2C',
                     light: '#1F2A3C',
