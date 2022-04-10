@@ -653,7 +653,7 @@ export const AircraftSection = (): JSX.Element => {
                                         )}
                                     </div>
                                     {isInstalling && (
-                                        <div className="absolute -bottom-1 w-full h-2 z-1 bg-black">
+                                        <div className="absolute -bottom-1 w-full h-2 z-10 bg-black">
                                             <div
                                                 className="absolute h-2 z-11 bg-cyan progress-bar-animated"
                                                 style={{ width: `${download?.progress}%` }}
