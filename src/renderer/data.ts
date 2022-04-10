@@ -239,16 +239,16 @@ export const defaultConfiguration: Configuration = {
                     inline: false,
                 },
                 {
-                    text: 'Twitter',
-                    action: 'openBrowser',
-                    url: 'https://twitter.com/synapticsim',
-
-                },
-                {
                     text: 'Discord',
                     action: 'openBrowser',
                     url: 'https://discord.gg/acQkSvrePG',
+                },
+                {
+                    text: 'Twitter',
+                    action: 'openBrowser',
+                    url: 'https://twitter.com/synapticsim',
                     inline: true,
+
                 },
             ]
         },
