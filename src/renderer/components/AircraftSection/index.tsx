@@ -237,7 +237,7 @@ export const AircraftSection = (): JSX.Element => {
 
     useEffect(() => {
         findInstalledTrack();
-        if (isInstalling) {
+        if (!isInstalling) {
             getInstallStatus().then(setCurrentInstallStatus);
         }
     }, [selectedTrack(), installedTrack()]);
