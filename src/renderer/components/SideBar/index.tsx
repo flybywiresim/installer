@@ -36,7 +36,7 @@ export const SideBarItem: FC<SideBarItemProps> = ({ enabled = true, selected = f
 
     return (
         <div
-            className={`w-full relative p-5 flex flex-col justify-between rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} no-underline ${className}`}
+            className={`w-full relative p-5 flex justify-between items-center rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} no-underline ${className}`}
             onClick={enabled ? onClick : undefined}
         >
             {children}

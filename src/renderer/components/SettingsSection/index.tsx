@@ -8,6 +8,7 @@ import DownloadSettings from './Download';
 import settings from 'common/settings';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from '../Button';
+import { PromptModal, useModals } from "renderer/components/Modal";
 
 interface InstallButtonProps {
     type?: ButtonType,
@@ -31,11 +32,21 @@ export const ResetButton: FC<InstallButtonProps> = ({
 );
 
 export const SettingsSection = (): JSX.Element => {
-    const handleReset = async () => {
-        settings.reset('mainSettings' as never);
+    const { showModal } = useModals();
 
-        // Workaround to flush the defaults
-        settings.set('metaInfo.lastVersion', packageInfo.version);
+    const handleReset = async () => {
+        showModal(
+            <PromptModal
+                title='Are you sure?'
+                bodyText={`You are about to reset all settings to their default values. You cannot undo this.`}
+                confirmColor={ButtonType.Danger}
+                onConfirm={async () => {
+                    settings.reset('mainSettings' as never);
+
+                    // Workaround to flush the defaults
+                    settings.set('metaInfo.lastVersion', packageInfo.version);
+                }}/>
+        );
     };
 
     return (
@@ -45,13 +56,13 @@ export const SettingsSection = (): JSX.Element => {
                     <SideBarTitle>Settings</SideBarTitle>
 
                     <SideBarLink to="/settings/general">
-                        <span className="text-2xl font-manrope font-bold">
+                        <span className="text-3xl font-manrope font-semibold">
                             General
                         </span>
                     </SideBarLink>
 
                     <SideBarLink to="/settings/download">
-                        <span className="text-2xl font-manrope font-bold">
+                        <span className="text-3xl font-manrope font-semibold">
                             Download
                         </span>
                     </SideBarLink>
@@ -63,13 +74,13 @@ export const SettingsSection = (): JSX.Element => {
                     {/*</SideBarLink>*/}
 
                     <SideBarLink to="/settings/about">
-                        <span className="text-2xl font-manrope font-bold">
+                        <span className="text-3xl font-manrope font-semibold">
                             About
                         </span>
                     </SideBarLink>
-                    <div className="relative bottom-5 mt-auto">
-                        <ResetButton type={ButtonType.Danger} onClick={handleReset}>
-                        Reset Settings To Default
+                    <div className="relative mt-auto">
+                        <ResetButton type={ButtonType.Neutral} onClick={handleReset}>
+                            Reset Settings
                         </ResetButton>
                     </div>
                 </SideBar>

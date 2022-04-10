@@ -50,7 +50,7 @@ export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', showNotification = f
         {children}
 
         <span className="absolute w-0 h-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
-            <svg className="relative w-3.5" viewBox="0 0 10 10" style={{ left: '24px', bottom: '35px' }}>
+            <svg className="relative w-4" viewBox="0 0 10 10" style={{ left: '19px', bottom: '30px' }}>
                 <circle cx={5} cy={5} r={5} fill={notificationColor} />
             </svg>
         </span>
@@ -70,7 +70,7 @@ export const NavBarPublisher: FC<NavBarPublisherProps> = ({ to, publisher }) => 
             showNotification={hasAvailableUpdates}
             notificationColor="orange"
         >
-            <img width={34} src={publisher.logoUrl} alt={`${publisher.name} Logo`}/>
+            <img width={32} src={publisher.logoUrl} alt={`${publisher.name} Logo`}/>
         </NavbarItem>
     );
 };

@@ -3,7 +3,7 @@ import { DownloadItem } from "renderer/redux/types";
 import React, { FC } from "react";
 
 const StateText: FC = ({ children }) => (
-    <div className="text-white text-2xl font-bold">{children}</div>
+    <div className="text-white text-3xl font-bold">{children}</div>
 );
 
 interface ActiveStateProps {
