@@ -11,7 +11,10 @@
 releases:
   - name: 3.0.0
     changes:
-      - title: Complete Redesign of the installer UI
+      - title: Fallback to full install after too many retries on a module
+        categories: [Fragmenter]
+        authors: [FoxtrotSierra]
+      - title: Complete redesign of the installer UI
         categories: [UI]
         authors: [holland, Erick, Kevin, FoxtrotSierra, GhostEagle68]
       - title: Add ReleaseNotes Tab
