@@ -35,7 +35,7 @@ const index = (): JSX.Element => {
             hidden={!updateNeeded}
             onClick={() => {
                 if (buttonText === 'Restart to update') {
-                    ipcRenderer.send('restart');
+                    ipcRenderer.send('restartAndUpdate');
                 }
             }}
         >
