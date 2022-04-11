@@ -110,7 +110,6 @@ interface AddonBarItemStatusProps {
 const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
     switch (status) {
         case InstallStatus.UpToDate:
-        case InstallStatus.TrackSwitch:
         case InstallStatus.GitInstall:
             return <Check2 size={27} />;
         case InstallStatus.DownloadPrep:
@@ -119,6 +118,7 @@ const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
         case InstallStatus.DownloadEnding:
             return <ArrowRepeat className="mt-0.5 animate-spin" size={27} />;
         case InstallStatus.NeedsUpdate:
+        case InstallStatus.TrackSwitch:
             return <CloudArrowDownFill className="mt-0.5" size={27} />;
         default: return <></>;
     }
