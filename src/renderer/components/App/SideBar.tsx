@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Check, ChevronDown, Download, Refresh } from "tabler-icons-react";
 import { useSelector, } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
-import { InstallStatus } from "renderer/components/AircraftSection";
 import { Addon } from "renderer/utils/InstallerConfiguration";
+import { InstallStatus } from "renderer/components/AircraftSection/Enums";
 
-export type SidebarItemProps = { enabled?: boolean, iSelected: boolean, onClick: () => void, className?: string }
+export type SidebarItemProps = { enabled?: boolean, selected: boolean, onClick: () => void, className?: string }
 
-export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, iSelected, onClick, children, className }) => {
+export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, selected, onClick, children, className }) => {
     return (
         <div
-            className={`w-full flex flex-row items-center transition-all duration-200 ${iSelected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} ${enabled ? 'hover:bg-navy-lightest' : ''} pl-5 py-4 ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+            className={`w-full flex flex-row items-center transition-all duration-200 ${selected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} ${enabled ? 'hover:bg-navy-lightest' : ''} pl-5 py-4 ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
             onClick={onClick}
-        >{children}</div>
+        >
+            {children}
+        </div>
     );
 };
 
@@ -33,21 +35,14 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
     );
 };
 
-type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void, overriddenByAddon: () => Addon }
+type SidebarAddonProps = { addon: Addon, isSelected: boolean, handleSelected: (key: string) => void }
 
-export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected, overriddenByAddon }) => {
+export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, handleSelected }) => {
     const [downloadState, setStatusText] = useState('');
     const [icon, setIcon] = useState<'notAvailable' | 'install' | 'installing' | 'installed' | 'update'>('install');
     const addonDownloadState = useSelector<InstallerStore>((state) => {
         try {
             return state.installStatus[addon.key] as InstallStatus;
-        } catch (e) {
-            return InstallStatus.Unknown;
-        }
-    });
-    const overriddenAddonState = useSelector<InstallerStore>((state) => {
-        try {
-            return state.installStatus[overriddenByAddon().key] as InstallStatus;
         } catch (e) {
             return InstallStatus.Unknown;
         }
@@ -60,7 +55,7 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
                     setStatusText('Not Available');
                     setIcon('notAvailable');
                     break;
-                case InstallStatus.FreshInstall:
+                case InstallStatus.NotInstalled:
                 case InstallStatus.Unknown:
                     setStatusText('Not Installed');
                     setIcon('install');
@@ -106,21 +101,17 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
     };
 
     return (
-        <>
-            { !(overriddenByAddon && overriddenAddonState === InstallStatus.Hidden) ?
-                <SidebarItem enabled={addon.enabled} iSelected={isSelected} onClick={() => {
-                    if (addon.enabled) {
-                        handleSelected(addon.key);
-                    }
-                }}>
-                    <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
-                        <span className="text-xl text-gray-200 font-semibold" key={addon.key}>{(addonDownloadState === InstallStatus.Hidden || !addon.enabled) && addon.hiddenName ? addon.hiddenName : addon.name}</span>
-                        <code className="text-lg text-teal-50">{downloadState}</code>
-                    </div>
+        <SidebarItem enabled={addon.enabled} selected={isSelected} onClick={() => {
+            if (addon.enabled) {
+                handleSelected(addon.key);
+            }
+        }}>
+            <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
+                <span className="text-xl text-gray-200 font-semibold" key={addon.key}>{addon.name}</span>
+                <code className="text-lg text-teal-50">{downloadState}</code>
+            </div>
 
-                    <Icon />
-                </SidebarItem>
-                : <></>}
-        </>
+            <Icon />
+        </SidebarItem>
     );
 };

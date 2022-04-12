@@ -1,12 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
-
-import './index.css';
+import { Check } from 'tabler-icons-react';
 import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 
+import './index.css';
+
 export const Tracks: React.FC = ({ children }) => (
-    <div className="flex flex-row justify-start items-stretch gap-2">
+    <div className="flex flex-row justify-start items-stretch gap-3">
         {children}
     </div>
 );
@@ -21,35 +22,23 @@ type TrackProps = {
 };
 
 export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, addon, track }) => {
-    const latestVersionName = useSelector<InstallerStore, string>(state => {
-        return state.latestVersionNames
-            .find((entry) => entry.addonKey === addon.key && entry.trackKey === track.key)
-            ?.info.name ?? '<unknown>';
-    });
-
-    const makeBorderStyle = () => {
-        if (isInstalled) {
-            return 'bg-green-600';
-        } else {
-            if (isSelected) {
-                return 'bg-teal-light-contrast';
-            } else {
-                return 'bg-gray-600';
-            }
-        }
-    };
+    const latestVersionName = useSelector<InstallerStore, string>((state) => (
+        state.latestVersionNames[addon.key]?.[track.key]?.name ?? '<unknown>'
+    ));
 
     return (
         <div
-            className={`${isSelected ? 'selected' : 'selector'} ${isInstalled ? 'installed' : ''} w-60 flex flex-row items-center ${isSelected ? 'bg-navy-lightest' : 'bg-navy-lighter'} rounded-md transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer`}
+            className={`w-60 flex flex-row items-center relative text-white rounded-sm-md bg-navy-dark border-2 border-transparent hover:border-navy-lightest hover:text-gray-300 transition-all duration-200 cursor-pointer ${isSelected && 'border-cyan border-2 text-cyan'}`}
             onClick={() => handleSelected(track)}
         >
-            <div
-                className={`${makeBorderStyle()} w-1 h-12 rounded-r-xl transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
-            <div className="flex flex-col px-5 py-2">
-                <span className="text-xl text-gray-50">{track.name}</span>
-                <span className="text-lg text-teal-50 -mt-0.5"><code>{latestVersionName}</code></span>
+            <div className={`w-1 h-12 rounded-r-xl transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
+            <div className="flex flex-col px-3 py-2.5">
+                <span className="text-xl text-current">{track.name}</span>
+                <span className="text-3xl font-manrope font-medium text-current mt-0.5">{latestVersionName}</span>
             </div>
+            {isInstalled && (
+                <Check className={`absolute right-4 text-cyan stroke-current`} strokeWidth={3}/>
+            )}
         </div>
     );
 };

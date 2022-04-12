@@ -1,11 +1,15 @@
-import Store from "electron-store";
+import Store, { Schema } from "electron-store";
 import * as fs from "fs-extra";
 import walk from "walkdir";
 import * as path from "path";
-import { Schema } from "electron-store";
-import { Dispatch, SetStateAction, useState } from "react";
+import * as os from 'os';
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const defaultCommunityDir = (): string => {
+    if (os.platform().toString() === 'linux') {
+        return 'linux';
+    }
+
     // Ensure proper functionality in main- and renderer-process
     let msfsConfigPath = null;
 
@@ -53,9 +57,17 @@ export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
 export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => {
     const [storedValue, setStoredValue] = useState(store.get<string, T>(key));
 
-    store.onDidChange(key as never, (val) => {
-        setStoredValue(val as T);
-    });
+    useEffect(() => {
+        setStoredValue(store.get<string, T>(key));
+
+        const cancel = store.onDidChange(key as never, (val) => {
+            setStoredValue(val as T);
+        });
+
+        return () => {
+            cancel();
+        };
+    }, [key]);
 
     const setValue = (newVal: T) => {
         store.set(key, newVal);
@@ -64,21 +76,21 @@ export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => 
     return [storedValue, setValue];
 };
 
+export const useIsDarkTheme = (): boolean => {
+    return true;
+};
+
 const schema: Schema<unknown> = {
     mainSettings: {
         type: "object",
         // Empty defaults are required when using type: "object" (https://github.com/sindresorhus/conf/issues/85#issuecomment-531651424)
         default: {},
         properties: {
-            separateLiveriesPath: {
-                type: "boolean",
-                default: false
-            },
-            disableExperimentalWarning: {
+            autoStartApp: {
                 type: "boolean",
                 default: false,
             },
-            disabledIncompatibleLiveriesWarning: {
+            disableExperimentalWarning: {
                 type: "boolean",
                 default: false,
             },
@@ -90,14 +102,22 @@ const schema: Schema<unknown> = {
                 type: "string",
                 default: "yyyy/mm/dd"
             },
+            useLongDateFormat: {
+                type: "boolean",
+                default: false,
+            },
+            useDarkTheme: {
+                type: "boolean",
+                default: false,
+            },
+            allowSeasonalEffects: {
+                type: "boolean",
+                default: true,
+            },
             msfsPackagePath: {
                 type: "string",
                 default: defaultCommunityDir(),
             },
-            liveriesPath: {
-                type: "string",
-                default: defaultCommunityDir(),
-            }
         }
     },
     cache: {
@@ -118,7 +138,11 @@ const schema: Schema<unknown> = {
                         type: "boolean",
                         default: false,
                     },
-                    sectionToShow: {
+                    lastShownSection: {
+                        type: "string",
+                        default: "",
+                    },
+                    lastShownAddonKey: {
                         type: "string",
                         default: "",
                     }

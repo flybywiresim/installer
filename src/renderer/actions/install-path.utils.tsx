@@ -2,7 +2,7 @@ import settings from "common/settings";
 import { Directories } from "renderer/utils/Directories";
 import { dialog } from "@electron/remote";
 
-export async function setupInstallPath(): Promise<string> {
+export const setupInstallPath = async (): Promise<string> => {
     const currentPath = Directories.community();
 
     const path = await dialog.showOpenDialog({
@@ -20,9 +20,9 @@ export async function setupInstallPath(): Promise<string> {
     } else {
         return "";
     }
-}
+};
 
-export async function setupLiveriesPath(): Promise<string> {
+export const setupLiveriesPath = async (): Promise<string> => {
     const currentPath = Directories.liveries();
 
     const path = await dialog.showOpenDialog({
@@ -37,4 +37,4 @@ export async function setupLiveriesPath(): Promise<string> {
     } else {
         return "";
     }
-}
+};
