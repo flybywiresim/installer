@@ -3,7 +3,7 @@ import { Check, ChevronDown, Download, Refresh } from "tabler-icons-react";
 import { useSelector, } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { Addon } from "renderer/utils/InstallerConfiguration";
-import { InstallStatus } from "renderer/components/AircraftSection/Enums";
+import { InstallStatus } from "renderer/components/AddonSection/Enums";
 
 export type SidebarItemProps = { enabled?: boolean, selected: boolean, onClick: () => void, className?: string }
 

@@ -1,4 +1,4 @@
-import { InstallStatus, MsfsStatus } from "renderer/components/AircraftSection/Enums";
+import { InstallStatus, MsfsStatus } from "renderer/components/AddonSection/Enums";
 import { DownloadItem } from "renderer/redux/types";
 import React, { FC } from "react";
 

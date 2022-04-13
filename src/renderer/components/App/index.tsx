@@ -4,7 +4,7 @@ import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import { SettingsSection } from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
-import { AircraftSection } from 'renderer/components/AircraftSection';
+import { AircraftSection } from 'renderer/components/AddonSection';
 import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
 import InstallerUpdate from "renderer/components/InstallerUpdate";
