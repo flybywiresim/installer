@@ -9,7 +9,7 @@ import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
 import yaml from 'js-yaml';
-import { InstallStatus } from "renderer/components/AircraftSection/Enums";
+import { InstallStatus } from "renderer/components/AddonSection/Enums";
 
 export type ReleaseInfo = {
     name: string,

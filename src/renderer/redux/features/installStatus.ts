@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TypedAction } from "renderer/redux/store";
-import { InstallStatus } from "renderer/components/AircraftSection/Enums";
+import { InstallStatus } from "renderer/components/AddonSection/Enums";
 
 const initialState : Record<string, InstallStatus> = {};
 
