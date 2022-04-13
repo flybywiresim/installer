@@ -549,7 +549,7 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.TrackSwitch:
             case InstallStatus.DownloadDone:
             case InstallStatus.GitInstall:
-                if (localApiStatus !== ApplicationStatus.Closed) {
+                if (msfsStatus !== ApplicationStatus.Closed || localApiStatus !== ApplicationStatus.Closed) {
                     return <></>;
                 }
                 return (
