@@ -1,22 +1,24 @@
 import React, { FC } from "react";
 import { ButtonType } from "renderer/components/Button";
 import { SidebarButton } from "renderer/components/AircraftSection/index";
-import { InstallStatus, MsfsStatus } from "renderer/components/AircraftSection/Enums";
+import { InstallStatus, ApplicationStatus } from "renderer/components/AircraftSection/Enums";
 
 interface ActiveInstallButtonProps {
-    msfsIsOpen: MsfsStatus,
+    msfsStatus: ApplicationStatus,
+    localApiStatus: ApplicationStatus,
     installStatus: InstallStatus,
     onInstall: () => void,
     onCancel: () => void,
 }
 
 export const MainActionButton: FC<ActiveInstallButtonProps> = ({
-    msfsIsOpen,
+    msfsStatus,
+    localApiStatus,
     installStatus,
     onInstall,
     onCancel
 }): JSX.Element => {
-    if (msfsIsOpen !== MsfsStatus.Closed) {
+    if (msfsStatus !== ApplicationStatus.Closed || localApiStatus !== ApplicationStatus.Closed) {
         return (
             <SidebarButton disabled>
                 Unavailable

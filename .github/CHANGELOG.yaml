@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.1.0
+    changes:
+      - title: Prevent updating while Local API / MCDU Server is running
+        categories: [Logic]
+        authors: [FoxtrotSierra]
   - name: 3.0.0
     changes:
       - title: Fallback to full install after too many retries on a module

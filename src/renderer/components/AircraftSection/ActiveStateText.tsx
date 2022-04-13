@@ -1,4 +1,4 @@
-import { InstallStatus, MsfsStatus } from "renderer/components/AircraftSection/Enums";
+import { ApplicationStatus, InstallStatus } from "renderer/components/AircraftSection/Enums";
 import { DownloadItem } from "renderer/redux/types";
 import React, { FC } from "react";
 
@@ -7,15 +7,21 @@ const StateText: FC = ({ children }) => (
 );
 
 interface ActiveStateProps {
-    msfsIsOpen: MsfsStatus,
+    msfsStatus: ApplicationStatus,
+    localApiStatus: ApplicationStatus,
     installStatus: InstallStatus,
     download: DownloadItem,
 }
 
-export const ActiveStateText: FC<ActiveStateProps> = ({ msfsIsOpen, installStatus, download }): JSX.Element => {
-    if (msfsIsOpen !== MsfsStatus.Closed) {
+export const ActiveStateText: FC<ActiveStateProps> = ({ msfsStatus, localApiStatus, installStatus, download }): JSX.Element => {
+    if (msfsStatus !== ApplicationStatus.Closed) {
         return (
-            <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
+            <StateText>{msfsStatus === ApplicationStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
+        );
+    }
+    if (localApiStatus !== ApplicationStatus.Closed) {
+        return (
+            <StateText>{localApiStatus === ApplicationStatus.Open ? "Please close the local API server / MCDU server" : "Checking status..."}</StateText>
         );
     }
 
