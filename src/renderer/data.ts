@@ -205,11 +205,19 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'Synaptic Simulations',
             logoUrl: SynapticLogo,
+            defs: [
+                {
+                    kind: 'addonCategory',
+                    key: 'aircraft',
+                    title: 'Aircraft',
+                },
+            ],
             addons: [
                 {
                     name: 'A22X',
                     repoOwner: 'Synaptic-Simulations',
                     repoName: 'a22x',
+                    category: '@aircraft',
                     aircraftName: 'A220-300',
                     titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/synaptic-a22x/dark.svg',
                     titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/synaptic-a22x/light.svg',
