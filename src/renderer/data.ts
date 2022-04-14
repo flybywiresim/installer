@@ -2,8 +2,6 @@ import { Configuration } from "./utils/InstallerConfiguration";
 
 import FBWLogo from "renderer/assets/FBW-Tail.svg";
 import SynapticLogo from "renderer/assets/Synaptic-Logo.png";
-import A320NoseSVG from "renderer/assets/a32nx_nose.svg";
-import A380NoseSVG from "renderer/assets/a380x_nose.svg";
 
 export const defaultConfiguration: Configuration = {
     publishers: [
@@ -33,7 +31,6 @@ export const defaultConfiguration: Configuration = {
                     titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/dark.svg',
                     titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/light.svg',
                     enabled: true,
-                    menuIconUrl: A320NoseSVG,
                     // TODO: Change this
                     backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-a32nx/1.png'],
                     shortDescription: 'Airbus A320neo Series',
@@ -126,7 +123,6 @@ export const defaultConfiguration: Configuration = {
                     titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
                     titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/light.svg',
                     enabled: false,
-                    menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: ['https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'],
                     shortDescription: 'Airbus A380-800',
                     description: '',
@@ -140,7 +136,6 @@ export const defaultConfiguration: Configuration = {
                     aircraftName: 'FBW Headquarters',
                     enabled: true,
                     overrideAddonWhileHidden: 'A380X',
-                    menuIconUrl: A380NoseSVG,
                     backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-kfbw/0.png'],
                     titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/dark.svg',
                     titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/light.svg',
@@ -222,7 +217,6 @@ export const defaultConfiguration: Configuration = {
                     titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/synaptic-a22x/light.svg',
                     key: 'A22X',
                     enabled: false,
-                    menuIconUrl: A320NoseSVG,
                     backgroundImageUrls: ['https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'],
                     shortDescription: 'Airbus A220-300 (CSeries 300)',
                     description: '',
