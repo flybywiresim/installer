@@ -183,13 +183,11 @@ export const defaultConfiguration: Configuration = {
                     text: 'Documentation',
                     action: 'openBrowser',
                     url: 'https://docs.flybywiresim.com/',
-                    inline: false,
                 },
                 {
                     text: 'Website',
                     action: 'openBrowser',
                     url: 'https://flybywiresim.com/',
-                    inline: false,
                 },
                 {
                     text: 'Discord',
@@ -230,7 +228,6 @@ export const defaultConfiguration: Configuration = {
                     text: 'Website',
                     action: 'openBrowser',
                     url: 'https://www.synapticsim.com/',
-                    inline: false,
                 },
                 {
                     text: 'Discord',
