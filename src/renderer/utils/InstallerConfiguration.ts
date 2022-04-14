@@ -49,7 +49,6 @@ export interface Addon {
     shortDescription: string,
     description: string,
     techSpecs?: AddonTechSpec[],
-    menuIconUrl: string,
     targetDirectory: string,
     alternativeNames?: string[],
     tracks: AddonTrack[],
