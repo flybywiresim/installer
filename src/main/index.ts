@@ -40,6 +40,33 @@ const createWindow = (): void => {
 
     remote.enable(mainWindow.webContents);
 
+    const UpsertKeyValue = (header: Record<string, string> | Record<string, string[]>, keyToChange: string, value: string | string[]) => {
+        for (const key of Object.keys(header)) {
+            if (key.toLowerCase() === keyToChange.toLowerCase()) {
+                header[key] = value;
+                return;
+            }
+        }
+        header[keyToChange] = value;
+    };
+
+    mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+        (details, callback) => {
+            const { requestHeaders } = details;
+            UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', '*');
+            callback({ requestHeaders });
+        },
+    );
+
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        const { responseHeaders } = details;
+        UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*']);
+        UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*']);
+        callback({
+            responseHeaders,
+        });
+    });
+
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
     });
