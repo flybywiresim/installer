@@ -5,7 +5,7 @@ import { useIsDarkTheme } from "common/settings";
 import { Publisher } from "renderer/utils/InstallerConfiguration";
 import { useAppSelector } from "renderer/redux/store";
 import { Gear, Wrench } from "react-bootstrap-icons";
-import { InstallStatus } from "renderer/components/AircraftSection/Enums";
+import { InstallStatus } from "renderer/components/AddonSection/Enums";
 
 export const NavBar: FC = ({ children }) => {
     const darkTheme = useIsDarkTheme();

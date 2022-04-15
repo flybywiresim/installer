@@ -1,4 +1,4 @@
-import { ApplicationStatus, InstallStatus } from "renderer/components/AircraftSection/Enums";
+import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { DownloadItem } from "renderer/redux/types";
 import React, { FC } from "react";
 import { useAppSelector } from "renderer/redux/store";

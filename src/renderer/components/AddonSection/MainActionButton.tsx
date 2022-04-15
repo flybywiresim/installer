@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { ButtonType } from "renderer/components/Button";
-import { SidebarButton } from "renderer/components/AircraftSection/index";
-import { InstallStatus, ApplicationStatus } from "renderer/components/AircraftSection/Enums";
+import { SidebarButton } from "renderer/components/AddonSection/index";
+import { InstallStatus, ApplicationStatus } from "renderer/components/AddonSection/Enums";
 import { useAppSelector } from "renderer/redux/store";
 
 interface ActiveInstallButtonProps {
