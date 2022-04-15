@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ApplicationStatus } from "renderer/components/AircraftSection/Enums";
+import { ApplicationStatus } from "renderer/components/AddonSection/Enums";
 import { TypedAction } from "renderer/redux/store";
 
 const initialState: Record<string, ApplicationStatus> = {
