@@ -76,8 +76,8 @@ export interface AircraftSectionURLParams {
 export const AircraftSection = (): JSX.Element => {
     const { publisherName } = useParams<AircraftSectionURLParams>();
 
-    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName));
     const history = useHistory();
+    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
     const dispatch = useAppDispatch();
 
     const [selectedAddon, setSelectedAddon] = useState<Addon>(() => {

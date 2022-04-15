@@ -151,6 +151,9 @@ const App = () => {
                                     <Route path="/settings">
                                         <SettingsSection />
                                     </Route>
+                                    <Route path="*">
+                                        <Redirect to={'/'} />
+                                    </Route>
                                 </Switch>
                             </div>
                         </div>

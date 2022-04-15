@@ -24,7 +24,7 @@ export const AddonBar: FC = ({ children }) => {
     const darkTheme = useIsDarkTheme();
 
     const { publisherName } = useParams<AircraftSectionURLParams>();
-    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName));
+    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
 
     const PublisherButtons = (buttons: PublisherButton[]) => {
         const groups: PublisherButton[][] = [];
