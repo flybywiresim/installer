@@ -101,10 +101,10 @@ export const AircraftSection = (): JSX.Element => {
 
         if (hiddenAddon) {
             setHiddenAddon(hiddenAddon);
-            history.push(`/aircraft-section/${publisherName}/hidden-addon-cover`);
+            history.push(`/addon-section/${publisherName}/hidden-addon-cover`);
         } else {
             setHiddenAddon(undefined);
-            history.push(`/aircraft-section/${publisherName}/main/configure`);
+            history.push(`/addon-section/${publisherName}/main/configure`);
         }
 
         settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
@@ -114,7 +114,7 @@ export const AircraftSection = (): JSX.Element => {
         const firstAvailableAddon = publisherData.addons.find((addon) => addon.enabled);
 
         if (!firstAvailableAddon) {
-            history.push(`/aircraft-section/${publisherName}/no-available-addons`);
+            history.push(`/addon-section/${publisherName}/no-available-addons`);
             return;
         }
 
@@ -603,30 +603,30 @@ export const AircraftSection = (): JSX.Element => {
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
 
-                        <Route exact path={`/aircraft-section/${publisherName}`}>
+                        <Route exact path={`/addon-section/${publisherName}`}>
                             {publisherData.addons.every(addon => !addon.enabled) ?
-                                <Redirect to={`/aircraft-section/${publisherName}/no-available-addons`} /> :
-                                <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
+                                <Redirect to={`/addon-section/${publisherName}/no-available-addons`} /> :
+                                <Redirect to={`/addon-section/${publisherName}/main/configure`} />
                             }
                         </Route>
 
-                        <Route path={`/aircraft-section/${publisherName}/no-available-addons`}>
+                        <Route path={`/addon-section/${publisherName}/no-available-addons`}>
                             <NoAvailableAddonsSection />
                         </Route>
 
-                        <Route path={`/aircraft-section/${publisherName}/hidden-addon-cover`}>
+                        <Route path={`/addon-section/${publisherName}/hidden-addon-cover`}>
                             {addonDiscovered ? (
-                                <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
+                                <Redirect to={`/addon-section/${publisherName}/main/configure`} />
                             ) : (
                                 hiddenAddon ? (
                                     <HiddenAddonCover addon={hiddenAddon} />
                                 ) : (
-                                    <Redirect to={`/aircraft-section/${publisherName}/main/configure`} />
+                                    <Redirect to={`/addon-section/${publisherName}/main/configure`} />
                                 )
                             )}
                         </Route>
 
-                        <Route path={`/aircraft-section/${publisherName}/main`}>
+                        <Route path={`/addon-section/${publisherName}/main`}>
                             <div className="h-full">
                                 <div
                                     className="h-1/2 relative bg-cover bg-center"
@@ -663,7 +663,7 @@ export const AircraftSection = (): JSX.Element => {
                                 </div>
                                 <div className="flex flex-row h-1/2">
 
-                                    <Route path={`/aircraft-section/${publisherName}/main/configure`}>
+                                    <Route path={`/addon-section/${publisherName}/main/configure`}>
                                         <div className="p-7 overflow-y-scroll">
                                             <h2 className="text-white font-bold">
                                                 Choose Your Version
@@ -726,35 +726,35 @@ export const AircraftSection = (): JSX.Element => {
                                         </div>
                                     </Route>
 
-                                    <Route path={`/aircraft-section/${publisherName}/main/release-notes`}>
+                                    <Route path={`/addon-section/${publisherName}/main/release-notes`}>
                                         {releaseNotes && releaseNotes.length > 0 ? (
                                             <ReleaseNotes addon={selectedAddon}/>
                                         ) :
-                                            <Redirect to={`/aircraft-section/${publisherName}/main/configure`}/>
+                                            <Redirect to={`/addon-section/${publisherName}/main/configure`}/>
                                         }
                                     </Route>
 
-                                    <Route path={`/aircraft-section/${publisherName}/main/about`}>
+                                    <Route path={`/addon-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon}/>
                                     </Route>
 
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy-dark p-7 flex-shrink-0">
                                         <div className="w-full flex flex-col items-start place-self-start space-y-7">
-                                            <SideBarLink to={`/aircraft-section/${publisherName}/main/configure`}>
+                                            <SideBarLink to={`/addon-section/${publisherName}/main/configure`}>
                                                 <Sliders size={22} />
                                                 Configure
                                             </SideBarLink>
                                             {releaseNotes && releaseNotes.length > 0 && (
-                                                <SideBarLink to={`/aircraft-section/${publisherName}/main/release-notes`}>
+                                                <SideBarLink to={`/addon-section/${publisherName}/main/release-notes`}>
                                                     <JournalText size={22} />
                                                     Release Notes
                                                 </SideBarLink>
                                             )}
-                                            {/* <SideBarLink to="/aircraft-section/main/liveries">
+                                            {/* <SideBarLink to="/addon-section/main/liveries">
                                                 <Palette size={24} />
                                                 Liveries
                                             </SideBarLink> */}
-                                            <SideBarLink to={`/aircraft-section/${publisherName}/main/about`}>
+                                            <SideBarLink to={`/addon-section/${publisherName}/main/about`}>
                                                 <InfoCircle size={22} />
                                                 About
                                             </SideBarLink>

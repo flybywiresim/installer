@@ -130,7 +130,7 @@ const App = () => {
                                 <NavBar>
                                     {configuration.publishers.map((publisher) => (
                                         <NavBarPublisher
-                                            to={`/aircraft-section/${publisher.name}`}
+                                            to={`/addon-section/${publisher.name}`}
                                             publisher={publisher}
                                         />
                                     ))}
@@ -140,9 +140,9 @@ const App = () => {
                             <div className="bg-navy m-0 w-full flex">
                                 <Switch>
                                     <Route exact path="/">
-                                        <Redirect to={`/aircraft-section/${configuration.publishers[0].name}`}/>
+                                        <Redirect to={`/addon-section/${configuration.publishers[0].name}`}/>
                                     </Route>
-                                    <Route path="/aircraft-section/:publisherName">
+                                    <Route path="/addon-section/:publisherName">
                                         <AircraftSection />
                                     </Route>
                                     <Route exact path="/debug">
