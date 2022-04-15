@@ -29,6 +29,7 @@ import { MainActionButton } from "renderer/components/AircraftSection/MainAction
 import { ApplicationStatus, InstallStatus } from "renderer/components/AircraftSection/Enums";
 import { ActiveStateText } from "renderer/components/AircraftSection/ActiveStateText";
 import { LocalApiServer } from "renderer/utils/LocalApiServer";
+import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -94,6 +95,7 @@ export const AircraftSection = (): JSX.Element => {
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTracks);
     const installStatus = useAppSelector(state => state.installStatus);
+    const applicationStatus = useAppSelector(state => state.applicationStatus);
 
     const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
 
@@ -209,9 +211,6 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(setInstallStatus({ addonKey: selectedAddon.key, installStatus: new_state }));
     };
 
-    const [msfsStatus, setMsfsStatus] = useState<ApplicationStatus>(ApplicationStatus.Checking);
-    const [localApiStatus, setLocalApiStatus] = useState<ApplicationStatus>(ApplicationStatus.Checking);
-
     const download: DownloadItem = useSelector((state: InstallerStore) =>
         state.downloads.find(download => download.id === selectedAddon.name)
     );
@@ -228,23 +227,12 @@ export const AircraftSection = (): JSX.Element => {
     });
 
     useEffect(() => {
-        const checkMsfsInterval = setInterval(async () => {
-            setMsfsStatus(
-                (await Msfs.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed
-            );
+        const checkApplicationInterval = setInterval(async () => {
+            dispatch(setApplicationStatus({ applicationName: 'msfs', applicationStatus: (await Msfs.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
+            dispatch(setApplicationStatus({ applicationName: 'localApi', applicationStatus: (await LocalApiServer.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
         }, 500);
 
-        return () => clearInterval(checkMsfsInterval);
-    }, []);
-
-    useEffect(() => {
-        const checkLocalApiInterval = setInterval(async () => {
-            setLocalApiStatus(
-                (await LocalApiServer.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed
-            );
-        }, 500);
-
-        return () => clearInterval(checkLocalApiInterval);
+        return () => clearInterval(checkApplicationInterval);
     }, []);
 
     useEffect(() => {
@@ -549,7 +537,7 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.TrackSwitch:
             case InstallStatus.DownloadDone:
             case InstallStatus.GitInstall:
-                if (msfsStatus !== ApplicationStatus.Closed || localApiStatus !== ApplicationStatus.Closed) {
+                if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.localApi !== ApplicationStatus.Closed) {
                     return <></>;
                 }
                 return (
@@ -652,8 +640,6 @@ export const AircraftSection = (): JSX.Element => {
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
                                         <div>
                                             <ActiveStateText
-                                                msfsStatus={msfsStatus}
-                                                localApiStatus={localApiStatus}
                                                 installStatus={installStatus[selectedAddon.key]}
                                                 download={download}
                                             />
@@ -779,8 +765,6 @@ export const AircraftSection = (): JSX.Element => {
                                         <div className="flex flex-col gap-y-4">
                                             <UninstallButton />
                                             <MainActionButton
-                                                msfsStatus={msfsStatus}
-                                                localApiStatus={localApiStatus}
                                                 installStatus={installStatus[selectedAddon.key]}
                                                 onInstall={handleInstall}
                                                 onCancel={handleCancel}
