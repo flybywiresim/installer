@@ -557,7 +557,7 @@ export const AircraftSection = (): JSX.Element => {
         <div className="flex flex-row w-full h-full">
             <div
                 className="flex-none bg-navy-medium z-40 h-full"
-                style={{ width: "31rem" }}
+                style={{ width: "29rem" }}
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
                     <AddonBar>

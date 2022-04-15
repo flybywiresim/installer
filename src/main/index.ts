@@ -24,8 +24,8 @@ const serve = process.argv.slice(1).some((arg) => arg === "--serve");
 const createWindow = (): void => {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 1400,
-        height: 950,
+        width: 1300,
+        height: 880,
         minWidth: 1300,
         minHeight: 880,
         frame: false,
