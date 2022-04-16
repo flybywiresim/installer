@@ -53,6 +53,8 @@ class LocalApiConfigurationHandler {
                 console.log(`Creating configuration at ${prospectiveConfigurationFilePath}`);
 
                 fs.writeFileSync(path.join(prospectiveConfigurationFilePath),JSON.stringify(localApiDefaultConfiguration));
+
+                return localApiDefaultConfiguration;
             } else {
                 throw new Error(`No configuration found and no directory to create it in`);
             }
