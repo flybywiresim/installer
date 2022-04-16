@@ -2,6 +2,7 @@ import { Configuration } from "./utils/InstallerConfiguration";
 
 import FBWLogo from "renderer/assets/FBW-Tail.svg";
 import SynapticLogo from "renderer/assets/Synaptic-Logo.png";
+import SaltyLogo from "renderer/assets/Salty-Logo.svg";
 
 export const defaultConfiguration: Configuration = {
     publishers: [
@@ -40,10 +41,6 @@ export const defaultConfiguration: Configuration = {
                         '(the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) ' +
                         'and features large, fuel-saving wingtip devices known as Sharklets.',
                     techSpecs: [
-                        {
-                            name: 'Model',
-                            value: 'A320-251N',
-                        },
                         {
                             name: 'Engines',
                             value: 'CFM LEAP 1A-26',
@@ -201,6 +198,84 @@ export const defaultConfiguration: Configuration = {
                     inline: true
                 },
             ]
+        },
+        {
+            name: 'Salty Simulations',
+            logoUrl: SaltyLogo,
+            defs: [
+                {
+                    kind: 'addonCategory',
+                    key: 'aircraft',
+                    title: 'Aircraft',
+                },
+            ],
+            addons: [
+                {
+                    key: '74S',
+                    name: '74S',
+                    repoOwner: 'saltysimulations',
+                    repoName: 'salty-747',
+                    category: '@aircraft',
+                    aircraftName: 'B747-8I',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/light.svg',
+                    enabled: true,
+                    backgroundImageUrls: ['https://raw.githubusercontent.com/saltysimulations/branding/main/png/salty_banner.png'],
+                    shortDescription: 'Boeing 747-8I',
+                    description:
+                        'The Boeing 747-8 is the largest variant of the 747. ' +
+                        'It features a thicker and wider wing, allowing it to hold more fuel, as well as raked wingtips. ' +
+                        'The aircraft, powered by the more efficient General Electric GEnx engines, ' +
+                        'can carry 467 passengers in a typical three-class configuration, and has a range of 7,730 nautical miles.',
+                    techSpecs: [
+                        {
+                            name: 'Engines',
+                            value: 'GEnx-2B',
+                        },
+                    ],
+                    targetDirectory: 'salty-747',
+                    tracks: [
+                        {
+                            name: 'Stable',
+                            key: '74S-stable',
+                            url: 'https://github.com/saltysimulations/salty-747/releases/download/vinstaller-stable/',
+                            description: 'Stable is our variant that has the least bugs and best performance. ' +
+                                'This version will not always be up to date but we guarantee its compatibility ' +
+                                'with each major patch from MSFS.',
+                            isExperimental: false,
+                            releaseModel: {
+                                type: 'githubRelease',
+                            },
+                        },
+                        {
+                            name: 'Development',
+                            key: '74S-dev',
+                            url: 'https://github.com/saltysimulations/salty-747/releases/download/vinstaller/',
+                            description:
+                                'The development version has all the latest features that will end up in the next stable. ' +
+                                'You may encounter bugs more frequently.',
+                            isExperimental: false,
+                            releaseModel: {
+                                type: 'githubBranch',
+                                branch: 'master',
+                            },
+                        },
+                    ],
+                },
+            ],
+            buttons: [
+                {
+                    text: 'Discord',
+                    action: 'openBrowser',
+                    url: 'https://discord.gg/S4PJDwk',
+                },
+                {
+                    text: 'Twitter',
+                    action: 'openBrowser',
+                    url: 'https://twitter.com/Salty_Sim',
+                    inline: true,
+                },
+            ],
         },
         {
             name: 'Synaptic Simulations',

@@ -11,12 +11,21 @@
 releases:
   - name: 3.1.0
     changes:
+      - title: Add Salty Simulations 74S
+        categories: [Addons]
+        authors: [Ninjo, FoxtrotSierra]
+      - title: Fix installer crashing due to inexisting page
+        categories: [Core]
+        authors: [FoxtrotSierra]
       - title: Prevent uninstalling while MSFS is open
         categories: [Logic]
         authors: [FoxtrotSierra]
       - title: Prevent updating or uninstalling while MCDU Server is running
         categories: [Logic]
         authors: [FoxtrotSierra]
+      - title: Fix smaller design issues on ≤1080p
+        categories: [UI]
+        authors: [holland]
   - name: 3.0.0
     changes:
       - title: Fallback to full install after too many retries on a module
