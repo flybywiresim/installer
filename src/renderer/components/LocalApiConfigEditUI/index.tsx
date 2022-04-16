@@ -202,7 +202,7 @@ export const LocalApiConfigEditUI = () => {
                                     }
                                 }))}
                                 name="Name"
-                                className="text-base text-white w-60 px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
+                                className="text-base text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
                             >
                                 {printers.map(p => (
                                     <option key={p.name} value={p.name}>{p.name}</option>
