@@ -30,7 +30,7 @@ export class AddonData {
     }
 
     private static async latestVersionForReleasedTrack(addon: Addon): Promise<ReleaseInfo> {
-        return GitVersions.getReleases('flybywiresim', addon.repoName)
+        return GitVersions.getReleases(addon.repoOwner, addon.repoName)
             .then((releases) => ({
                 name: releases[0].name,
                 releaseDate: releases[0].publishedAt.getTime(),
@@ -39,7 +39,7 @@ export class AddonData {
     }
 
     private static async latestVersionForRollingTrack(addon: Addon, releaseModel: GithubBranchReleaseModel): Promise<ReleaseInfo> {
-        return GitVersions.getNewestCommit('flybywiresim', addon.repoName, releaseModel.branch)
+        return GitVersions.getNewestCommit(addon.repoOwner, addon.repoName, releaseModel.branch)
             .then((commit) => ({
                 name: commit.sha.substring(0, 7),
                 releaseDate: commit.timestamp.getTime(),
