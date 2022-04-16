@@ -61,7 +61,7 @@ export const AddonBar: FC = ({ children }) => {
     return (
         <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
-                <h2 className={`${textClass} font-bold -mb-1`}>{publisherData.name}</h2>
+                <h3 className={`${textClass} font-bold -mb-1`}>{publisherData.name}</h3>
             </div>
 
             {children}
