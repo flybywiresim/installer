@@ -190,16 +190,17 @@ export const LocalApiConfigEditUI = () => {
                         <div className='flex flex-row items-center justify-between text-white py-4'>
                             <p>Printer Name</p>
                             <select
-                                value={config.printer.printerName}
+                                value={config.printer.printerName ?? ''}
                                 onChange={event => setConfig(old => ({
                                     ...old,
                                     printer: {
                                         ...old.printer,
-                                        printerName: event.target.value
+                                        printerName: event.target.value ? event.target.value : null
                                     }
                                 }))}
                                 className="text-base text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
                             >
+                                <option value=''>None</option>
                                 {printers.map(p => (
                                     <option key={p.name} value={p.name}>{p.name}</option>
                                 ))}
