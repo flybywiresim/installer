@@ -572,7 +572,7 @@ export const AircraftSection = (): JSX.Element => {
                                 addon={addon}
                                 key={addon.key}
                                 onClick={() => {
-                                    history.push(`/aircraft-section/${publisherData.name}/`);
+                                    history.push(`/addon-section/${publisherData.name}/`);
 
                                     setSelectedAddon(addon);
                                 }}
@@ -597,7 +597,7 @@ export const AircraftSection = (): JSX.Element => {
                                             addon={addon}
                                             key={addon.key}
                                             onClick={() => {
-                                                history.push(`/aircraft-section/${publisherData.name}/`);
+                                                history.push(`/addon-section/${publisherData.name}/`);
 
                                                 setSelectedAddon(addon);
                                             }}
@@ -615,7 +615,7 @@ export const AircraftSection = (): JSX.Element => {
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
 
-                        <Route path={`/aircraft-section/FlyByWire Simulations/configuration/fbw-local-api-config`}>
+                        <Route path={`/addon-section/FlyByWire Simulations/configuration/fbw-local-api-config`}>
                             <LocalApiConfigEditUI />
                         </Route>
 

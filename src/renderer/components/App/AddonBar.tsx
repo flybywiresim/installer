@@ -139,7 +139,7 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
             case 'internal':
                 switch (button.call) {
                     case 'fbw-local-api-config':
-                        history.push(`/aircraft-section/FlyByWire Simulations/configuration/fbw-local-api-config`);
+                        history.push(`/addon-section/FlyByWire Simulations/configuration/fbw-local-api-config`);
                 }
                 break;
         }
