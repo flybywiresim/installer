@@ -42,10 +42,6 @@ export const defaultConfiguration: Configuration = {
                         'and features large, fuel-saving wingtip devices known as Sharklets.',
                     techSpecs: [
                         {
-                            name: 'Model',
-                            value: 'A320-251N',
-                        },
-                        {
                             name: 'Engines',
                             value: 'CFM LEAP 1A-26',
                         },
@@ -234,7 +230,7 @@ export const defaultConfiguration: Configuration = {
                     techSpecs: [
                         {
                             name: 'Engines',
-                            value: 'GE GEnx-2B',
+                            value: 'GEnx-2B',
                         },
                     ],
                     targetDirectory: 'salty-747',
