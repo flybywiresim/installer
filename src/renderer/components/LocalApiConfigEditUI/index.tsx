@@ -5,7 +5,6 @@ import { ButtonType } from '../Button';
 import fs from 'fs';
 import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
-import { fillMissing } from "object-fill-missing-keys";
 import { Toggle } from '../Toggle';
 
 interface LocalApiConfiguration {
@@ -41,11 +40,7 @@ class LocalApiConfigurationHandler {
         if (fs.existsSync(prospectiveConfigurationFilePath)) {
             console.log(`Loading configuration from ${prospectiveConfigurationFilePath}`);
 
-            const config = JSON.parse(fs.readFileSync(path.join(prospectiveConfigurationFilePath), "utf8"));
-
-            LocalApiConfigurationHandler.saveConfiguration(fillMissing(config, localApiDefaultConfiguration) as LocalApiConfiguration);
-
-            return config;
+            return JSON.parse(fs.readFileSync(path.join(prospectiveConfigurationFilePath), "utf8"));
         } else {
             console.log(`No configuration found at ${prospectiveConfigurationFilePath}`);
 
@@ -62,10 +57,10 @@ class LocalApiConfigurationHandler {
     }
 
     static saveConfiguration(propertyConfiguration: LocalApiConfiguration) {
-        const configJsonPath = path.join(Directories.community(),`local-api-config.json`);
+        const prospectiveConfigurationFilePath = path.join(Directories.community(),'flybywire-dispatch','resources', 'local-api-config.json');
 
-        if (fs.existsSync(configJsonPath)) {
-            fs.writeFileSync(configJsonPath, JSON.stringify(propertyConfiguration));
+        if (fs.existsSync(prospectiveConfigurationFilePath)) {
+            fs.writeFileSync(prospectiveConfigurationFilePath, JSON.stringify(propertyConfiguration));
         }
     }
 }
@@ -100,7 +95,9 @@ export const LocalApiConfigEditUI = () => {
     };
 
     const handleConfigSave = () => {
+        console.log('saving', config);
         LocalApiConfigurationHandler.saveConfiguration(config);
+        console.log('retrieved', LocalApiConfigurationHandler.getConfiguration());
         setConfig(LocalApiConfigurationHandler.getConfiguration());
     };
 
@@ -201,7 +198,6 @@ export const LocalApiConfigEditUI = () => {
                                         printerName: event.target.value
                                     }
                                 }))}
-                                name="Name"
                                 className="text-base text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
                             >
                                 {printers.map(p => (
