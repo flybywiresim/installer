@@ -3,7 +3,7 @@ import { Addon, Publisher, PublisherButton } from "renderer/utils/InstallerConfi
 import { shell } from 'electron';
 import * as BootstrapIcons from 'react-bootstrap-icons';
 import { ArrowRepeat, Check2, CloudArrowDownFill, Icon } from "react-bootstrap-icons";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useAppSelector } from "renderer/redux/store";
 import { AircraftSectionURLParams } from "../AddonSection";
 import { useIsDarkTheme } from "common/settings";
@@ -129,12 +129,18 @@ interface AddonBarPublisherButtonProps {
 }
 
 const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) => {
+    const history = useHistory();
+
     const handleClick = async () => {
         switch (button.action) {
             case 'openBrowser':
                 await shell.openExternal(button.url);
                 break;
-            case 'internal': // TODO
+            case 'internal':
+                switch (button.call) {
+                    case 'fbw-local-api-config':
+                        history.push(`/aircraft-section/FlyByWire Simulations/configuration/fbw-local-api-config`);
+                }
                 break;
         }
     };
