@@ -183,9 +183,10 @@ export const defaultConfiguration: Configuration = {
                 //     inline: true,
                 // },
                 {
-                    text: "Local API",
+                    text: "FBW SimBridge",
                     action: 'internal',
                     call: 'fbw-local-api-config',
+                    style: 'fbw-local-api-config',
                 },
                 {
                     text: 'Documentation',

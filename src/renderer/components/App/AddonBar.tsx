@@ -169,11 +169,11 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
 
         return (
             <button
-                className="w-full flex flex-row justify-between items-center px-8 py-6 text-4xl border-2 border-navy-light hover:border-cyan transition duration-200 rounded-md"
+                className="w-full flex flex-row justify-between items-center px-5 py-6 text-4xl border-2 border-navy-light hover:border-cyan transition duration-200 rounded-md"
                 disabled={button.inop}
                 onClick={handleClick}
             >
-                <span className="pt-1">{button.text}</span>
+                <span className="pl-4 pt-1">{button.text}</span>
 
                 <ChevronRight size={32} />
             </button>
