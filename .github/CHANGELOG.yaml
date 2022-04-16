@@ -11,7 +11,7 @@
 releases:
   - name: 3.1.0
     changes:
-      - title: Add Salty Simulations 747
+      - title: Add Salty Simulations 74S
         categories: [Addons]
         authors: [Ninjo, FoxtrotSierra]
       - title: Fix installer crashing due to inexisting page
