@@ -269,11 +269,6 @@ export const defaultConfiguration: Configuration = {
             ],
             buttons: [
                 {
-                    text: 'Website',
-                    action: 'openBrowser',
-                    url: '',
-                },
-                {
                     text: 'Discord',
                     action: 'openBrowser',
                     url: 'https://discord.gg/S4PJDwk',
