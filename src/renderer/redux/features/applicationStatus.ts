@@ -4,7 +4,7 @@ import { TypedAction } from "renderer/redux/store";
 
 const initialState: Record<string, ApplicationStatus> = {
     msfs: ApplicationStatus.Checking,
-    localApi: ApplicationStatus.Checking
+    mcduServer: ApplicationStatus.Checking
 };
 
 export const applicationStatusSlice = createSlice({

@@ -14,7 +14,7 @@ releases:
       - title: Prevent uninstalling while MSFS is open
         categories: [Logic]
         authors: [FoxtrotSierra]
-      - title: Prevent updating or uninstalling while Local API / MCDU Server is running
+      - title: Prevent updating or uninstalling while MCDU Server is running
         categories: [Logic]
         authors: [FoxtrotSierra]
   - name: 3.0.0

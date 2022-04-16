@@ -16,7 +16,7 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
     onCancel
 }): JSX.Element => {
     const applicationStatus = useAppSelector(state => state.applicationStatus);
-    if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.localApi !== ApplicationStatus.Closed) {
+    if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
         return (
             <SidebarButton disabled>
                 Unavailable

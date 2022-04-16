@@ -28,7 +28,7 @@ import { Button, ButtonType } from "renderer/components/Button";
 import { MainActionButton } from "renderer/components/AddonSection/MainActionButton";
 import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { ActiveStateText } from "renderer/components/AddonSection/ActiveStateText";
-import { LocalApiServer } from "renderer/utils/LocalApiServer";
+import { McduServer } from "renderer/utils/McduServer";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 
 const abortControllers = new Array<AbortController>(20);
@@ -229,7 +229,7 @@ export const AircraftSection = (): JSX.Element => {
     useEffect(() => {
         const checkApplicationInterval = setInterval(async () => {
             dispatch(setApplicationStatus({ applicationName: 'msfs', applicationStatus: (await Msfs.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
-            dispatch(setApplicationStatus({ applicationName: 'localApi', applicationStatus: (await LocalApiServer.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
+            dispatch(setApplicationStatus({ applicationName: 'mcduServer', applicationStatus: (await McduServer.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
         }, 500);
 
         return () => clearInterval(checkApplicationInterval);
@@ -537,7 +537,7 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.TrackSwitch:
             case InstallStatus.DownloadDone:
             case InstallStatus.GitInstall:
-                if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.localApi !== ApplicationStatus.Closed) {
+                if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
                     return <></>;
                 }
                 return (

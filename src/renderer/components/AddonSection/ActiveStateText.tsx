@@ -19,9 +19,9 @@ export const ActiveStateText: FC<ActiveStateProps> = ({ installStatus, download 
             <StateText>{applicationStatus.msfs === ApplicationStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
         );
     }
-    if (applicationStatus.localApi !== ApplicationStatus.Closed) {
+    if (applicationStatus.mcduServer !== ApplicationStatus.Closed) {
         return (
-            <StateText>{applicationStatus.localApi === ApplicationStatus.Open ? "Please close the local API server / MCDU server" : "Checking status..."}</StateText>
+            <StateText>{applicationStatus.mcduServer === ApplicationStatus.Open ? "Please close the MCDU server" : "Checking status..."}</StateText>
         );
     }
 

@@ -1,6 +1,6 @@
 import net from "net";
 
-export class LocalApiServer {
+export class McduServer {
 
     static async isRunning(): Promise<boolean> {
         return new Promise((resolve) => {
