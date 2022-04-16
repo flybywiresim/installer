@@ -26,8 +26,10 @@ import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
 import { MainActionButton } from "renderer/components/AddonSection/MainActionButton";
-import { InstallStatus, MsfsStatus } from "renderer/components/AddonSection/Enums";
+import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { ActiveStateText } from "renderer/components/AddonSection/ActiveStateText";
+import { McduServer } from "renderer/utils/McduServer";
+import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -93,6 +95,7 @@ export const AircraftSection = (): JSX.Element => {
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTracks);
     const installStatus = useAppSelector(state => state.installStatus);
+    const applicationStatus = useAppSelector(state => state.applicationStatus);
 
     const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
 
@@ -208,8 +211,6 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(setInstallStatus({ addonKey: selectedAddon.key, installStatus: new_state }));
     };
 
-    const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
-
     const download: DownloadItem = useSelector((state: InstallerStore) =>
         state.downloads.find(download => download.id === selectedAddon.name)
     );
@@ -226,13 +227,12 @@ export const AircraftSection = (): JSX.Element => {
     });
 
     useEffect(() => {
-        const checkMsfsInterval = setInterval(async () => {
-            setMsfsIsOpen(
-                (await Msfs.isRunning()) ? MsfsStatus.Open : MsfsStatus.Closed
-            );
+        const checkApplicationInterval = setInterval(async () => {
+            dispatch(setApplicationStatus({ applicationName: 'msfs', applicationStatus: (await Msfs.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
+            dispatch(setApplicationStatus({ applicationName: 'mcduServer', applicationStatus: (await McduServer.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
         }, 500);
 
-        return () => clearInterval(checkMsfsInterval);
+        return () => clearInterval(checkApplicationInterval);
     }, []);
 
     useEffect(() => {
@@ -537,6 +537,9 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.TrackSwitch:
             case InstallStatus.DownloadDone:
             case InstallStatus.GitInstall:
+                if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
+                    return <></>;
+                }
                 return (
                     <SidebarButton
                         type={ButtonType.Neutral}
@@ -637,7 +640,6 @@ export const AircraftSection = (): JSX.Element => {
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
                                         <div>
                                             <ActiveStateText
-                                                msfsIsOpen={msfsIsOpen}
                                                 installStatus={installStatus[selectedAddon.key]}
                                                 download={download}
                                             />
@@ -763,7 +765,6 @@ export const AircraftSection = (): JSX.Element => {
                                         <div className="flex flex-col gap-y-4">
                                             <UninstallButton />
                                             <MainActionButton
-                                                msfsIsOpen={msfsIsOpen}
                                                 installStatus={installStatus[selectedAddon.key]}
                                                 onInstall={handleInstall}
                                                 onCancel={handleCancel}

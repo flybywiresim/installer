@@ -1,22 +1,22 @@
 import React, { FC } from "react";
 import { ButtonType } from "renderer/components/Button";
 import { SidebarButton } from "renderer/components/AddonSection/index";
-import { InstallStatus, MsfsStatus } from "renderer/components/AddonSection/Enums";
+import { InstallStatus, ApplicationStatus } from "renderer/components/AddonSection/Enums";
+import { useAppSelector } from "renderer/redux/store";
 
 interface ActiveInstallButtonProps {
-    msfsIsOpen: MsfsStatus,
     installStatus: InstallStatus,
     onInstall: () => void,
     onCancel: () => void,
 }
 
 export const MainActionButton: FC<ActiveInstallButtonProps> = ({
-    msfsIsOpen,
     installStatus,
     onInstall,
     onCancel
 }): JSX.Element => {
-    if (msfsIsOpen !== MsfsStatus.Closed) {
+    const applicationStatus = useAppSelector(state => state.applicationStatus);
+    if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
         return (
             <SidebarButton disabled>
                 Unavailable
