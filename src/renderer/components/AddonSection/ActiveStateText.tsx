@@ -1,21 +1,27 @@
-import { InstallStatus, MsfsStatus } from "renderer/components/AddonSection/Enums";
+import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { DownloadItem } from "renderer/redux/types";
 import React, { FC } from "react";
+import { useAppSelector } from "renderer/redux/store";
 
 const StateText: FC = ({ children }) => (
     <div className="text-white text-3xl font-bold">{children}</div>
 );
 
 interface ActiveStateProps {
-    msfsIsOpen: MsfsStatus,
     installStatus: InstallStatus,
     download: DownloadItem,
 }
 
-export const ActiveStateText: FC<ActiveStateProps> = ({ msfsIsOpen, installStatus, download }): JSX.Element => {
-    if (msfsIsOpen !== MsfsStatus.Closed) {
+export const ActiveStateText: FC<ActiveStateProps> = ({ installStatus, download }): JSX.Element => {
+    const applicationStatus = useAppSelector(state => state.applicationStatus);
+    if (applicationStatus.msfs !== ApplicationStatus.Closed) {
         return (
-            <StateText>{msfsIsOpen === MsfsStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
+            <StateText>{applicationStatus.msfs === ApplicationStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
+        );
+    }
+    if (applicationStatus.mcduServer !== ApplicationStatus.Closed) {
+        return (
+            <StateText>{applicationStatus.mcduServer === ApplicationStatus.Open ? "Please close the MCDU server" : "Checking status..."}</StateText>
         );
     }
 

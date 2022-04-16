@@ -6,6 +6,7 @@ import latestVersionNamesReducer from "renderer/redux/features/latestVersionName
 import selectedTrackReducer from "renderer/redux/features/selectedTrack";
 import releaseNotesReducer from "renderer/redux/features/releaseNotes";
 import configurationReducer from "renderer/redux/features/configuration";
+import applicationStatusReducer from "renderer/redux/features/applicationStatus";
 
 import { RootState } from "renderer/redux/store";
 
@@ -17,6 +18,7 @@ export const combinedReducer = combineReducers({
     selectedTracks: selectedTrackReducer,
     releaseNotes: releaseNotesReducer,
     configuration: configurationReducer,
+    applicationStatus: applicationStatusReducer,
 });
 
 export const rootReducer: Reducer = (state: RootState, action: AnyAction) => combinedReducer(state, action);

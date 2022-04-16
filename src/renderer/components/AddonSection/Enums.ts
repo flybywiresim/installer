@@ -16,7 +16,7 @@ export enum InstallStatus {
     Hidden,
 }
 
-export enum MsfsStatus {
+export enum ApplicationStatus {
     Open,
     Closed,
     Checking,
