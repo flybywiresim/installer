@@ -95,9 +95,7 @@ export const LocalApiConfigEditUI = () => {
     };
 
     const handleConfigSave = () => {
-        console.log('saving', config);
         LocalApiConfigurationHandler.saveConfiguration(config);
-        console.log('retrieved', LocalApiConfigurationHandler.getConfiguration());
         setConfig(LocalApiConfigurationHandler.getConfiguration());
     };
 
