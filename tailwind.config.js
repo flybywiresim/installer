@@ -1,6 +1,6 @@
 'use strict';
 
-const reactComponentsSafeList = require('@flybywiresim/react-components/build/usedCSSClasses.json');
+const reactComponentsSafeList = require('@flybywiresim/react-components/build/usedCSSClaasses.json');
 
 module.exports = {
     purge: {
