@@ -105,3 +105,17 @@ a {
 button:focus {
   outline: none;
 }
+
+p {
+    margin-bottom: 0 !important;
+}
+
+input {
+    @apply text-white bg-navy-light rounded-md py-1 px-1.5 focus:outline-none border border-transparent transition duration-100 focus:border-cyan font-inter;
+}
+  
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
