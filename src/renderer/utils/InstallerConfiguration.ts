@@ -94,7 +94,7 @@ type UrlPublisherButton = BasePublisherButton & {
 
 type InternalAction = BasePublisherButton & {
     action: 'internal',
-    call: 'fbw-remote-mcdu' | 'fbw-remote-flypad',
+    call: 'fbw-local-api-config',
 }
 
 export type PublisherButton = UrlPublisherButton | InternalAction

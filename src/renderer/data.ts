@@ -183,6 +183,11 @@ export const defaultConfiguration: Configuration = {
                 //     inline: true,
                 // },
                 {
+                    text: "Local API",
+                    action: 'internal',
+                    call: 'fbw-local-api-config',
+                },
+                {
                     text: 'Documentation',
                     action: 'openBrowser',
                     url: 'https://docs.flybywiresim.com/',

@@ -30,6 +30,7 @@ import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSecti
 import { ActiveStateText } from "renderer/components/AddonSection/ActiveStateText";
 import { McduServer } from "renderer/utils/McduServer";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
+import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -574,7 +575,11 @@ export const AircraftSection = (): JSX.Element => {
                                 enabled={addon.enabled || !!addon.hidesAddon}
                                 addon={addon}
                                 key={addon.key}
-                                onClick={() => setSelectedAddon(addon)}
+                                onClick={() => {
+                                    history.push(`/aircraft-section/${publisherData.name}/`);
+
+                                    setSelectedAddon(addon);
+                                }}
                             />
                         ))}
 
@@ -595,7 +600,11 @@ export const AircraftSection = (): JSX.Element => {
                                             enabled={addon.enabled || !!addon.hidesAddon}
                                             addon={addon}
                                             key={addon.key}
-                                            onClick={() => setSelectedAddon(addon)}
+                                            onClick={() => {
+                                                history.push(`/aircraft-section/${publisherData.name}/`);
+
+                                                setSelectedAddon(addon);
+                                            }}
                                         />
                                     ))}
                                 </>
@@ -609,6 +618,10 @@ export const AircraftSection = (): JSX.Element => {
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
+
+                        <Route path={`/aircraft-section/FlyByWire Simulations/configuration/fbw-local-api-config`}>
+                            <LocalApiConfigEditUI />
+                        </Route>
 
                         <Route exact path={`/addon-section/${publisherName}`}>
                             {publisherData.addons.every(addon => !addon.enabled) ?
