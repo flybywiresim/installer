@@ -79,7 +79,7 @@ export type Definition = AddonCategoryDefinition
 
 interface BasePublisherButton {
     text: string,
-    style?: 'normal' | 'big',
+    style?: 'normal' | 'fbw-local-api-config',
     icon?: string,
     inline?: boolean,
     inop?: true,
