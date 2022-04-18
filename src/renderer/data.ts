@@ -326,5 +326,12 @@ export const defaultConfiguration: Configuration = {
                 },
             ]
         },
+        {
+            name: 'FSLTL',
+            logoUrl: 'https://cdn.discordapp.com/attachments/806767835355152394/965428269568651314/AEEEEEE.png',
+            defs: [],
+            addons: [],
+            buttons: [],
+        }
     ],
 };

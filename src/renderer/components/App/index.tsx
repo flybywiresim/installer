@@ -21,6 +21,7 @@ import "./index.css";
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
 import { ModalContainer } from '../Modal';
+import { FsltlSection } from '../FsltlSection';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -141,6 +142,9 @@ const App = () => {
                                 <Switch>
                                     <Route exact path="/">
                                         <Redirect to={`/addon-section/${configuration.publishers[0].name}`}/>
+                                    </Route>
+                                    <Route path="/addon-section/FSLTL">
+                                        <FsltlSection />
                                     </Route>
                                     <Route path="/addon-section/:publisherName">
                                         <AircraftSection />
