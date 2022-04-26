@@ -10,13 +10,13 @@ export type GithubReleaseReleaseModel = {
     type: 'githubRelease',
 }
 
-export type CDNReleaseModel = {
-    type: 'CDN',
-}
-
 export type GithubBranchReleaseModel = {
     type: 'githubBranch',
     branch: string,
+}
+
+export type CDNReleaseModel = {
+    type: 'CDN',
 }
 
 export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel | CDNReleaseModel
@@ -36,31 +36,75 @@ export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true, wa
 
 export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
-export type Addon = {
+export interface Addon {
+    key: string,
     name: string,
     repoOwner?: string,
     repoName?: string,
+    category?: `@${string}`,
     aircraftName: string,
-    key: string,
+    titleImageUrl: string,
+    titleImageUrlSelected: string,
     backgroundImageUrls: string[],
     shortDescription: string,
     description: string,
-    menuIconUrl: string,
+    techSpecs?: AddonTechSpec[],
     targetDirectory: string,
     alternativeNames?: string[],
     tracks: AddonTrack[],
     enabled: boolean,
+    hidesAddon?: string,
     hidden?: boolean,
     hiddenName?: string,
     overrideAddonWhileHidden?: string,
     gitHubReleaseBaseURL?: string,
 }
 
+export interface AddonTechSpec {
+    name: string,
+    value: string,
+}
+
+interface DefinitionBase {
+    kind: string,
+}
+
+type AddonCategoryDefinition = DefinitionBase & {
+    kind: 'addonCategory',
+    key: string,
+    title: string,
+}
+
+export type Definition = AddonCategoryDefinition
+
+interface BasePublisherButton {
+    text: string,
+    style?: 'normal' | 'big',
+    icon?: string,
+    inline?: boolean,
+    inop?: true,
+    forceStroke?: true,
+    action: string,
+}
+
+type UrlPublisherButton = BasePublisherButton & {
+    action: 'openBrowser',
+    url: string,
+}
+
+type InternalAction = BasePublisherButton & {
+    action: 'internal',
+    call: 'fbw-remote-mcdu' | 'fbw-remote-flypad',
+}
+
+export type PublisherButton = UrlPublisherButton | InternalAction
+
 export type Publisher = {
     name: string,
     logoUrl: string,
+    defs?: Definition[],
     addons: Addon[],
-    mainColor?: string,
+    buttons?: PublisherButton[],
 }
 
 export type Configuration = {

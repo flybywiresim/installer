@@ -1,0 +1,20 @@
+.progress-bar-animated {
+  transition: width 0.5s ease;
+}
+
+.progress-bar-animated::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 1));
+  transform: translateX(-100%);
+  animation: progress-bar-shine 1s infinite;
+}
+
+@keyframes progress-bar-shine {
+  to {
+    transform: translateX(0);
+    opacity: 0.1;
+  }
+}

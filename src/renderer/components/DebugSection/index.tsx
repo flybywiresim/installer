@@ -22,14 +22,16 @@ export const DebugSection = (): JSX.Element => {
     };
 
     return (
-        <div className="p-2 pl-3">
-            <h1 className="text-white">Debug options</h1>
+        <div className="py-8 pl-12">
+            <h1 className="text-white font-manrope font-bold">Debug options</h1>
+
             <h3 className="text-white">Notifications</h3>
-            <button className="bg-teal-light-contrast p-3 font-bold" onClick={sendNotification}>Send test notification</button>
+            <button className="bg-cyan p-3 font-bold" onClick={sendNotification}>Send test notification</button>
+
             <h3 className="text-white mt-5">Send IPC message</h3>
             <div className="flex flex-row">
-                <input value={ipcMessage} onChange={event => setIpcMessage(event.target.value)} className="p-1" />
-                <button className="bg-teal-light-contrast p-3 font-bold" onClick={sendIpcMessage}>Send message</button>
+                <input value={ipcMessage} onChange={event => setIpcMessage(event.target.value)} className="p-1 outline-none" />
+                <button className="bg-cyan p-3 font-bold" onClick={sendIpcMessage}>Send message</button>
             </div>
         </div>
     );

@@ -1,0 +1,94 @@
+/*
+ * FBW Aileron Design Language SCSS
+ * v1.0 - CoherentGT compatible - made for TailwindCSS v3.0 with @flybywiresim/tailwind-config v(TBD)
+ */
+
+:root {
+    --color-brand-cyan-main: rgb(0, 224, 254);
+    --color-brand-cyan-dark: rgb(0, 202, 229);
+    --color-brand-cyan-ight: rgb(51, 231, 255);
+
+    --color-brand-navy-main: rgb(23, 30, 44);
+    --color-brand-navy-dark: rgb(14, 19, 27);
+    --color-brand-navy-light: rgb(31, 42, 61);
+
+    --color-theme-text: var(--color-brand-navy-main);
+
+    --color-utility-red: rgb(220, 38, 38);
+    --color-utility-green: rgb(132, 204, 22);
+    --color-utility-orange: rgb(255, 106, 0);
+    --color-utility-amber: rgb(245, 158, 11);
+    --color-utility-blue: rgb(82, 128, 234);
+    --color-utility-purple: rgb(153, 61, 245);
+    --color-utility-pink: rgb(233, 47, 139);
+    --color-utility-salmon: rgb(248, 113, 113);
+    --color-utility-grey: rgb(208, 208, 208);
+    --color-utility-darkgry: rgb(105, 105, 105);
+    --color-utility-grey-blue: rgb(43, 48, 59);
+
+    --color-button-theme-neutral: var(--color-brand-navy-light);
+    --color-button-theme-neutral-confirmation: var(--color-brand-cyan-main);
+    --color-button-theme-positive: var(--color-utility-green);
+    --color-button-theme-caution: var(--color-utility-orange);
+    --color-button-theme-danger: var(--color-utility-red);
+}
+
+.modal {
+    @apply p-8 w-5/12 max-w-screen-sm text-quasi-white rounded-xl;
+
+    background-color: var(--color-brand-navy-dark);
+
+    @apply border-2;
+    border-color: var(--color-brand-navy-main);
+
+    .modal-title {
+        @apply text-5xl text-quasi-white font-manrope font-bold;
+    }
+}
+
+.button {
+    @apply text-quasi-white font-inter font-bold px-5 py-2.5 border-2 rounded-md transition-colors duration-150;
+
+    font-size: 1.25em;
+    height: 2.35em;
+
+    @mixin color($background, $textColorHover: true) {
+        background-color: $background;
+        border-color: $background;
+
+        &:hover {
+            background-color: transparent;
+            @if $textColorHover {
+                color: $background;
+            }
+        }
+    }
+
+    &, &.button-neutral {
+        @apply font-semibold;
+
+        @include color(var(--color-button-theme-neutral), false);
+    }
+
+    &.button-neutral-confirmation {
+        @include color(var(--color-button-theme-neutral-confirmation));
+        color: var(--color-theme-text);
+    }
+
+    &.button-positive {
+        @include color(var(--color-button-theme-positive));
+        color: var(--color-theme-text);
+    }
+
+    &.button-caution {
+        @include color(var(--color-button-theme-caution), false);
+    }
+
+    &.button-danger {
+        @include color(var(--color-button-theme-danger), false);
+    }
+
+    &[disabled] {
+        @apply pointer-events-none opacity-50;
+    }
+}

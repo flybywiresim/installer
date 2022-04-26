@@ -24,10 +24,10 @@ const serve = process.argv.slice(1).some((arg) => arg === "--serve");
 const createWindow = (): void => {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        height: 1000,
-        width: 1400,
-        minWidth: 1050,
-        minHeight: 700,
+        width: 1300,
+        height: 880,
+        minWidth: 1300,
+        minHeight: 880,
         frame: false,
         icon: 'src/main/icons/icon.ico',
         backgroundColor: '#1b2434',
@@ -36,6 +36,35 @@ const createWindow = (): void => {
             nodeIntegration: true,
             contextIsolation: false,
         }
+    });
+
+    remote.enable(mainWindow.webContents);
+
+    const UpsertKeyValue = (header: Record<string, string> | Record<string, string[]>, keyToChange: string, value: string | string[]) => {
+        for (const key of Object.keys(header)) {
+            if (key.toLowerCase() === keyToChange.toLowerCase()) {
+                header[key] = value;
+                return;
+            }
+        }
+        header[keyToChange] = value;
+    };
+
+    mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+        (details, callback) => {
+            const { requestHeaders } = details;
+            UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', '*');
+            callback({ requestHeaders });
+        },
+    );
+
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        const { responseHeaders } = details;
+        UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*']);
+        UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*']);
+        callback({
+            responseHeaders,
+        });
     });
 
     mainWindow.once('ready-to-show', () => {
@@ -60,6 +89,16 @@ const createWindow = (): void => {
         mainWindow.destroy();
     });
 
+    ipcMain.on(channels.window.isMaximized, (event) => {
+        event.sender.send(channels.window.isMaximized, mainWindow.isMaximized());
+    });
+
+    ipcMain.on('request-startup-at-login-changed', (_, value: boolean) => {
+        app.setLoginItemSettings({
+            openAtLogin: value,
+        });
+    });
+
     /*
      * Setting the value of the program's taskbar progress bar.
      * value: The value to set the progress bar to. ( [0 - 1.0], -1 to hide the progress bar )
@@ -67,8 +106,6 @@ const createWindow = (): void => {
     ipcMain.on('set-window-progress-bar', (_, value: number) => {
         mainWindow.setProgressBar(value);
     });
-
-    remote.enable(mainWindow.webContents);
 
     const lastX = settings.get<string, number>('cache.main.lastWindowX');
     const lastY = settings.get<string, number>('cache.main.lastWindowY');
@@ -146,7 +183,18 @@ const createWindow = (): void => {
         });
 
         // tell autoupdater to check for updates
-        autoUpdater.checkForUpdates().then();
+        mainWindow.once('show', () => {
+            autoUpdater.checkForUpdates().then();
+        });
+
+        ipcMain.on(channels.checkForInstallerUpdate, () => {
+            autoUpdater.checkForUpdates().then();
+        });
+
+        ipcMain.on('restartAndUpdate', () => {
+            autoUpdater.quitAndInstall();
+            app.exit();
+        });
     }
 };
 

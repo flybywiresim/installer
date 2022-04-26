@@ -2,26 +2,25 @@ import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
-import SettingsSection from 'renderer/components/SettingsSection';
+import { SettingsSection } from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
-import AircraftSection from 'renderer/components/AircraftSection';
-
-import { Container, MainLayout, Content, PageHeader, PageSider, } from './styles';
-import ChangelogModal from '../ChangelogModal';
-import WarningModal from '../WarningModal';
+import { AircraftSection } from 'renderer/components/AddonSection';
 import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
-import * as actionTypes from '../../redux/actionTypes';
-import store from '../../redux/store';
-import { SetAddonAndTrackLatestReleaseInfo } from "renderer/redux/types";
-import { Code, Settings } from "tabler-icons-react";
-import { SidebarItem, SidebarAddon, SidebarPublisher } from "renderer/components/App/SideBar";
 import InstallerUpdate from "renderer/components/InstallerUpdate";
 import { WindowButtons } from "renderer/components/WindowActionButtons";
-import { Configuration, Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
+import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { store, useAppSelector } from 'renderer/redux/store';
+import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import settings from 'common/settings';
+import "./index.css";
+import { ipcRenderer } from 'electron';
+import channels from 'common/channels';
+import { ModalContainer } from '../Modal';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -59,21 +58,23 @@ export const getAddonReleases = async (addon: Addon): Promise<AddonVersion[]> =>
 };
 
 export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
-    addon.tracks.forEach(async (track) => {
-        const trackLatestVersionName = await AddonData.latestVersionForTrack(addon, track);
+    const dispatch = store.dispatch;
 
-        store.dispatch<SetAddonAndTrackLatestReleaseInfo>({
-            type: actionTypes.SET_ADDON_AND_TRACK_LATEST_RELEASE_INFO,
-            payload: {
-                addonKey: addon.key,
-                trackKey: track.key,
-                info: trackLatestVersionName,
-            }
-        });
-    });
+    for (const track of addon.tracks) {
+        const trackLatestVersionName = await AddonData.latestVersionForTrack(addon, track);
+        dispatch(setAddonAndTrackLatestReleaseInfo({
+            addonKey: addon.key,
+            trackKey: track.key,
+            info: trackLatestVersionName,
+        }));
+    }
 };
 
-const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
+const App = () => {
+    const history = useHistory();
+
+    const configuration = useAppSelector(state => state.configuration);
+
     const [addons] = useState<Addon[]>(
         configuration.publishers.reduce((arr, curr) => {
             arr.push(...curr.addons);
@@ -81,119 +82,83 @@ const App: React.FC<{ configuration: Configuration }> = ({ configuration }) => {
         }, [])
     );
 
-    addons.forEach(AddonData.configureInitialAddonState);
-
     useEffect(() => {
+        addons.forEach(AddonData.configureInitialAddonState);
         addons.forEach(fetchLatestVersionNames);
+
+        if (settings.get('cache.main.lastShownSection')) {
+            history.push(settings.get('cache.main.lastShownSection'));
+        }
+
+        // Let's listen for a route change and set the last shown section to the incoming route pathname
+        history.listen((location) => {
+            settings.set("cache.main.lastShownSection", location.pathname);
+        });
     }, []);
 
-    const initialSelectedItem = (): string => {
-        const cachedItem = settings.get('cache.main.sectionToShow') as string;
-        if ((cachedItem) === 'settings' || cachedItem === 'debug' || addons.find(x => x.key === cachedItem)) {
-            return cachedItem;
-        } else {
-            return addons[0].key;
-        }
-    };
-
-    const [selectedItem, setSelectedItem] = useState<string>(initialSelectedItem);
-
     useEffect(() => {
-        settings.set('cache.main.sectionToShow', selectedItem);
-    }, [selectedItem]);
+        const updateCheck = setInterval(() => {
+            ipcRenderer.send(channels.checkForInstallerUpdate);
+            addons.forEach(AddonData.checkForUpdates);
+            addons.forEach(fetchLatestVersionNames);
+        }, 5 * 60 * 1000);
 
-    let sectionToShow;
-    switch (selectedItem) {
-        case 'settings':
-            sectionToShow = <SettingsSection />;
-            break;
-
-        case 'debug':
-            sectionToShow = <DebugSection />;
-            break;
-
-        default:
-            // setting a dynamic key forces a reload of the component when changing between addons
-            sectionToShow = <AircraftSection key={selectedItem} addon={addons.find(x => x.key === selectedItem)} publisher={configuration.publishers
-                .find(x => x.addons.includes(addons.find(x => x.key === selectedItem)))}/>;
-            break;
-    }
+        return () => clearInterval(updateCheck);
+    }, []);
 
     return (
         <>
             <ErrorModal/>
-            <ChangelogModal />
-            <WarningModal />
+
+            <ModalContainer />
+
             <SimpleBar>
-                <Container>
-                    <MainLayout className="overflow-hidden">
-                        <div className="absolute w-full h-14 z-50 flex flex-row pl-5 items-center bg-navy-400 shadow-xl">
-                            <PageHeader className="h-full flex-1 flex flex-row items-stretch">
+                <div className="flex flex-col h-screen w-full">
+                    <div className="flex flex-col h-full overflow-hidden">
+                        <div className="absolute w-full h-12 z-50 flex flex-row pl-4 items-center bg-black draggable">
+                            <div className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
+                            </div>
+                            <div className="flex flex-row not-draggable h-full">
                                 <InstallerUpdate />
-                            </PageHeader>
-
-                            <WindowButtons />
+                                <WindowButtons />
+                            </div>
                         </div>
 
-                        <div className="h-full pt-14 flex flex-row justify-start">
-                            <PageSider className="w-72 z-40 flex-none bg-navy-medium shadow-2xl">
-                                <div className="h-full flex flex-col divide-y divide-gray-700">
-                                    {
-                                        configuration.publishers.map(publisher => (
-                                            <SidebarPublisher name={publisher.name} logo={publisher.logoUrl}>
-                                                {
-                                                    publisher.addons.map(addon => (
-                                                        <SidebarAddon
-                                                            key={addon.key}
-                                                            addon={addon}
-                                                            isSelected={selectedItem === addon.key}
-                                                            handleSelected={() => setSelectedItem(addon.key)}
-                                                            overriddenByAddon={() => {
-                                                                try {
-                                                                    return configuration.publishers.find(publisher => publisher.addons
-                                                                        .find(item => item.overrideAddonWhileHidden === addon.key)).addons.
-                                                                        find(item => item.overrideAddonWhileHidden === addon.key);
-                                                                } catch (e) {
-                                                                    return null;
-                                                                }
-                                                            }}
-                                                        />
-                                                    ))
-                                                }
-                                            </SidebarPublisher>
-                                        ))
-                                    }
+                        <div className="h-full pt-10 flex flex-row justify-start">
+                            <div className="z-40 h-full">
+                                <NavBar>
+                                    {configuration.publishers.map((publisher) => (
+                                        <NavBarPublisher
+                                            to={`/addon-section/${publisher.name}`}
+                                            publisher={publisher}
+                                        />
+                                    ))}
+                                </NavBar>
+                            </div>
 
-                                    <div className="mt-auto">
-                                        {
-                                            process.env.NODE_ENV === "development" &&
-                                            <SidebarItem iSelected={selectedItem === 'debug'} onClick={() => setSelectedItem('debug')}>
-                                                <Code className="text-gray-100 ml-2 mr-3" size={24} />
-
-                                                <div className="flex flex-col">
-                                                    <span className="text-lg text-gray-200 font-semibold">Debug</span>
-                                                </div>
-                                            </SidebarItem>
-                                        }
-
-                                        <SidebarItem iSelected={selectedItem === 'settings'} onClick={() => setSelectedItem('settings')}>
-                                            <Settings className="text-gray-100 ml-2 mr-3" size={24} />
-
-                                            <div className="flex flex-col">
-                                                <span className="text-lg text-gray-200 font-semibold">Settings</span>
-                                            </div>
-                                        </SidebarItem>
-                                    </div>
-
-                                </div>
-                            </PageSider>
-                            <Content className="overflow-y-scroll bg-navy m-0">
-                                {sectionToShow}
-                            </Content>
+                            <div className="bg-navy m-0 w-full flex">
+                                <Switch>
+                                    <Route exact path="/">
+                                        <Redirect to={`/addon-section/${configuration.publishers[0].name}`}/>
+                                    </Route>
+                                    <Route path="/addon-section/:publisherName">
+                                        <AircraftSection />
+                                    </Route>
+                                    <Route exact path="/debug">
+                                        <DebugSection />
+                                    </Route>
+                                    <Route path="/settings">
+                                        <SettingsSection />
+                                    </Route>
+                                    <Route path="*">
+                                        <Redirect to={'/'} />
+                                    </Route>
+                                </Switch>
+                            </div>
                         </div>
-                    </MainLayout>
-                </Container>
+                    </div>
+                </div>
             </SimpleBar>
         </>
     );

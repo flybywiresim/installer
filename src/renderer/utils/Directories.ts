@@ -21,6 +21,13 @@ export class Directories {
         return path.join(settings.get('mainSettings.liveriesPath') as string, targetDir);
     }
 
+    static inPackagesMicrosoftStore(targetDir: string): string {
+        return path.join(process.env.LOCALAPPDATA, 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState\\packages\\', targetDir);
+    }
+    static inPackagesSteam(targetDir: string): string {
+        return path.join(process.env.APPDATA, 'Microsoft Flight Simulator\\Packages', targetDir);
+    }
+
     static temp(): string {
         return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
     }
@@ -40,7 +47,7 @@ export class Directories {
                 const fullPath = Directories.inCommunity(dir.name);
 
                 console.log('[CLEANUP] Removing', fullPath);
-                fs.rmdirSync(fullPath, { recursive: true });
+                fs.removeSync(fullPath);
                 console.log('[CLEANUP] Removed', fullPath);
             });
         console.log('[CLEANUP] Finished removing all temp directories');
@@ -52,7 +59,7 @@ export class Directories {
 
             if (fs.existsSync(altDir)) {
                 console.log('Removing alternative', altDir);
-                fs.rmdirSync(altDir, { recursive: true });
+                fs.removeSync(altDir);
             }
         });
     }
@@ -62,7 +69,7 @@ export class Directories {
 
         if (fs.existsSync(dir)) {
             console.log('Removing', dir);
-            fs.rmdirSync(dir, { recursive: true });
+            fs.removeSync(dir);
         }
     }
 

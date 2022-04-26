@@ -1,7 +1,0 @@
-.selector:not(.installed):hover div:first-child {
-    @apply scale-y-75 bg-gray-400;
-}
-
-.selector:hover div:first-child {
-    @apply scale-y-75;
-}

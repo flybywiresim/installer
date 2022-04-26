@@ -2,48 +2,47 @@ import { Addon, AddonTrack, GithubBranchReleaseModel } from "renderer/utils/Inst
 import { GitVersions } from "@flybywiresim/api-client";
 import { Directories } from "./Directories";
 import fs from 'fs-extra';
-import store from "renderer/redux/store";
-import * as actionTypes from '../redux/actionTypes';
 import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
-import _ from "lodash";
-import { InstallStatus } from "renderer/components/AircraftSection";
-import { useSetting } from "common/settings";
+import settings from "common/settings";
+import { store, InstallerStore } from "renderer/redux/store";
+import { setInstalledTrack } from "renderer/redux/features/installedTrack";
+import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
+import { setInstallStatus } from "renderer/redux/features/installStatus";
 import yaml from 'js-yaml';
+import { InstallStatus } from "renderer/components/AddonSection/Enums";
 
 export type ReleaseInfo = {
     name: string,
-    releaseDate: Date,
+    releaseDate: number,
     changelogUrl?: string,
 }
 
 export class AddonData {
-
     static async latestVersionForTrack(addon: Addon, track: AddonTrack): Promise<ReleaseInfo> {
-        if (track.releaseModel.type === 'githubRelease') {
-            return this.latestVersionForReleasedTrack(addon);
-        } else if (track.releaseModel.type === 'githubBranch') {
-            return this.latestVersionForRollingTrack(addon, track.releaseModel);
-        } else if (track.releaseModel.type === 'CDN') {
-            console.log('look here');
-            console.log(this.latestVersionForCDN(track));
-            return this.latestVersionForCDN(track);
+        switch (track.releaseModel.type) {
+            case 'githubRelease':
+                return this.latestVersionForReleasedTrack(addon);
+            case 'githubBranch':
+                return this.latestVersionForRollingTrack(addon, track.releaseModel);
+            case 'CDN':
+                return this.latestVersionForCDN(track);
         }
     }
 
     private static async latestVersionForReleasedTrack(addon: Addon): Promise<ReleaseInfo> {
-        return GitVersions.getReleases('flybywiresim', addon.repoName)
+        return GitVersions.getReleases(addon.repoOwner, addon.repoName)
             .then((releases) => ({
                 name: releases[0].name,
-                releaseDate: releases[0].publishedAt,
+                releaseDate: releases[0].publishedAt.getTime(),
                 changelogUrl: releases[0].htmlUrl,
             }));
     }
 
     private static async latestVersionForRollingTrack(addon: Addon, releaseModel: GithubBranchReleaseModel): Promise<ReleaseInfo> {
-        return GitVersions.getNewestCommit('flybywiresim', addon.repoName, releaseModel.branch)
+        return GitVersions.getNewestCommit(addon.repoOwner, addon.repoName, releaseModel.branch)
             .then((commit) => ({
                 name: commit.sha.substring(0, 7),
-                releaseDate: commit.timestamp,
+                releaseDate: commit.timestamp.getTime(),
             }));
     }
 
@@ -52,78 +51,63 @@ export class AddonData {
             .then(res => res.blob())
             .then(blob => blob.text())
             .then(stream => ({
-                name: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].name,
-                releaseDate: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].date,
+                name: 'v' + (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].name,
+                releaseDate: (yaml.load(stream) as {releases: Array<{name: string, date: Date}>}).releases[0].date.getTime(),
             }));
     }
 
     static async configureInitialAddonState(addon: Addon): Promise<void> {
-        let selectedTrack: AddonTrack = null;
+        const dispatch = store.dispatch;
 
-        let currentSelectedTrack : AddonTrack = null;
-        let currentInstalledTrack : AddonTrack = null;
-        let currentInstallStatus : InstallStatus = null;
-
-        try {
-            currentSelectedTrack = store.getState().selectedTracks[addon.key];
-            currentInstalledTrack = store.getState().installedTracks[addon.key];
-            currentInstallStatus = store.getState().installStatus[addon.key];
-        } catch (e) {
-            console.log('initial configuration for addon ' + addon.key);
-        }
-
-        const setInstalledTrack = (newInstalledTrack: AddonTrack) => {
-            if (!currentInstalledTrack) {
-                store.dispatch({ type: actionTypes.SET_INSTALLED_TRACK, addonKey: addon.key, payload: newInstalledTrack });
-            }
-        };
-        const setSelectedTrack = (newSelectedTrack: AddonTrack) => {
-            if (!currentSelectedTrack) {
-                selectedTrack = newSelectedTrack;
-                store.dispatch({ type: actionTypes.SET_SELECTED_TRACK, addonKey: addon.key, payload: newSelectedTrack });
-            } else {
-                selectedTrack = currentSelectedTrack;
-            }
-        };
-        const setInstallStatus = (newState: InstallStatus) => {
-            if (!currentInstallStatus || currentInstallStatus === InstallStatus.Hidden) {
-                store.dispatch({ type: actionTypes.SET_INSTALL_STATUS, addonKey: addon.key, payload: newState });
-            }
+        const setCurrentlyInstalledTrack = (newInstalledTrack: AddonTrack) => {
+            dispatch(setInstalledTrack({ addonKey: addon.key, installedTrack: newInstalledTrack }));
         };
 
+        const setCurrentlySelectedTrack = (newSelectedTrack: AddonTrack) => {
+            dispatch(setSelectedTrack({ addonKey: addon.key, track: newSelectedTrack }));
+        };
+
+        const setCurrentInstallStatus = (new_state: InstallStatus) => {
+            dispatch(setInstallStatus({ addonKey: addon.key, installStatus: new_state }));
+        };
+
+        let selectedTrack: AddonTrack;
         if (!Directories.isFragmenterInstall(addon)) {
             console.log (addon.key, 'is not installed');
-            setSelectedTrack(addon.tracks[0]);
+            selectedTrack = addon.tracks[0];
+            setCurrentlySelectedTrack(selectedTrack);
         } else {
             console.log (addon.key, 'is installed');
             try {
                 const manifest = getCurrentInstall(Directories.inCommunity(addon.targetDirectory));
                 console.log('Currently installed', manifest);
 
-                let track = _.find(addon.tracks, { url: manifest.source });
+                let track = addon.tracks.find(track => track.url.includes(manifest.source));
                 if (!track) {
-                    track = _.find(addon.tracks, { alternativeUrls: [manifest.source] });
+                    track = addon.tracks.find(track => track.alternativeUrls.includes(manifest.source));
                 }
                 console.log('Currently installed', track);
-                setInstalledTrack(track);
-                setSelectedTrack(track);
+                setCurrentlyInstalledTrack(track);
+                setCurrentlySelectedTrack(track);
+                selectedTrack = track;
             } catch (e) {
                 console.error(e);
                 console.log('Not installed');
-                setSelectedTrack(addon.tracks[0]);
+                setCurrentlySelectedTrack(addon.tracks[0]);
+                selectedTrack = addon.tracks[0];
             }
         }
 
-        const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + addon.key);
+        const addonDiscovered = settings.get('cache.main.discoveredAddons.' + addon.key);
 
         if (addon.hidden && !addonDiscovered) {
-            setInstallStatus(InstallStatus.Hidden);
+            setCurrentInstallStatus(InstallStatus.Hidden);
             return;
         }
 
         if (!selectedTrack) {
             console.log (addon.key, 'has unknown install status');
-            setInstallStatus(InstallStatus.Unknown);
+            setCurrentInstallStatus(InstallStatus.Unknown);
             return;
         }
 
@@ -133,13 +117,13 @@ export class AddonData {
 
         if (!fs.existsSync(installDir)) {
             console.log ('no existing install dir for', addon.key);
-            setInstallStatus(InstallStatus.FreshInstall);
+            setCurrentInstallStatus(InstallStatus.NotInstalled);
             return;
         }
 
         console.log('Checking for git install');
         if (Directories.isGitInstall(installDir)) {
-            setInstallStatus(InstallStatus.GitInstall);
+            setCurrentInstallStatus(InstallStatus.GitInstall);
             return;
         }
 
@@ -150,21 +134,45 @@ export class AddonData {
             console.log('Update info for', addon.key, updateInfo);
 
             if (updateInfo.isFreshInstall) {
-                setInstallStatus(InstallStatus.FreshInstall);
+                setCurrentInstallStatus(InstallStatus.NotInstalled);
                 return;
             }
 
             if (updateInfo.needsUpdate) {
-                setInstallStatus(InstallStatus.NeedsUpdate);
+                setCurrentInstallStatus(InstallStatus.NeedsUpdate);
                 return;
             }
 
-            setInstallStatus(InstallStatus.UpToDate);
+            setCurrentInstallStatus(InstallStatus.UpToDate);
             return;
         } catch (e) {
             console.error(e);
-            setInstallStatus(InstallStatus.Unknown);
+            setCurrentInstallStatus(InstallStatus.Unknown);
             return;
+        }
+    }
+
+    static async checkForUpdates(addon: Addon): Promise<void> {
+        console.log("Checking for updates for " + addon.key);
+
+        const dispatch = store.dispatch;
+
+        const setCurrentInstallStatus = (new_state: InstallStatus) => {
+            dispatch(setInstallStatus({ addonKey: addon.key, installStatus: new_state }));
+        };
+
+        const installDir = Directories.inCommunity(addon.targetDirectory);
+
+        const state: InstallerStore = store.getState();
+
+        if (state.installStatus[addon.key] === InstallStatus.UpToDate) {
+            const updateInfo = await needsUpdate(state.selectedTracks[addon.key].url, installDir, {
+                forceCacheBust: true,
+            });
+            console.log("Update info", addon.key, updateInfo);
+            if (updateInfo.needsUpdate) {
+                setCurrentInstallStatus(InstallStatus.NeedsUpdate);
+            }
         }
     }
 
