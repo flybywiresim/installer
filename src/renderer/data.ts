@@ -90,8 +90,10 @@ export const defaultConfiguration: Configuration = {
                         {
                             name: 'Experimental',
                             key: 'experimental',
-                            url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
-                            alternativeUrls: [],
+                            url: 'https://github.com/flybywiresim/a32nx/releases/download/experimental/',
+                            alternativeUrls: [
+                                'https://cdn.flybywiresim.com/addons/a32nx/experimental'
+                            ],
                             description: 'This version is similar to the Development version, ' +
                             'but contains features that we wish to test publicly as we perfect them. ' +
                             'The build is in practice stable most of the time, but you may encounter flight-breaking bugs, ' +
