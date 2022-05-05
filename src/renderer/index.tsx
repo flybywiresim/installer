@@ -84,7 +84,7 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
                 </ModalProvider>
             </MemoryRouter>
         </Provider>,
-        document.getElementById('root')
+        document.getElementById('root'),
     );
 }).catch((error: Error) => {
     ReactDOM.render(
@@ -94,6 +94,6 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
             <pre className="w-3/5 bg-gray-700 text-2xl font-mono px-6 py-2.5 mb-0 rounded-lg">{error.stack}</pre>
             <button className="bg-navy-lightest hover:bg-navy-lighter px-5 py-2 text-lg font-semibold rounded-lg" onClick={() => ipcRenderer.send(channels.window.close)}>Close the Installer</button>
         </div>,
-        document.getElementById('root')
+        document.getElementById('root'),
     );
 });

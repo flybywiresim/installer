@@ -14,8 +14,8 @@ export const releaseNotesSlice = createSlice({
             } else {
                 state[action.payload.key].push(...action.payload.releases);
             }
-        }
-    }
+        },
+    },
 });
 
 export const { addReleases } = releaseNotesSlice.actions;

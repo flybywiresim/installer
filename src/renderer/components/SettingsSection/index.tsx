@@ -45,7 +45,7 @@ export const SettingsSection = (): JSX.Element => {
 
                     // Workaround to flush the defaults
                     settings.set('metaInfo.lastVersion', packageInfo.version);
-                }}/>
+                }}/>,
         );
     };
 

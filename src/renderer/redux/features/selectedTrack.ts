@@ -10,8 +10,8 @@ export const selectedTrackSlice = createSlice({
     reducers: {
         setSelectedTrack: (state, action: TypedAction<{ addonKey: string, track: AddonTrack }>) => {
             state[action.payload.addonKey] = action.payload.track;
-        }
-    }
+        },
+    },
 });
 
 export const { setSelectedTrack } = selectedTrackSlice.actions;

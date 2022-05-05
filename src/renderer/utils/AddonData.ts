@@ -129,7 +129,7 @@ export class AddonData {
 
         try {
             const updateInfo = await needsUpdate(selectedTrack.url, installDir, {
-                forceCacheBust: true
+                forceCacheBust: true,
             });
             console.log('Update info for', addon.key, updateInfo);
 

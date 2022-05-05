@@ -65,7 +65,7 @@ export const PromptModal: FC<PromptModalProps> = ({
     confirmText,
     confirmColor,
     cancelText,
-    dontShowAgainSettingName
+    dontShowAgainSettingName,
 }) => {
 
     const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
@@ -130,7 +130,7 @@ export const AlertModal: FC<AlertModalProps> = ({
     bodyText,
     onAcknowledge,
     acknowledgeText,
-    dontShowAgainSettingName
+    dontShowAgainSettingName,
 }) => {
 
     const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');

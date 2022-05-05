@@ -9,7 +9,7 @@ import {
     readFileSync,
     remove,
     rename,
-    writeFile
+    writeFile,
 } from "fs-extra";
 import { ConfigIniParser } from "config-ini-parser";
 
@@ -132,7 +132,7 @@ export class LiveryConversion {
 
         await rename(
             path.join(newPackageFolder, 'SimObjects', 'AirPlanes', livery.simObjectName),
-            path.join(newPackageFolder, 'SimObjects', 'AirPlanes', newSimObjectName)
+            path.join(newPackageFolder, 'SimObjects', 'AirPlanes', newSimObjectName),
         );
 
         console.log(`[LCU/Conversion] Renamed SimObject to '${newSimObjectName}'...`);
@@ -142,19 +142,19 @@ export class LiveryConversion {
         console.log(`[LCU/Conversion] Converted layout in '${newSimObjectName}'...`);
 
         const { textureFolderName, modelFolderName } = await this.convertAircraftCfg(newPackageFolder, newSimObjectName).catch((error: string) =>
-            Promise.reject(`aircraft.cfg invalid (${error})`)
+            Promise.reject(`aircraft.cfg invalid (${error})`),
         );
 
         console.log(`[LCU/Conversion] Converted aircraft.cfg in '${newSimObjectName}'...`);
 
         await this.convertTextureCfg(newPackageFolder, newSimObjectName, textureFolderName).catch((error: string) =>
-            Promise.reject(`TEXTURE.${textureFolderName}/texture.cfg invalid (${error})`)
+            Promise.reject(`TEXTURE.${textureFolderName}/texture.cfg invalid (${error})`),
         );
 
         console.log(`[LCU/Conversion] Converted texture.cfg in '${newSimObjectName}'...`);
 
         await this.convertModelCfg(newPackageFolder, newSimObjectName, modelFolderName).catch((error: string) =>
-            Promise.reject(`MODEL.${modelFolderName}/model.cfg invalid (${error})`)
+            Promise.reject(`MODEL.${modelFolderName}/model.cfg invalid (${error})`),
         );
 
         console.log(`[LCU/Conversion] Converted model.cfg in '${newSimObjectName}'...`);
@@ -193,13 +193,13 @@ export class LiveryConversion {
 
         aircraftCfg.removeOption(
             'VARIATION',
-            'base_container'
+            'base_container',
         );
 
         aircraftCfg.set(
             'VARIATION',
             'base_container ',
-            '"..\\FlyByWire_A320_NEO"'
+            '"..\\FlyByWire_A320_NEO"',
         );
 
         let textureFolderName: string;
@@ -334,7 +334,7 @@ export class LiveryConversion {
                 modelCfg.set(
                     'models',
                     'exterior',
-                    originalValue.replaceAll('Asobo_A320_NEO', 'FlyByWire_A320_NEO')
+                    originalValue.replaceAll('Asobo_A320_NEO', 'FlyByWire_A320_NEO'),
                 );
             }
             if (option === 'normal') {
@@ -343,7 +343,7 @@ export class LiveryConversion {
                 modelCfg.set(
                     'models',
                     'normal',
-                    originalValue.replaceAll('Asobo_A320_NEO/model/', 'FlyByWire_A320_NEO/model/')
+                    originalValue.replaceAll('Asobo_A320_NEO/model/', 'FlyByWire_A320_NEO/model/'),
                 );
             }
             if (option === 'interior') {
@@ -352,7 +352,7 @@ export class LiveryConversion {
                 modelCfg.set(
                     'models',
                     'interior',
-                    originalValue.replaceAll('Asobo_A320_NEO', 'FlyByWire_A320_NEO')
+                    originalValue.replaceAll('Asobo_A320_NEO', 'FlyByWire_A320_NEO'),
                 );
             }
         }
