@@ -79,7 +79,7 @@ const App = () => {
         configuration.publishers.reduce((arr, curr) => {
             arr.push(...curr.addons);
             return arr;
-        }, [])
+        }, []),
     );
 
     useEffect(() => {

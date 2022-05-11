@@ -10,5 +10,5 @@ export default {
         available: 'update/available',
         downloaded: 'update/downloaded',
     },
-    checkForInstallerUpdate: 'checkForInstallerUpdate'
+    checkForInstallerUpdate: 'checkForInstallerUpdate',
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Check, ChevronDown, Download, Refresh } from "tabler-icons-react";
-import { useSelector, } from "react-redux";
+import { useSelector } from "react-redux";
 import { InstallerStore } from "renderer/redux/store";
 import { Addon } from "renderer/utils/InstallerConfiguration";
 import { InstallStatus } from "renderer/components/AddonSection/Enums";

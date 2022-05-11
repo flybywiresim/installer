@@ -13,7 +13,7 @@ interface ActiveInstallButtonProps {
 export const MainActionButton: FC<ActiveInstallButtonProps> = ({
     installStatus,
     onInstall,
-    onCancel
+    onCancel,
 }): JSX.Element => {
     const applicationStatus = useAppSelector(state => state.applicationStatus);
     if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {

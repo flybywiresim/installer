@@ -35,7 +35,7 @@ const createWindow = (): void => {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-        }
+        },
     });
 
     remote.enable(mainWindow.webContents);
@@ -116,7 +116,7 @@ const createWindow = (): void => {
     } else if (lastX && lastY) { // 0 width and height should be reset to defaults
         mainWindow.setBounds({
             width: lastX,
-            height: lastY
+            height: lastY,
         });
     }
 

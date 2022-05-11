@@ -141,7 +141,7 @@ export const AircraftSection = (): JSX.Element => {
 
         try {
             const manifest = getCurrentInstall(
-                Directories.inCommunity(selectedAddon.targetDirectory)
+                Directories.inCommunity(selectedAddon.targetDirectory),
             );
             console.log("Currently installed", manifest);
 
@@ -212,7 +212,7 @@ export const AircraftSection = (): JSX.Element => {
     };
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
-        state.downloads.find(download => download.id === selectedAddon.name)
+        state.downloads.find(download => download.id === selectedAddon.name),
     );
 
     const isDownloading = download?.progress >= 0;
@@ -251,7 +251,7 @@ export const AircraftSection = (): JSX.Element => {
     }, [download]);
 
     const [addonDiscovered] = useSetting<boolean>(
-        "cache.main.discoveredAddons." + hiddenAddon?.key
+        "cache.main.discoveredAddons." + hiddenAddon?.key,
     );
 
     useEffect(() => {
@@ -395,7 +395,7 @@ export const AircraftSection = (): JSX.Element => {
             console.log("Removing installs existing under alternative names");
             Directories.removeAlternativesForAddon(selectedAddon);
             console.log(
-                "Finished removing installs existing under alternative names"
+                "Finished removing installs existing under alternative names",
             );
 
             dispatch(deleteDownload({ id: selectedAddon.key }));
@@ -456,7 +456,7 @@ export const AircraftSection = (): JSX.Element => {
                     }
                     setCurrentInstallStatus(InstallStatus.NotInstalled);
                     setCurrentlyInstalledTrack(null);
-                }}/>
+                }}/>,
         );
     };
 
@@ -487,7 +487,7 @@ export const AircraftSection = (): JSX.Element => {
     const handleInstall = () => {
         if (settings.has("mainSettings.msfsPackagePath")) {
             downloadAddon(selectedTrack()).then(() =>
-                console.log("Download and install complete")
+                console.log("Download and install complete"),
             );
         } else {
             setupInstallPath().then();
@@ -512,7 +512,7 @@ export const AircraftSection = (): JSX.Element => {
                         icon: path.join(
                             process.resourcesPath,
                             "extraResources",
-                            "icon.ico"
+                            "icon.ico",
                         ),
                         body: "Take to the skies!",
                     });
@@ -521,7 +521,7 @@ export const AircraftSection = (): JSX.Element => {
                         icon: path.join(
                             process.resourcesPath,
                             "extraResources",
-                            "icon.ico"
+                            "icon.ico",
                         ),
                         body: "Oops, something went wrong",
                     });

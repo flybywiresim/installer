@@ -10,8 +10,8 @@ export const configurationSlice = createSlice({
     reducers: {
         setConfiguration: (state, action: TypedAction<{ configuration: Configuration }>) => {
             state.publishers = action.payload.configuration.publishers;
-        }
-    }
+        },
+    },
 });
 
 export const { setConfiguration } = configurationSlice.actions;

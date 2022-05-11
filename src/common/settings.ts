@@ -100,7 +100,7 @@ const schema: Schema<unknown> = {
             },
             dateLayout: {
                 type: "string",
-                default: "yyyy/mm/dd"
+                default: "yyyy/mm/dd",
             },
             useLongDateFormat: {
                 type: "boolean",
@@ -118,7 +118,7 @@ const schema: Schema<unknown> = {
                 type: "string",
                 default: defaultCommunityDir(),
             },
-        }
+        },
     },
     cache: {
         type: "object",
@@ -129,10 +129,10 @@ const schema: Schema<unknown> = {
                 default: {},
                 properties: {
                     lastWindowX: {
-                        type: "integer"
+                        type: "integer",
                     },
                     lastWindowY: {
-                        type: "integer"
+                        type: "integer",
                     },
                     maximized: {
                         type: "boolean",
@@ -145,10 +145,10 @@ const schema: Schema<unknown> = {
                     lastShownAddonKey: {
                         type: "string",
                         default: "",
-                    }
-                }
-            }
-        }
+                    },
+                },
+            },
+        },
     },
     metaInfo: {
         type: "object",
@@ -161,9 +161,9 @@ const schema: Schema<unknown> = {
             lastLaunch: {
                 type: "integer",
                 default: 0,
-            }
-        }
-    }
+            },
+        },
+    },
 };
 
 const store = new Store({ schema, clearInvalidConfig: true });
