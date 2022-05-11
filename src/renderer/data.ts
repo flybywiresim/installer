@@ -60,6 +60,9 @@ export const defaultConfiguration: Configuration = {
                             name: 'Stable',
                             key: 'a32nx-stable',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
+                            alternativeUrls: [
+                                'external/a32nx/stable'
+                            ],
                             description: 'Stable is our variant that has the least bugs and best performance. ' +
                                 'This version will not always be up to date but we guarantee its compatibility ' +
                                 'with each major patch from MSFS.',
@@ -72,8 +75,9 @@ export const defaultConfiguration: Configuration = {
                             name: 'Development',
                             key: 'a32nx-dev',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
-                            // move old experimental users over to dev
                             alternativeUrls: [
+                                'external/a32nx/master',
+                                // move old experimental users over to dev
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
                                 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
@@ -91,7 +95,9 @@ export const defaultConfiguration: Configuration = {
                             name: 'Experimental',
                             key: 'experimental',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
-                            alternativeUrls: [],
+                            alternativeUrls: [
+                                'external/a32nx/experimental'
+                            ],
                             description: 'This version is similar to the Development version, ' +
                             'but contains features that we wish to test publicly as we perfect them. ' +
                             'The build is in practice stable most of the time, but you may encounter flight-breaking bugs, ' +
