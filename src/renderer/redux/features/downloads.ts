@@ -21,7 +21,7 @@ export const downloadSlice = createSlice({
                 id: action.payload.id,
                 progress: 0,
                 module: action.payload.module,
-                abortControllerID: action.payload.abortControllerID
+                abortControllerID: action.payload.abortControllerID,
             });
         },
         deleteDownload: (state, action: TypedAction<{ id: string }>) => {
@@ -30,8 +30,8 @@ export const downloadSlice = createSlice({
             if (index !== -1) {
                 state.splice(index, 1);
             }
-        }
-    }
+        },
+    },
 });
 
 export const { updateDownloadProgress, registerNewDownload, deleteDownload } = downloadSlice.actions;

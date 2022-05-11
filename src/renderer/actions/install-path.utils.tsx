@@ -8,7 +8,7 @@ export const setupInstallPath = async (): Promise<string> => {
     const path = await dialog.showOpenDialog({
         title: 'Select your community directory',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
-        properties: ['openDirectory']
+        properties: ['openDirectory'],
     });
 
     if (path.filePaths[0]) {
@@ -28,7 +28,7 @@ export const setupLiveriesPath = async (): Promise<string> => {
     const path = await dialog.showOpenDialog({
         title: 'Select your liveries directory',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
-        properties: ['openDirectory']
+        properties: ['openDirectory'],
     });
 
     if (path.filePaths[0]) {

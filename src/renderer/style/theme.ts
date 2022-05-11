@@ -33,7 +33,7 @@ export const colors = {
     navy400: '#1f2633',
     teal50: '#c2cbcc',
     tealLight: '#00c2cc',
-    tealLightContrast: '#00afb7'
+    tealLightContrast: '#00afb7',
 };
 
 export const dropShadow = css`

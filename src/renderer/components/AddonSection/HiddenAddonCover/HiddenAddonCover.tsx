@@ -18,7 +18,7 @@ export const HiddenAddonCover: FC<HiddenAddonCoverProps> = ({ addon }) => {
     };
 
     const [, setAddonDiscovered] = useSetting<boolean>(
-        "cache.main.discoveredAddons." + addon.key
+        "cache.main.discoveredAddons." + addon.key,
     );
 
     useEffect(() => {

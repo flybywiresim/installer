@@ -11,7 +11,7 @@ export const installStatus = createSlice({
         setInstallStatus: (state, action: TypedAction<{ addonKey: string, installStatus: InstallStatus }>) => {
             state[action.payload.addonKey] = action.payload.installStatus;
         },
-    }
+    },
 });
 
 export const { setInstallStatus } = installStatus.actions;

@@ -2,7 +2,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import {
     DownloadsState,
     AddonAndTrackLatestVersionNamesState,
-    ReleaseNotesState
+    ReleaseNotesState,
 } from "renderer/redux/types";
 import { AddonTrack, Configuration } from "renderer/utils/InstallerConfiguration";
 import { configureStore } from '@reduxjs/toolkit';
@@ -31,7 +31,7 @@ export type InstallerStore = {
     installedTracks: Record<string, AddonTrack>,
     latestVersionNames: AddonAndTrackLatestVersionNamesState,
     releaseNotes: ReleaseNotesState,
-    configuration: Configuration
+    configuration: Configuration,
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

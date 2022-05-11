@@ -19,7 +19,7 @@ export const defaultConfiguration: Configuration = {
                     kind: 'addonCategory',
                     key: 'scenery',
                     title: 'Scenery',
-                }
+                },
             ],
             addons: [
                 {
@@ -48,12 +48,12 @@ export const defaultConfiguration: Configuration = {
                         {
                             name: 'APU',
                             value: 'APS3200',
-                        }
+                        },
                     ],
                     targetDirectory: 'flybywire-aircraft-a320-neo',
                     alternativeNames: [
                         'A32NX',
-                        'a32nx'
+                        'a32nx',
                     ],
                     tracks: [
                         {
@@ -154,7 +154,7 @@ export const defaultConfiguration: Configuration = {
                             releaseModel: {
                                 type: 'CDN',
                             },
-                            description: 'FlyByWire Headquarters is transformed into a winter wonderland - complete with a plethora of festive decorations in addition to the standard progress showcase.'
+                            description: 'FlyByWire Headquarters is transformed into a winter wonderland - complete with a plethora of festive decorations in addition to the standard progress showcase.',
                         },
                     ],
                 },
@@ -195,9 +195,9 @@ export const defaultConfiguration: Configuration = {
                     text: 'Twitter',
                     action: 'openBrowser',
                     url: 'https://twitter.com/FlyByWireSim',
-                    inline: true
+                    inline: true,
                 },
-            ]
+            ],
         },
         {
             name: 'Salty Simulations',
@@ -324,7 +324,7 @@ export const defaultConfiguration: Configuration = {
                     inline: true,
 
                 },
-            ]
+            ],
         },
     ],
 };

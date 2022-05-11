@@ -72,9 +72,9 @@ export const ReleaseNotes = ({ addon }: {addon: Addon}): JSX.Element => {
         setReleaseComponent(
             <div className="flex flex-col gap-y-7">
                 {releaseNotes.map((release, index) =>
-                    <ReleaseNoteCard isLatest={index === 0} ref={releaseNotes.length - 1 === index ? ref : undefined} release={release} />
+                    <ReleaseNoteCard isLatest={index === 0} ref={releaseNotes.length - 1 === index ? ref : undefined} release={release} />,
                 )}
-            </div>
+            </div>,
         );
     }, [releaseNotes]);
 
