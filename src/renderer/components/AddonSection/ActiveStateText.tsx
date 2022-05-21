@@ -4,7 +4,9 @@ import React, { FC } from "react";
 import { useAppSelector } from "renderer/redux/store";
 
 const StateText: FC = ({ children }) => (
-    <div className="text-white text-3xl font-bold">{children}</div>
+    <div className="flex flex-col px-3 py-2 rounded-sm-md bg-red border-transparent border-2">
+        <div className="text-white text-3xl font-bold">{children}</div>
+    </div>
 );
 
 interface ActiveStateProps {
