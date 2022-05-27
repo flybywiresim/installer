@@ -22,9 +22,14 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: install
+      - name: install dependencies
         run: npm ci
       - name: lint
         run: npm run lint
       - name: build
-        run: npm run compile:prod
+        run: npm run package
+      - name: upload PR artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: FlyByWire_Installer_Setup
+          path: ./dist/FlyByWire_Installer_Setup.exe
