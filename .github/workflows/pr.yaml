@@ -24,6 +24,8 @@ jobs:
 
       - name: install dependencies
         run: npm ci
+      - name: Install system requirements
+        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32 wine64
       - name: lint
         run: npm run lint
       - name: build
