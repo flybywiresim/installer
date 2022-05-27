@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.1.1
+    changes:
+      - title: Only detect websocket ports as MCDU Server
+        categories: [Logic]
+        authors: [FoxtrotSierra]
   - name: 3.1.0
     changes:
       - title: Add Salty Simulations 74S

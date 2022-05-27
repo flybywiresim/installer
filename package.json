@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "3.1.0-dev.1",
+  "version": "3.1.1-dev.1",
   "description": "Desktop application to install and customize FlyByWire addons",
   "main": "webpack/main/main.js",
   "scripts": {
@@ -65,6 +65,7 @@
     "@types/styled-components": "^5.1.7",
     "@types/webpack": "^5.28.0",
     "@types/webpack-env": "^1.16.3",
+    "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
     "@webpack-cli/serve": "^1.6.0",
@@ -136,11 +137,16 @@
     "simplebar-react": "^2.3.0",
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
-    "walkdir": "^0.4.1"
+    "walkdir": "^0.4.1",
+    "ws": "^8.7.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
       "npm run lint:fix"
     ]
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.6",
+    "utf-8-validate": "^5.0.9"
   }
 }

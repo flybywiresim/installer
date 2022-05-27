@@ -1,19 +1,24 @@
-import net from "net";
+import WebSocket from 'ws';
 
 export class McduServer {
-
     static async isRunning(): Promise<boolean> {
         return new Promise((resolve) => {
-            const socket = net.connect(8380);
+            const McduServerPort = 8380;
 
-            socket.on('connect', () => {
-                resolve(true);
-                socket.destroy();
-            });
-            socket.on('error', () => {
+            const url = `ws://127.0.0.1:${McduServerPort}`;
+
+            const socket = new WebSocket(url);
+
+            socket.onerror = () => {
                 resolve(false);
-                socket.destroy();
-            });
+                socket.close();
+            };
+
+            socket.onopen = () => {
+                resolve(true);
+                socket.close();
+            };
+
         });
     }
 
