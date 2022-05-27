@@ -29,7 +29,7 @@ jobs:
       - name: build
         run: npm run package
       - name: upload PR artifact
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: FlyByWire_Installer_Setup
           path: ./dist/FlyByWire_Installer_Setup.exe
