@@ -61,7 +61,7 @@ export const defaultConfiguration: Configuration = {
                             key: 'a32nx-stable',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
                             alternativeUrls: [
-                                'external/a32nx/stable'
+                                'external/a32nx/stable',
                             ],
                             description: 'Stable is our variant that has the least bugs and best performance. ' +
                                 'This version will not always be up to date but we guarantee its compatibility ' +
@@ -96,13 +96,13 @@ export const defaultConfiguration: Configuration = {
                             key: 'experimental',
                             url: 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
                             alternativeUrls: [
-                                'external/a32nx/experimental'
+                                'external/a32nx/experimental',
                             ],
                             description: 'This version is similar to the Development version, ' +
-                            'but contains features that we wish to test publicly as we perfect them. ' +
-                            'The build is in practice stable most of the time, but you may encounter flight-breaking bugs, ' +
-                            'performance loss, crashes or other issues as the features present in this version are not completely finished. ' +
-                            'Not advised for flying on online networks.',
+                                'but contains features that we wish to test publicly as we perfect them. ' +
+                                'The build is in practice stable most of the time, but you may encounter flight-breaking bugs, ' +
+                                'performance loss, crashes or other issues as the features present in this version are not completely finished. ' +
+                                'Not advised for flying on online networks.',
                             isExperimental: true,
                             warningContent: 'The experimental version contains custom systems that more closely matches ' +
                                 'real-life behaviour of an A320neo. Those are in development and bugs are to be expected.\n\n' +
