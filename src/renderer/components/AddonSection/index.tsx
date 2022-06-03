@@ -590,9 +590,14 @@ export const AircraftSection = (): JSX.Element => {
                                 return null;
                             }
 
+                            let classes = '';
+                            if (category.styles?.includes('align-bottom')) {
+                                classes += 'mt-auto';
+                            }
+
                             return (
-                                <>
-                                    <span className="text-3xl font-manrope font-medium">{category.title}</span>
+                                <div className={classes}>
+                                    <h4 className="text-quasi-white font-manrope font-medium">{category.title}</h4>
 
                                     {publisherData.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
                                         <AddonBarItem
@@ -607,7 +612,7 @@ export const AircraftSection = (): JSX.Element => {
                                             }}
                                         />
                                     ))}
-                                </>
+                                </div>
                             );
                         })}
                     </AddonBar>
