@@ -72,7 +72,8 @@ interface DefinitionBase {
 type AddonCategoryDefinition = DefinitionBase & {
     kind: 'addonCategory',
     key: string,
-    title: string,
+    title?: string,
+    styles?: ('align-bottom')[],
 }
 
 export type Definition = AddonCategoryDefinition
