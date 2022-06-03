@@ -20,6 +20,11 @@ export const defaultConfiguration: Configuration = {
                     key: 'scenery',
                     title: 'Scenery',
                 },
+                {
+                    kind: 'addonCategory',
+                    key: 'simbridge',
+                    styles: ['align-bottom'],
+                },
             ],
             addons: [
                 {
@@ -164,6 +169,32 @@ export const defaultConfiguration: Configuration = {
                         },
                     ],
                 },
+                {
+                    name: 'SimBridge',
+                    key: 'simbridge',
+                    category: '@simbridge',
+                    repoOwner: 'flybywiresim',
+                    repoName: 'simbridge',
+                    aircraftName: 'FBW SimBridge',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
+                    enabled: true,
+                    backgroundImageUrls: ['https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'],
+                    shortDescription: 'Airbus A380-800',
+                    description: '',
+                    targetDirectory: 'flybywire-externaltools-simbridge',
+                    tracks: [
+                        {
+                            name: 'Release',
+                            key: 'release',
+                            releaseModel: {
+                                type: 'githubRelease',
+                            },
+                            url: 'https://cdn.flybywiresim.com/addons/simbridge/release/',
+                            isExperimental: false,
+                        },
+                    ],
+                },
             ],
             buttons: [
                 // {
@@ -182,12 +213,12 @@ export const defaultConfiguration: Configuration = {
                 //     inop: true,
                 //     inline: true,
                 // },
-                {
-                    text: "FBW SimBridge",
-                    action: 'internal',
-                    call: 'fbw-local-api-config',
-                    style: 'fbw-local-api-config',
-                },
+                // {
+                //     text: "FBW SimBridge",
+                //     action: 'internal',
+                //     call: 'fbw-local-api-config',
+                //     style: 'fbw-local-api-config',
+                // },
                 {
                     text: 'Documentation',
                     action: 'openBrowser',
