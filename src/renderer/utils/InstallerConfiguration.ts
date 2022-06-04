@@ -46,6 +46,7 @@ export interface Addon {
     titleImageUrl: string,
     titleImageUrlSelected: string,
     backgroundImageUrls: string[],
+    backgroundImageShadow?: boolean,
     shortDescription: string,
     description: string,
     techSpecs?: AddonTechSpec[],
