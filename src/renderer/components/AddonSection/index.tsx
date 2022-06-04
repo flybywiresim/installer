@@ -658,7 +658,7 @@ export const AircraftSection = (): JSX.Element => {
                         <Route path={`/addon-section/${publisherName}/main`}>
                             <div className="h-full flex flex-col">
                                 <div
-                                    className="relative bg-cover bg-center"
+                                    className="flex-shrink-0 relative bg-cover bg-center"
                                     style={{
                                         height: '44vh',
                                         backgroundImage: (selectedAddon.backgroundImageShadow ?? true)
