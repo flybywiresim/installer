@@ -652,10 +652,11 @@ export const AircraftSection = (): JSX.Element => {
                         </Route>
 
                         <Route path={`/addon-section/${publisherName}/main`}>
-                            <div className="h-full">
+                            <div className="h-full flex flex-col">
                                 <div
-                                    className="h-1/2 relative bg-cover bg-center"
+                                    className="relative bg-cover bg-center"
                                     style={{
+                                        height: '44vh',
                                         backgroundImage: (selectedAddon.backgroundImageShadow ?? true)
                                             ? `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)), url(${selectedAddon.backgroundImageUrls[0]})`
                                             : `url(${selectedAddon.backgroundImageUrls[0]})`,
@@ -687,8 +688,7 @@ export const AircraftSection = (): JSX.Element => {
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex flex-row h-1/2">
-
+                                <div className="flex-grow flex flex-row">
                                     <Route path={`/addon-section/${publisherName}/main/configure`}>
                                         <div className="p-7 overflow-y-scroll">
                                             <h2 className="text-white font-bold">
