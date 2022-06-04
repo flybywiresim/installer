@@ -213,7 +213,7 @@ export const AircraftSection = (): JSX.Element => {
     };
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
-        state.downloads.find(download => download.id === selectedAddon.name),
+        state.downloads.find(download => download.id === selectedAddon.key),
     );
 
     const isDownloading = download?.progress >= 0;
