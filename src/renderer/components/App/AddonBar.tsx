@@ -31,7 +31,7 @@ export const AddonBar: FC = ({ children }) => {
 
         let currentGroup: PublisherButton[] = [];
         for (const button of buttons) {
-            if (button.inline) {
+            if (button.inline || currentGroup.length === 0) {
                 currentGroup.push(button);
             } else {
                 groups.push(currentGroup);
@@ -59,12 +59,14 @@ export const AddonBar: FC = ({ children }) => {
     const textClass = darkTheme ? 'text-quasi-white' : 'text-navy';
 
     return (
-        <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full`}>
+        <div className={`flex flex-col justify-between gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
                 <h3 className={`${textClass} font-bold -mb-1`}>{publisherData.name}</h3>
             </div>
 
-            {children}
+            <div className="flex-grow flex flex-col">
+                {children}
+            </div>
 
             <div className="flex flex-col gap-y-4 mt-auto">
                 {publisherData.buttons && (

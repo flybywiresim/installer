@@ -579,38 +579,42 @@ export const AircraftSection = (): JSX.Element => {
                             />
                         ))}
 
-                        {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category) => {
-                            const categoryAddons = publisherData.addons.filter((it) => it.category?.substring(1) === category.key);
+                        <div className="h-full flex flex-col gap-y-4">
+                            {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category) => {
+                                const categoryAddons = publisherData.addons.filter((it) => it.category?.substring(1) === category.key);
 
-                            if (categoryAddons.length === 0) {
-                                return null;
-                            }
+                                if (categoryAddons.length === 0) {
+                                    return null;
+                                }
 
-                            let classes = '';
-                            if (category.styles?.includes('align-bottom')) {
-                                classes += 'mt-auto';
-                            }
+                                let classes = '';
+                                if (category.styles?.includes('align-bottom')) {
+                                    classes += 'mt-auto';
+                                }
 
-                            return (
-                                <div className={classes}>
-                                    <h4 className="text-quasi-white font-manrope font-medium">{category.title}</h4>
+                                return (
+                                    <div className={classes}>
+                                        <h4 className="text-quasi-white font-manrope font-medium">{category.title}</h4>
 
-                                    {publisherData.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
-                                        <AddonBarItem
-                                            selected={selectedAddon.key === addon.key && addon.enabled}
-                                            enabled={addon.enabled || !!addon.hidesAddon}
-                                            addon={addon}
-                                            key={addon.key}
-                                            onClick={() => {
-                                                history.push(`/addon-section/${publisherData.name}/`);
+                                        <div className="flex flex-col gap-y-4">
+                                            {publisherData.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
+                                                <AddonBarItem
+                                                    selected={selectedAddon.key === addon.key && addon.enabled}
+                                                    enabled={addon.enabled || !!addon.hidesAddon}
+                                                    addon={addon}
+                                                    key={addon.key}
+                                                    onClick={() => {
+                                                        history.push(`/addon-section/${publisherData.name}/`);
 
-                                                setSelectedAddon(addon);
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                            );
-                        })}
+                                                        setSelectedAddon(addon);
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </AddonBar>
                 </div>
             </div>
@@ -652,7 +656,9 @@ export const AircraftSection = (): JSX.Element => {
                                 <div
                                     className="h-1/2 relative bg-cover bg-center"
                                     style={{
-                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)), url(${selectedAddon.backgroundImageUrls[0]})`,
+                                        backgroundImage: (selectedAddon.backgroundImageShadow ?? true)
+                                            ? `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)), url(${selectedAddon.backgroundImageUrls[0]})`
+                                            : `url(${selectedAddon.backgroundImageUrls[0]})`,
                                     }}
                                 >
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
