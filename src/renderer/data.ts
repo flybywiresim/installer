@@ -179,7 +179,7 @@ export const defaultConfiguration: Configuration = {
                     titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
                     titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
                     enabled: true,
-                    backgroundImageUrls: ['https://cdn.discordapp.com/attachments/845070631644430359/982523301366747156/simbridge.png'],
+                    backgroundImageUrls: ['https://cdn.discordapp.com/attachments/845070631644430359/982524804982779914/simbridge.png'],
                     backgroundImageShadow: false,
                     shortDescription: 'Airbus A380-800',
                     description: '',
