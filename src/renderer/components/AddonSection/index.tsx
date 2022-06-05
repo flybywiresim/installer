@@ -4,7 +4,6 @@ import * as path from "path";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
-import { Track, Tracks } from "renderer/components/AddonSection/TrackSelector";
 import { FragmenterInstaller, getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
 import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
 import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
@@ -31,6 +30,7 @@ import { ActiveStateText } from "renderer/components/AddonSection/ActiveStateTex
 import { McduServer } from "renderer/utils/McduServer";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
+import { Configure } from "renderer/components/AddonSection/Configure";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -93,6 +93,7 @@ export const AircraftSection = (): JSX.Element => {
 
     const [hiddenAddon, setHiddenAddon] = useState<Addon | undefined>(undefined);
 
+    const configuration = useAppSelector(state => state.configuration);
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTracks);
     const installStatus = useAppSelector(state => state.installStatus);
@@ -309,6 +310,40 @@ export const AircraftSection = (): JSX.Element => {
     console.log(selectedTrack());
 
     const downloadAddon = async (track: AddonTrack) => {
+        // Find dependencies
+        for (const dependency of selectedAddon.dependencies ?? []) {
+            const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
+
+            const publisher = configuration.publishers.find((it) => it.key === publisherKey);
+            const addon = publisher?.addons?.find((it) => it.key === addonKey);
+
+            if (!addon) {
+                throw new Error(`Addon specified dependency for unknown addon: @${publisherKey}/${addonKey}`);
+            }
+
+            if (dependency.optional) {
+                let md = '';
+                md += `**${addon.name}** by **${publisher.name}** needs to be installed to use the full functionality of **${selectedAddon.name}**.`;
+                if (dependency.modalText) {
+                    md += '\n\n\n\n';
+                    md += `> ${dependency.modalText}`;
+                }
+                md += '\n\n\n\n';
+                md += `**Do you wish to install it?** You can always change your mind later by manually installing **${addon.name}**.`;
+
+                showModal(
+                    <PromptModal
+                        title="Dependency"
+                        bodyText={md}
+                        cancelText="No"
+                        confirmText="Yes"
+                        confirmColor={ButtonType.Positive}
+                    />,
+                );
+                return;
+            }
+        }
+
         // Initialize abort controller for downloads
         const abortControllerID = lowestAvailableAbortControllerID;
 
@@ -692,69 +727,20 @@ export const AircraftSection = (): JSX.Element => {
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex-grow flex flex-row">
+                                <div className="h-0 flex-grow flex flex-row">
                                     <Route path={`/addon-section/${publisherName}/main/configure`}>
-                                        <div className="p-7 overflow-y-scroll">
-                                            <h2 className="text-white font-bold">
-                                                Choose Your Version
-                                            </h2>
-                                            <div className="flex flex-row gap-x-8">
-                                                <div>
-                                                    <Tracks>
-                                                        {selectedAddon.tracks
-                                                            .filter((track) => !track.isExperimental)
-                                                            .map((track) => (
-                                                                <Track
-                                                                    addon={selectedAddon}
-                                                                    key={track.key}
-                                                                    track={track}
-                                                                    isSelected={selectedTrack() === track}
-                                                                    isInstalled={installedTrack() === track}
-                                                                    handleSelected={() => handleTrackSelection(track)}
-                                                                />
-                                                            ))}
-                                                    </Tracks>
-                                                    <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
-                                                        Mainline Releases
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <Tracks>
-                                                        {selectedAddon.tracks
-                                                            .filter((track) => track.isExperimental)
-                                                            .map((track) => (
-                                                                <Track
-                                                                    addon={selectedAddon}
-                                                                    key={track.key}
-                                                                    track={track}
-                                                                    isSelected={selectedTrack() === track}
-                                                                    isInstalled={installedTrack() === track}
-                                                                    handleSelected={() => handleTrackSelection(track)}
-                                                                />
-                                                            ))}
-                                                    </Tracks>
-
-                                                    {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
-                                                        <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
-                                                            Experimental versions
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            {selectedTrack() && selectedTrack().description &&
-                                            <div className="mt-10">
-                                                <h2 className="text-white font-bold">Description</h2>
-                                                <p className="text-xl text-white font-manrope leading-relaxed">
-                                                    <ReactMarkdown
-                                                        className="text-xl text-white font-light font-manrope leading-relaxed"
-                                                        children={selectedTrack().description}
-                                                        linkTarget={"_blank"}
-                                                    />
-                                                </p>
-                                            </div>
-                                            }
-                                        </div>
+                                        <Redirect to={`/addon-section/${publisherName}/main/configure/release-track`} />
                                     </Route>
+
+                                    <Route path={`/addon-section/:publisher/main/configure/:aspectKey`} render={({ match: { params: { aspectKey } } }) => (
+                                        <Configure
+                                            routeAspectKey={aspectKey}
+                                            selectedAddon={selectedAddon}
+                                            selectedTrack={selectedTrack}
+                                            installedTrack={installedTrack}
+                                            onTrackSelection={handleTrackSelection}
+                                        />
+                                    )} />
 
                                     <Route path={`/addon-section/${publisherName}/main/release-notes`}>
                                         {releaseNotes && releaseNotes.length > 0 ? (

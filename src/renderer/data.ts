@@ -8,6 +8,7 @@ export const defaultConfiguration: Configuration = {
     publishers: [
         {
             name: 'FlyByWire Simulations',
+            key: 'flybywiresim',
             logoUrl: FBWLogo,
             defs: [
                 {
@@ -120,6 +121,13 @@ export const defaultConfiguration: Configuration = {
                             },
                         },
                     ],
+                    dependencies: [
+                        {
+                            addon: '@flybywiresim/simbridge',
+                            optional: true,
+                            modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
+                        },
+                    ],
                 },
                 {
                     name: 'A380X',
@@ -179,7 +187,7 @@ export const defaultConfiguration: Configuration = {
                     titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
                     titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
                     enabled: true,
-                    backgroundImageUrls: ['https://cdn.discordapp.com/attachments/845070631644430359/982524804982779914/simbridge.png'],
+                    backgroundImageUrls: ['https://cdn.discordapp.com/attachments/845070631644430359/982713039696560128/simbridge.png'],
                     backgroundImageShadow: false,
                     shortDescription: 'Airbus A380-800',
                     description: '',
@@ -193,8 +201,31 @@ export const defaultConfiguration: Configuration = {
                             },
                             url: 'https://cdn.flybywiresim.com/addons/simbridge/release/',
                             isExperimental: false,
+                            description: 'SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.',
                         },
                     ],
+                    // configurationAspects: [
+                    //     {
+                    //         key: 'terrain-db',
+                    //         tabTitle: 'Terrain Database',
+                    //         tabSupertitle: 'Update',
+                    //         title: 'Enable or Disable Terrain Database',
+                    //         applyChoiceKeyTo: 'optionalFragmenterModule',
+                    //         choiceKind: 'yesNo',
+                    //         choices: [
+                    //             {
+                    //                 key: 'yes',
+                    //                 title: '@translations[Data.FBW.SimBridge.ConfigTerrainDB.ChoiceYes.Title]',
+                    //                 description: 'Download and install the terrain database to enable terrain display in the FBW A32NX and A380X addons.',
+                    //             },
+                    //             {
+                    //                 key: 'yes',
+                    //                 title: 'Disable Terrain Database',
+                    //                 description: 'Do not install the terrain database. Terrain display will not be available in the FBW A32NX and A380X addons.',
+                    //             },
+                    //         ],
+                    //     },
+                    // ],
                 },
             ],
             buttons: [
@@ -245,6 +276,7 @@ export const defaultConfiguration: Configuration = {
         },
         {
             name: 'Salty Simulations',
+            key: 'salty',
             logoUrl: SaltyLogo,
             defs: [
                 {
@@ -323,6 +355,7 @@ export const defaultConfiguration: Configuration = {
         },
         {
             name: 'Synaptic Simulations',
+            key: 'synaptic',
             logoUrl: SynapticLogo,
             defs: [
                 {
