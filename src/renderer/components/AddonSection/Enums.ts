@@ -4,6 +4,7 @@ export enum InstallStatus {
     NotInstalled,
     GitInstall,
     TrackSwitch,
+    InstallingDependency,
     DownloadPrep,
     Downloading,
     Decompressing,

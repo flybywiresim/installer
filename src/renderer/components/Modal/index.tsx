@@ -11,6 +11,7 @@ import { Button, ButtonType } from "renderer/components/Button";
 
 interface ModalContextInterface{
     showModal: (modal: JSX.Element) => void;
+    showModalAsync: (modal: JSX.Element) => Promise<boolean>;
     modal?: JSX.Element;
     popModal: () => void;
 }
@@ -30,8 +31,23 @@ export const ModalProvider: FC = ({ children }) => {
         setModal(modal);
     };
 
+    const showModalAsync = (modal: JSX.Element): Promise<boolean> => {
+        return new Promise((resolve) => {
+            setModal(React.cloneElement(modal, {
+                onConfirm: () => {
+                    resolve(true);
+                    modal.props.onConfirm?.();
+                },
+                onCancel: () => {
+                    resolve(false);
+                    modal.props.onCancel?.();
+                },
+            }));
+        });
+    };
+
     return (
-        <ModalContext.Provider value={{ modal, showModal, popModal }}>
+        <ModalContext.Provider value={{ modal, showModal, showModalAsync, popModal }}>
             {children}
         </ModalContext.Provider>
     );
@@ -39,7 +55,7 @@ export const ModalProvider: FC = ({ children }) => {
 
 interface BaseModalProps {
     title: string;
-    bodyText: string;
+    bodyText: React.ReactElement | string;
     dontShowAgainSettingName?: string;
 }
 
@@ -93,12 +109,16 @@ export const PromptModal: FC<PromptModalProps> = ({
     return (
         <div className="modal">
             <h2 className="modal-title">{title}</h2>
-            <ReactMarkdown
-                className="mt-6 markdown-body-modal"
-                children={bodyText}
-                remarkPlugins={[remarkGfm]}
-                linkTarget={"_blank"}
-            />
+            {typeof bodyText === 'string' ? (
+                <ReactMarkdown
+                    className="mt-6 markdown-body-modal"
+                    children={bodyText}
+                    remarkPlugins={[remarkGfm]}
+                    linkTarget={"_blank"}
+                />
+            ) : (
+                bodyText
+            )}
 
             {dontShowAgainSettingName && (
                 <div className="w-auto gap-x-4 mt-8">
@@ -153,12 +173,16 @@ export const AlertModal: FC<AlertModalProps> = ({
     return (
         <div className="p-8 w-5/12 rounded-xl border-2 bg-theme-body border-theme-accent">
             <h1 className="leading-none font-bold">{title}</h1>
-            <ReactMarkdown
-                className="mt-6 markdown-body-modal"
-                children={bodyText}
-                remarkPlugins={[remarkGfm]}
-                linkTarget={"_blank"}
-            />
+            {typeof bodyText === 'string' ? (
+                <ReactMarkdown
+                    className="mt-6 markdown-body-modal"
+                    children={bodyText}
+                    remarkPlugins={[remarkGfm]}
+                    linkTarget={"_blank"}
+                />
+            ) : (
+                bodyText
+            )}
 
             {dontShowAgainSettingName ? <div className="w-auto space-x-4 mt-8">
                 <input

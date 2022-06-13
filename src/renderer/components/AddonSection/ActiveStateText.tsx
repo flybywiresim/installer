@@ -36,6 +36,8 @@ export const ActiveStateText: FC<ActiveStateProps> = ({ installStatus, download 
             return <></>;
         case InstallStatus.TrackSwitch:
             return <></>;
+        case InstallStatus.InstallingDependency:
+            return <StateText>Installing dependency</StateText>;
         case InstallStatus.DownloadPrep:
             return <StateText>Preparing update</StateText>;
         case InstallStatus.Downloading:
