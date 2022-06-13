@@ -4,7 +4,7 @@ import { Directories } from "./Directories";
 import fs from 'fs-extra';
 import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
 import settings from "common/settings";
-import { store, InstallerStore } from "renderer/redux/store";
+import { store } from "renderer/redux/store";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { setInstallStatus } from "renderer/redux/features/installStatus";
@@ -163,7 +163,7 @@ export class AddonData {
 
         const installDir = Directories.inCommunity(addon.targetDirectory);
 
-        const state: InstallerStore = store.getState();
+        const state = store.getState();
 
         if (state.installStatus[addon.key] === InstallStatus.UpToDate) {
             const updateInfo = await needsUpdate(state.selectedTracks[addon.key].url, installDir, {

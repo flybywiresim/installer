@@ -13,7 +13,7 @@ export type TypedAction<T> = { type: string, payload: T };
 export type RootState = ReturnType<typeof combinedReducer>;
 export type AppDispatch = typeof store.dispatch;
 
-export const store = configureStore({
+export const store = configureStore<RootState>({
     reducer: rootReducer,
 });
 

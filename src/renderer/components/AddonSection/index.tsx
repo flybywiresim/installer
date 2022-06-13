@@ -4,7 +4,7 @@ import * as path from "path";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
-import { FragmenterInstaller, getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
+import { getCurrentInstall } from "@flybywiresim/fragmenter";
 import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
 import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
@@ -17,7 +17,7 @@ import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
-import { deleteDownload, registerNewDownload, updateDownloadProgress } from 'renderer/redux/features/downloads';
+import { deleteDownload } from 'renderer/redux/features/downloads';
 import { setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AddonSection/HiddenAddonCover/HiddenAddonCover";
@@ -31,6 +31,7 @@ import { McduServer } from "renderer/utils/McduServer";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
 import { Configure } from "renderer/components/AddonSection/Configure";
+import { InstallManager } from "renderer/utils/InstallManager";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -93,7 +94,6 @@ export const AircraftSection = (): JSX.Element => {
 
     const [hiddenAddon, setHiddenAddon] = useState<Addon | undefined>(undefined);
 
-    const configuration = useAppSelector(state => state.configuration);
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTracks);
     const installStatus = useAppSelector(state => state.installStatus);
@@ -220,14 +220,6 @@ export const AircraftSection = (): JSX.Element => {
     const isDownloading = download?.progress >= 0;
     const isInstalling = getCurrentInstallStatus() === InstallStatus.Downloading || getCurrentInstallStatus() === InstallStatus.DownloadPrep || getCurrentInstallStatus() === InstallStatus.Decompressing || getCurrentInstallStatus() === InstallStatus.DownloadEnding || getCurrentInstallStatus() === InstallStatus.DownloadRetry;
 
-    const lowestAvailableAbortControllerID: number = useSelector((state: InstallerStore) => {
-        for (let i = 0; i < abortControllers.length; i++) {
-            if (!state.downloads.map(download => download.abortControllerID).includes(i)) {
-                return i;
-            }
-        }
-    });
-
     useEffect(() => {
         const checkApplicationInterval = setInterval(async () => {
             dispatch(setApplicationStatus({ applicationName: 'msfs', applicationStatus: (await Msfs.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
@@ -240,7 +232,7 @@ export const AircraftSection = (): JSX.Element => {
     useEffect(() => {
         findInstalledTrack();
         if (!isInstalling) {
-            getInstallStatus().then(setCurrentInstallStatus);
+            InstallManager.determineAddonInstallStatus(selectedAddon).then(setCurrentInstallStatus);
         }
     }, [selectedTrack(), installedTrack()]);
 
@@ -262,204 +254,9 @@ export const AircraftSection = (): JSX.Element => {
         }
     }, [addonDiscovered]);
 
-    const getInstallStatus = async (): Promise<InstallStatus> => {
-        if (selectedAddon.hidden && !addonDiscovered) {
-            return InstallStatus.Hidden;
-        }
-        if (!selectedTrack()) {
-            return InstallStatus.Unknown;
-        }
-
-        console.log("Checking install status");
-
-        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-
-        if (!fs.existsSync(installDir)) {
-            return InstallStatus.NotInstalled;
-        }
-
-        console.log("Checking for git install");
-        if (Directories.isGitInstall(installDir)) {
-            return InstallStatus.GitInstall;
-        }
-
-        try {
-            const updateInfo = await needsUpdate(selectedTrack().url, installDir, {
-                forceCacheBust: true,
-            });
-            console.log("Update info", updateInfo);
-
-            if (selectedTrack() !== installedTrack() && installedTrack()) {
-                return InstallStatus.TrackSwitch;
-            }
-            if (updateInfo.isFreshInstall) {
-                return InstallStatus.NotInstalled;
-            }
-
-            if (updateInfo.needsUpdate) {
-                return InstallStatus.NeedsUpdate;
-            }
-
-            return InstallStatus.UpToDate;
-        } catch (e) {
-            console.error(e);
-            return InstallStatus.Unknown;
-        }
-    };
-
     console.log(selectedTrack());
 
-    const downloadAddon = async (track: AddonTrack) => {
-        // Find dependencies
-        for (const dependency of selectedAddon.dependencies ?? []) {
-            const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
-
-            const publisher = configuration.publishers.find((it) => it.key === publisherKey);
-            const addon = publisher?.addons?.find((it) => it.key === addonKey);
-
-            if (!addon) {
-                throw new Error(`Addon specified dependency for unknown addon: @${publisherKey}/${addonKey}`);
-            }
-
-            if (dependency.optional) {
-                let md = '';
-                md += `**${addon.name}** by **${publisher.name}** needs to be installed to use the full functionality of **${selectedAddon.name}**.`;
-                if (dependency.modalText) {
-                    md += '\n\n\n\n';
-                    md += `> ${dependency.modalText}`;
-                }
-                md += '\n\n\n\n';
-                md += `**Do you wish to install it?** You can always change your mind later by manually installing **${addon.name}**.`;
-
-                showModal(
-                    <PromptModal
-                        title="Dependency"
-                        bodyText={md}
-                        cancelText="No"
-                        confirmText="Yes"
-                        confirmColor={ButtonType.Positive}
-                    />,
-                );
-                return;
-            }
-        }
-
-        // Initialize abort controller for downloads
-        const abortControllerID = lowestAvailableAbortControllerID;
-
-        abortControllers[abortControllerID] = new AbortController;
-        const signal = abortControllers[abortControllerID].signal;
-
-        dispatch(registerNewDownload({ id: selectedAddon.key, module: "", abortControllerID: abortControllerID }));
-
-        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-        const tempDir = Directories.temp();
-
-        console.log("Installing", track);
-        console.log("Installing into", installDir, "using temp dir", tempDir);
-
-        // Prepare temporary directory
-        fs.removeSync(tempDir);
-        fs.mkdirSync(tempDir);
-
-        // Copy current install to temporary directory
-        console.log("Checking for existing install");
-        if (Directories.isFragmenterInstall(installDir)) {
-            setCurrentInstallStatus(InstallStatus.DownloadPrep);
-            console.log("Found existing install at", installDir);
-            console.log("Copying existing install to", tempDir);
-            await fs.copy(installDir, tempDir);
-            console.log("Finished copying");
-        }
-
-        try {
-            let lastPercent = 0;
-            setCurrentInstallStatus(InstallStatus.Downloading);
-
-            // Perform the fragmenter download
-            const installer = new FragmenterInstaller(track.url, tempDir);
-
-            installer.on("downloadStarted", (module) => {
-                console.log("Downloading started for module", module.name);
-                setCurrentInstallStatus(InstallStatus.Downloading);
-            });
-            installer.on("downloadProgress", (module, progress) => {
-                if (lastPercent !== progress.percent) {
-                    lastPercent = progress.percent;
-                    dispatch(
-                        updateDownloadProgress({
-                            id: selectedAddon.key,
-                            module: module.name,
-                            progress: progress.percent,
-                        }));
-                }
-            });
-            installer.on("unzipStarted", (module) => {
-                console.log("Started unzipping module", module.name);
-                setCurrentInstallStatus(InstallStatus.Decompressing);
-            });
-            installer.on("retryScheduled", (module, retryCount, waitSeconds) => {
-                console.log("Scheduling a retry for module", module.name);
-                console.log("Retry count", retryCount);
-                console.log("Waiting for", waitSeconds, "seconds");
-
-                setCurrentInstallStatus(InstallStatus.DownloadRetry);
-            });
-            installer.on("retryStarted", (module, retryCount) => {
-                console.log("Starting a retry for module", module.name);
-                console.log("Retry count", retryCount);
-
-                setCurrentInstallStatus(InstallStatus.Downloading);
-            });
-
-            console.log("Starting fragmenter download for URL", track.url);
-            const installResult = await installer.install(signal, {
-                forceCacheBust: !(settings.get("mainSettings.useCdnCache") as boolean),
-                forceFreshInstall: false,
-                forceManifestCacheBust: true,
-            });
-            console.log("Fragmenter download finished for URL", track.url);
-
-            // Copy files from temp dir
-            setCurrentInstallStatus(InstallStatus.DownloadEnding);
-            Directories.removeTargetForAddon(selectedAddon);
-            console.log("Copying files from", tempDir, "to", installDir);
-            await fs.copy(tempDir, installDir, { recursive: true });
-            console.log("Finished copying files from", tempDir, "to", installDir);
-
-            // Remove installs existing under alternative names
-            console.log("Removing installs existing under alternative names");
-            Directories.removeAlternativesForAddon(selectedAddon);
-            console.log(
-                "Finished removing installs existing under alternative names",
-            );
-
-            dispatch(deleteDownload({ id: selectedAddon.key }));
-            notifyDownload(true);
-
-            // Flash completion text
-            setCurrentlyInstalledTrack(track);
-            setCurrentInstallStatus(InstallStatus.DownloadDone);
-
-            console.log("Finished download", installResult);
-        } catch (e) {
-            if (signal.aborted) {
-                setCurrentInstallStatus(InstallStatus.DownloadCanceled);
-            } else {
-                console.error(e);
-                setCurrentInstallStatus(InstallStatus.DownloadError);
-                notifyDownload(false);
-            }
-            setTimeout(async () => setCurrentInstallStatus(await getInstallStatus()), 3_000);
-        }
-
-        dispatch(deleteDownload({ id: selectedAddon.key }));
-
-        // Clean up temp dir
-        fs.removeSync(tempDir);
-    };
-
-    const { showModal } = useModals();
+    const { showModal, showModalAsync } = useModals();
 
     const uninstallAddon = async () => {
         showModal(
@@ -522,7 +319,7 @@ export const AircraftSection = (): JSX.Element => {
 
     const handleInstall = () => {
         if (settings.has("mainSettings.msfsPackagePath")) {
-            downloadAddon(selectedTrack()).then(() =>
+            InstallManager.installAddon(selectedAddon, showModalAsync).then(() =>
                 console.log("Download and install complete"),
             );
         } else {
@@ -536,34 +333,6 @@ export const AircraftSection = (): JSX.Element => {
             abortControllers[download.abortControllerID].abort();
             dispatch(deleteDownload({ id: selectedAddon.key }));
         }
-    };
-
-    const notifyDownload = (successful: boolean) => {
-        console.log("Requesting notification");
-        Notification.requestPermission()
-            .then(() => {
-                console.log("Showing notification");
-                if (successful) {
-                    new Notification(`${selectedAddon.name} download complete!`, {
-                        icon: path.join(
-                            process.resourcesPath,
-                            "extraResources",
-                            "icon.ico",
-                        ),
-                        body: "Take to the skies!",
-                    });
-                } else {
-                    new Notification("Download failed!", {
-                        icon: path.join(
-                            process.resourcesPath,
-                            "extraResources",
-                            "icon.ico",
-                        ),
-                        body: "Oops, something went wrong",
-                    });
-                }
-            })
-            .catch((e) => console.log(e));
     };
 
     const UninstallButton = (): JSX.Element => {
