@@ -17,6 +17,15 @@ export enum InstallStatus {
     Hidden,
 }
 
+export const InstallingInstallStatuses = [
+    InstallStatus.Downloading,
+    InstallStatus.DownloadPrep,
+    InstallStatus.InstallingDependency,
+    InstallStatus.Decompressing,
+    InstallStatus.DownloadEnding,
+    InstallStatus.DownloadRetry,
+];
+
 export enum ApplicationStatus {
     Open,
     Closed,

@@ -62,7 +62,13 @@ export interface NavBarPublisherProps extends NavBarItemProps {
 }
 
 export const NavBarPublisher: FC<NavBarPublisherProps> = ({ to, publisher }) => {
-    const hasAvailableUpdates = useAppSelector((state) => publisher.addons.some((addon) => state.installStatus[addon.key] === InstallStatus.NeedsUpdate || state.installStatus[addon.key] === InstallStatus.TrackSwitch));
+    const hasAvailableUpdates = useAppSelector((state) => {
+        return publisher.addons.some((addon) => {
+            const status = state.installStatus[addon.key]?.status;
+
+            return status === InstallStatus.NeedsUpdate || status === InstallStatus.TrackSwitch;
+        });
+    });
 
     return (
         <NavbarItem
