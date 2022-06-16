@@ -45,19 +45,17 @@ class LocalApiConfigurationHandler {
     }
 
     static getConfiguration(): LocalApiConfiguration {
-        const prospectiveConfigurationFilePath = this.simbridgeConfigPath;
+        if (fs.existsSync(this.simbridgeConfigPath)) {
+            console.log(`Loading configuration from ${this.simbridgeConfigPath}`);
 
-        if (fs.existsSync(prospectiveConfigurationFilePath)) {
-            console.log(`Loading configuration from ${prospectiveConfigurationFilePath}`);
-
-            return JSON.parse(fs.readFileSync(path.join(prospectiveConfigurationFilePath), "utf8"));
+            return JSON.parse(fs.readFileSync(this.simbridgeConfigPath, "utf8"));
         } else {
-            console.log(`No configuration found at ${prospectiveConfigurationFilePath}`);
+            console.log(`No configuration found at ${this.simbridgeConfigPath}`);
 
             if (fs.existsSync(path.join(this.simbridgeDirectory, 'resources'))) {
-                console.log(`Creating configuration at ${prospectiveConfigurationFilePath}`);
+                console.log(`Creating configuration at ${this.simbridgeConfigPath}`);
 
-                fs.writeFileSync(path.join(prospectiveConfigurationFilePath), JSON.stringify(localApiDefaultConfiguration));
+                fs.writeFileSync(path.join(this.simbridgeConfigPath), JSON.stringify(localApiDefaultConfiguration));
 
                 return localApiDefaultConfiguration;
             } else {
@@ -67,10 +65,8 @@ class LocalApiConfigurationHandler {
     }
 
     static saveConfiguration(propertyConfiguration: LocalApiConfiguration) {
-        const prospectiveConfigurationFilePath = path.join(this.simbridgeDirectory, 'resources', 'properties.json');
-
-        if (fs.existsSync(prospectiveConfigurationFilePath)) {
-            fs.writeFileSync(prospectiveConfigurationFilePath, JSON.stringify(propertyConfiguration));
+        if (fs.existsSync(this.simbridgeConfigPath)) {
+            fs.writeFileSync(this.simbridgeConfigPath, JSON.stringify(propertyConfiguration));
         }
     }
 }
@@ -85,7 +81,7 @@ export const LocalApiConfigEditUI: FC = () => {
         try {
             const loaded = LocalApiConfigurationHandler.getConfiguration();
             setConfig(loaded);
-        } catch (_) {/**/}
+        } catch (_) {/**/ }
     }, []);
 
     const { showModal } = useModals();
@@ -193,7 +189,7 @@ export const LocalApiConfigEditUI: FC = () => {
                                     ...old.printer,
                                     enabled: value,
                                 },
-                            }))}/>
+                            }))} />
                         </div>
                         <div className='flex flex-row items-center justify-between text-white py-4'>
                             <p>Printer Name</p>
