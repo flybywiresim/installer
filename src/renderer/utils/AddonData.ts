@@ -7,7 +7,7 @@ import settings from "common/settings";
 import { store } from "renderer/redux/store";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
-import { setInstallStatus } from "renderer/redux/features/installStatus";
+import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
 import yaml from 'js-yaml';
 import { InstallStatus } from "renderer/components/AddonSection/Enums";
 
@@ -67,8 +67,8 @@ export class AddonData {
             dispatch(setSelectedTrack({ addonKey: addon.key, track: newSelectedTrack }));
         };
 
-        const setCurrentInstallStatus = (new_state: InstallStatus) => {
-            dispatch(setInstallStatus({ addonKey: addon.key, installStatus: new_state }));
+        const setCurrentInstallStatus = (new_state: InstallState) => {
+            dispatch(setInstallStatus({ addonKey: addon.key, installState: new_state }));
         };
 
         let selectedTrack: AddonTrack;
@@ -101,13 +101,13 @@ export class AddonData {
         const addonDiscovered = settings.get('cache.main.discoveredAddons.' + addon.key);
 
         if (addon.hidden && !addonDiscovered) {
-            setCurrentInstallStatus(InstallStatus.Hidden);
+            setCurrentInstallStatus({ status: InstallStatus.Hidden });
             return;
         }
 
         if (!selectedTrack) {
             console.log (addon.key, 'has unknown install status');
-            setCurrentInstallStatus(InstallStatus.Unknown);
+            setCurrentInstallStatus({ status: InstallStatus.Unknown });
             return;
         }
 
@@ -117,13 +117,13 @@ export class AddonData {
 
         if (!fs.existsSync(installDir)) {
             console.log ('no existing install dir for', addon.key);
-            setCurrentInstallStatus(InstallStatus.NotInstalled);
+            setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
             return;
         }
 
         console.log('Checking for git install');
         if (Directories.isGitInstall(installDir)) {
-            setCurrentInstallStatus(InstallStatus.GitInstall);
+            setCurrentInstallStatus({ status: InstallStatus.GitInstall });
             return;
         }
 
@@ -134,20 +134,20 @@ export class AddonData {
             console.log('Update info for', addon.key, updateInfo);
 
             if (updateInfo.isFreshInstall) {
-                setCurrentInstallStatus(InstallStatus.NotInstalled);
+                setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
                 return;
             }
 
             if (updateInfo.needsUpdate) {
-                setCurrentInstallStatus(InstallStatus.NeedsUpdate);
+                setCurrentInstallStatus({ status: InstallStatus.NeedsUpdate });
                 return;
             }
 
-            setCurrentInstallStatus(InstallStatus.UpToDate);
+            setCurrentInstallStatus({ status: InstallStatus.UpToDate });
             return;
         } catch (e) {
             console.error(e);
-            setCurrentInstallStatus(InstallStatus.Unknown);
+            setCurrentInstallStatus({ status: InstallStatus.Unknown });
             return;
         }
     }
@@ -157,21 +157,17 @@ export class AddonData {
 
         const dispatch = store.dispatch;
 
-        const setCurrentInstallStatus = (new_state: InstallStatus) => {
-            dispatch(setInstallStatus({ addonKey: addon.key, installStatus: new_state }));
-        };
-
         const installDir = Directories.inCommunity(addon.targetDirectory);
 
         const state = store.getState();
 
-        if (state.installStatus[addon.key] === InstallStatus.UpToDate) {
+        if (state.installStatus[addon.key].status === InstallStatus.UpToDate) {
             const updateInfo = await needsUpdate(state.selectedTracks[addon.key].url, installDir, {
                 forceCacheBust: true,
             });
             console.log("Update info", addon.key, updateInfo);
             if (updateInfo.needsUpdate) {
-                setCurrentInstallStatus(InstallStatus.NeedsUpdate);
+                dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.NeedsUpdate } }));
             }
         }
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import * as print from 'pdf-to-printer';
 import { PromptModal, useModals } from '../Modal';
 import { ButtonType } from '../Button';
@@ -6,6 +6,8 @@ import fs from 'fs';
 import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
 import { Toggle } from '../Toggle';
+
+const SIMBRIDGE_DIRECTORY = 'flybywire-externaltools-simbridge';
 
 interface LocalApiConfiguration {
     server: {
@@ -22,20 +24,28 @@ interface LocalApiConfiguration {
 
 const localApiDefaultConfiguration: LocalApiConfiguration = {
     server: {
-        port: 8380
+        port: 8380,
     },
     printer: {
         enabled: false,
         printerName: null,
         fontSize: 19,
         paperSize: "A4",
-        margin: 30
+        margin: 30,
     },
 };
 
 class LocalApiConfigurationHandler {
+    private static get simbridgeDirectory(): string {
+        return path.join(Directories.inCommunity(SIMBRIDGE_DIRECTORY));
+    }
+
+    private static get simbridgeConfigPath(): string {
+        return path.join(this.simbridgeDirectory, 'properties.json');
+    }
+
     static getConfiguration(): LocalApiConfiguration {
-        const prospectiveConfigurationFilePath = path.join(Directories.community(),'flybywire-dispatch','resources', 'local-api-config.json');
+        const prospectiveConfigurationFilePath = this.simbridgeConfigPath;
 
         if (fs.existsSync(prospectiveConfigurationFilePath)) {
             console.log(`Loading configuration from ${prospectiveConfigurationFilePath}`);
@@ -44,10 +54,10 @@ class LocalApiConfigurationHandler {
         } else {
             console.log(`No configuration found at ${prospectiveConfigurationFilePath}`);
 
-            if (fs.existsSync(path.join(Directories.community(),'flybywire-dispatch','resources'))) {
+            if (fs.existsSync(path.join(this.simbridgeDirectory, 'resources'))) {
                 console.log(`Creating configuration at ${prospectiveConfigurationFilePath}`);
 
-                fs.writeFileSync(path.join(prospectiveConfigurationFilePath),JSON.stringify(localApiDefaultConfiguration));
+                fs.writeFileSync(path.join(prospectiveConfigurationFilePath), JSON.stringify(localApiDefaultConfiguration));
 
                 return localApiDefaultConfiguration;
             } else {
@@ -57,7 +67,7 @@ class LocalApiConfigurationHandler {
     }
 
     static saveConfiguration(propertyConfiguration: LocalApiConfiguration) {
-        const prospectiveConfigurationFilePath = path.join(Directories.community(),'flybywire-dispatch','resources', 'local-api-config.json');
+        const prospectiveConfigurationFilePath = path.join(this.simbridgeDirectory, 'resources', 'properties.json');
 
         if (fs.existsSync(prospectiveConfigurationFilePath)) {
             fs.writeFileSync(prospectiveConfigurationFilePath, JSON.stringify(propertyConfiguration));
@@ -65,7 +75,7 @@ class LocalApiConfigurationHandler {
     }
 }
 
-export const LocalApiConfigEditUI = () => {
+export const LocalApiConfigEditUI: FC = () => {
     const [config, setConfig] = useState(null as LocalApiConfiguration);
     const [printers, setPrinters] = useState([]);
 
@@ -90,7 +100,7 @@ export const LocalApiConfigEditUI = () => {
                     LocalApiConfigurationHandler.saveConfiguration(localApiDefaultConfiguration);
                     setConfig(localApiDefaultConfiguration);
                 }}
-            />
+            />,
         );
     };
 
@@ -121,7 +131,7 @@ export const LocalApiConfigEditUI = () => {
     return (
         <div className="h-full p-7 overflow-y-scroll w-full">
             <div className='flex flex-row items-center justify-between gap-x-4'>
-                <h2 className="font-extrabold mb-0 text-white">Local API</h2>
+                <h2 className="font-bold mb-0 text-white">SimBridge Settings</h2>
 
                 <div className='flex flex-row space-x-4'>
                     {changesBeenMade && (
@@ -164,8 +174,8 @@ export const LocalApiConfigEditUI = () => {
                                 ...old,
                                 server: {
                                     ...old.server,
-                                    port: parseFloat(event.target.value)
-                                }
+                                    port: parseFloat(event.target.value),
+                                },
                             }))}
                             />
                         </div>
@@ -181,8 +191,8 @@ export const LocalApiConfigEditUI = () => {
                                 ...old,
                                 printer: {
                                     ...old.printer,
-                                    enabled: value
-                                }
+                                    enabled: value,
+                                },
                             }))}/>
                         </div>
                         <div className='flex flex-row items-center justify-between text-white py-4'>
@@ -193,8 +203,8 @@ export const LocalApiConfigEditUI = () => {
                                     ...old,
                                     printer: {
                                         ...old.printer,
-                                        printerName: event.target.value ? event.target.value : null
-                                    }
+                                        printerName: event.target.value ? event.target.value : null,
+                                    },
                                 }))}
                                 className="text-base text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
                             >
@@ -210,8 +220,8 @@ export const LocalApiConfigEditUI = () => {
                                 ...old,
                                 printer: {
                                     ...old.printer,
-                                    fontSize: parseInt(event.target.value)
-                                }
+                                    fontSize: parseInt(event.target.value),
+                                },
                             }))}
                             />
                         </div>
@@ -221,8 +231,8 @@ export const LocalApiConfigEditUI = () => {
                                 ...old,
                                 printer: {
                                     ...old.printer,
-                                    paperSize: event.target.value
-                                }
+                                    paperSize: event.target.value,
+                                },
                             }))}
                             />
                         </div>
@@ -232,8 +242,8 @@ export const LocalApiConfigEditUI = () => {
                                 ...old,
                                 printer: {
                                     ...old.printer,
-                                    margin: parseFloat(event.target.value)
-                                }
+                                    margin: parseFloat(event.target.value),
+                                },
                             }))}
                             />
                         </div>

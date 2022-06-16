@@ -3,15 +3,16 @@ import { ButtonType } from "renderer/components/Button";
 import { SidebarButton } from "renderer/components/AddonSection/index";
 import { InstallStatus, ApplicationStatus } from "renderer/components/AddonSection/Enums";
 import { useAppSelector } from "renderer/redux/store";
+import { InstallState } from "renderer/redux/features/installStatus";
 
 interface ActiveInstallButtonProps {
-    installStatus: InstallStatus,
+    installState: InstallState,
     onInstall: () => void,
     onCancel: () => void,
 }
 
 export const MainActionButton: FC<ActiveInstallButtonProps> = ({
-    installStatus,
+    installState: { status: installStatus },
     onInstall,
     onCancel,
 }): JSX.Element => {

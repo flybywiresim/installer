@@ -86,7 +86,7 @@ export interface AddonBarItemProps {
 }
 
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
-    const installStatus = useAppSelector(state => state.installStatus[addon.key]);
+    const installState = useAppSelector(state => state.installStatus[addon.key]);
 
     const background = selected ? `bg-dodger-light text-navy-dark` : `bg-transparent text-quasi-white`;
     const border = `${selected ? 'border-dodger-light' : 'border-navy-light'} ${enabled ? 'hover:border-dodger-light' : ''}`;
@@ -99,7 +99,9 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
             <span className="text-2xl text-current font-manrope font-medium mb-2.5">{addon.aircraftName}</span>
             <div className="flex flex-row justify-between mt-1 h-10">
                 <img className="h-10 w-max" src={selected ? addon.titleImageUrl : addon.titleImageUrlSelected} />
-                <AddonBarItemStatus status={installStatus} />
+                {installState && (
+                    <AddonBarItemStatus status={installState.status} />
+                )}
             </div>
         </div>
     );

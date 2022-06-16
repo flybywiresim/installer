@@ -10,7 +10,7 @@ import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { Msfs } from "renderer/utils/Msfs";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
-import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
+import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
@@ -18,20 +18,20 @@ import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
 import { deleteDownload } from 'renderer/redux/features/downloads';
-import { setInstallStatus } from "renderer/redux/features/installStatus";
+import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AddonSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
 import { MainActionButton } from "renderer/components/AddonSection/MainActionButton";
-import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
-import { ActiveStateText } from "renderer/components/AddonSection/ActiveStateText";
+import { ApplicationStatus, InstallingInstallStatuses, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { McduServer } from "renderer/utils/McduServer";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
 import { Configure } from "renderer/components/AddonSection/Configure";
 import { InstallManager } from "renderer/utils/InstallManager";
+import { StateSection } from "renderer/components/AddonSection/StateSection";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -96,7 +96,7 @@ export const AircraftSection = (): JSX.Element => {
 
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTracks);
-    const installStatus = useAppSelector(state => state.installStatus);
+    const installStates = useAppSelector(state => state.installStatus);
     const applicationStatus = useAppSelector(state => state.applicationStatus);
 
     const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
@@ -200,17 +200,17 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(setSelectedTrack({ addonKey: selectedAddon.key, track: newSelectedTrack }));
     };
 
-    const getCurrentInstallStatus = (): InstallStatus => {
+    const getCurrentInstallStatus = (): InstallState => {
         try {
-            return installStatus[selectedAddon.key] as InstallStatus;
+            return installStates[selectedAddon.key];
         } catch (e) {
-            setCurrentInstallStatus(InstallStatus.Unknown);
-            return InstallStatus.Unknown;
+            setCurrentInstallStatus({ status: InstallStatus.Unknown });
+            return { status: InstallStatus.Unknown };
         }
     };
 
-    const setCurrentInstallStatus = (new_state: InstallStatus) => {
-        dispatch(setInstallStatus({ addonKey: selectedAddon.key, installStatus: new_state }));
+    const setCurrentInstallStatus = (new_state: InstallState) => {
+        dispatch(setInstallStatus({ addonKey: selectedAddon.key, installState: new_state }));
     };
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
@@ -218,7 +218,8 @@ export const AircraftSection = (): JSX.Element => {
     );
 
     const isDownloading = download?.progress >= 0;
-    const isInstalling = getCurrentInstallStatus() === InstallStatus.Downloading || getCurrentInstallStatus() === InstallStatus.DownloadPrep || getCurrentInstallStatus() === InstallStatus.Decompressing || getCurrentInstallStatus() === InstallStatus.DownloadEnding || getCurrentInstallStatus() === InstallStatus.DownloadRetry;
+    const status = getCurrentInstallStatus()?.status;
+    const isInstalling = InstallingInstallStatuses.includes(status);
 
     useEffect(() => {
         const checkApplicationInterval = setInterval(async () => {
@@ -232,7 +233,7 @@ export const AircraftSection = (): JSX.Element => {
     useEffect(() => {
         findInstalledTrack();
         if (!isInstalling) {
-            InstallManager.determineAddonInstallStatus(selectedAddon).then(setCurrentInstallStatus);
+            InstallManager.determineAddonInstallState(selectedAddon).then(setCurrentInstallStatus);
         }
     }, [selectedTrack(), installedTrack()]);
 
@@ -287,7 +288,7 @@ export const AircraftSection = (): JSX.Element => {
                                 }
                             })));
                     }
-                    setCurrentInstallStatus(InstallStatus.NotInstalled);
+                    setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
                     setCurrentlyInstalledTrack(null);
                 }}/>,
         );
@@ -336,7 +337,7 @@ export const AircraftSection = (): JSX.Element => {
     };
 
     const UninstallButton = (): JSX.Element => {
-        switch (getCurrentInstallStatus()) {
+        switch (status) {
             case InstallStatus.UpToDate:
             case InstallStatus.NeedsUpdate:
             case InstallStatus.TrackSwitch:
@@ -467,30 +468,8 @@ export const AircraftSection = (): JSX.Element => {
                                     }}
                                 >
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
-                                        <div>
-                                            <ActiveStateText
-                                                installStatus={installStatus[selectedAddon.key]}
-                                                download={download}
-                                            />
-                                        </div>
-                                        {getCurrentInstallStatus() === InstallStatus.Downloading && (
-                                            // TODO: Replace this with a JIT value
-                                            <div
-                                                className="text-white font-semibold"
-                                                style={{ fontSize: "38px" }}
-                                            >
-                                                {download?.progress}%
-                                            </div>
-                                        )}
+                                        <StateSection addon={selectedAddon} />
                                     </div>
-                                    {isInstalling && (
-                                        <div className="absolute -bottom-1 w-full h-2 z-10 bg-black">
-                                            <div
-                                                className="absolute h-2 z-11 bg-cyan progress-bar-animated"
-                                                style={{ width: `${download?.progress}%` }}
-                                            />
-                                        </div>
-                                    )}
                                 </div>
                                 <div className="h-0 flex-grow flex flex-row">
                                     <Route path={`/addon-section/${publisherName}/main/configure`}>
@@ -515,6 +494,10 @@ export const AircraftSection = (): JSX.Element => {
                                         }
                                     </Route>
 
+                                    <Route path={`/addon-section/${publisherName}/main/simbridge-config`}>
+                                        <LocalApiConfigEditUI />
+                                    </Route>
+
                                     <Route path={`/addon-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon}/>
                                     </Route>
@@ -535,6 +518,12 @@ export const AircraftSection = (): JSX.Element => {
                                                 <Palette size={24} />
                                                 Liveries
                                             </SideBarLink> */}
+                                            {selectedAddon.key === 'simbridge' && (
+                                                <SideBarLink to={`/addon-section/${publisherName}/main/simbridge-config`}>
+                                                    <Gear size={22} />
+                                                    Settings
+                                                </SideBarLink>
+                                            )}
                                             <SideBarLink to={`/addon-section/${publisherName}/main/about`}>
                                                 <InfoCircle size={22} />
                                                 About
@@ -543,11 +532,13 @@ export const AircraftSection = (): JSX.Element => {
 
                                         <div className="flex flex-col gap-y-4">
                                             <UninstallButton />
-                                            <MainActionButton
-                                                installStatus={installStatus[selectedAddon.key]}
-                                                onInstall={handleInstall}
-                                                onCancel={handleCancel}
-                                            />
+                                            {installStates[selectedAddon.key] && (
+                                                <MainActionButton
+                                                    installState={installStates[selectedAddon.key]}
+                                                    onInstall={handleInstall}
+                                                    onCancel={handleCancel}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </div>
