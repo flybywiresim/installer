@@ -118,7 +118,7 @@ export const ActiveStateText: FC<ActiveStateProps> = ({ installState, download, 
                 <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
 
                 <div className="flex flex-col gap-y-2">
-                    <SmallStateText>Cannot install</SmallStateText>
+                    <SmallStateText>Before installing</SmallStateText>
                     <StateText>{applicationStatus.msfs === ApplicationStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
                 </div>
             </div>
@@ -130,7 +130,14 @@ export const ActiveStateText: FC<ActiveStateProps> = ({ installState, download, 
         onCautionMessageStateChanged(true);
 
         return (
-            <StateText>{applicationStatus.mcduServer === ApplicationStatus.Open ? "Please close the MCDU server" : "Checking status..."}</StateText>
+            <div className="flex gap-x-7 items-center">
+                <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
+
+                <div className="flex flex-col gap-y-2">
+                    <SmallStateText>Before installing</SmallStateText>
+                    <StateText>{applicationStatus.mcduServer === ApplicationStatus.Open ? "Please close the MCDU server" : "Checking status..."}</StateText>
+                </div>
+            </div>
         );
     }
 
