@@ -125,7 +125,7 @@ export const ActiveStateText: FC<ActiveStateProps> = ({ publisher, addon, instal
         return def;
     });
 
-    for (const app of disallowedRunningExternalApps) {
+    for (const app of disallowedRunningExternalApps ?? []) {
         const appStatus = applicationStatus[app.key];
 
         if (appStatus === ApplicationStatus.Open) {
