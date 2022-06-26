@@ -17,7 +17,8 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
     onCancel,
 }): JSX.Element => {
     const applicationStatus = useAppSelector(state => state.applicationStatus);
-    if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
+
+    if (applicationStatus.msfs !== ApplicationStatus.Closed || (applicationStatus.mcduServer !== ApplicationStatus.Closed && applicationStatus.simBridge !== ApplicationStatus.Open)) {
         return (
             <SidebarButton disabled>
                 Unavailable
@@ -57,18 +58,14 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
                     Switch Version
                 </SidebarButton>
             );
-        case InstallStatus.DownloadPrep:
-            return (
-                <SidebarButton disabled type={ButtonType.Danger}>
-                    Cancel
-                </SidebarButton>
-            );
+        case InstallStatus.InstallingDependency:
         case InstallStatus.Downloading:
             return (
                 <SidebarButton type={ButtonType.Danger} onClick={onCancel}>
                     Cancel
                 </SidebarButton>
             );
+        case InstallStatus.DownloadPrep:
         case InstallStatus.Decompressing:
         case InstallStatus.DownloadEnding:
             return (

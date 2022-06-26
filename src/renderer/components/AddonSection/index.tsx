@@ -6,9 +6,8 @@ import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
 import { getCurrentInstall } from "@flybywiresim/fragmenter";
 import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
-import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonCategoryDefinition, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
-import { Msfs } from "renderer/utils/Msfs";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
 import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
@@ -26,12 +25,13 @@ import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
 import { MainActionButton } from "renderer/components/AddonSection/MainActionButton";
 import { ApplicationStatus, InstallingInstallStatuses, InstallStatus } from "renderer/components/AddonSection/Enums";
-import { McduServer } from "renderer/utils/McduServer";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
 import { Configure } from "renderer/components/AddonSection/Configure";
 import { InstallManager } from "renderer/utils/InstallManager";
 import { StateSection } from "renderer/components/AddonSection/StateSection";
+import { Resolver } from "renderer/utils/Resolver";
+import { ExternalApps } from "renderer/utils/ExternalApps";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -61,13 +61,15 @@ export const SidebarButton: FC<InstallButtonProps> = ({
 
 interface SideBarLinkProps {
     to: string;
+    disabled?: boolean;
 }
 
-const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
+const SideBarLink: FC<SideBarLinkProps> = ({ to, children, disabled = false }) => (
     <NavLink
-        className="w-full flex flex-row items-center gap-x-5 text-2xl text-white font-manrope font-bold hover:text-cyan no-underline"
+        className={`w-full flex flex-row items-center gap-x-5 text-2xl ${disabled ? 'text-gray-500' : 'text-white'} font-manrope font-bold hover:text-cyan no-underline`}
         activeClassName="text-cyan"
         to={to}
+        style={{ pointerEvents: disabled ? 'none' : 'unset' }}
     >
         {children}
     </NavLink>
@@ -223,8 +225,38 @@ export const AircraftSection = (): JSX.Element => {
 
     useEffect(() => {
         const checkApplicationInterval = setInterval(async () => {
-            dispatch(setApplicationStatus({ applicationName: 'msfs', applicationStatus: (await Msfs.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
-            dispatch(setApplicationStatus({ applicationName: 'mcduServer', applicationStatus: (await McduServer.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
+            // Map app references to definition objects
+            const disallowedRunningExternalApps = selectedAddon.disallowedRunningExternalApps?.map((reference) => {
+                const def = Resolver.findDefinition(reference, publisherData);
+
+                if (def.kind !== 'externalApp') {
+                    throw new Error(`definition (key=${def.key}) has kind=${def.kind}, expected kind=externalApp`);
+                }
+
+                return def;
+            });
+
+            for (const app of disallowedRunningExternalApps) {
+                // Determine what state the app is in
+                let state = false;
+                switch (app.detectionType) {
+                    case 'ws':
+                        state = await ExternalApps.determineStateWithWS(app);
+                        break;
+                    case 'http':
+                        state = await ExternalApps.determineStateWithHttp(app);
+                        break;
+                    case 'tcp':
+                        state = await ExternalApps.determineStateWithTcp(app);
+                        break;
+                }
+
+                // Dispatch the app's state
+                dispatch(setApplicationStatus({
+                    applicationName: app.key,
+                    applicationStatus: state ? ApplicationStatus.Open : ApplicationStatus.Closed,
+                }));
+            }
         }, 500);
 
         return () => clearInterval(checkApplicationInterval);
@@ -254,8 +286,6 @@ export const AircraftSection = (): JSX.Element => {
             setSelectedAddon(hiddenAddon);
         }
     }, [addonDiscovered]);
-
-    console.log(selectedTrack());
 
     const { showModal, showModalAsync } = useModals();
 
@@ -318,13 +348,11 @@ export const AircraftSection = (): JSX.Element => {
         }
     };
 
-    const handleInstall = () => {
+    const handleInstall = async () => {
         if (settings.has("mainSettings.msfsPackagePath")) {
-            InstallManager.installAddon(selectedAddon, showModalAsync).then(() =>
-                console.log("Download and install complete"),
-            );
+            await InstallManager.installAddon(selectedAddon, showModalAsync);
         } else {
-            setupInstallPath().then();
+            await setupInstallPath();
         }
     };
 
@@ -342,18 +370,19 @@ export const AircraftSection = (): JSX.Element => {
             case InstallStatus.NeedsUpdate:
             case InstallStatus.TrackSwitch:
             case InstallStatus.DownloadDone:
-            case InstallStatus.GitInstall:
-                if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
-                    return <></>;
-                }
+            case InstallStatus.GitInstall: {
+                const disabled = applicationStatus.msfs === ApplicationStatus.Open || (applicationStatus.mcduServer === ApplicationStatus.Open && applicationStatus.simBridge !== ApplicationStatus.Open);
+
                 return (
                     <SidebarButton
                         type={ButtonType.Neutral}
                         onClick={uninstallAddon}
+                        disabled={disabled}
                     >
                         Uninstall
                     </SidebarButton>
                 );
+            }
             default: return <></>;
         }
     };
@@ -385,7 +414,7 @@ export const AircraftSection = (): JSX.Element => {
                         ))}
 
                         <div className="h-full flex flex-col gap-y-4">
-                            {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category) => {
+                            {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category: AddonCategoryDefinition) => {
                                 const categoryAddons = publisherData.addons.filter((it) => it.category?.substring(1) === category.key);
 
                                 if (categoryAddons.length === 0) {
@@ -468,7 +497,7 @@ export const AircraftSection = (): JSX.Element => {
                                     }}
                                 >
                                     <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
-                                        <StateSection addon={selectedAddon} />
+                                        <StateSection publisher={publisherData} addon={selectedAddon} />
                                     </div>
                                 </div>
                                 <div className="h-0 flex-grow flex flex-row">
@@ -514,12 +543,8 @@ export const AircraftSection = (): JSX.Element => {
                                                     Release Notes
                                                 </SideBarLink>
                                             )}
-                                            {/* <SideBarLink to="/addon-section/main/liveries">
-                                                <Palette size={24} />
-                                                Liveries
-                                            </SideBarLink> */}
-                                            {selectedAddon.key === 'simbridge' && (
-                                                <SideBarLink to={`/addon-section/${publisherName}/main/simbridge-config`}>
+                                            {selectedAddon.key === 'simbridge' && ( // TODO find a better way to do this...
+                                                <SideBarLink to={`/addon-section/${publisherName}/main/simbridge-config`} disabled={InstallingInstallStatuses.includes(status)}>
                                                     <Gear size={22} />
                                                     Settings
                                                 </SideBarLink>
