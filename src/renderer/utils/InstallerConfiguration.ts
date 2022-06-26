@@ -55,6 +55,7 @@ export interface Addon {
     tracks: AddonTrack[],
     dependencies?: AddonDependency[],
     configurationAspects?: ConfigurationAspect[],
+    disallowedRunningExternalApps?: string[],
     enabled: boolean,
     hidesAddon?: string,
     hidden?: boolean,
@@ -157,14 +158,23 @@ interface DefinitionBase {
     kind: string,
 }
 
-type AddonCategoryDefinition = DefinitionBase & {
+export type AddonCategoryDefinition = DefinitionBase & {
     kind: 'addonCategory',
     key: string,
     title?: string,
     styles?: ('align-bottom')[],
 }
 
-export type Definition = AddonCategoryDefinition
+export type ExternalApplicationDefinition = DefinitionBase & {
+    kind: 'externalApp',
+    key: string,
+    prettyName: string,
+    detectionType: 'http' | 'ws' | 'tcp',
+    url?: string,
+    port?: number,
+}
+
+export type Definition = AddonCategoryDefinition | ExternalApplicationDefinition
 
 interface BasePublisherButton {
     text: string,

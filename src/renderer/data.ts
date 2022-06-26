@@ -26,6 +26,27 @@ export const defaultConfiguration: Configuration = {
                     key: 'simbridge',
                     styles: ['align-bottom'],
                 },
+                {
+                    kind: 'externalApp',
+                    key: 'mcdu-server',
+                    prettyName: 'MCDU Server',
+                    detectionType: 'tcp',
+                    port: 8380,
+                },
+                {
+                    kind: 'externalApp',
+                    key: 'simbridge-app',
+                    prettyName: 'SimBridge',
+                    detectionType: 'http',
+                    url: 'http://localhost:8380/health',
+                },
+                {
+                    kind: 'externalApp',
+                    key: 'msfs',
+                    prettyName: 'MSFS',
+                    detectionType: 'tcp',
+                    port: 500,
+                },
             ],
             addons: [
                 {
@@ -128,6 +149,7 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
+                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server', '@/simbridge-app'],
                 },
                 {
                     name: 'A380X',
@@ -144,6 +166,7 @@ export const defaultConfiguration: Configuration = {
                     description: '',
                     targetDirectory: 'A380',
                     tracks: [],
+                    disallowedRunningExternalApps: ['@/msfs', '@/simbridge-app'],
                 },
                 {
                     name: 'KFBW',
@@ -226,6 +249,7 @@ export const defaultConfiguration: Configuration = {
                     //         ],
                     //     },
                     // ],
+                    disallowedRunningExternalApps: ['@/simbridge-app'],
                 },
             ],
             buttons: [

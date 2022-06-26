@@ -41,7 +41,7 @@ class LocalApiConfigurationHandler {
     }
 
     private static get simbridgeConfigPath(): string {
-        return path.join(this.simbridgeDirectory, 'properties.json');
+        return path.join(this.simbridgeDirectory, 'resources', 'properties.json');
     }
 
     static getConfiguration(): LocalApiConfiguration {

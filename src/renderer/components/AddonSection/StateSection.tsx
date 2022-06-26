@@ -1,16 +1,18 @@
 import React, { FC, useState } from "react";
 import { ApplicationStatus, InstallingInstallStatuses, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { useAppSelector } from "renderer/redux/store";
-import { Addon } from "renderer/utils/InstallerConfiguration";
+import { Addon, Publisher } from "renderer/utils/InstallerConfiguration";
 import { InstallingDependencyInstallState, InstallState } from "renderer/redux/features/installStatus";
 import { DownloadItem } from "renderer/redux/types";
 import { ExclamationTriangle } from "react-bootstrap-icons";
+import { Resolver } from "renderer/utils/Resolver";
 
 export interface StateSectionProps {
+    publisher: Publisher,
     addon: Addon,
 }
 
-export const StateSection: FC<StateSectionProps> = ({ addon }) => {
+export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
     const [hasInfoMessage, setHasInfoMessage] = useState(false);
     const [hasCautionMessage, setHasCautionMessage] = useState(false);
 
@@ -52,6 +54,8 @@ export const StateSection: FC<StateSectionProps> = ({ addon }) => {
         <>
             <StateContainer visible={hasInfoMessage || hasCautionMessage}>
                 <ActiveStateText
+                    publisher={publisher}
+                    addon={addon}
                     installState={dependencyAddonInstallState ?? addonInstallState}
                     download={dependencyAddonDownload ?? addonDownload}
                     isDependency={isInstallingDependency}
@@ -99,6 +103,8 @@ const StateText: FC = ({ children }) => (
 );
 
 interface ActiveStateProps {
+    publisher: Publisher,
+    addon: Addon,
     installState: InstallState,
     download: DownloadItem,
     isDependency: boolean,
@@ -106,39 +112,36 @@ interface ActiveStateProps {
     onCautionMessageStateChanged: (visible: boolean) => void,
 }
 
-export const ActiveStateText: FC<ActiveStateProps> = ({ installState, download, isDependency, onInfoMessageStateChanged, onCautionMessageStateChanged }): JSX.Element => {
+export const ActiveStateText: FC<ActiveStateProps> = ({ publisher, addon, installState, download, isDependency, onInfoMessageStateChanged, onCautionMessageStateChanged }): JSX.Element => {
     const applicationStatus = useAppSelector(state => state.applicationStatus);
 
-    if (applicationStatus.msfs !== ApplicationStatus.Closed) {
-        onInfoMessageStateChanged(false);
-        onCautionMessageStateChanged(true);
+    const disallowedRunningExternalApps = addon.disallowedRunningExternalApps?.map((reference) => {
+        const def = Resolver.findDefinition(reference, publisher);
 
-        return (
-            <div className="flex gap-x-7 items-center">
-                <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
+        if (def.kind !== 'externalApp') {
+            throw new Error(`definition (key=${def.key}) has kind=${def.kind}, expected kind=externalApp`);
+        }
 
-                <div className="flex flex-col gap-y-2">
-                    <SmallStateText>Before installing</SmallStateText>
-                    <StateText>{applicationStatus.msfs === ApplicationStatus.Open ? "Please close MSFS" : "Checking status..."}</StateText>
+        return def;
+    });
+
+    for (const app of disallowedRunningExternalApps) {
+        const appStatus = applicationStatus[app.key];
+
+        if (appStatus === ApplicationStatus.Open) {
+            onCautionMessageStateChanged(true);
+
+            return (
+                <div className="flex gap-x-7 items-center">
+                    <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
+
+                    <div className="flex flex-col gap-y-2">
+                        <SmallStateText>Before installing</SmallStateText>
+                        <StateText>{`Please close ${app.prettyName}`}</StateText>
+                    </div>
                 </div>
-            </div>
-        );
-    }
-
-    if (applicationStatus.mcduServer !== ApplicationStatus.Closed) {
-        onInfoMessageStateChanged(false);
-        onCautionMessageStateChanged(true);
-
-        return (
-            <div className="flex gap-x-7 items-center">
-                <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
-
-                <div className="flex flex-col gap-y-2">
-                    <SmallStateText>Before installing</SmallStateText>
-                    <StateText>{applicationStatus.mcduServer === ApplicationStatus.Open ? "Please close the MCDU server" : "Checking status..."}</StateText>
-                </div>
-            </div>
-        );
+            );
+        }
     }
 
     if (!installState || !download) {
