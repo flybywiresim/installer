@@ -30,8 +30,8 @@ export const defaultConfiguration: Configuration = {
                     kind: 'externalApp',
                     key: 'mcdu-server',
                     prettyName: 'MCDU Server',
-                    detectionType: 'tcp',
-                    port: 8380,
+                    detectionType: 'ws',
+                    url: 'ws://localhost:8380',
                 },
                 {
                     kind: 'externalApp',
