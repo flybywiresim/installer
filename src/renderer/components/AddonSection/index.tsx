@@ -79,12 +79,12 @@ export interface AircraftSectionURLParams {
     publisherName: string;
 }
 
-export const AircraftSection = (): JSX.Element => {
-    const { publisherName } = useParams<AircraftSectionURLParams>();
-
-    const history = useHistory();
-    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
+export const AddonSection = (): JSX.Element => {
     const dispatch = useAppDispatch();
+    const history = useHistory();
+
+    const { publisherName } = useParams<AircraftSectionURLParams>();
+    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
 
     const [selectedAddon, setSelectedAddon] = useState<Addon>(() => {
         try {
@@ -100,7 +100,6 @@ export const AircraftSection = (): JSX.Element => {
     const selectedTracks = useAppSelector(state => state.selectedTracks);
     const installStates = useAppSelector(state => state.installStatus);
     const applicationStatus = useAppSelector(state => state.applicationStatus);
-
     const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
 
     useEffect(() => {
@@ -236,7 +235,7 @@ export const AircraftSection = (): JSX.Element => {
                 return def;
             });
 
-            for (const app of disallowedRunningExternalApps) {
+            for (const app of disallowedRunningExternalApps ?? []) {
                 // Determine what state the app is in
                 let state = false;
                 switch (app.detectionType) {
@@ -267,7 +266,7 @@ export const AircraftSection = (): JSX.Element => {
         if (!isInstalling) {
             InstallManager.determineAddonInstallState(selectedAddon).then(setCurrentInstallStatus);
         }
-    }, [selectedTrack(), installedTrack()]);
+    }, [selectedAddon, selectedTrack(), installedTrack()]);
 
     useEffect(() => {
         if (download && isDownloading) {
@@ -391,6 +390,10 @@ export const AircraftSection = (): JSX.Element => {
         return null;
     }
 
+    if (publisherData.addons.length === 0) {
+        return <NoAvailableAddonsSection/>;
+    }
+
     return (
         <div className="flex flex-row w-full h-full">
             <div
@@ -457,7 +460,6 @@ export const AircraftSection = (): JSX.Element => {
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
-
                         <Route path={`/addon-section/FlyByWire Simulations/configuration/fbw-local-api-config`}>
                             <LocalApiConfigEditUI />
                         </Route>
@@ -559,6 +561,8 @@ export const AircraftSection = (): JSX.Element => {
                                             <UninstallButton />
                                             {installStates[selectedAddon.key] && (
                                                 <MainActionButton
+                                                    addon={selectedAddon}
+                                                    publisher={publisherData}
                                                     installState={installStates[selectedAddon.key]}
                                                     onInstall={handleInstall}
                                                     onCancel={handleCancel}

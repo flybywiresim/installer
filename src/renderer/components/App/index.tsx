@@ -4,7 +4,6 @@ import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import { SettingsSection } from 'renderer/components/SettingsSection';
 import DebugSection from 'renderer/components/DebugSection';
-import { AircraftSection } from 'renderer/components/AddonSection';
 import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
 import InstallerUpdate from "renderer/components/InstallerUpdate";
@@ -21,6 +20,7 @@ import "./index.css";
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
 import { ModalContainer } from '../Modal';
+import { PublisherSection } from "renderer/components/PublisherSection";
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -143,7 +143,7 @@ const App = () => {
                                         <Redirect to={`/addon-section/${configuration.publishers[0].name}`}/>
                                     </Route>
                                     <Route path="/addon-section/:publisherName">
-                                        <AircraftSection />
+                                        <PublisherSection />
                                     </Route>
                                     <Route exact path="/debug">
                                         <DebugSection />

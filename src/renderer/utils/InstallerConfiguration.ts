@@ -36,6 +36,26 @@ export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true, wa
 
 export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
+export interface AddonBackgroundService {
+    /**
+     * Defines the executable for the background service
+     */
+    executable: {
+        baseLocation: 'absolute' | 'package',
+        path: string,
+    },
+
+    /**
+     * Reference to an external app which is used to check if this service is running
+     */
+    runCheckExternalAppRef: string,
+
+    /**
+     * Command line arguments to run this background service with
+     */
+    commandLineArgs?: string[],
+}
+
 export interface Addon {
     key: string,
     name: string,
@@ -56,6 +76,7 @@ export interface Addon {
     dependencies?: AddonDependency[],
     configurationAspects?: ConfigurationAspect[],
     disallowedRunningExternalApps?: string[],
+    backgroundService?: AddonBackgroundService,
     enabled: boolean,
     hidesAddon?: string,
     hidden?: boolean,

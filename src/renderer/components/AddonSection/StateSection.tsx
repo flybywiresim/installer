@@ -1,11 +1,12 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { ApplicationStatus, InstallingInstallStatuses, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { useAppSelector } from "renderer/redux/store";
 import { Addon, Publisher } from "renderer/utils/InstallerConfiguration";
 import { InstallingDependencyInstallState, InstallState } from "renderer/redux/features/installStatus";
 import { DownloadItem } from "renderer/redux/types";
-import { ExclamationTriangle } from "react-bootstrap-icons";
+import { Broadcast, ExclamationTriangle } from "react-bootstrap-icons";
 import { Resolver } from "renderer/utils/Resolver";
+import { BackgroundServices } from "renderer/utils/BackgroundServices";
 
 export interface StateSectionProps {
     publisher: Publisher,
@@ -13,9 +14,6 @@ export interface StateSectionProps {
 }
 
 export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
-    const [hasInfoMessage, setHasInfoMessage] = useState(false);
-    const [hasCautionMessage, setHasCautionMessage] = useState(false);
-
     const installStates = useAppSelector(state => state.installStatus);
     const downloads = useAppSelector(state => state.downloads);
 
@@ -29,9 +27,7 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
     const status = addonInstallState.status;
 
     const isInstallingDependency = status === InstallStatus.InstallingDependency;
-    const isInstalling = InstallingInstallStatuses.includes(status);
 
-    let progress;
     let dependencyAddonDownload;
     let dependencyAddonInstallState;
     if (isInstallingDependency) {
@@ -39,49 +35,25 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
 
         dependencyAddonInstallState = installStates[dependencyAddonKey];
         dependencyAddonDownload = downloads.find((it) => it.id === dependencyAddonKey);
-
-        if (dependencyAddonDownload) {
-            progress = dependencyAddonDownload.progress;
-        }
-    } else if (addonDownload) {
-        progress = addonDownload.progress;
     }
 
-    const downloadToShowExists = !!(addonDownload || dependencyAddonDownload);
-    const progressToShowExists = status === InstallStatus.Downloading || dependencyAddonInstallState?.status === InstallStatus.Downloading;
+    const backgroundServiceBanner = useBackgroundServiceBanner(publisher, addon);
+    const runningExternalAppBanner = useRunningExternalAppBanner(publisher, addon);
+    const downloadProgressBanner = useDownloadProgressBanner(addon, dependencyAddonInstallState ?? addonInstallState, dependencyAddonDownload ?? addonDownload, isInstallingDependency);
 
-    return (
-        <>
-            <StateContainer visible={hasInfoMessage || hasCautionMessage}>
-                <ActiveStateText
-                    publisher={publisher}
-                    addon={addon}
-                    installState={dependencyAddonInstallState ?? addonInstallState}
-                    download={dependencyAddonDownload ?? addonDownload}
-                    isDependency={isInstallingDependency}
-                    onInfoMessageStateChanged={setHasInfoMessage}
-                    onCautionMessageStateChanged={setHasCautionMessage}
-                />
-                {downloadToShowExists && progressToShowExists && (
-                    // TODO: Replace this with a JIT value
-                    <div
-                        className="text-white font-semibold"
-                        style={{ fontSize: "38px" }}
-                    >
-                        {progress}%
-                    </div>
-                )}
-            </StateContainer>
-            {((downloadToShowExists && isInstalling) || hasCautionMessage) && (
-                <div className="absolute left-0 -bottom-1 w-full h-2 z-10 bg-black">
-                    <div
-                        className={`absolute h-2 z-11 ${hasCautionMessage ? 'bg-utility-amber' : 'bg-cyan'} progress-bar-animated`}
-                        style={{ width: hasCautionMessage ? '100%' : `${progress}%` }}
-                    />
-                </div>
-            )}
-        </>
-    );
+    if (backgroundServiceBanner) {
+        return backgroundServiceBanner;
+    }
+
+    if (runningExternalAppBanner) {
+        return runningExternalAppBanner;
+    }
+
+    if (downloadProgressBanner) {
+        return downloadProgressBanner;
+    }
+
+    return null;
 };
 
 const StateContainer: FC<{ visible: boolean }> = ({ visible, children }) => {
@@ -98,21 +70,52 @@ const StateContainer: FC<{ visible: boolean }> = ({ visible, children }) => {
 const SmallStateText: FC = ({ children }) => (
     <div className="text-white text-2xl font-bold">{children}</div>
 );
+
 const StateText: FC = ({ children }) => (
     <div className="text-white text-3xl font-bold">{children}</div>
 );
 
-interface ActiveStateProps {
-    publisher: Publisher,
-    addon: Addon,
-    installState: InstallState,
-    download: DownloadItem,
-    isDependency: boolean,
-    onInfoMessageStateChanged: (visible: boolean) => void,
-    onCautionMessageStateChanged: (visible: boolean) => void,
+interface ProgressBarProps {
+    className: string,
+    value: number,
 }
 
-export const ActiveStateText: FC<ActiveStateProps> = ({ publisher, addon, installState, download, isDependency, onInfoMessageStateChanged, onCautionMessageStateChanged }): JSX.Element => {
+const ProgressBar: FC<ProgressBarProps> = ({ className, value }) => (
+    <div className="absolute left-0 -bottom-1 w-full h-2 z-10 bg-black">
+        <div
+            className={`absolute h-2 z-11 ${className} progress-bar-animated`}
+            style={{ width: `${value}%` }}
+        />
+    </div>
+);
+
+const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon): JSX.Element | undefined => {
+    if (addon.backgroundService) {
+        const isRunning = BackgroundServices.checkIsRunning(addon, publisher);
+
+        if (isRunning) {
+            return (
+                <>
+                    <StateContainer visible={true}>
+                        <div className="flex gap-x-7 items-center">
+                            <Broadcast size={32} className="text-utility-green fill-current animate-pulse" />
+
+                            <div className="flex flex-col gap-y-2">
+                                <SmallStateText>{addon.name}</SmallStateText>
+                                <StateText>{`Running`}</StateText>
+                            </div>
+                        </div>
+                    </StateContainer>
+
+                    <ProgressBar className="bg-utility-green" value={100} />
+                </>
+
+            );
+        }
+    }
+};
+
+const useRunningExternalAppBanner = (publisher: Publisher, addon: Addon): JSX.Element | undefined => {
     const applicationStatus = useAppSelector(state => state.applicationStatus);
 
     const disallowedRunningExternalApps = addon.disallowedRunningExternalApps?.map((reference) => {
@@ -129,25 +132,28 @@ export const ActiveStateText: FC<ActiveStateProps> = ({ publisher, addon, instal
         const appStatus = applicationStatus[app.key];
 
         if (appStatus === ApplicationStatus.Open) {
-            onCautionMessageStateChanged(true);
-
             return (
-                <div className="flex gap-x-7 items-center">
-                    <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
+                <>
+                    <StateContainer visible={true}>
+                        <div className="flex gap-x-7 items-center">
+                            <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
 
-                    <div className="flex flex-col gap-y-2">
-                        <SmallStateText>Before installing</SmallStateText>
-                        <StateText>{`Please close ${app.prettyName}`}</StateText>
-                    </div>
-                </div>
+                            <div className="flex flex-col gap-y-2">
+                                <SmallStateText>Before installing</SmallStateText>
+                                <StateText>{`Please close ${app.prettyName}`}</StateText>
+                            </div>
+                        </div>
+                    </StateContainer>
+
+                    <ProgressBar className="bg-utility-amber" value={100} />
+                </>
             );
         }
     }
+};
 
+const useDownloadProgressBanner = (addon: Addon, installState: InstallState, download: DownloadItem, isDependency: boolean): JSX.Element | undefined => {
     if (!installState || !download) {
-        onInfoMessageStateChanged(false);
-        onCautionMessageStateChanged(false);
-
         return null;
     }
 
@@ -194,14 +200,26 @@ export const ActiveStateText: FC<ActiveStateProps> = ({ publisher, addon, instal
             break;
     }
 
-    onInfoMessageStateChanged(true);
-    onCautionMessageStateChanged(false);
-
     return (
-        <div className="flex flex-col gap-y-2">
-            <SmallStateText>Installing {isDependency ? 'Dependency' : ''}</SmallStateText>
+        <>
+            <StateContainer visible={true}>
+                <div className="flex flex-col gap-y-2">
+                    <SmallStateText>Installing {isDependency ? 'Dependency' : ''}</SmallStateText>
 
-            {stateText}
-        </div>
+                    {stateText}
+                </div>
+
+                {(InstallingInstallStatuses.includes(installState.status)) && (
+                    <div
+                        className="text-white font-semibold"
+                        style={{ fontSize: "38px" }}
+                    >
+                        {download.progress}%
+                    </div>
+                )}
+
+                <ProgressBar className="bg-cyan" value={download.progress} />
+            </StateContainer>
+        </>
     );
 };

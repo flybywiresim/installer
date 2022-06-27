@@ -62,6 +62,10 @@ export class Resolver {
 
             const found = publisher.defs.find((it) => it.key === defKey);
 
+            if (!found) {
+                throw new Error(`Cannot find definition with key=${defKey} for publisher=${publisher.key}`);
+            }
+
             _cache[ref] = found;
 
             return found;

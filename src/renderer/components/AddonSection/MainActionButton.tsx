@@ -4,21 +4,37 @@ import { SidebarButton } from "renderer/components/AddonSection/index";
 import { InstallStatus, ApplicationStatus } from "renderer/components/AddonSection/Enums";
 import { useAppSelector } from "renderer/redux/store";
 import { InstallState } from "renderer/redux/features/installStatus";
+import { Resolver } from "renderer/utils/Resolver";
+import { Addon, Publisher } from "renderer/utils/InstallerConfiguration";
 
 interface ActiveInstallButtonProps {
+    addon: Addon,
+    publisher: Publisher,
     installState: InstallState,
     onInstall: () => void,
     onCancel: () => void,
 }
 
 export const MainActionButton: FC<ActiveInstallButtonProps> = ({
+    addon,
+    publisher,
     installState: { status: installStatus },
     onInstall,
     onCancel,
 }): JSX.Element => {
     const applicationStatus = useAppSelector(state => state.applicationStatus);
 
-    if (applicationStatus.msfs !== ApplicationStatus.Closed || (applicationStatus.mcduServer !== ApplicationStatus.Closed && applicationStatus.simBridge !== ApplicationStatus.Open)) {
+    const disallowedRunningExternalApps = addon.disallowedRunningExternalApps?.map((reference) => {
+        const def = Resolver.findDefinition(reference, publisher);
+
+        if (def.kind !== 'externalApp') {
+            throw new Error(`definition (key=${def.key}) has kind=${def.kind}, expected kind=externalApp`);
+        }
+
+        return def;
+    });
+
+    if (disallowedRunningExternalApps.some((it) => applicationStatus[it.key] === ApplicationStatus.Open)) {
         return (
             <SidebarButton disabled>
                 Unavailable
