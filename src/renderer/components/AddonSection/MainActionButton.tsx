@@ -34,7 +34,7 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
         return def;
     });
 
-    if (disallowedRunningExternalApps.some((it) => applicationStatus[it.key] === ApplicationStatus.Open)) {
+    if (disallowedRunningExternalApps?.some((it) => applicationStatus[it.key] === ApplicationStatus.Open)) {
         return (
             <SidebarButton disabled>
                 Unavailable
