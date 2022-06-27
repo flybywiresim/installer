@@ -26,6 +26,13 @@ export const InstallingInstallStatuses = [
     InstallStatus.DownloadRetry,
 ];
 
+export const InstalledInstallStatuses = [
+    InstallStatus.UpToDate,
+    InstallStatus.NeedsUpdate,
+    InstallStatus.TrackSwitch,
+    InstallStatus.DownloadDone,
+];
+
 export enum ApplicationStatus {
     Open,
     Closed,

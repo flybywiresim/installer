@@ -72,7 +72,7 @@
         @include color(var(--color-button-theme-neutral), false);
     }
 
-    &.button-neutral-confirmation {
+    &.button-emphasis {
         @include color(var(--color-button-theme-neutral-confirmation));
         color: var(--color-theme-text);
     }

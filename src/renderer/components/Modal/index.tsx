@@ -70,6 +70,7 @@ interface PromptModalProps extends BaseModalProps {
 interface AlertModalProps extends BaseModalProps {
     onAcknowledge?: () => void;
     acknowledgeText?: string;
+    acknowledgeColor?: ButtonType,
 
 }
 
@@ -137,7 +138,7 @@ export const PromptModal: FC<PromptModalProps> = ({
                 <Button className="flex-grow" onClick={handleCancel}>
                     {cancelText ?? 'Cancel'}
                 </Button>
-                <Button className="flex-grow" type={confirmColor} onClick={handleConfirm}>
+                <Button className="flex-grow" type={confirmColor ?? ButtonType.Emphasis} onClick={handleConfirm}>
                     {confirmText ?? 'Confirm'}
                 </Button>
             </div>
@@ -150,6 +151,7 @@ export const AlertModal: FC<AlertModalProps> = ({
     bodyText,
     onAcknowledge,
     acknowledgeText,
+    acknowledgeColor,
     dontShowAgainSettingName,
 }) => {
 
@@ -171,8 +173,8 @@ export const AlertModal: FC<AlertModalProps> = ({
     }
 
     return (
-        <div className="p-8 w-5/12 rounded-xl border-2 bg-theme-body border-theme-accent">
-            <h1 className="leading-none font-bold">{title}</h1>
+        <div className="modal">
+            <h1 className="modal-title">{title}</h1>
             {typeof bodyText === 'string' ? (
                 <ReactMarkdown
                     className="mt-6 markdown-body-modal"
@@ -194,11 +196,10 @@ export const AlertModal: FC<AlertModalProps> = ({
                 <span className="ml-2">Don't show me this again</span>
             </div> : <div></div>}
 
-            <div
-                className="py-3 px-8 mt-8 text-xl text-center rounded-md bg-theme-highlight text-theme-body"
-                onClick={handleAcknowledge}
-            >
-                {acknowledgeText ?? 'Okay'}
+            <div className="flex flex-row mt-8 gap-x-4">
+                <Button className="flex-grow" type={acknowledgeColor ?? ButtonType.Emphasis} onClick={handleAcknowledge}>
+                    {acknowledgeText ?? 'Confirm'}
+                </Button>
             </div>
         </div>
     );
