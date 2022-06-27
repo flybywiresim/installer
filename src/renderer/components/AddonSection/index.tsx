@@ -259,7 +259,7 @@ export const AddonSection = (): JSX.Element => {
         }, 500);
 
         return () => clearInterval(checkApplicationInterval);
-    }, []);
+    }, [selectedAddon]);
 
     useEffect(() => {
         findInstalledTrack();
