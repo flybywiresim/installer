@@ -67,13 +67,6 @@ interface PromptModalProps extends BaseModalProps {
     cancelText?: string;
 }
 
-interface AlertModalProps extends BaseModalProps {
-    onAcknowledge?: () => void;
-    acknowledgeText?: string;
-    acknowledgeColor?: ButtonType,
-
-}
-
 export const PromptModal: FC<PromptModalProps> = ({
     title,
     bodyText,
@@ -146,15 +139,20 @@ export const PromptModal: FC<PromptModalProps> = ({
     );
 };
 
+interface AlertModalProps extends BaseModalProps {
+    onAcknowledge?: () => void;
+    acknowledgeText?: string;
+    acknowledgeColor?: ButtonType,
+}
+
 export const AlertModal: FC<AlertModalProps> = ({
     title,
     bodyText,
     onAcknowledge,
     acknowledgeText,
-    acknowledgeColor,
+    acknowledgeColor = ButtonType.Neutral,
     dontShowAgainSettingName,
 }) => {
-
     const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
@@ -197,7 +195,7 @@ export const AlertModal: FC<AlertModalProps> = ({
             </div> : <div></div>}
 
             <div className="flex flex-row mt-8 gap-x-4">
-                <Button className="flex-grow" type={acknowledgeColor ?? ButtonType.Emphasis} onClick={handleAcknowledge}>
+                <Button className="flex-grow" type={acknowledgeColor} onClick={handleAcknowledge}>
                     {acknowledgeText ?? 'Confirm'}
                 </Button>
             </div>

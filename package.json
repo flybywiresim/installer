@@ -108,6 +108,7 @@
     "@flybywiresim/react-components": "^0.2.5",
     "@reduxjs/toolkit": "^1.7.1",
     "@types/js-yaml": "^4.0.5",
+    "@types/winreg": "^1.2.31",
     "antd": "^4.12.2",
     "config-ini-parser": "~1.5.9",
     "dateformat": "^5.0.1",
@@ -137,7 +138,8 @@
     "simplebar-react": "^2.3.0",
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
-    "walkdir": "^0.4.1"
+    "walkdir": "^0.4.1",
+    "winreg": "^1.2.4"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

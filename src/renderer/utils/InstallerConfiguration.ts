@@ -188,11 +188,41 @@ export type AddonCategoryDefinition = DefinitionBase & {
 
 export type ExternalApplicationDefinition = DefinitionBase & {
     kind: 'externalApp',
+
+    /**
+     * Key of this external app. Must be unique
+     */
     key: string,
+
+    /**
+     * Display name shown in the UI
+     */
     prettyName: string,
+
+    /**
+     * Type of detection to figure out if the external app is running
+     */
     detectionType: 'http' | 'ws' | 'tcp',
+
+    /**
+     * External app URL, only for `http` and `ws ` {@link detectionType} values. For `ws`, must start with `ws` or `wss`.
+     */
     url?: string,
+
+    /**
+     * External app port, only for `tcp` {@link detectionType} values
+     */
     port?: number,
+
+    /**
+     * URL on which to make a request to stop the external app
+     */
+    killUrl?: string,
+
+    /**
+     * HTTP method to use on the kill endpoint
+     */
+    killMethod?: string,
 }
 
 export type Definition = AddonCategoryDefinition | ExternalApplicationDefinition
