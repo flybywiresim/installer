@@ -48,4 +48,12 @@ export class ExternalApps {
             }
         });
     }
+
+    static async kill(app: ExternalApplicationDefinition): Promise<void> {
+        if (!app.killUrl) {
+            throw new Error('Cannot kill external app if it has no killUrl value');
+        }
+
+        return fetch(app.killUrl, { method: app.killMethod ?? 'POST' }).then();
+    }
 }

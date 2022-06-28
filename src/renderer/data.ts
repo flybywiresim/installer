@@ -39,6 +39,8 @@ export const defaultConfiguration: Configuration = {
                     prettyName: 'SimBridge',
                     detectionType: 'http',
                     url: 'http://localhost:8380/health',
+                    killUrl: 'http://localhost:8380/health/kill',
+                    killMethod: 'GET',
                 },
                 {
                     kind: 'externalApp',

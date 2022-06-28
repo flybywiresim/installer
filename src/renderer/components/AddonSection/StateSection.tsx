@@ -9,12 +9,12 @@ import { useAppSelector } from "renderer/redux/store";
 import { Addon, Publisher } from "renderer/utils/InstallerConfiguration";
 import { InstallingDependencyInstallState, InstallState } from "renderer/redux/features/installStatus";
 import { DownloadItem } from "renderer/redux/types";
-import { Activity, ExclamationTriangle } from "react-bootstrap-icons";
+import { Activity, ExclamationTriangle, Gear } from "react-bootstrap-icons";
 import { Resolver } from "renderer/utils/Resolver";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
 import { Button, ButtonType } from "renderer/components/Button";
-import { AlertModal, PromptModal, useModals } from "renderer/components/Modal";
-import { Toggle } from "renderer/components/Toggle";
+import { PromptModal, useModals } from "renderer/components/Modal";
+import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
 
 export interface StateSectionProps {
     publisher: Publisher,
@@ -99,26 +99,18 @@ const ProgressBar: FC<ProgressBarProps> = ({ className, value, animated = true }
 );
 
 const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installState: InstallState): JSX.Element | undefined => {
-    const { showModalAsync } = useModals();
+    const { showModal, showModalAsync } = useModals();
 
     if (addon.backgroundService && InstalledInstallStatuses.includes(installState.status)) {
-        const isRunning = BackgroundServices.checkIsRunning(addon, publisher);
+        const app = BackgroundServices.getExternalAppFromBackgroundService(addon, publisher);
+
+        const isRunning = BackgroundServices.isRunning(addon, publisher);
 
         const bgAccentColor = isRunning ? 'bg-utility-green' : 'bg-gray-500';
 
-        const handleClickAutostart = () => {
-            // let md = '';
-            // md += `You can choose to automatically start **${addon.name}** at login.\n\n`;
-            // md += `You can re-configure this again later.`;
-
-            showModalAsync(
-                <AlertModal title={"Autostart Configuration"} bodyText={(
-                    <>
-                        <YesNoOptionToggle onToggle={() => {}} enabled={true} downloadSize="250" />
-                    </>
-                )} />,
-            );
-        };
+        const handleClickAutostart = () => showModal(
+            <AutostartDialog app={app} addon={addon} publisher={publisher}/>,
+        );
 
         const handleStop = async () => {
             const md = `Are you sure you want to shut down **${addon.name}**?. All related functionality will no longer be available.`;
@@ -128,7 +120,7 @@ const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installS
             );
 
             if (doStop) {
-                alert('bruh');
+                await BackgroundServices.kill(addon, publisher);
             }
         };
 
@@ -151,7 +143,10 @@ const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installS
                     </div>
 
                     <div className="flex gap-x-14 items-center">
-                        <span className="text-3xl text-quasi-white hover:text-cyan cursor-pointer" onClick={handleClickAutostart}>Autostart...</span>
+                        <span className="flex items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan cursor-pointer" onClick={handleClickAutostart}>
+                            <Gear size={22} />
+                            Autostart...
+                        </span>
 
                         <Button className="w-64" type={ButtonType.Neutral} onClick={handleStop}>{isRunning ? 'Stop' : 'Start'}</Button>
                     </div>
@@ -270,31 +265,5 @@ const useDownloadProgressBanner = (addon: Addon, installState: InstallState, dow
                 <ProgressBar className="bg-cyan" value={download.progress} />
             </StateContainer>
         </>
-    );
-};
-
-interface YesNoOptionToggleProps {
-    enabled: boolean,
-    onToggle: () => void
-    downloadSize?: string,
-}
-
-export const YesNoOptionToggle: FC<YesNoOptionToggleProps> = ({ enabled, onToggle, downloadSize }) => {
-    const handleClick = onToggle;
-
-    const bgColor = enabled ? 'bg-utility-green' : 'bg-navy-light';
-    const titleColor = enabled ? 'text-navy' : 'text-quasi-white';
-
-    return (
-        <div className={`flex items-center gap-x-10 ${bgColor} px-10 py-12 rounded-md transition-color duration-200 cursor-pointer`} onClick={handleClick}>
-            <Toggle value={enabled} onToggle={handleClick} scale={1.5} onColor={'bg-utility-green'} />
-
-            <span className="flex gap-x-20">
-                <span className={`font-manrope font-bold text-4xl ${titleColor}`}>Terrain Database</span>
-                {downloadSize && (
-                    <span className={`font-manrope font-semibold text-4xl ${titleColor}`}>{downloadSize}</span>
-                )}
-            </span>
-        </div>
     );
 };
