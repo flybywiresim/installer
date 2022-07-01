@@ -349,7 +349,7 @@ export const AddonSection = (): JSX.Element => {
 
     const handleInstall = async () => {
         if (settings.has("mainSettings.msfsPackagePath")) {
-            await InstallManager.installAddon(selectedAddon, showModalAsync);
+            await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
         } else {
             await setupInstallPath();
         }

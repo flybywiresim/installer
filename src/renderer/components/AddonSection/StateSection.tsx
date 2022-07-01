@@ -109,7 +109,7 @@ const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installS
         const bgAccentColor = isRunning ? 'bg-utility-green' : 'bg-gray-500';
 
         const handleClickAutostart = () => showModal(
-            <AutostartDialog app={app} addon={addon} publisher={publisher}/>,
+            <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={false} />,
         );
 
         const handleStop = async () => {

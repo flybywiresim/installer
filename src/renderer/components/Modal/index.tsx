@@ -57,6 +57,7 @@ interface BaseModalProps {
     title: string;
     bodyText: React.ReactElement | string;
     dontShowAgainSettingName?: string;
+    closeIfDontShowAgain?: boolean,
 }
 
 interface PromptModalProps extends BaseModalProps {
@@ -76,9 +77,9 @@ export const PromptModal: FC<PromptModalProps> = ({
     confirmColor,
     cancelText,
     dontShowAgainSettingName,
+    closeIfDontShowAgain = true,
 }) => {
-
-    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
+    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '', false);
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
     const { popModal } = useModals();
@@ -96,7 +97,7 @@ export const PromptModal: FC<PromptModalProps> = ({
         popModal();
     };
 
-    if (dontShowAgain) {
+    if (dontShowAgain && closeIfDontShowAgain) {
         handleConfirm();
     }
 
@@ -152,8 +153,9 @@ export const AlertModal: FC<AlertModalProps> = ({
     acknowledgeText,
     acknowledgeColor = ButtonType.Neutral,
     dontShowAgainSettingName,
+    closeIfDontShowAgain = true,
 }) => {
-    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
+    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '', false);
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
     const { popModal } = useModals();
@@ -166,7 +168,7 @@ export const AlertModal: FC<AlertModalProps> = ({
         popModal();
     };
 
-    if (dontShowAgain) {
+    if (dontShowAgain && closeIfDontShowAgain) {
         handleAcknowledge();
     }
 

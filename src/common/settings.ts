@@ -54,11 +54,11 @@ export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
     store.set('cache.main.lastWindowY', winSize[1]);
 };
 
-export const useSetting = <T>(key: string): [T, Dispatch<SetStateAction<T>>] => {
-    const [storedValue, setStoredValue] = useState(store.get<string, T>(key));
+export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetStateAction<T>>] => {
+    const [storedValue, setStoredValue] = useState(store.get<string, T>(key, defaultValue));
 
     useEffect(() => {
-        setStoredValue(store.get<string, T>(key));
+        setStoredValue(store.get<string, T>(key, defaultValue));
 
         const cancel = store.onDidChange(key as never, (val) => {
             setStoredValue(val as T);
@@ -80,7 +80,34 @@ export const useIsDarkTheme = (): boolean => {
     return true;
 };
 
-const schema: Schema<unknown> = {
+interface Settings {
+    mainSettings: {
+        autoStartApp: boolean,
+        disableExperimentalWarning: boolean,
+        disableBackgroundServiceAutoStartPrompt: { [k: string]: { [k: string]: boolean } },
+        useCdnCache: boolean,
+        dateLayout: string,
+        useLongDateFormat: boolean,
+        useDarkTheme: boolean,
+        allowSeasonalEffects: boolean,
+        msfsPackagePath: string,
+    },
+    cache: {
+        main: {
+            lastWindowX: number,
+            lastWindowY: number,
+            maximized: boolean,
+            lastShownSection: string,
+            lastShownAddonKey: string,
+        },
+    },
+    metaInfo: {
+        lastVersion: string,
+        lastLaunch: number,
+    },
+}
+
+const schema: Schema<Settings> = {
     mainSettings: {
         type: "object",
         // Empty defaults are required when using type: "object" (https://github.com/sindresorhus/conf/issues/85#issuecomment-531651424)
@@ -93,6 +120,18 @@ const schema: Schema<unknown> = {
             disableExperimentalWarning: {
                 type: "boolean",
                 default: false,
+            },
+            disableBackgroundServiceAutoStartPrompt: {
+                type: "object",
+                default: {},
+                additionalProperties: {
+                    type: "object",
+                    default: {},
+                    additionalProperties: {
+                        type: "boolean",
+                        default: false,
+                    },
+                },
             },
             useCdnCache: {
                 type: "boolean",

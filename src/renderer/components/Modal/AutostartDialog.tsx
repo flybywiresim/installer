@@ -10,9 +10,10 @@ export interface AutostartDialogProps {
     app: ExternalApplicationDefinition,
     addon: Addon,
     publisher: Publisher,
+    isPrompted: boolean,
 }
 
-export const AutostartDialog: FC<AutostartDialogProps> = ({ app, addon, publisher }) => {
+export const AutostartDialog: FC<AutostartDialogProps> = ({ app, addon, publisher, isPrompted }) => {
     const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
@@ -31,6 +32,8 @@ export const AutostartDialog: FC<AutostartDialogProps> = ({ app, addon, publishe
 
     return (
         <AlertModal
+            dontShowAgainSettingName={isPrompted ? `mainSettings.disableBackgroundServiceAutoStartPrompt.${publisher.key}.${addon.key}` : undefined}
+            closeIfDontShowAgain={false}
             title={"Autostart Configuration"}
             bodyText={(
                 <>
