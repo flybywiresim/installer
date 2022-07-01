@@ -1,5 +1,5 @@
 import React from "react";
-import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
 import { PromptModal } from "renderer/components/Modal";
 import { ButtonType } from "renderer/components/Button";
 import { deleteDownload, registerNewDownload, updateDownloadProgress } from "renderer/redux/features/downloads";
@@ -15,6 +15,8 @@ import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import path from "path";
 import { DependencyDialogBody } from "renderer/components/Modal/DependencyDialog";
 import { Resolver } from "renderer/utils/Resolver";
+import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
+import { BackgroundServices } from "renderer/utils/BackgroundServices";
 
 export enum InstallResult {
     Success,
@@ -124,14 +126,14 @@ export class InstallManager {
         store.dispatch(setInstalledTrack({ addonKey: addon.key, installedTrack: track }));
     }
 
-    static async installAddon(addon: Addon, showModal: (modal: any) => Promise<boolean>): Promise<InstallResult> {
+    static async installAddon(addon: Addon, publisher: Publisher, showModal: (modal: any) => Promise<boolean>): Promise<InstallResult> {
         const track = this.getAddonSelectedTrack(addon);
 
         // Find dependencies
         for (const dependency of addon.dependencies ?? []) {
             const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
 
-            const publisher = Resolver.findPublisher(publisherKey);
+            const dependencyPublisher = Resolver.findPublisher(publisherKey);
             const dependencyAddon = Resolver.findAddon(publisherKey, addonKey);
 
             if (!dependencyAddon) {
@@ -156,7 +158,7 @@ export class InstallManager {
                                     addon={addon}
                                     dependency={dependency}
                                     dependencyAddon={dependencyAddon}
-                                    dependencyPublisher={publisher}
+                                    dependencyPublisher={dependencyPublisher}
                                 />
                             }
                             cancelText="No"
@@ -170,10 +172,10 @@ export class InstallManager {
                     this.setCurrentInstallState(addon, {
                         status: InstallStatus.InstallingDependency,
                         dependencyAddonKey: dependencyAddon.key,
-                        dependencyPublisherKey: publisher.key,
+                        dependencyPublisherKey: dependencyPublisher.key,
                     });
 
-                    const result = await this.installAddon(dependencyAddon, showModal);
+                    const result = await this.installAddon(dependencyAddon, dependencyPublisher, showModal);
 
                     if (result === InstallResult.Failure) {
                         console.error('Error while installing dependency - aborting');
@@ -289,6 +291,20 @@ export class InstallManager {
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadDone });
 
             console.log(`Finished download, result=${JSON.stringify(installResult)}`);
+
+            // If we have a background service, ask if we want to enable it
+            if (addon.backgroundService) {
+                const app = BackgroundServices.getExternalAppFromBackgroundService(addon, publisher);
+
+                const isAutoStartEnabled = await BackgroundServices.isAutoStartEnabled(addon, publisher);
+                const doNotAskAgain = settings.get<string, boolean>(`mainSettings.disableBackgroundServiceAutoStartPrompt.${publisher.key}.${addon.key}`);
+
+                if (!isAutoStartEnabled && !doNotAskAgain) {
+                    await showModal(
+                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true} />,
+                    );
+                }
+            }
         } catch (e) {
             if (signal.aborted) {
                 console.warn('Download was cancelled');

@@ -74,11 +74,15 @@ export class BackgroundServices {
             ? backgroundService.executable.path
             : path.join(Directories.inCommunity(addon.targetDirectory), backgroundService.executable.path);
 
+        const commandLineArgs = backgroundService.commandLineArgs
+            ? ` ${backgroundService.commandLineArgs.join(' ')}`
+            : '';
+
         const key = this.getAutostartRegistryKey();
 
         return new Promise((resolve, reject) => {
             if (enabled) {
-                key.set(this.getAutoStartRegistryEntryName(addon, publisher), Winreg.REG_SZ, exePath, (err) => {
+                key.set(this.getAutoStartRegistryEntryName(addon, publisher), Winreg.REG_SZ, `${exePath}${commandLineArgs}`, (err) => {
                     if (err) {
                         reject(err);
                     }
