@@ -1,16 +1,10 @@
 import React, { FC } from "react";
-import {
-    ApplicationStatus,
-    InstalledInstallStatuses,
-    InstallingInstallStatuses,
-    InstallStatus,
-} from "renderer/components/AddonSection/Enums";
+import { InstallStatus, InstallStatusCategories } from "renderer/components/AddonSection/Enums";
 import { useAppSelector } from "renderer/redux/store";
 import { Addon, Publisher } from "renderer/utils/InstallerConfiguration";
 import { InstallingDependencyInstallState, InstallState } from "renderer/redux/features/installStatus";
 import { DownloadItem } from "renderer/redux/types";
-import { Activity, ExclamationTriangle, Gear } from "react-bootstrap-icons";
-import { Resolver } from "renderer/utils/Resolver";
+import { Activity, Gear } from "react-bootstrap-icons";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
 import { Button, ButtonType } from "renderer/components/Button";
 import { PromptModal, useModals } from "renderer/components/Modal";
@@ -48,22 +42,17 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
     return (
         <>
             <BackgroundServiceBanner publisher={publisher} addon={addon} installState={dependencyAddonInstallState ?? addonInstallState} />
-            <RunningExternalAppBanner publisher={publisher} addon={addon} />
             <DownloadProgressBanner installState={dependencyAddonInstallState ?? addonInstallState} download={dependencyAddonDownload ?? addonDownload} isDependency={isInstallingDependency} />
         </>
     );
 };
 
-const StateContainer: FC<{ visible: boolean }> = ({ visible, children }) => {
-    return (
-        <div
-            className="absolute h-32 bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full bg-navy-dark bg-opacity-95"
-            style={{ visibility: visible ? 'visible' : 'hidden' }}
-        >
-            {children}
-        </div>
-    );
-};
+const StateContainer: FC = ({ children }) => (
+    <div
+        className="h-32 bottom-0 left-0 flex flex-row items-center justify-between px-6 pt-6 pb-5 w-full bg-navy-dark bg-opacity-95">
+        {children}
+    </div>
+);
 
 const SmallStateText: FC = ({ children }) => (
     <div className="text-white text-2xl font-bold">{children}</div>
@@ -80,11 +69,12 @@ interface ProgressBarProps {
 }
 
 const ProgressBar: FC<ProgressBarProps> = ({ className, value, animated = true }) => (
-    <div className="absolute left-0 -bottom-1 w-full h-2 z-10 bg-black">
+    <div className="w-full h-2 z-10 bg-black">
         <div
-            className={`absolute h-2 z-11 ${className} ${animated ? 'progress-bar-animated' : ''}`}
+            className={`h-2 z-11 ${className}`}
             style={{ width: `${value}%` }}
         />
+        {/* FIXME animation */}
     </div>
 );
 
@@ -97,7 +87,7 @@ interface BackgroundServiceBannerProps {
 const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, addon, installState }) => {
     const { showModal, showModalAsync } = useModals();
 
-    if (addon.backgroundService && InstalledInstallStatuses.includes(installState.status)) {
+    if (addon.backgroundService && InstallStatusCategories.installed.includes(installState.status)) {
         const app = BackgroundServices.getExternalAppFromBackgroundService(addon, publisher);
 
         const isRunning = BackgroundServices.isRunning(addon, publisher);
@@ -125,8 +115,8 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
         };
 
         return (
-            <>
-                <StateContainer visible={true}>
+            <div className="flex-grow" style={{ flexGrow: 10 }}>
+                <StateContainer>
                     <div className="flex gap-x-7 items-center">
                         {
                             isRunning ? (
@@ -153,53 +143,9 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                 </StateContainer>
 
                 <ProgressBar className={bgAccentColor} value={100} animated={isRunning} />
-            </>
+            </div>
 
         );
-    }
-
-    return null;
-};
-
-interface RunningExternalAppBannerProps {
-    publisher: Publisher,
-    addon: Addon,
-}
-
-const RunningExternalAppBanner: FC<RunningExternalAppBannerProps> = ({ publisher, addon }) => {
-    const applicationStatus = useAppSelector(state => state.applicationStatus);
-
-    const disallowedRunningExternalApps = addon.disallowedRunningExternalApps?.map((reference) => {
-        const def = Resolver.findDefinition(reference, publisher);
-
-        if (def.kind !== 'externalApp') {
-            throw new Error(`definition (key=${def.key}) has kind=${def.kind}, expected kind=externalApp`);
-        }
-
-        return def;
-    });
-
-    for (const app of disallowedRunningExternalApps ?? []) {
-        const appStatus = applicationStatus[app.key];
-
-        if (appStatus === ApplicationStatus.Open) {
-            return (
-                <>
-                    <StateContainer visible={true}>
-                        <div className="flex gap-x-7 items-center">
-                            <ExclamationTriangle size={32} className="text-utility-amber fill-current" />
-
-                            <div className="flex flex-col gap-y-2">
-                                <SmallStateText>Before installing</SmallStateText>
-                                <StateText>{`Please close ${app.prettyName}`}</StateText>
-                            </div>
-                        </div>
-                    </StateContainer>
-
-                    <ProgressBar className="bg-utility-amber" value={100} />
-                </>
-            );
-        }
     }
 
     return null;
@@ -260,15 +206,15 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
     }
 
     return (
-        <>
-            <StateContainer visible={true}>
+        <div className="flex-grow" style={{ flexGrow: 10 }}>
+            <StateContainer>
                 <div className="flex flex-col gap-y-2">
                     <SmallStateText>Installing {isDependency ? 'Dependency' : ''}</SmallStateText>
 
                     {stateText}
                 </div>
 
-                {(InstallingInstallStatuses.includes(installState.status)) && (
+                {(InstallStatusCategories.installing.includes(installState.status)) && (
                     <div
                         className="text-white font-semibold"
                         style={{ fontSize: "38px" }}
@@ -276,9 +222,9 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
                         {download.progress}%
                     </div>
                 )}
-
-                <ProgressBar className="bg-cyan" value={download.progress} />
             </StateContainer>
-        </>
+
+            <ProgressBar className="bg-cyan" value={download.progress} />
+        </div>
     );
 };

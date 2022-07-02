@@ -63,19 +63,21 @@ interface BaseModalProps {
 interface PromptModalProps extends BaseModalProps {
     onConfirm?: () => void;
     onCancel?: () => void;
+    cancelText?: string;
     confirmColor?: ButtonType;
     confirmText?: string;
-    cancelText?: string;
+    confirmEnabled?: boolean;
 }
 
 export const PromptModal: FC<PromptModalProps> = ({
-    title,
-    bodyText,
     onConfirm,
     onCancel,
-    confirmText,
-    confirmColor,
     cancelText,
+    confirmColor,
+    confirmText,
+    confirmEnabled = true,
+    title,
+    bodyText,
     dontShowAgainSettingName,
     closeIfDontShowAgain = true,
 }) => {
@@ -132,7 +134,7 @@ export const PromptModal: FC<PromptModalProps> = ({
                 <Button className="flex-grow" onClick={handleCancel}>
                     {cancelText ?? 'Cancel'}
                 </Button>
-                <Button className="flex-grow" type={confirmColor ?? ButtonType.Emphasis} onClick={handleConfirm}>
+                <Button className="flex-grow" type={confirmColor ?? ButtonType.Emphasis} disabled={!confirmEnabled} onClick={handleConfirm}>
                     {confirmText ?? 'Confirm'}
                 </Button>
             </div>

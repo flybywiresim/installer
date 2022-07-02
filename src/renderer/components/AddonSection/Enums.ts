@@ -17,21 +17,27 @@ export enum InstallStatus {
     Hidden,
 }
 
-export const InstallingInstallStatuses = [
-    InstallStatus.Downloading,
-    InstallStatus.DownloadPrep,
-    InstallStatus.InstallingDependency,
-    InstallStatus.Decompressing,
-    InstallStatus.DownloadEnding,
-    InstallStatus.DownloadRetry,
-];
-
-export const InstalledInstallStatuses = [
-    InstallStatus.UpToDate,
-    InstallStatus.NeedsUpdate,
-    InstallStatus.TrackSwitch,
-    InstallStatus.DownloadDone,
-];
+export const InstallStatusCategories = {
+    installing: [
+        InstallStatus.Downloading,
+        InstallStatus.DownloadPrep,
+        InstallStatus.InstallingDependency,
+        InstallStatus.Decompressing,
+        InstallStatus.DownloadEnding,
+        InstallStatus.DownloadRetry,
+    ],
+    installed: [
+        InstallStatus.UpToDate,
+        InstallStatus.NeedsUpdate,
+        InstallStatus.TrackSwitch,
+        InstallStatus.DownloadDone,
+    ],
+    installOrUpdatePending: [
+        InstallStatus.NeedsUpdate,
+        InstallStatus.NotInstalled,
+        InstallStatus.TrackSwitch,
+    ],
+};
 
 export enum ApplicationStatus {
     Open,

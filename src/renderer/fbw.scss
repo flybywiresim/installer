@@ -29,7 +29,7 @@
     --color-brand-quasi-white: rgb(250, 250, 250);
 
     --color-button-theme-neutral: var(--color-brand-navy-light);
-    --color-button-theme-neutral-confirmation: var(--color-brand-cyan-main);
+    --color-button-theme-neutral-confirmation: var(--color-brand-cyan-dark);
     --color-button-theme-positive: var(--color-utility-green);
     --color-button-theme-caution: var(--color-utility-orange);
     --color-button-theme-danger: var(--color-utility-red);
@@ -54,12 +54,13 @@
     font-size: 1.25em;
     height: 2.35em;
 
-    @mixin color($background, $textColorHover: true) {
+    @mixin color($background, $textColorHover: true, $borderColorHoverValue: $background) {
         background-color: $background;
         border-color: $background;
 
         &:hover {
             background-color: transparent;
+            border-color: $borderColorHoverValue;
             @if $textColorHover {
                 color: $background;
             }
@@ -69,7 +70,7 @@
     &, &.button-neutral {
         @apply font-semibold;
 
-        @include color(var(--color-button-theme-neutral), false);
+        @include color(var(--color-button-theme-neutral), false, var(--color-button-theme-neutral-confirmation));
     }
 
     &.button-emphasis {

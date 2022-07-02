@@ -1,7 +1,20 @@
-import { ExternalApplicationDefinition } from "renderer/utils/InstallerConfiguration";
+import { Addon, ExternalApplicationDefinition, Publisher } from "renderer/utils/InstallerConfiguration";
 import net from 'net';
+import { Resolver } from "renderer/utils/Resolver";
 
 export class ExternalApps {
+    static forAddon(addon: Addon, publisher: Publisher): ExternalApplicationDefinition[] {
+        return addon.disallowedRunningExternalApps?.map((reference) => {
+            const def = Resolver.findDefinition(reference, publisher);
+
+            if (def.kind !== 'externalApp') {
+                throw new Error(`definition (key=${def.key}) has kind=${def.kind}, expected kind=externalApp`);
+            }
+
+            return def;
+        });
+    }
+
     static async determineStateWithWS(app: ExternalApplicationDefinition): Promise<boolean> {
         return new Promise((resolve, reject) => {
             try {

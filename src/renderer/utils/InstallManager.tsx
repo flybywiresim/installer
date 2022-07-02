@@ -5,7 +5,7 @@ import { ButtonType } from "renderer/components/Button";
 import { deleteDownload, registerNewDownload, updateDownloadProgress } from "renderer/redux/features/downloads";
 import { Directories } from "renderer/utils/Directories";
 import fs from "fs-extra";
-import { InstallStatus } from "renderer/components/AddonSection/Enums";
+import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
 import { FragmenterInstaller, needsUpdate } from "@flybywiresim/fragmenter";
 import settings from "common/settings";
 import { store } from "renderer/redux/store";
@@ -18,6 +18,8 @@ import { Resolver } from "renderer/utils/Resolver";
 import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
 import { DownloadItem } from "renderer/redux/types";
+import { CannotInstallDialog } from "renderer/components/Modal/CannotInstallDialog";
+import { ExternalApps } from "renderer/utils/ExternalApps";
 
 export enum InstallResult {
     Success,
@@ -129,6 +131,20 @@ export class InstallManager {
 
     static async installAddon(addon: Addon, publisher: Publisher, showModal: (modal: any) => Promise<boolean>): Promise<InstallResult> {
         const track = this.getAddonSelectedTrack(addon);
+
+        const disallowedRunningExternalApps = ExternalApps.forAddon(addon, publisher);
+
+        const runningExternalApps = disallowedRunningExternalApps.filter((it) => store.getState().applicationStatus[it.key] === ApplicationStatus.Open);
+
+        if (runningExternalApps.length > 0) {
+            const doInstall = await showModal(
+                <CannotInstallDialog addon={addon} publisher={publisher} />,
+            );
+
+            if (!doInstall) {
+                return;
+            }
+        }
 
         // Find dependencies
         for (const dependency of addon.dependencies ?? []) {

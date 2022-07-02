@@ -168,7 +168,7 @@ export const defaultConfiguration: Configuration = {
                     description: '',
                     targetDirectory: 'A380',
                     tracks: [],
-                    disallowedRunningExternalApps: ['@/msfs', '@/simbridge-app'],
+                    disallowedRunningExternalApps: ['@/msfs'],
                 },
                 {
                     name: 'KFBW',
