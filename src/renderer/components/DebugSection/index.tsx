@@ -36,5 +36,3 @@ export const DebugSection = (): JSX.Element => {
         </div>
     );
 };
-
-export default DebugSection;
