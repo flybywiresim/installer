@@ -16,7 +16,6 @@ import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
-import { deleteDownload } from 'renderer/redux/features/downloads';
 import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AddonSection/HiddenAddonCover/HiddenAddonCover";
@@ -357,9 +356,7 @@ export const AddonSection = (): JSX.Element => {
 
     const handleCancel = () => {
         if (isDownloading) {
-            console.log("Cancel download");
-            abortControllers[download.abortControllerID].abort();
-            dispatch(deleteDownload({ id: selectedAddon.key }));
+            InstallManager.cancelDownload(download);
         }
     };
 
