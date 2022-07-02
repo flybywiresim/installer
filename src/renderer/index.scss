@@ -113,9 +113,19 @@ p {
 input {
     @apply text-white bg-navy-light rounded-md py-1 px-1.5 focus:outline-none border border-transparent transition duration-100 focus:border-cyan font-inter;
 }
-  
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+hr {
+  box-sizing: content-box;
+  overflow: hidden;
+  height: .15em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: var(--color-utility-grey-blue);
+  border: 0;
 }

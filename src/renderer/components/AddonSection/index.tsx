@@ -23,13 +23,16 @@ import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
 import { MainActionButton } from "renderer/components/AddonSection/MainActionButton";
-import { ApplicationStatus, InstallingInstallStatuses, InstallStatus } from "renderer/components/AddonSection/Enums";
+import {
+    ApplicationStatus,
+    InstallStatus,
+    InstallStatusCategories,
+} from "renderer/components/AddonSection/Enums";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
 import { Configure } from "renderer/components/AddonSection/Configure";
 import { InstallManager } from "renderer/utils/InstallManager";
 import { StateSection } from "renderer/components/AddonSection/StateSection";
-import { Resolver } from "renderer/utils/Resolver";
 import { ExternalApps } from "renderer/utils/ExternalApps";
 
 const abortControllers = new Array<AbortController>(20);
@@ -219,20 +222,12 @@ export const AddonSection = (): JSX.Element => {
 
     const isDownloading = download?.progress >= 0;
     const status = getCurrentInstallStatus()?.status;
-    const isInstalling = InstallingInstallStatuses.includes(status);
+    const isInstalling = InstallStatusCategories.installing.includes(status);
 
     useEffect(() => {
         const checkApplicationInterval = setInterval(async () => {
             // Map app references to definition objects
-            const disallowedRunningExternalApps = selectedAddon.disallowedRunningExternalApps?.map((reference) => {
-                const def = Resolver.findDefinition(reference, publisherData);
-
-                if (def.kind !== 'externalApp') {
-                    throw new Error(`definition (key=${def.key}) has kind=${def.kind}, expected kind=externalApp`);
-                }
-
-                return def;
-            });
+            const disallowedRunningExternalApps = ExternalApps.forAddon(selectedAddon, publisherData);
 
             for (const app of disallowedRunningExternalApps ?? []) {
                 // Determine what state the app is in
@@ -495,7 +490,7 @@ export const AddonSection = (): JSX.Element => {
                                             : `url(${selectedAddon.backgroundImageUrls[0]})`,
                                     }}
                                 >
-                                    <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
+                                    <div className="absolute bottom-0 left-0 flex flex-row items-end gap-x-1 w-full bg-navy">
                                         <StateSection publisher={publisherData} addon={selectedAddon} />
                                     </div>
                                 </div>
@@ -543,7 +538,7 @@ export const AddonSection = (): JSX.Element => {
                                                 </SideBarLink>
                                             )}
                                             {selectedAddon.key === 'simbridge' && ( // TODO find a better way to do this...
-                                                <SideBarLink to={`/addon-section/${publisherName}/main/simbridge-config`} disabled={InstallingInstallStatuses.includes(status)}>
+                                                <SideBarLink to={`/addon-section/${publisherName}/main/simbridge-config`} disabled={InstallStatusCategories.installing.includes(status)}>
                                                     <Gear size={22} />
                                                     Settings
                                                 </SideBarLink>
@@ -558,8 +553,6 @@ export const AddonSection = (): JSX.Element => {
                                             <UninstallButton />
                                             {installStates[selectedAddon.key] && (
                                                 <MainActionButton
-                                                    addon={selectedAddon}
-                                                    publisher={publisherData}
                                                     installState={installStates[selectedAddon.key]}
                                                     onInstall={handleInstall}
                                                     onCancel={handleCancel}
