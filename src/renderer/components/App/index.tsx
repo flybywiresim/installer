@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { Logo } from "renderer/components/Logo";
 import { SettingsSection } from 'renderer/components/SettingsSection';
-import DebugSection from 'renderer/components/DebugSection';
+import { DebugSection } from 'renderer/components/DebugSection';
 import { GitVersions } from "@flybywiresim/api-client";
 import { DataCache } from '../../utils/DataCache';
 import InstallerUpdate from "renderer/components/InstallerUpdate";
@@ -12,7 +12,7 @@ import { Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import settings from 'common/settings';
@@ -21,6 +21,7 @@ import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
 import { ModalContainer } from '../Modal';
 import { PublisherSection } from "renderer/components/PublisherSection";
+import * as packageInfo from "../../../../package.json";
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -72,6 +73,7 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
 
 const App = () => {
     const history = useHistory();
+    const location = useLocation();
 
     const configuration = useAppSelector(state => state.configuration);
 
@@ -118,7 +120,18 @@ const App = () => {
                         <div className="absolute w-full h-12 z-50 flex flex-row pl-4 items-center bg-black draggable">
                             <div className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
+
+                                {process.env.NODE_ENV === 'development' && (
+                                    <div className="flex gap-x-4 ml-32 my-auto text-gray-400">
+                                        <pre>{packageInfo.version}</pre>
+                                        <pre className="text-gray-500">|</pre>
+                                        <pre className="text-utility-amber">Development mode</pre>
+                                        <pre className="text-gray-500">|</pre>
+                                        <pre className="text-quasi-white">{location.pathname}</pre>
+                                    </div>
+                                )}
                             </div>
+
                             <div className="flex flex-row not-draggable h-full">
                                 <InstallerUpdate />
                                 <WindowButtons />
