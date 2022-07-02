@@ -17,6 +17,7 @@ import { DependencyDialogBody } from "renderer/components/Modal/DependencyDialog
 import { Resolver } from "renderer/utils/Resolver";
 import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
+import { DownloadItem } from "renderer/redux/types";
 
 export enum InstallResult {
     Success,
@@ -192,7 +193,7 @@ export class InstallManager {
         // Initialize abort controller for downloads
         const abortControllerID = this.lowestAvailableAbortControllerID();
 
-        this.abortControllers[abortControllerID] = new AbortController;
+        this.abortControllers[abortControllerID] = new AbortController();
         const signal = this.abortControllers[abortControllerID].signal;
 
         store.dispatch(registerNewDownload({ id: addon.key, module: "", abortControllerID: abortControllerID }));
@@ -308,6 +309,7 @@ export class InstallManager {
         } catch (e) {
             if (signal.aborted) {
                 console.warn('Download was cancelled');
+                store.dispatch(deleteDownload({ id: addon.key }));
                 this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
             } else {
                 console.error('Download failed, see exception below');
@@ -323,6 +325,12 @@ export class InstallManager {
 
         // Clean up temp dir
         fs.removeSync(tempDir);
+    }
+
+    static cancelDownload(download: DownloadItem): void {
+        const abortController = this.abortControllers[download.abortControllerID];
+
+        abortController?.abort();
     }
 
     private static notifyDownload(addon: Addon, successful: boolean): void {
