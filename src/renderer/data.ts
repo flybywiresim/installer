@@ -151,7 +151,7 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
-                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server', '@/simbridge-app'],
+                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server'],
                 },
                 {
                     name: 'A380X',
