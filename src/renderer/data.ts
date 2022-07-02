@@ -253,10 +253,7 @@ export const defaultConfiguration: Configuration = {
                     // ],
                     disallowedRunningExternalApps: ['@/simbridge-app'],
                     backgroundService: {
-                        executable: {
-                            baseLocation: 'package',
-                            path: 'fbw-simbridge.exe',
-                        },
+                        executableFileBasename: 'fbw-simbridge',
                         runCheckExternalAppRef: '@/simbridge-app',
                         commandLineArgs: ['--hide'],
                     },

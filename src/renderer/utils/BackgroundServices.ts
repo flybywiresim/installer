@@ -6,10 +6,15 @@ import { ExternalApps } from "renderer/utils/ExternalApps";
 import Winreg from 'winreg';
 import path from "path";
 import { Directories } from "renderer/utils/Directories";
+import { spawn } from "child_process";
 
 export const AUTORUN_KEY = '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
 
 export class BackgroundServices {
+    private static validateExecutablePath(path: string): boolean {
+        return /^[a-zA-Z\d_-]+$/.test(path);
+    }
+
     public static getExternalAppFromBackgroundService(addon: Addon, publisher: Publisher): ExternalApplicationDefinition {
         if (!addon.backgroundService) {
             throw new Error('Addon has no background service');
@@ -70,10 +75,7 @@ export class BackgroundServices {
             throw new Error('Addon has no background service');
         }
 
-        const exePath = backgroundService.executable.baseLocation === 'absolute'
-            ? backgroundService.executable.path
-            : path.join(Directories.inCommunity(addon.targetDirectory), backgroundService.executable.path);
-
+        const exePath = path.join(Directories.inCommunity(addon.targetDirectory), backgroundService.executableFileBasename);
         const commandLineArgs = backgroundService.commandLineArgs
             ? ` ${backgroundService.commandLineArgs.join(' ')}`
             : '';
@@ -97,6 +99,28 @@ export class BackgroundServices {
                 });
             }
         });
+    }
+
+    static async start(addon: Addon): Promise<void> {
+        const backgroundService = addon.backgroundService;
+
+        if (!backgroundService) {
+            throw new Error('Addon has no background service');
+        }
+
+        if (!this.validateExecutablePath(backgroundService.executableFileBasename)) {
+            throw new Error('Executable path much match /^[a-zA-Z\\d_-]+$/.');
+        }
+
+        const exePath = path.normalize(path.join(Directories.inCommunity(addon.targetDirectory), `${backgroundService.executableFileBasename}.exe`));
+
+        if (exePath.startsWith('..')) {
+            throw new Error('Validated and normalized path still traversed directory.');
+        }
+
+        const commandLineArgs = backgroundService.commandLineArgs ?? [];
+
+        spawn(exePath, commandLineArgs, { cwd: Directories.inCommunity(addon.targetDirectory), shell: true, detached: true });
     }
 
     static async kill(addon: Addon, publisher: Publisher): Promise<void> {
