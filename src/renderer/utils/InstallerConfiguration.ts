@@ -38,12 +38,10 @@ export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
 
 export interface AddonBackgroundService {
     /**
-     * Defines the executable for the background service
+     * Defines the executable file base name for the background service. This is relative to the community folder package
+     * of the addon, must match /^[a-zA-Z\d_-]+$/, and must not contain a file extension.
      */
-    executable: {
-        baseLocation: 'absolute' | 'package',
-        path: string,
-    },
+    executableFileBasename: string,
 
     /**
      * Reference to an external app which is used to check if this service is running

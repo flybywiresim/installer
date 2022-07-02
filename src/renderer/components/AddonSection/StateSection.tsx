@@ -45,23 +45,13 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
         dependencyAddonDownload = downloads.find((it) => it.id === dependencyAddonKey);
     }
 
-    const backgroundServiceBanner = useBackgroundServiceBanner(publisher, addon, addonInstallState);
-    const runningExternalAppBanner = useRunningExternalAppBanner(publisher, addon);
-    const downloadProgressBanner = useDownloadProgressBanner(addon, dependencyAddonInstallState ?? addonInstallState, dependencyAddonDownload ?? addonDownload, isInstallingDependency);
-
-    if (backgroundServiceBanner) {
-        return backgroundServiceBanner;
-    }
-
-    if (runningExternalAppBanner) {
-        return runningExternalAppBanner;
-    }
-
-    if (downloadProgressBanner) {
-        return downloadProgressBanner;
-    }
-
-    return null;
+    return (
+        <>
+            <BackgroundServiceBanner publisher={publisher} addon={addon} installState={dependencyAddonInstallState ?? addonInstallState} />
+            <RunningExternalAppBanner publisher={publisher} addon={addon} />
+            <DownloadProgressBanner installState={dependencyAddonInstallState ?? addonInstallState} download={dependencyAddonDownload ?? addonDownload} isDependency={isInstallingDependency} />
+        </>
+    );
 };
 
 const StateContainer: FC<{ visible: boolean }> = ({ visible, children }) => {
@@ -98,7 +88,13 @@ const ProgressBar: FC<ProgressBarProps> = ({ className, value, animated = true }
     </div>
 );
 
-const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installState: InstallState): JSX.Element | undefined => {
+interface BackgroundServiceBannerProps {
+    publisher: Publisher,
+    addon: Addon,
+    installState: InstallState,
+}
+
+const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, addon, installState }) => {
     const { showModal, showModalAsync } = useModals();
 
     if (addon.backgroundService && InstalledInstallStatuses.includes(installState.status)) {
@@ -112,15 +108,19 @@ const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installS
             <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={false} />,
         );
 
-        const handleStop = async () => {
-            const md = `Are you sure you want to shut down **${addon.name}**?. All related functionality will no longer be available.`;
+        const handleStartStop = async () => {
+            if (isRunning) {
+                const md = `Are you sure you want to shut down **${addon.name}**?. All related functionality will no longer be available.`;
 
-            const doStop = await showModalAsync(
-                <PromptModal title={"Are you sure?"} bodyText={md} confirmColor={ButtonType.Danger} />,
-            );
+                const doStop = await showModalAsync(
+                    <PromptModal title={"Are you sure?"} bodyText={md} confirmColor={ButtonType.Danger} />,
+                );
 
-            if (doStop) {
-                await BackgroundServices.kill(addon, publisher);
+                if (doStop) {
+                    await BackgroundServices.kill(addon, publisher);
+                }
+            } else {
+                await BackgroundServices.start(addon);
             }
         };
 
@@ -148,7 +148,7 @@ const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installS
                             Autostart...
                         </span>
 
-                        <Button className="w-64" type={ButtonType.Neutral} onClick={handleStop}>{isRunning ? 'Stop' : 'Start'}</Button>
+                        <Button className="w-64" type={ButtonType.Neutral} onClick={handleStartStop}>{isRunning ? 'Stop' : 'Start'}</Button>
                     </div>
                 </StateContainer>
 
@@ -157,9 +157,16 @@ const useBackgroundServiceBanner = (publisher: Publisher, addon: Addon, installS
 
         );
     }
+
+    return null;
 };
 
-const useRunningExternalAppBanner = (publisher: Publisher, addon: Addon): JSX.Element | undefined => {
+interface RunningExternalAppBannerProps {
+    publisher: Publisher,
+    addon: Addon,
+}
+
+const RunningExternalAppBanner: FC<RunningExternalAppBannerProps> = ({ publisher, addon }) => {
     const applicationStatus = useAppSelector(state => state.applicationStatus);
 
     const disallowedRunningExternalApps = addon.disallowedRunningExternalApps?.map((reference) => {
@@ -194,9 +201,17 @@ const useRunningExternalAppBanner = (publisher: Publisher, addon: Addon): JSX.El
             );
         }
     }
+
+    return null;
 };
 
-const useDownloadProgressBanner = (addon: Addon, installState: InstallState, download: DownloadItem, isDependency: boolean): JSX.Element | undefined => {
+interface DownloadProgressBannerProps {
+    installState: InstallState,
+    download: DownloadItem,
+    isDependency: boolean,
+}
+
+const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState, download, isDependency }) => {
     if (!installState || !download) {
         return null;
     }
