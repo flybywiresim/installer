@@ -500,7 +500,7 @@ export const AddonSection = (): JSX.Element => {
                                     </div>
                                 </div>
                                 <div className="h-0 flex-grow flex flex-row">
-                                    <Route path={`/addon-section/${publisherName}/main/configure`}>
+                                    <Route exact path={`/addon-section/${publisherName}/main/configure`}>
                                         <Redirect to={`/addon-section/${publisherName}/main/configure/release-track`} />
                                     </Route>
 
