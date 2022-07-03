@@ -68,7 +68,7 @@ interface ProgressBarProps {
     animated?: boolean,
 }
 
-const ProgressBar: FC<ProgressBarProps> = ({ className, value, animated = true }) => (
+const ProgressBar: FC<ProgressBarProps> = ({ className, value }) => (
     <div className="w-full h-2 z-10 bg-black">
         <div
             className={`h-2 z-11 ${className}`}
