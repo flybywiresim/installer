@@ -20,6 +20,7 @@ import { BackgroundServices } from "renderer/utils/BackgroundServices";
 import { DownloadItem } from "renderer/redux/types";
 import { CannotInstallDialog } from "renderer/components/Modal/CannotInstallDialog";
 import { ExternalApps } from "renderer/utils/ExternalApps";
+import { ExternalAppsUI } from "./ExternalAppsUI";
 
 export enum InstallResult {
     Success,
@@ -347,6 +348,62 @@ export class InstallManager {
         const abortController = this.abortControllers[download.abortControllerID];
 
         abortController?.abort();
+    }
+
+    static async uninstallAddon(addon: Addon, publisher: Publisher, showModal: (modal: any) => Promise<boolean>): Promise<void> {
+        const doUninstall = await showModal(
+            <PromptModal
+                title='Are you sure?'
+                bodyText={`You are about to uninstall the addon **${addon.name}**. You cannot undo this, except by reinstalling.`}
+                confirmColor={ButtonType.Danger}
+            />,
+        );
+
+        if (!doUninstall) {
+            return;
+        }
+
+        // Make sure no disallowed external apps are running
+        const noExternalAppsRunning = await ExternalAppsUI.ensureNoneRunningForAddon(addon, publisher, showModal);
+
+        if (!noExternalAppsRunning) {
+            return;
+        }
+
+        // Remove autostart of the background service if the addon has one
+        if (addon.backgroundService) {
+            await BackgroundServices.setAutoStartEnabled(addon, publisher, false);
+        }
+
+        const installDir = Directories.inCommunity(addon.targetDirectory);
+        console.log('uninstalling ', this.getAddonInstalledTrack(addon));
+
+        if (fs.existsSync(installDir)) {
+            fs.removeSync(installDir);
+        }
+
+        // Cleanup in MS store packages
+        if (fs.existsSync(Directories.inPackagesMicrosoftStore(addon.targetDirectory))) {
+            await fs.promises.readdir(Directories.inPackagesMicrosoftStore(addon.targetDirectory))
+                .then((f) => Promise.all(f.map(e => {
+                    if (e !== 'work') {
+                        fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(addon.targetDirectory), e));
+                    }
+                })));
+        }
+
+        // Cleanup in Steam packages
+        if (fs.existsSync(Directories.inPackagesSteam(addon.targetDirectory))) {
+            await fs.promises.readdir(Directories.inPackagesSteam(addon.targetDirectory))
+                .then((f) => Promise.all(f.map(e => {
+                    if (e !== 'work') {
+                        fs.promises.unlink(path.join(Directories.inPackagesSteam(addon.targetDirectory), e));
+                    }
+                })));
+        }
+
+        this.setCurrentInstallState(addon, { status: InstallStatus.NotInstalled });
+        this.setCurrentlyInstalledTrack(addon, null);
     }
 
     private static notifyDownload(addon: Addon, successful: boolean): void {

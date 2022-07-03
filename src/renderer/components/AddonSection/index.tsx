@@ -1,6 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import fs from "fs-extra";
-import * as path from "path";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
@@ -101,7 +99,6 @@ export const AddonSection = (): JSX.Element => {
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTracks);
     const installStates = useAppSelector(state => state.installStatus);
-    const applicationStatus = useAppSelector(state => state.applicationStatus);
     const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
 
     useEffect(() => {
@@ -282,41 +279,6 @@ export const AddonSection = (): JSX.Element => {
 
     const { showModal, showModalAsync } = useModals();
 
-    const uninstallAddon = async () => {
-        showModal(
-            <PromptModal
-                title='Are you sure?'
-                bodyText={`You are about to uninstall the addon ${selectedAddon.name}. You cannot undo this, except by reinstalling.`}
-                confirmColor={ButtonType.Danger}
-                onConfirm={async () => {
-                    const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-                    console.log('uninstalling ', installedTrack);
-
-                    if (fs.existsSync(installDir)) {
-                        fs.removeSync(installDir);
-                    }
-                    if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
-                        await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
-                            .then((f) => Promise.all(f.map(e => {
-                                if (e !== 'work') {
-                                    fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory), e));
-                                }
-                            })));
-                    }
-                    if (fs.existsSync(Directories.inPackagesSteam(selectedAddon.targetDirectory))) {
-                        await fs.promises.readdir(Directories.inPackagesSteam(selectedAddon.targetDirectory))
-                            .then((f) => Promise.all(f.map(e => {
-                                if (e !== 'work') {
-                                    fs.promises.unlink(path.join(Directories.inPackagesSteam(selectedAddon.targetDirectory), e));
-                                }
-                            })));
-                    }
-                    setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
-                    setCurrentlyInstalledTrack(null);
-                }}/>,
-        );
-    };
-
     const selectAndSetTrack = (key: string) => {
         const newTrack = selectedAddon.tracks.find((track) => track.key === key);
         setCurrentlySelectedTrack(newTrack);
@@ -362,13 +324,10 @@ export const AddonSection = (): JSX.Element => {
             case InstallStatus.TrackSwitch:
             case InstallStatus.DownloadDone:
             case InstallStatus.GitInstall: {
-                const disabled = applicationStatus.msfs === ApplicationStatus.Open || (applicationStatus.mcduServer === ApplicationStatus.Open && applicationStatus.simBridge !== ApplicationStatus.Open);
-
                 return (
                     <SidebarButton
                         type={ButtonType.Neutral}
-                        onClick={uninstallAddon}
-                        disabled={disabled}
+                        onClick={() => InstallManager.uninstallAddon(selectedAddon, publisherData, showModalAsync)}
                     >
                         Uninstall
                     </SidebarButton>

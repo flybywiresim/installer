@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Addon, Publisher } from "renderer/utils/InstallerConfiguration";
 import { PromptModal } from "renderer/components/Modal/index";
 import { Window } from "react-bootstrap-icons";
-import { useAddonExternalApps } from "renderer/utils/ExternalAppHooks";
+import { useAddonExternalApps } from "renderer/utils/ExternalAppsUI";
 
 export interface CannotInstallDialogProps {
     addon: Addon,

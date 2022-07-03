@@ -30,15 +30,12 @@ export class ExternalApps {
     }
 
     static async determineStateWithHttp(app: ExternalApplicationDefinition): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            try {
-                fetch(app.url).then((resp) => {
-                    resolve(resp.status === 200);
-                }).catch(() => resolve(false));
-            } catch (e) {
-                reject(new Error('Error while establishing HTTP external app state, see exception above'));
-                console.error(e);
-            }
+        return new Promise((resolve) => {
+            fetch(app.url).then((resp) => {
+                resolve(resp.status === 200);
+            }).catch(() => {
+                resolve(false);
+            });
         });
     }
 
