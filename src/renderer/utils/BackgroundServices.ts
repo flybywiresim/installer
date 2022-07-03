@@ -91,10 +91,7 @@ export class BackgroundServices {
                     resolve();
                 });
             } else {
-                key.remove(this.getAutoStartRegistryEntryName(addon, publisher), (err) => {
-                    if (err) {
-                        reject(err);
-                    }
+                key.remove(this.getAutoStartRegistryEntryName(addon, publisher), () => {
                     resolve();
                 });
             }
