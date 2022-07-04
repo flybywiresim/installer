@@ -113,7 +113,7 @@ export const LocalApiConfigEditUI: FC = () => {
         return (
             <div className='h-full w-full flex items-center justify-center p-8'>
                 <h2 className='text-center text-white'>
-                    Could not load configuration file. This likely means that you do not have the Local API currently installed.
+                    Could not load configuration file. This likely means that you do not have SimBridge currently installed.
                 </h2>
             </div>
         );
