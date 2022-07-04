@@ -1,5 +1,6 @@
 import { Addon, ExternalApplicationDefinition, Publisher } from "renderer/utils/InstallerConfiguration";
 import net from 'net';
+import ws from 'ws';
 import { Resolver } from "renderer/utils/Resolver";
 
 export class ExternalApps {
@@ -18,10 +19,10 @@ export class ExternalApps {
     static async determineStateWithWS(app: ExternalApplicationDefinition): Promise<boolean> {
         return new Promise((resolve, reject) => {
             try {
-                const ws = new WebSocket(app.url);
+                const wbs = new ws.WebSocket(app.url);
 
-                ws.addEventListener('open', () => resolve(true));
-                ws.addEventListener('error', () => resolve(false));
+                wbs.addEventListener('open', () => resolve(true));
+                wbs.addEventListener('error', () => resolve(false));
             } catch (e) {
                 reject(new Error('Error while establishing WS external app state, see exception above'));
                 console.error(e);
