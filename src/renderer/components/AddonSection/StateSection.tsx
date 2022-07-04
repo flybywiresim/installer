@@ -9,6 +9,7 @@ import { BackgroundServices } from "renderer/utils/BackgroundServices";
 import { Button, ButtonType } from "renderer/components/Button";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
+import { useAddonExternalApps } from "renderer/utils/ExternalAppsUI";
 
 export interface StateSectionProps {
     publisher: Publisher,
@@ -86,11 +87,12 @@ interface BackgroundServiceBannerProps {
 
 const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, addon, installState }) => {
     const { showModal, showModalAsync } = useModals();
+    const [runningExternalApps] = useAddonExternalApps(addon, publisher);
 
     if (addon.backgroundService && InstallStatusCategories.installed.includes(installState.status)) {
         const app = BackgroundServices.getExternalAppFromBackgroundService(addon, publisher);
 
-        const isRunning = BackgroundServices.isRunning(addon, publisher);
+        const isRunning = !!runningExternalApps.find((it) => it.key === app.key);
 
         const bgAccentColor = isRunning ? 'bg-utility-green' : 'bg-gray-500';
 
