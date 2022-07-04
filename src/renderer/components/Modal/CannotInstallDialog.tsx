@@ -35,7 +35,7 @@ export const CannotInstallDialog: FC<CannotInstallDialogProps> = ({ addon, publi
                             const textColor = appIsRunning ? 'text-utility-amber' : 'text-utility-green';
 
                             return (
-                                <div className={`flex items-center gap-x-7 bg-navy border-t-4 ${borderColor} px-7 py-6 rounded-md my-6`}>
+                                <div key={app.key} className={`flex items-center gap-x-7 bg-navy border-t-4 ${borderColor} px-7 py-6 rounded-md my-6`}>
                                     <Window size={24} className={`${textColor} fill-current`} />
 
                                     <div className="w-full flex justify-between items-center">
