@@ -13,7 +13,7 @@ export class ExternalApps {
             }
 
             return def;
-        });
+        }) ?? [];
     }
 
     static async determineStateWithWS(app: ExternalApplicationDefinition): Promise<boolean> {
