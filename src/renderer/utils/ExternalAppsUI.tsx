@@ -33,7 +33,7 @@ export class ExternalAppsUI {
      * @param publisher the publisher of the addon
      * @param showModal a function to show a modal and return a promise based on the button clicked
      */
-    static async ensureNoneRunningForAddon(addon: Addon, publisher: Publisher, showModal: (modal: any) => Promise<boolean>): Promise<boolean> {
+    static async ensureNoneRunningForAddon(addon: Addon, publisher: Publisher, showModal: (modal: JSX.Element) => Promise<boolean>): Promise<boolean> {
         const addonExternalApps = ExternalApps.forAddon(addon, publisher);
         const runningExternalApps = addonExternalApps.filter((app) => store.getState().applicationStatus[app.key] == ApplicationStatus.Open);
 

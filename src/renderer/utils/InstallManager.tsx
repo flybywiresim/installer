@@ -130,7 +130,7 @@ export class InstallManager {
         store.dispatch(setInstalledTrack({ addonKey: addon.key, installedTrack: track }));
     }
 
-    static async installAddon(addon: Addon, publisher: Publisher, showModal: (modal: any) => Promise<boolean>): Promise<InstallResult> {
+    static async installAddon(addon: Addon, publisher: Publisher, showModal: (modal: JSX.Element) => Promise<boolean>): Promise<InstallResult> {
         const track = this.getAddonSelectedTrack(addon);
 
         const disallowedRunningExternalApps = ExternalApps.forAddon(addon, publisher);
@@ -350,7 +350,7 @@ export class InstallManager {
         abortController?.abort();
     }
 
-    static async uninstallAddon(addon: Addon, publisher: Publisher, showModal: (modal: any) => Promise<boolean>): Promise<void> {
+    static async uninstallAddon(addon: Addon, publisher: Publisher, showModal: (modal: JSX.Element) => Promise<boolean>): Promise<void> {
         const doUninstall = await showModal(
             <PromptModal
                 title='Are you sure?'
