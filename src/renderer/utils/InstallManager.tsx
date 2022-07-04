@@ -17,7 +17,6 @@ import { DependencyDialogBody } from "renderer/components/Modal/DependencyDialog
 import { Resolver } from "renderer/utils/Resolver";
 import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
-import { DownloadItem } from "renderer/redux/types";
 import { CannotInstallDialog } from "renderer/components/Modal/CannotInstallDialog";
 import { ExternalApps } from "renderer/utils/ExternalApps";
 import { ExternalAppsUI } from "./ExternalAppsUI";
@@ -130,7 +129,25 @@ export class InstallManager {
         store.dispatch(setInstalledTrack({ addonKey: addon.key, installedTrack: track }));
     }
 
-    static async installAddon(addon: Addon, publisher: Publisher, showModal: (modal: JSX.Element) => Promise<boolean>): Promise<InstallResult> {
+    static async installAddon(addon: Addon, publisher: Publisher, showModal: (modal: JSX.Element) => Promise<boolean>, dependencyOf?: Addon): Promise<InstallResult> {
+        const setErrorState = () => {
+            store.dispatch(deleteDownload({ id: addon.key }));
+            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadError });
+        };
+
+        const setCancelledState = () => {
+            store.dispatch(deleteDownload({ id: addon.key }));
+            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
+        };
+
+        const startResetStateTimer = () => {
+            setTimeout(async () => this.setCurrentInstallState(addon, await this.determineAddonInstallState(addon)), 3_000);
+        };
+
+        const removeDownloadState = () => {
+            store.dispatch(deleteDownload({ id: addon.key }));
+        };
+
         const track = this.getAddonSelectedTrack(addon);
 
         const disallowedRunningExternalApps = ExternalApps.forAddon(addon, publisher);
@@ -193,13 +210,17 @@ export class InstallManager {
                         dependencyPublisherKey: dependencyPublisher.key,
                     });
 
-                    const result = await this.installAddon(dependencyAddon, dependencyPublisher, showModal);
+                    const result = await this.installAddon(dependencyAddon, dependencyPublisher, showModal, addon);
 
                     if (result === InstallResult.Failure) {
                         console.error('Error while installing dependency - aborting');
                     } else if (result === InstallResult.Cancelled) {
                         console.log('Dependency install cancelled, canceling main addon too.');
-                        return;
+
+                        setCancelledState();
+                        startResetStateTimer();
+
+                        return InstallResult.Cancelled;
                     } else {
                         console.log(`Dependency @${publisherKey}/${addonKey} installed successfully.`);
                     }
@@ -250,6 +271,7 @@ export class InstallManager {
                 console.log("Downloading started for module", module.name);
                 this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
             });
+
             installer.on("downloadProgress", (module, progress) => {
                 if (lastPercent !== progress.percent) {
                     lastPercent = progress.percent;
@@ -261,10 +283,19 @@ export class InstallManager {
                         }));
                 }
             });
+
             installer.on("unzipStarted", (module) => {
                 console.log("Started unzipping module", module.name);
                 this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing });
+
+                if (dependencyOf) {
+                    this.setCurrentInstallState(dependencyOf, {
+                        status: InstallStatus.InstallingDependencyEnding,
+                        dependencyAddonKey: addon.key, dependencyPublisherKey: publisher.key,
+                    });
+                }
             });
+
             installer.on("retryScheduled", (module, retryCount, waitSeconds) => {
                 console.log("Scheduling a retry for module", module.name);
                 console.log("Retry count", retryCount);
@@ -272,6 +303,7 @@ export class InstallManager {
 
                 this.setCurrentInstallState(addon, { status: InstallStatus.DownloadRetry });
             });
+
             installer.on("retryStarted", (module, retryCount) => {
                 console.log("Starting a retry for module", module.name);
                 console.log("Retry count", retryCount);
@@ -326,25 +358,50 @@ export class InstallManager {
         } catch (e) {
             if (signal.aborted) {
                 console.warn('Download was cancelled');
-                store.dispatch(deleteDownload({ id: addon.key }));
-                this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
+
+                setCancelledState();
+                startResetStateTimer();
+
+                return InstallResult.Cancelled;
             } else {
                 console.error('Download failed, see exception below');
                 console.error(e);
-                this.setCurrentInstallState(addon, { status: InstallStatus.DownloadError });
-                this.notifyDownload(addon, false);
-            }
 
-            setTimeout(async () => this.setCurrentInstallState(addon, await this.determineAddonInstallState(addon)), 3_000);
+                setErrorState();
+                startResetStateTimer();
+
+                return InstallResult.Failure;
+            }
         }
 
-        store.dispatch(deleteDownload({ id: addon.key }));
+        removeDownloadState();
 
         // Clean up temp dir
         fs.removeSync(tempDir);
+
+        return InstallResult.Success;
     }
 
-    static cancelDownload(download: DownloadItem): void {
+    static cancelDownload(addon: Addon): void {
+        let download = store.getState().downloads.find((it) => it.id === addon.key);
+        if (!download) {
+            for (const dependency of addon.dependencies ?? []) {
+                const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
+
+                const dependencyAddon = Resolver.findAddon(publisherKey, addonKey);
+
+                const dependencyDownload = store.getState().downloads.find((it) => it.id === dependencyAddon.key);
+
+                if (dependencyDownload) {
+                    download = dependencyDownload;
+                }
+            }
+        }
+
+        if (!download) {
+            throw new Error('Cannot cancel when no addon or dependency download is ongoing');
+        }
+
         const abortController = this.abortControllers[download.abortControllerID];
 
         abortController?.abort();

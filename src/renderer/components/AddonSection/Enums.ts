@@ -5,6 +5,7 @@ export enum InstallStatus {
     GitInstall,
     TrackSwitch,
     InstallingDependency,
+    InstallingDependencyEnding,
     DownloadPrep,
     Downloading,
     Decompressing,
@@ -22,9 +23,14 @@ export const InstallStatusCategories = {
         InstallStatus.Downloading,
         InstallStatus.DownloadPrep,
         InstallStatus.InstallingDependency,
+        InstallStatus.InstallingDependencyEnding,
         InstallStatus.Decompressing,
         InstallStatus.DownloadEnding,
         InstallStatus.DownloadRetry,
+    ],
+    installingDependency: [
+        InstallStatus.InstallingDependency,
+        InstallStatus.InstallingDependencyEnding,
     ],
     installed: [
         InstallStatus.UpToDate,

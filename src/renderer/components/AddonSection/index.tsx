@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
@@ -21,11 +21,7 @@ import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
 import { MainActionButton } from "renderer/components/AddonSection/MainActionButton";
-import {
-    ApplicationStatus,
-    InstallStatus,
-    InstallStatusCategories,
-} from "renderer/components/AddonSection/Enums";
+import { ApplicationStatus, InstallStatus, InstallStatusCategories } from "renderer/components/AddonSection/Enums";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
 import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
 import { Configure } from "renderer/components/AddonSection/Configure";
@@ -220,6 +216,7 @@ export const AddonSection = (): JSX.Element => {
     const isDownloading = download?.progress >= 0;
     const status = getCurrentInstallStatus()?.status;
     const isInstalling = InstallStatusCategories.installing.includes(status);
+    const isFinishingDependencyInstall = status === InstallStatus.InstallingDependencyEnding;
 
     useEffect(() => {
         const checkApplicationInterval = setInterval(async () => {
@@ -311,11 +308,11 @@ export const AddonSection = (): JSX.Element => {
         }
     };
 
-    const handleCancel = () => {
-        if (isDownloading) {
-            InstallManager.cancelDownload(download);
+    const handleCancel = useCallback(() => {
+        if (isInstalling && !isFinishingDependencyInstall) {
+            InstallManager.cancelDownload(selectedAddon);
         }
-    };
+    }, [isInstalling]);
 
     const UninstallButton = (): JSX.Element => {
         switch (status) {

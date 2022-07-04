@@ -11,9 +11,10 @@ export interface AutostartDialogProps {
     addon: Addon,
     publisher: Publisher,
     isPrompted: boolean,
+    onAcknowledge?: () => void,
 }
 
-export const AutostartDialog: FC<AutostartDialogProps> = ({ app, addon, publisher, isPrompted }) => {
+export const AutostartDialog: FC<AutostartDialogProps> = ({ app, addon, publisher, isPrompted, onAcknowledge = () => {} }) => {
     const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
@@ -48,6 +49,7 @@ export const AutostartDialog: FC<AutostartDialogProps> = ({ app, addon, publishe
                     </YesNoOptionToggle>
                 </>
             )}
+            onAcknowledge={onAcknowledge}
             acknowledgeText="Close"
         />
     );
