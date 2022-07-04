@@ -109,6 +109,7 @@
     "@reduxjs/toolkit": "^1.7.1",
     "@types/js-yaml": "^4.0.5",
     "@types/winreg": "^1.2.31",
+    "@types/ws": "^8.5.3",
     "antd": "^4.12.2",
     "config-ini-parser": "~1.5.9",
     "dateformat": "^5.0.1",
@@ -139,11 +140,16 @@
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
     "walkdir": "^0.4.1",
-    "winreg": "^1.2.4"
+    "winreg": "^1.2.4",
+    "ws": "^8.8.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
       "npm run lint:fix"
     ]
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.6",
+    "utf-8-validate": "^5.0.9"
   }
 }
