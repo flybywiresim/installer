@@ -117,6 +117,7 @@ const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
         case InstallStatus.GitInstall:
             return <Check2 size={27} />;
         case InstallStatus.InstallingDependency:
+        case InstallStatus.InstallingDependencyEnding:
         case InstallStatus.DownloadPrep:
         case InstallStatus.Decompressing:
         case InstallStatus.Downloading:

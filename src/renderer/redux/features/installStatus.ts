@@ -7,7 +7,7 @@ interface BaseInstallState {
 }
 
 export interface InstallingDependencyInstallState extends BaseInstallState {
-    status: InstallStatus.InstallingDependency,
+    status: InstallStatus.InstallingDependency | InstallStatus.InstallingDependencyEnding,
     dependencyPublisherKey: string,
     dependencyAddonKey: string,
 }

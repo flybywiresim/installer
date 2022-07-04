@@ -42,6 +42,10 @@ export const ModalProvider: FC = ({ children }) => {
                     resolve(false);
                     modal.props.onCancel?.();
                 },
+                onAcknowledge: () => {
+                    resolve(true);
+                    modal.props.onAcknowledge?.();
+                },
             }));
         });
     };

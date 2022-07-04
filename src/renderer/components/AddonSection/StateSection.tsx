@@ -29,7 +29,7 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
 
     const status = addonInstallState.status;
 
-    const isInstallingDependency = status === InstallStatus.InstallingDependency;
+    const isInstallingDependency = InstallStatusCategories.installingDependency.includes(status);
 
     let dependencyAddonDownload;
     let dependencyAddonInstallState;
@@ -179,6 +179,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
             stateText = <StateText>{`Downloading ${download?.module.toLowerCase()} module`}</StateText>;
             break;
         case InstallStatus.Decompressing:
+        case InstallStatus.InstallingDependencyEnding:
             stateText = <StateText>Decompressing</StateText>;
             break;
         case InstallStatus.DownloadEnding:

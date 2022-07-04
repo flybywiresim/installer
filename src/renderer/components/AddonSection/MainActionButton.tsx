@@ -57,6 +57,7 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
         case InstallStatus.DownloadPrep:
         case InstallStatus.Decompressing:
         case InstallStatus.DownloadEnding:
+        case InstallStatus.InstallingDependencyEnding:
             return (
                 <SidebarButton disabled type={ButtonType.Neutral}>
                     Cancel
