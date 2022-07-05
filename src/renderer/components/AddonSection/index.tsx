@@ -420,7 +420,7 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(deleteDownload({ id: selectedAddon.key }));
 
         // Clean up temp dir
-        fs.removeSync(tempDir);
+        Directories.removeAllTemp();
     };
 
     const { showModal } = useModals();

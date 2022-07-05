@@ -29,28 +29,28 @@ export class Directories {
     }
 
     static temp(): string {
-        return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
+        return settings.get("mainSettings.tempPath") as string;
     }
 
     static removeAllTemp(): void {
-        console.log('[CLEANUP] Removing all temp directories');
+        console.log('[CLEANUP] Removing all temp files');
 
-        if (!fs.existsSync(Directories.community())) {
-            console.warn('[CLEANUP] Install directory does not exist. Aborting');
+        if (!fs.existsSync(Directories.temp())) {
+            console.warn('[CLEANUP] Temp directory does not exist. Aborting');
             return;
         }
 
-        fs.readdirSync(Directories.community(), { withFileTypes: true })
-            .filter(dirEnt => dirEnt.isDirectory())
-            .filter(dirEnt => dirEnt.name.startsWith('flybywire_current_install_'))
-            .forEach(dir => {
-                const fullPath = Directories.inCommunity(dir.name);
+        const dir = Directories.temp();
 
-                console.log('[CLEANUP] Removing', fullPath);
-                fs.removeSync(fullPath);
-                console.log('[CLEANUP] Removed', fullPath);
+        console.log('[CLEANUP] Removing', dir);
+
+        fs.readdirSync(dir, { withFileTypes: true })
+            .forEach(file => {
+                fs.removeSync(path.join(dir, file.name));
             });
-        console.log('[CLEANUP] Finished removing all temp directories');
+
+        console.log('[CLEANUP] Removed', dir);
+        console.log('[CLEANUP] Finished removing temp files');
     }
 
     static removeAlternativesForAddon(addon: Addon): void {
