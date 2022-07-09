@@ -46,19 +46,6 @@ const defaultCommunityDir = (): string => {
     }
 };
 
-const defaultTempDir = (): string => {
-    if (os.platform().toString() === 'linux') {
-        return 'linux';
-    }
-
-    let tempConfigPath = null;
-    const communityDir = defaultCommunityDir();
-    const newDirName = `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`;
-    tempConfigPath = path.join(communityDir, newDirName);
-
-    return tempConfigPath;
-};
-
 export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
     store.set('cache.main.maximized', window.isMaximized());
 
@@ -131,9 +118,13 @@ const schema: Schema<unknown> = {
                 type: "string",
                 default: defaultCommunityDir(),
             },
+            separateTempPath: {
+                type: "boolean",
+                default: false
+            },
             tempPath: {
                 type: "string",
-                default: defaultTempDir(),
+                default: defaultCommunityDir(),
             },
         },
     },

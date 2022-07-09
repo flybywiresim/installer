@@ -48,6 +48,23 @@ const TempPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX
     );
 };
 
+const SeparateTempPathSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
+    const handleClick = () => {
+        const newState = !value;
+        setValue(newState);
+        settings.set('mainSettings.separateTempPath', newState);
+    };
+
+    return (
+        <SettingsItem name="Separate Temporary Directory">
+            <Toggle
+                value={value}
+                onToggle={handleClick}
+            />
+        </SettingsItem>
+    );
+};
+
 const DisableWarningSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     const handleClick = () => {
         const newState = !value;
@@ -85,6 +102,7 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
 const index = (): JSX.Element => {
     const [installPath, setInstallPath] = useSetting<string>('mainSettings.msfsPackagePath');
     const [tempPath, setTempPath] = useSetting<string>('mainSettings.tempPath');
+    const [separateTempPath, setSeparateTempPath] = useSetting<boolean>('mainSettings.separateTempPath');
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
     const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
 
@@ -94,7 +112,10 @@ const index = (): JSX.Element => {
                 <h2 className="text-white">Download Settings</h2>
                 <div className="flex flex-col divide-y divide-gray-600">
                     <InstallPathSettingItem value={installPath} setValue={setInstallPath} />
-                    <TempPathSettingItem value={tempPath} setValue={setTempPath} />
+                    <SeparateTempPathSettingItem value={separateTempPath} setValue={setSeparateTempPath} />
+                    {separateTempPath &&
+                        <TempPathSettingItem value={tempPath} setValue={setTempPath} />
+                    }
                     <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />
                     <UseCdnSettingItem value={useCdnCache} setValue={setUseCdnCache} />
                 </div>
