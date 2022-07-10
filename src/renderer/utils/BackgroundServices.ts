@@ -7,6 +7,7 @@ import Winreg from 'winreg';
 import path from "path";
 import { Directories } from "renderer/utils/Directories";
 import { spawn } from "child_process";
+import { shell } from "@electron/remote";
 
 export const AUTORUN_KEY = '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
 
@@ -111,13 +112,15 @@ export class BackgroundServices {
 
         const exePath = path.normalize(path.join(Directories.inCommunity(addon.targetDirectory), `${backgroundService.executableFileBasename}.exe`));
 
-        if (exePath.startsWith('..')) {
-            throw new Error('Validated and normalized path still traversed directory.');
-        }
+        await shell.openPath(exePath);
 
-        const commandLineArgs = backgroundService.commandLineArgs ?? [];
-
-        spawn(exePath, commandLineArgs, { cwd: Directories.inCommunity(addon.targetDirectory), shell: true, detached: true });
+        // if (exePath.startsWith('..')) {
+        //     throw new Error('Validated and normalized path still traversed directory.');
+        // }
+        //
+        // const commandLineArgs = backgroundService.commandLineArgs ?? [];
+        //
+        // spawn(exePath, commandLineArgs, { cwd: Directories.inCommunity(addon.targetDirectory), shell: true, detached: true });
     }
 
     static async kill(addon: Addon, publisher: Publisher): Promise<void> {
