@@ -118,11 +118,11 @@ const schema: Schema<unknown> = {
                 type: "string",
                 default: defaultCommunityDir(),
             },
-            separateTempPath: {
+            separateTempLocation: {
                 type: "boolean",
-                default: false
+                default: false,
             },
-            tempPath: {
+            tempLocation: {
                 type: "string",
                 default: defaultCommunityDir(),
             },

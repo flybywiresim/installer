@@ -22,17 +22,17 @@ export const setupInstallPath = async (): Promise<string> => {
     }
 };
 
-export const setupTempPath = async (): Promise<string> => {
-    const currentPath = Directories.temp();
+export const setupTempLocation = async (): Promise<string> => {
+    const currentPath = Directories.tempLocation();
 
     const path = await dialog.showOpenDialog({
-        title: 'Select a temporary folder',
+        title: 'Select a location for temporary folders',
         defaultPath: typeof currentPath === 'string' ? currentPath : '',
         properties: ['openDirectory'],
     });
 
     if (path.filePaths[0]) {
-        settings.set('mainSettings.tempPath', path.filePaths[0]);
+        settings.set('mainSettings.tempLocation', path.filePaths[0]);
         return path.filePaths[0];
     } else {
         return "";
