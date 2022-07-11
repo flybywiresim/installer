@@ -318,9 +318,9 @@ export const AircraftSection = (): JSX.Element => {
 
         const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
         const tempDir = Directories.temp();
-        const separateSetting: boolean = settings.get("mainSettings.separateTempPath")
 
-        if(separateSetting && tempDir == Directories.community()){
+        if (tempDir === Directories.community()) {
+            console.error('Community directory equals temp directory');
             return notifyDownload(false);
         }
 
@@ -328,7 +328,6 @@ export const AircraftSection = (): JSX.Element => {
         console.log("Installing into", installDir, "using temp dir", tempDir);
 
         // Prepare temporary directory
-        fs.removeSync(tempDir);
         fs.mkdirSync(tempDir);
 
         // Copy current install to temporary directory
@@ -425,14 +424,7 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(deleteDownload({ id: selectedAddon.key }));
 
         // Clean up temp dir
-        if(separateSetting){
-            fs.readdirSync(tempDir, { withFileTypes: true })
-                .forEach(file => {
-                    fs.removeSync(path.join(tempDir, file.name));
-                });
-        }else {
-            fs.removeSync(tempDir);
-        }
+        fs.removeSync(tempDir);
     };
 
     const { showModal } = useModals();
