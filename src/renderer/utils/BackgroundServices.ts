@@ -6,7 +6,6 @@ import { ExternalApps } from "renderer/utils/ExternalApps";
 import Winreg from 'winreg';
 import path from "path";
 import { Directories } from "renderer/utils/Directories";
-import { spawn } from "child_process";
 import { shell } from "@electron/remote";
 
 export const AUTORUN_KEY = '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
