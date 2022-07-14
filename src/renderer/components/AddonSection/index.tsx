@@ -319,11 +319,15 @@ export const AircraftSection = (): JSX.Element => {
         const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
         const tempDir = Directories.temp();
 
+        if (tempDir === Directories.community()) {
+            console.error('Community directory equals temp directory');
+            return notifyDownload(false);
+        }
+
         console.log("Installing", track);
         console.log("Installing into", installDir, "using temp dir", tempDir);
 
         // Prepare temporary directory
-        fs.removeSync(tempDir);
         fs.mkdirSync(tempDir);
 
         // Copy current install to temporary directory

@@ -137,7 +137,9 @@ const createWindow = (): void => {
     if (process.env.NODE_ENV === 'development') {
         // Open the DevTools.
         settings.openInEditor();
-        mainWindow.webContents.openDevTools();
+        mainWindow.webContents.once('dom-ready', () => {
+            mainWindow.webContents.openDevTools();
+        });
     }
 
     globalShortcut.register('CmdOrCtrl+F5', () => {
