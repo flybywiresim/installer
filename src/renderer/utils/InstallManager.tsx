@@ -346,7 +346,7 @@ export class InstallManager {
             if (addon.backgroundService) {
                 const app = BackgroundServices.getExternalAppFromBackgroundService(addon, publisher);
 
-                const isAutoStartEnabled = await BackgroundServices.isAutoStartEnabled(addon, publisher);
+                const isAutoStartEnabled = await BackgroundServices.isAutoStartEnabled(addon);
                 const doNotAskAgain = settings.get<string, boolean>(`mainSettings.disableBackgroundServiceAutoStartPrompt.${publisher.key}.${addon.key}`);
 
                 if (!isAutoStartEnabled && !doNotAskAgain) {

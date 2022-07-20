@@ -18,15 +18,19 @@ export const AutostartDialog: FC<AutostartDialogProps> = ({ app, addon, publishe
     const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
-        const interval = setInterval(async () => {
-            setEnabled(await BackgroundServices.isAutoStartEnabled(addon, publisher));
+        BackgroundServices.isAutoStartEnabled(addon).then((state) => {
+            setEnabled(state);
         });
+
+        const interval = setInterval(async () => {
+            setEnabled(await BackgroundServices.isAutoStartEnabled(addon));
+        }, 500);
 
         return () => clearInterval(interval);
     }, []);
 
     const handleToggle = async () => {
-        const isEnabled = await BackgroundServices.isAutoStartEnabled(addon, publisher);
+        const isEnabled = await BackgroundServices.isAutoStartEnabled(addon);
 
         await BackgroundServices.setAutoStartEnabled(addon, publisher, !isEnabled);
     };

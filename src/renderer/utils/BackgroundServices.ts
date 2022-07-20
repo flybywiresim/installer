@@ -3,12 +3,12 @@ import { Resolver } from "renderer/utils/Resolver";
 import { store } from "renderer/redux/store";
 import { ApplicationStatus } from "renderer/components/AddonSection/Enums";
 import { ExternalApps } from "renderer/utils/ExternalApps";
-import Winreg from 'winreg';
 import path from "path";
 import { Directories } from "renderer/utils/Directories";
 import { shell } from "@electron/remote";
+import { promises } from "fs-extra";
 
-export const AUTORUN_KEY = '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
+export const STARTUP_FOLDER_PATH = 'Microsoft\\Windows\\Start Menu\\Programs\\Startup\\';
 
 export class BackgroundServices {
     private static validateExecutablePath(path: string): boolean {
@@ -38,34 +38,29 @@ export class BackgroundServices {
         return state === ApplicationStatus.Open;
     }
 
-    private static getAutostartRegistryKey(): Winreg.Registry {
-        return new Winreg({
-            hive: Winreg.HKCU,
-            key: AUTORUN_KEY,
-        });
-    }
-
-    private static getAutoStartRegistryEntryName(addon: Addon, publisher: Publisher): string {
-        return `fbw-installer-bgservice-${publisher.key}-${addon.key}`;
-    }
-
-    static async isAutoStartEnabled(addon: Addon, publisher: Publisher): Promise<boolean> {
+    static async isAutoStartEnabled(addon: Addon): Promise<boolean> {
         const backgroundService = addon.backgroundService;
 
         if (!backgroundService) {
             throw new Error('Addon has no background service');
         }
 
-        const key = this.getAutostartRegistryKey();
+        let folderEntries;
+        try {
+            folderEntries = await promises.readdir(path.join(process.env.APPDATA, STARTUP_FOLDER_PATH), { withFileTypes: true });
+        } catch (e) {
+            console.error('[BackgroundServices](isAutoStartEnabled) Could not read contents of startup folder. See exception below');
+            console.error(e);
+        }
 
-        return new Promise((resolve) => {
-            key.get(this.getAutoStartRegistryEntryName(addon, publisher), (err) => {
-                if (err) {
-                    resolve(false);
-                }
-                resolve(true);
-            });
-        });
+        if (!folderEntries) {
+            return false;
+        }
+
+        const shortcuts = folderEntries.filter((it) => it.isFile() && path.extname(it.name) === '.lnk');
+        const matchingShortcut = shortcuts.find((it) => path.parse(it.name).name === backgroundService.executableFileBasename);
+
+        return matchingShortcut !== undefined;
     }
 
     static async setAutoStartEnabled(addon: Addon, publisher: Publisher, enabled: boolean): Promise<void> {
@@ -75,27 +70,36 @@ export class BackgroundServices {
             throw new Error('Addon has no background service');
         }
 
+        if (!this.validateExecutablePath(backgroundService.executableFileBasename)) {
+            throw new Error('Executable path much match /^[a-zA-Z\\d_-]+$/.');
+        }
+
         const exePath = path.join(Directories.inCommunity(addon.targetDirectory), backgroundService.executableFileBasename);
         const commandLineArgs = backgroundService.commandLineArgs
             ? ` ${backgroundService.commandLineArgs.join(' ')}`
             : '';
 
-        const key = this.getAutostartRegistryKey();
+        const shortcutDir = path.join(process.env.APPDATA, STARTUP_FOLDER_PATH);
+        const shortcutPath = path.join(shortcutDir, `${backgroundService.executableFileBasename}.lnk`);
 
-        return new Promise((resolve, reject) => {
-            if (enabled) {
-                key.set(this.getAutoStartRegistryEntryName(addon, publisher), Winreg.REG_SZ, `${exePath}${commandLineArgs}`, (err) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    resolve();
-                });
+        if (enabled) {
+            const created = shell.writeShortcutLink(shortcutPath, 'create', {
+                target: exePath,
+                args: commandLineArgs,
+                cwd: path.dirname(exePath),
+            });
+
+            if (!created) {
+                console.error('[BackgroundServices](setAutoStartEnabled) Could not create shortcut');
             } else {
-                key.remove(this.getAutoStartRegistryEntryName(addon, publisher), () => {
-                    resolve();
-                });
+                console.log('[BackgroundServices](setAutoStartEnabled) Shortcut created');
             }
-        });
+        } else {
+            promises.rm(shortcutPath).catch((e) => {
+                console.error('[BackgroundServices](setAutoStartEnabled) Could not remove shortcut. See exception below.');
+                console.error(e);
+            });
+        }
     }
 
     static async start(addon: Addon): Promise<void> {
