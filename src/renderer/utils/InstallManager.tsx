@@ -239,6 +239,12 @@ export class InstallManager {
         const installDir = Directories.inCommunity(addon.targetDirectory);
         const tempDir = Directories.temp();
 
+        if (tempDir === Directories.community()) {
+            console.error('Community directory equals temp directory');
+            this.notifyDownload(addon, false);
+            return InstallResult.Failure;
+        }
+
         console.log(`Installing track=${track.key}`);
         console.log("Installing into:");
         console.log('---');
