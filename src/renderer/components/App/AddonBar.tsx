@@ -3,7 +3,7 @@ import { Addon, Publisher, PublisherButton } from "renderer/utils/InstallerConfi
 import { shell } from 'electron';
 import * as BootstrapIcons from 'react-bootstrap-icons';
 import { ArrowRepeat, Check2, CloudArrowDownFill, Icon } from "react-bootstrap-icons";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useAppSelector } from "renderer/redux/store";
 import { AircraftSectionURLParams } from "../AddonSection";
 import { useIsDarkTheme } from "common/settings";
@@ -31,7 +31,7 @@ export const AddonBar: FC = ({ children }) => {
 
         let currentGroup: PublisherButton[] = [];
         for (const button of buttons) {
-            if (button.inline) {
+            if (button.inline || currentGroup.length === 0) {
                 currentGroup.push(button);
             } else {
                 groups.push(currentGroup);
@@ -59,12 +59,14 @@ export const AddonBar: FC = ({ children }) => {
     const textClass = darkTheme ? 'text-quasi-white' : 'text-navy';
 
     return (
-        <div className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full`}>
+        <div className={`flex flex-col justify-between gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
                 <h3 className={`${textClass} font-bold -mb-1`}>{publisherData.name}</h3>
             </div>
 
-            {children}
+            <div className="flex-grow flex flex-col">
+                {children}
+            </div>
 
             <div className="flex flex-col gap-y-4 mt-auto">
                 {publisherData.buttons && (
@@ -84,7 +86,7 @@ export interface AddonBarItemProps {
 }
 
 export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, className, onClick }) => {
-    const installStatus = useAppSelector(state => state.installStatus[addon.key]);
+    const installState = useAppSelector(state => state.installStatus[addon.key]);
 
     const background = selected ? `bg-dodger-light text-navy-dark` : `bg-transparent text-quasi-white`;
     const border = `${selected ? 'border-dodger-light' : 'border-navy-light'} ${enabled ? 'hover:border-dodger-light' : ''}`;
@@ -95,9 +97,11 @@ export const AddonBarItem: FC<AddonBarItemProps> = ({ addon, enabled, selected, 
             onClick={enabled ? onClick : undefined}
         >
             <span className="text-2xl text-current font-manrope font-medium mb-2.5">{addon.aircraftName}</span>
-            <div className="flex flex-row justify-between mt-1 h-11">
+            <div className="flex flex-row justify-between mt-1 h-10">
                 <img className="h-10 w-max" src={selected ? addon.titleImageUrl : addon.titleImageUrlSelected} />
-                <AddonBarItemStatus status={installStatus} />
+                {installState && (
+                    <AddonBarItemStatus status={installState.status} />
+                )}
             </div>
         </div>
     );
@@ -112,6 +116,8 @@ const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
         case InstallStatus.UpToDate:
         case InstallStatus.GitInstall:
             return <Check2 size={27} />;
+        case InstallStatus.InstallingDependency:
+        case InstallStatus.InstallingDependencyEnding:
         case InstallStatus.DownloadPrep:
         case InstallStatus.Decompressing:
         case InstallStatus.Downloading:
@@ -129,12 +135,18 @@ interface AddonBarPublisherButtonProps {
 }
 
 const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) => {
+    const history = useHistory();
+
     const handleClick = async () => {
         switch (button.action) {
             case 'openBrowser':
                 await shell.openExternal(button.url);
                 break;
-            case 'internal': // TODO
+            case 'internal':
+                switch (button.call) {
+                    case 'fbw-local-api-config':
+                        history.push(`/addon-section/FlyByWire Simulations/configuration/fbw-local-api-config`);
+                }
                 break;
         }
     };
@@ -163,11 +175,11 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
 
         return (
             <button
-                className="w-full flex flex-row justify-between items-center px-8 py-6 text-4xl border-2 border-navy-light hover:border-cyan transition duration-200 rounded-md"
+                className="w-full flex flex-row justify-between items-center px-5 py-6 text-4xl border-2 border-navy-light hover:border-cyan transition duration-200 rounded-md"
                 disabled={button.inop}
                 onClick={handleClick}
             >
-                <span className="pt-1">{button.text}</span>
+                <span className="pl-4 pt-1">{button.text}</span>
 
                 <ChevronRight size={32} />
             </button>

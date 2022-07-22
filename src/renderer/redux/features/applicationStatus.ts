@@ -2,10 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ApplicationStatus } from "renderer/components/AddonSection/Enums";
 import { TypedAction } from "renderer/redux/store";
 
-const initialState: Record<string, ApplicationStatus> = {
-    msfs: ApplicationStatus.Checking,
-    mcduServer: ApplicationStatus.Checking,
-};
+const initialState: Record<string, ApplicationStatus> = {};
 
 export const applicationStatusSlice = createSlice({
     name: "applicationStatus",

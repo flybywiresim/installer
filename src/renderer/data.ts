@@ -8,6 +8,7 @@ export const defaultConfiguration: Configuration = {
     publishers: [
         {
             name: 'FlyByWire Simulations',
+            key: 'flybywiresim',
             logoUrl: FBWLogo,
             defs: [
                 {
@@ -19,6 +20,34 @@ export const defaultConfiguration: Configuration = {
                     kind: 'addonCategory',
                     key: 'scenery',
                     title: 'Scenery',
+                },
+                {
+                    kind: 'addonCategory',
+                    key: 'simbridge',
+                    styles: ['align-bottom'],
+                },
+                {
+                    kind: 'externalApp',
+                    key: 'mcdu-server',
+                    prettyName: 'MCDU Server',
+                    detectionType: 'ws',
+                    url: 'ws://localhost:8380',
+                },
+                {
+                    kind: 'externalApp',
+                    key: 'simbridge-app',
+                    prettyName: 'SimBridge',
+                    detectionType: 'http',
+                    url: 'http://localhost:8380/health',
+                    killUrl: 'http://localhost:8380/health/kill',
+                    killMethod: 'GET',
+                },
+                {
+                    kind: 'externalApp',
+                    key: 'msfs',
+                    prettyName: 'MSFS',
+                    detectionType: 'tcp',
+                    port: 500,
                 },
             ],
             addons: [
@@ -115,6 +144,14 @@ export const defaultConfiguration: Configuration = {
                             },
                         },
                     ],
+                    dependencies: [
+                        {
+                            addon: '@flybywiresim/simbridge',
+                            optional: true,
+                            modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
+                        },
+                    ],
+                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server', '@/simbridge-app'],
                 },
                 {
                     name: 'A380X',
@@ -131,6 +168,7 @@ export const defaultConfiguration: Configuration = {
                     description: '',
                     targetDirectory: 'A380',
                     tracks: [],
+                    disallowedRunningExternalApps: ['@/msfs'],
                 },
                 {
                     name: 'KFBW',
@@ -164,24 +202,64 @@ export const defaultConfiguration: Configuration = {
                         },
                     ],
                 },
+                {
+                    name: 'SimBridge',
+                    key: 'simbridge',
+                    category: '@simbridge',
+                    repoOwner: 'flybywiresim',
+                    repoName: 'simbridge',
+                    aircraftName: 'FBW SimBridge',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
+                    enabled: true,
+                    backgroundImageUrls: ['https://cdn.discordapp.com/attachments/845070631644430359/982713039696560128/simbridge.png'],
+                    backgroundImageShadow: false,
+                    shortDescription: 'Airbus A380-800',
+                    description: '',
+                    targetDirectory: 'flybywire-externaltools-simbridge',
+                    tracks: [
+                        {
+                            name: 'Release',
+                            key: 'release',
+                            releaseModel: {
+                                type: 'githubRelease',
+                            },
+                            url: 'https://cdn.flybywiresim.com/addons/simbridge/release/',
+                            isExperimental: false,
+                            description: 'SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.',
+                        },
+                    ],
+                    // configurationAspects: [
+                    //     {
+                    //         key: 'terrain-db',
+                    //         tabTitle: 'Terrain Database',
+                    //         tabSupertitle: 'Update',
+                    //         title: 'Enable or Disable Terrain Database',
+                    //         applyChoiceKeyTo: 'optionalFragmenterModule',
+                    //         choiceKind: 'yesNo',
+                    //         choices: [
+                    //             {
+                    //                 key: 'yes',
+                    //                 title: '@translations[Data.FBW.SimBridge.ConfigTerrainDB.ChoiceYes.Title]',
+                    //                 description: 'Download and install the terrain database to enable terrain display in the FBW A32NX and A380X addons.',
+                    //             },
+                    //             {
+                    //                 key: 'yes',
+                    //                 title: 'Disable Terrain Database',
+                    //                 description: 'Do not install the terrain database. Terrain display will not be available in the FBW A32NX and A380X addons.',
+                    //             },
+                    //         ],
+                    //     },
+                    // ],
+                    disallowedRunningExternalApps: ['@/simbridge-app'],
+                    backgroundService: {
+                        executableFileBasename: 'fbw-simbridge',
+                        runCheckExternalAppRef: '@/simbridge-app',
+                        commandLineArgs: ['--hide'],
+                    },
+                },
             ],
             buttons: [
-                // {
-                //     text: 'MCDU',
-                //     action: 'internal',
-                //     call: 'fbw-remote-mcdu',
-                //     icon: 'Tablet',
-                //     inop: true,
-                //     inline: true,
-                // },
-                // {
-                //     text: 'flyPad',
-                //     action: 'internal',
-                //     call: 'fbw-remote-flypad',
-                //     icon: 'TabletLandscape',
-                //     inop: true,
-                //     inline: true,
-                // },
                 {
                     text: 'Documentation',
                     action: 'openBrowser',
@@ -207,6 +285,7 @@ export const defaultConfiguration: Configuration = {
         },
         {
             name: 'Salty Simulations',
+            key: 'salty',
             logoUrl: SaltyLogo,
             defs: [
                 {
@@ -285,6 +364,7 @@ export const defaultConfiguration: Configuration = {
         },
         {
             name: 'Synaptic Simulations',
+            key: 'synaptic',
             logoUrl: SynapticLogo,
             defs: [
                 {
