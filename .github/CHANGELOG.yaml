@@ -9,6 +9,20 @@
 
 
 releases:
+  - name: 3.2.0
+    changes:
+      - title: Add FlyByWire Simulations SimBridge
+        categories: [Addons]
+        authors: [holland, Erick]
+      - title: Add support for addon background services
+        categories: [Core]
+        authors: [holland]
+      - title: Improve UI for open applications preventing addon install, update or removal
+        categories: [UI]
+        authors: [holland]
+      - title: Add SimBridge configuration UI
+        categories: [Addons]
+        authors: [holland, Erick]
   - name: 3.1.0
     changes:
       - title: Add Salty Simulations 74S
