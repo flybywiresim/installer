@@ -527,7 +527,7 @@ export const AddonSection = (): JSX.Element => {
 };
 
 const About: FC<{ addon: Addon }> = ({ addon }) => (
-    <div className="h-full p-7">
+    <div className="w-full h-full p-7">
         <div className="flex justify-between items-center">
             <h2 className="text-white font-bold">About</h2>
 
