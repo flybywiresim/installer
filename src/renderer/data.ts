@@ -216,7 +216,7 @@ export const defaultConfiguration: Configuration = {
                     backgroundImageUrls: ['https://cdn.discordapp.com/attachments/845070631644430359/982713039696560128/simbridge.png'],
                     backgroundImageShadow: false,
                     shortDescription: 'Airbus A380-800',
-                    description: '',
+                    description: 'SimBridge is an external application which allows FBW aircraft to communicate with components located outside the simulator. SimBridge will be used for a number of features requiring external data (such as TAWS terrain display), as well as for functionality providing remote access to aircraft systems or data.',
                     targetDirectory: 'flybywire-externaltools-simbridge',
                     tracks: [
                         {
