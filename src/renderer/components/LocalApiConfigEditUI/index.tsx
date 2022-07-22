@@ -135,7 +135,7 @@ export const LocalApiConfigEditUI: FC = () => {
                             className='flex items-center justify-center px-8 py-2 border-2 border-utility-red rounded-md transition duration-100 bg-utility-red hover:bg-navy text-white'
                             onClick={handleDiscard}
                         >
-                            <p>Discard</p>
+                            Discard
                         </button>
                     )}
 
@@ -144,7 +144,7 @@ export const LocalApiConfigEditUI: FC = () => {
                             className='flex items-center justify-center px-8 py-2 border-2 border-utility-red rounded-md transition duration-100 bg-utility-red hover:bg-navy text-white'
                             onClick={handleReset}
                         >
-                            <p>Reset</p>
+                            Reset
                         </button>
                     )}
 
@@ -153,7 +153,7 @@ export const LocalApiConfigEditUI: FC = () => {
                             className='flex items-center justify-center px-16 py-2 border-2 border-utility-green rounded-md transition duration-100 bg-utility-green hover:bg-navy text-white'
                             onClick={handleConfigSave}
                         >
-                            <p>Save</p>
+                            Save
                         </button>
                     )}
                 </div>
