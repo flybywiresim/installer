@@ -23,6 +23,9 @@ releases:
       - title: Add SimBridge configuration UI
         categories: [Addons]
         authors: [holland, Erick]
+      - title: Add customisable temporary folder setting
+        categories: [Logic]
+        authors: [marinofranz, FoxtrotSierra]
   - name: 3.1.0
     changes:
       - title: Add Salty Simulations 74S
