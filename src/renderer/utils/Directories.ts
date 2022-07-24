@@ -3,8 +3,12 @@ import { Addon } from "renderer/utils/InstallerConfiguration";
 import fs from "fs-extra";
 import settings from "common/settings";
 
-export class Directories {
+const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
+const MSFS_APPDATA_PATH = 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState\\packages\\';
+const MSFS_STEAM_PATH = 'Microsoft Flight Simulator\\Packages';
+
+export class Directories {
     static community(): string {
         return settings.get('mainSettings.msfsPackagePath') as string;
     }
@@ -30,14 +34,15 @@ export class Directories {
     }
 
     static inPackagesMicrosoftStore(targetDir: string): string {
-        return path.join(process.env.LOCALAPPDATA, 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState\\packages\\', targetDir);
+        return path.join(process.env.LOCALAPPDATA, MSFS_APPDATA_PATH, targetDir);
     }
+
     static inPackagesSteam(targetDir: string): string {
-        return path.join(process.env.APPDATA, 'Microsoft Flight Simulator\\Packages', targetDir);
+        return path.join(process.env.APPDATA, MSFS_STEAM_PATH, targetDir);
     }
 
     static temp(): string {
-        const dir = path.join(Directories.tempLocation(), `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
+        const dir = path.join(Directories.tempLocation(), `${TEMP_DIRECTORY_PREFIX}-${(Math.random() * 1000).toFixed(0)}`);
         if (fs.existsSync(dir)) {
             return Directories.temp();
         }
@@ -54,7 +59,7 @@ export class Directories {
 
         fs.readdirSync(Directories.tempLocation(), { withFileTypes: true })
             .filter(dirEnt => dirEnt.isDirectory())
-            .filter(dirEnt => dirEnt.name.startsWith('flybywire_current_install_'))
+            .filter(dirEnt => dirEnt.name.startsWith(TEMP_DIRECTORY_PREFIX))
             .forEach(dir => {
                 const fullPath = Directories.inTempLocation(dir.name);
 

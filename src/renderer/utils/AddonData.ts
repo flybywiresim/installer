@@ -2,7 +2,7 @@ import { Addon, AddonTrack, GithubBranchReleaseModel } from "renderer/utils/Inst
 import { GitVersions } from "@flybywiresim/api-client";
 import { Directories } from "./Directories";
 import fs from 'fs-extra';
-import { getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
+import { getCurrentInstall, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
 import settings from "common/settings";
 import { store } from "renderer/redux/store";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
@@ -128,7 +128,7 @@ export class AddonData {
         }
 
         try {
-            const updateInfo = await needsUpdate(selectedTrack.url, installDir, {
+            const updateInfo = await new FragmenterUpdateChecker().needsUpdate(selectedTrack.url, installDir, {
                 forceCacheBust: true,
             });
             console.log('Update info for', addon.key, updateInfo);
@@ -162,7 +162,7 @@ export class AddonData {
         const state = store.getState();
 
         if (state.installStatus[addon.key].status === InstallStatus.UpToDate) {
-            const updateInfo = await needsUpdate(state.selectedTracks[addon.key].url, installDir, {
+            const updateInfo = await new FragmenterUpdateChecker().needsUpdate(state.selectedTracks[addon.key].url, installDir, {
                 forceCacheBust: true,
             });
             console.log("Update info", addon.key, updateInfo);

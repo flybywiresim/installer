@@ -6,7 +6,7 @@ import { deleteDownload, registerNewDownload, updateDownloadProgress } from "ren
 import { Directories } from "renderer/utils/Directories";
 import fs from "fs-extra";
 import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
-import { FragmenterInstaller, needsUpdate } from "@flybywiresim/fragmenter";
+import { FragmenterInstallerEvents, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
 import settings from "common/settings";
 import { store } from "renderer/redux/store";
 import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
@@ -20,6 +20,10 @@ import { BackgroundServices } from "renderer/utils/BackgroundServices";
 import { CannotInstallDialog } from "renderer/components/Modal/CannotInstallDialog";
 import { ExternalApps } from "renderer/utils/ExternalApps";
 import { ExternalAppsUI } from "./ExternalAppsUI";
+import { ipcRenderer } from "electron";
+import channels from 'common/channels';
+
+type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents> = Parameters<FragmenterInstallerEvents[K]>
 
 export enum InstallResult {
     Success,
@@ -66,7 +70,7 @@ export class InstallManager {
         }
 
         try {
-            const updateInfo = await needsUpdate(addonSelectedTrack.url, installDir, {
+            const updateInfo = await new FragmenterUpdateChecker().needsUpdate(addonSelectedTrack.url, installDir, {
                 forceCacheBust: true,
             });
             console.log("Update info", updateInfo);
@@ -236,8 +240,37 @@ export class InstallManager {
 
         store.dispatch(registerNewDownload({ id: addon.key, module: "", abortControllerID: abortControllerID }));
 
-        const installDir = Directories.inCommunity(addon.targetDirectory);
+        const destDir = Directories.inCommunity(addon.targetDirectory);
         const tempDir = Directories.temp();
+        const restoreDir = `${Directories.temp()}-existing`;
+
+        const restoreOldInstall = async () => {
+            console.log('Install failure - attempting to restore old install');
+
+            const restoreDirExists = fs.existsSync(restoreDir);
+
+            if (restoreDirExists) {
+                console.log('Restore directory exists - Restoring old install');
+                await fs.copy(restoreDir, destDir, { recursive: true });
+                console.log('Finished restoring old install');
+            } else {
+                console.warn('Restore directory was not created - not restoring');
+            }
+        };
+
+        const deleteOldInstall = async () => {
+            console.log('Install success - attempting to restore old install');
+
+            const restoreDirExists = fs.existsSync(restoreDir);
+
+            if (restoreDirExists) {
+                console.log('Restore directory exists - deleting old install');
+                await fs.rm(restoreDir, { recursive: true });
+                console.log('Finished deleting old install');
+            } else {
+                console.warn('Restore directory was not created - not deleting');
+            }
+        };
 
         if (tempDir === Directories.community()) {
             console.error('Community directory equals temp directory');
@@ -248,105 +281,124 @@ export class InstallManager {
         console.log(`Installing track=${track.key}`);
         console.log("Installing into:");
         console.log('---');
-        console.log(`installDir: ${installDir}`);
+        console.log(`installDir: ${destDir}`);
         console.log(`tempDir:    ${tempDir}`);
         console.log('---');
 
-        // Prepare temporary directory
-        fs.removeSync(tempDir);
-        fs.mkdirSync(tempDir);
-
-        // Copy current install to temporary directory
+        // Copy current install to restore directory
         console.log("Checking for existing install");
-        if (Directories.isFragmenterInstall(installDir)) {
+        if (Directories.isFragmenterInstall(destDir)) {
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadPrep });
-            console.log("Found existing install at", installDir);
-            console.log("Copying existing install to", tempDir);
-            await fs.copy(installDir, tempDir);
+
+            console.log("Found existing install at", destDir);
+            console.log("Copying existing install to", restoreDir);
+            await fs.copy(destDir, restoreDir, { recursive: true });
             console.log("Finished copying");
+        }
+
+        if (!fs.existsSync(destDir)) {
+            fs.mkdirSync(destDir);
         }
 
         try {
             let lastPercent = 0;
             this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
 
-            // Perform the fragmenter download
-            const installer = new FragmenterInstaller(track.url, tempDir);
+            // Generate a random install iD to keep track of events related to our install
+            const ourInstallID = Math.floor(Math.random() * 1_000_000);
 
-            installer.on("downloadStarted", (module) => {
-                console.log("Downloading started for module", module.name);
-                this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
-            });
-
-            installer.on("downloadProgress", (module, progress) => {
-                if (lastPercent !== progress.percent) {
-                    lastPercent = progress.percent;
-                    store.dispatch(
-                        updateDownloadProgress({
-                            id: addon.key,
-                            module: module.name,
-                            progress: progress.percent,
-                        }));
+            const handleForwardedFragmenterEvent = (_: unknown, installID: number, event: keyof FragmenterInstallerEvents, ...args: unknown[]) => {
+                if (installID !== ourInstallID) {
+                    return;
                 }
-            });
 
-            installer.on("unzipStarted", (module) => {
-                console.log("Started unzipping module", module.name);
-                this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing });
+                switch (event) {
+                    case 'downloadStarted': {
+                        const [module] = args as FragmenterEventArguments<typeof event>;
 
-                if (dependencyOf) {
-                    this.setCurrentInstallState(dependencyOf, {
-                        status: InstallStatus.InstallingDependencyEnding,
-                        dependencyAddonKey: addon.key, dependencyPublisherKey: publisher.key,
-                    });
+                        console.log("Downloading started for module", module.name);
+                        this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+                        break;
+                    }
+                    case "downloadProgress": {
+                        const [module, progress] = args as FragmenterEventArguments<typeof event>;
+
+                        if (lastPercent !== progress.percent) {
+                            lastPercent = progress.percent;
+                            store.dispatch(
+                                updateDownloadProgress({
+                                    id: addon.key,
+                                    module: module.name,
+                                    progress: progress.percent,
+                                }));
+                        }
+                        break;
+                    }
+                    case 'unzipStarted': {
+                        const [module] = args as FragmenterEventArguments<typeof event>;
+
+                        console.log("Started unzipping module", module.name);
+                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing });
+
+                        if (dependencyOf) {
+                            this.setCurrentInstallState(dependencyOf, {
+                                status: InstallStatus.InstallingDependencyEnding,
+                                dependencyAddonKey: addon.key, dependencyPublisherKey: publisher.key,
+                            });
+                        }
+                        break;
+                    }
+                    case 'retryScheduled': {
+                        const [module, retryCount, waitSeconds] = args as FragmenterEventArguments<typeof event>;
+
+                        console.log("Scheduling a retry for module", module.name);
+                        console.log("Retry count", retryCount);
+                        console.log("Waiting for", waitSeconds, "seconds");
+
+                        this.setCurrentInstallState(addon, { status: InstallStatus.DownloadRetry });
+                        break;
+                    }
+                    case 'retryStarted': {
+                        const [module, retryCount] = args as FragmenterEventArguments<typeof event>;
+
+                        console.log("Starting a retry for module", module.name);
+                        console.log("Retry count", retryCount);
+
+                        this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+                        break;
+                    }
                 }
-            });
+            };
 
-            installer.on("retryScheduled", (module, retryCount, waitSeconds) => {
-                console.log("Scheduling a retry for module", module.name);
-                console.log("Retry count", retryCount);
-                console.log("Waiting for", waitSeconds, "seconds");
+            // Listen to forwarded fragmenter events
+            ipcRenderer.on(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
 
-                this.setCurrentInstallState(addon, { status: InstallStatus.DownloadRetry });
-            });
-
-            installer.on("retryStarted", (module, retryCount) => {
-                console.log("Starting a retry for module", module.name);
-                console.log("Retry count", retryCount);
-
-                this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+            // Send cancel message when abort controller is aborted
+            this.abortControllers[abortControllerID].signal.addEventListener('abort', () => {
+                ipcRenderer.send(channels.installManager.cancelInstall, ourInstallID);
             });
 
             console.log("Starting fragmenter download for URL", track.url);
-            const installResult = await installer.install(signal, {
-                forceCacheBust: !(settings.get("mainSettings.useCdnCache") as boolean),
-                forceFreshInstall: false,
-                forceManifestCacheBust: true,
-            });
+
+            await ipcRenderer.invoke(channels.installManager.installFromUrl, ourInstallID, track.url, tempDir, destDir);
+
             console.log("Fragmenter download finished for URL", track.url);
 
-            // Copy files from temp dir
+            // Stop listening to forwarded fragmenter events
+            ipcRenderer.removeListener(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
+
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
-            Directories.removeTargetForAddon(addon);
-            console.log("Copying files from", tempDir, "to", installDir);
-            await fs.copy(tempDir, installDir, { recursive: true });
-            console.log("Finished copying files from", tempDir, "to", installDir);
 
             // Remove installs existing under alternative names
             console.log("Removing installs existing under alternative names");
             Directories.removeAlternativesForAddon(addon);
-            console.log(
-                "Finished removing installs existing under alternative names",
-            );
+            console.log("Finished removing installs existing under alternative names");
 
-            store.dispatch(deleteDownload({ id: addon.key }));
             this.notifyDownload(addon, true);
 
             // Flash completion text
-            this.setCurrentlyInstalledTrack(addon, track);
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadDone });
-
-            console.log(`Finished download, result=${JSON.stringify(installResult)}`);
+            this.setCurrentlyInstalledTrack(addon, track);
 
             // If we have a background service, ask if we want to enable it
             if (addon.backgroundService) {
@@ -368,6 +420,8 @@ export class InstallManager {
                 setCancelledState();
                 startResetStateTimer();
 
+                await restoreOldInstall();
+
                 return InstallResult.Cancelled;
             } else {
                 console.error('Download failed, see exception below');
@@ -376,14 +430,15 @@ export class InstallManager {
                 setErrorState();
                 startResetStateTimer();
 
+                await restoreOldInstall();
+
                 return InstallResult.Failure;
             }
         }
 
-        removeDownloadState();
+        await deleteOldInstall();
 
-        // Clean up temp dir
-        fs.removeSync(tempDir);
+        removeDownloadState();
 
         return InstallResult.Success;
     }

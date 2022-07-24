@@ -6,6 +6,7 @@ import * as packageInfo from '../../package.json';
 import settings, { persistWindowSettings } from "common/settings";
 import channels from "common/channels";
 import * as remote from "@electron/remote/main";
+import { InstallManager } from "main/InstallManager";
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -243,3 +244,5 @@ app.on('second-instance', () => {
         mainWindow.focus();
     }
 });
+
+InstallManager.setupIpcListeners();

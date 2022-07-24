@@ -11,4 +11,9 @@ export default {
         downloaded: 'update/downloaded',
     },
     checkForInstallerUpdate: 'checkForInstallerUpdate',
+    installManager: {
+        fragmenterEvent: 'installManager/fragmenterEvent',
+        installFromUrl: 'installManager/installFromUrl',
+        cancelInstall: 'installManager/cancelInstall',
+    },
 };
