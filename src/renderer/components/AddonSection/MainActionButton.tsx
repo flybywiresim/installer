@@ -1,29 +1,20 @@
 import React, { FC } from "react";
 import { ButtonType } from "renderer/components/Button";
 import { SidebarButton } from "renderer/components/AddonSection/index";
-import { InstallStatus, ApplicationStatus } from "renderer/components/AddonSection/Enums";
-import { useAppSelector } from "renderer/redux/store";
+import { InstallStatus } from "renderer/components/AddonSection/Enums";
+import { InstallState } from "renderer/redux/features/installStatus";
 
 interface ActiveInstallButtonProps {
-    installStatus: InstallStatus,
+    installState: InstallState,
     onInstall: () => void,
     onCancel: () => void,
 }
 
 export const MainActionButton: FC<ActiveInstallButtonProps> = ({
-    installStatus,
+    installState: { status: installStatus },
     onInstall,
     onCancel,
 }): JSX.Element => {
-    const applicationStatus = useAppSelector(state => state.applicationStatus);
-    if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
-        return (
-            <SidebarButton disabled>
-                Unavailable
-            </SidebarButton>
-        );
-    }
-
     switch (installStatus) {
         case InstallStatus.DownloadDone:
         case InstallStatus.UpToDate:
@@ -56,20 +47,17 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
                     Switch Version
                 </SidebarButton>
             );
-        case InstallStatus.DownloadPrep:
-            return (
-                <SidebarButton disabled type={ButtonType.Danger}>
-                    Cancel
-                </SidebarButton>
-            );
+        case InstallStatus.InstallingDependency:
         case InstallStatus.Downloading:
             return (
                 <SidebarButton type={ButtonType.Danger} onClick={onCancel}>
                     Cancel
                 </SidebarButton>
             );
+        case InstallStatus.DownloadPrep:
         case InstallStatus.Decompressing:
         case InstallStatus.DownloadEnding:
+        case InstallStatus.InstallingDependencyEnding:
             return (
                 <SidebarButton disabled type={ButtonType.Neutral}>
                     Cancel

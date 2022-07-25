@@ -4,7 +4,7 @@ import { InstallerStore } from "renderer/redux/store";
 import { Check } from 'tabler-icons-react';
 import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
 
-import './index.css';
+import '../index.css';
 
 export const Tracks: React.FC = ({ children }) => (
     <div className="flex flex-row justify-start items-stretch gap-3">

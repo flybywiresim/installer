@@ -1,0 +1,6 @@
+*[data-selected="true"] > .configuration-aspect-tab-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--color-brand-cyan-main);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+}

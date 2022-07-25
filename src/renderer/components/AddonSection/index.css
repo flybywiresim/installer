@@ -1,10 +1,10 @@
 .progress-bar-animated {
-  transition: width 0.5s ease;
+  transition: width 0.05s ease;
 }
 
 .progress-bar-animated::before {
   content: "";
-  position: absolute;
+  position: relative;
   inset: 0;
   border-radius: inherit;
   background: linear-gradient(to right, transparent, rgba(255, 255, 255, 1));

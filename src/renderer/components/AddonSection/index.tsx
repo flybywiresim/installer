@@ -1,35 +1,33 @@
-import React, { FC, useEffect, useState } from "react";
-import fs from "fs-extra";
-import * as path from "path";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { setupInstallPath } from "renderer/actions/install-path.utils";
 import { DownloadItem } from "renderer/redux/types";
 import { useSelector } from "react-redux";
-import { Track, Tracks } from "renderer/components/AddonSection/TrackSelector";
-import { FragmenterInstaller, getCurrentInstall, needsUpdate } from "@flybywiresim/fragmenter";
+import { getCurrentInstall } from "@flybywiresim/fragmenter";
 import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/store";
-import { Addon, AddonTrack } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonCategoryDefinition, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
-import { Msfs } from "renderer/utils/Msfs";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
-import { InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
+import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
-import { deleteDownload, registerNewDownload, updateDownloadProgress } from 'renderer/redux/features/downloads';
-import { setInstallStatus } from "renderer/redux/features/installStatus";
+import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { HiddenAddonCover } from "renderer/components/AddonSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
 import { MainActionButton } from "renderer/components/AddonSection/MainActionButton";
-import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
-import { ActiveStateText } from "renderer/components/AddonSection/ActiveStateText";
-import { McduServer } from "renderer/utils/McduServer";
+import { ApplicationStatus, InstallStatus, InstallStatusCategories } from "renderer/components/AddonSection/Enums";
 import { setApplicationStatus } from "renderer/redux/features/applicationStatus";
+import { LocalApiConfigEditUI } from "../LocalApiConfigEditUI";
+import { Configure } from "renderer/components/AddonSection/Configure";
+import { InstallManager } from "renderer/utils/InstallManager";
+import { StateSection } from "renderer/components/AddonSection/StateSection";
+import { ExternalApps } from "renderer/utils/ExternalApps";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -59,13 +57,15 @@ export const SidebarButton: FC<InstallButtonProps> = ({
 
 interface SideBarLinkProps {
     to: string;
+    disabled?: boolean;
 }
 
-const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => (
+const SideBarLink: FC<SideBarLinkProps> = ({ to, children, disabled = false }) => (
     <NavLink
-        className="w-full flex flex-row items-center gap-x-5 text-2xl text-white font-manrope font-bold hover:text-cyan no-underline"
+        className={`w-full flex flex-row items-center gap-x-5 text-2xl ${disabled ? 'text-gray-500' : 'text-white'} font-manrope font-bold hover:text-cyan no-underline`}
         activeClassName="text-cyan"
         to={to}
+        style={{ pointerEvents: disabled ? 'none' : 'unset' }}
     >
         {children}
     </NavLink>
@@ -75,12 +75,12 @@ export interface AircraftSectionURLParams {
     publisherName: string;
 }
 
-export const AircraftSection = (): JSX.Element => {
-    const { publisherName } = useParams<AircraftSectionURLParams>();
-
-    const history = useHistory();
-    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
+export const AddonSection = (): JSX.Element => {
     const dispatch = useAppDispatch();
+    const history = useHistory();
+
+    const { publisherName } = useParams<AircraftSectionURLParams>();
+    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
 
     const [selectedAddon, setSelectedAddon] = useState<Addon>(() => {
         try {
@@ -94,9 +94,7 @@ export const AircraftSection = (): JSX.Element => {
 
     const installedTracks = useAppSelector(state => state.installedTracks);
     const selectedTracks = useAppSelector(state => state.selectedTracks);
-    const installStatus = useAppSelector(state => state.installStatus);
-    const applicationStatus = useAppSelector(state => state.applicationStatus);
-
+    const installStates = useAppSelector(state => state.installStatus);
     const releaseNotes = useAppSelector(state => state.releaseNotes[selectedAddon.key]);
 
     useEffect(() => {
@@ -198,49 +196,65 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(setSelectedTrack({ addonKey: selectedAddon.key, track: newSelectedTrack }));
     };
 
-    const getCurrentInstallStatus = (): InstallStatus => {
+    const getCurrentInstallStatus = (): InstallState => {
         try {
-            return installStatus[selectedAddon.key] as InstallStatus;
+            return installStates[selectedAddon.key];
         } catch (e) {
-            setCurrentInstallStatus(InstallStatus.Unknown);
-            return InstallStatus.Unknown;
+            setCurrentInstallStatus({ status: InstallStatus.Unknown });
+            return { status: InstallStatus.Unknown };
         }
     };
 
-    const setCurrentInstallStatus = (new_state: InstallStatus) => {
-        dispatch(setInstallStatus({ addonKey: selectedAddon.key, installStatus: new_state }));
+    const setCurrentInstallStatus = (new_state: InstallState) => {
+        dispatch(setInstallStatus({ addonKey: selectedAddon.key, installState: new_state }));
     };
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
-        state.downloads.find(download => download.id === selectedAddon.name),
+        state.downloads.find(download => download.id === selectedAddon.key),
     );
 
     const isDownloading = download?.progress >= 0;
-    const isInstalling = getCurrentInstallStatus() === InstallStatus.Downloading || getCurrentInstallStatus() === InstallStatus.DownloadPrep || getCurrentInstallStatus() === InstallStatus.Decompressing || getCurrentInstallStatus() === InstallStatus.DownloadEnding || getCurrentInstallStatus() === InstallStatus.DownloadRetry;
-
-    const lowestAvailableAbortControllerID: number = useSelector((state: InstallerStore) => {
-        for (let i = 0; i < abortControllers.length; i++) {
-            if (!state.downloads.map(download => download.abortControllerID).includes(i)) {
-                return i;
-            }
-        }
-    });
+    const status = getCurrentInstallStatus()?.status;
+    const isInstalling = InstallStatusCategories.installing.includes(status);
+    const isFinishingDependencyInstall = status === InstallStatus.InstallingDependencyEnding;
 
     useEffect(() => {
         const checkApplicationInterval = setInterval(async () => {
-            dispatch(setApplicationStatus({ applicationName: 'msfs', applicationStatus: (await Msfs.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
-            dispatch(setApplicationStatus({ applicationName: 'mcduServer', applicationStatus: (await McduServer.isRunning()) ? ApplicationStatus.Open : ApplicationStatus.Closed }));
+            // Map app references to definition objects
+            const disallowedRunningExternalApps = ExternalApps.forAddon(selectedAddon, publisherData);
+
+            for (const app of disallowedRunningExternalApps ?? []) {
+                // Determine what state the app is in
+                let state = false;
+                switch (app.detectionType) {
+                    case 'ws':
+                        state = await ExternalApps.determineStateWithWS(app);
+                        break;
+                    case 'http':
+                        state = await ExternalApps.determineStateWithHttp(app);
+                        break;
+                    case 'tcp':
+                        state = await ExternalApps.determineStateWithTcp(app);
+                        break;
+                }
+
+                // Dispatch the app's state
+                dispatch(setApplicationStatus({
+                    applicationName: app.key,
+                    applicationStatus: state ? ApplicationStatus.Open : ApplicationStatus.Closed,
+                }));
+            }
         }, 500);
 
         return () => clearInterval(checkApplicationInterval);
-    }, []);
+    }, [selectedAddon]);
 
     useEffect(() => {
         findInstalledTrack();
         if (!isInstalling) {
-            getInstallStatus().then(setCurrentInstallStatus);
+            InstallManager.determineAddonInstallState(selectedAddon).then(setCurrentInstallStatus);
         }
-    }, [selectedTrack(), installedTrack()]);
+    }, [selectedAddon, selectedTrack(), installedTrack()]);
 
     useEffect(() => {
         if (download && isDownloading) {
@@ -260,205 +274,7 @@ export const AircraftSection = (): JSX.Element => {
         }
     }, [addonDiscovered]);
 
-    const getInstallStatus = async (): Promise<InstallStatus> => {
-        if (selectedAddon.hidden && !addonDiscovered) {
-            return InstallStatus.Hidden;
-        }
-        if (!selectedTrack()) {
-            return InstallStatus.Unknown;
-        }
-
-        console.log("Checking install status");
-
-        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-
-        if (!fs.existsSync(installDir)) {
-            return InstallStatus.NotInstalled;
-        }
-
-        console.log("Checking for git install");
-        if (Directories.isGitInstall(installDir)) {
-            return InstallStatus.GitInstall;
-        }
-
-        try {
-            const updateInfo = await needsUpdate(selectedTrack().url, installDir, {
-                forceCacheBust: true,
-            });
-            console.log("Update info", updateInfo);
-
-            if (selectedTrack() !== installedTrack() && installedTrack()) {
-                return InstallStatus.TrackSwitch;
-            }
-            if (updateInfo.isFreshInstall) {
-                return InstallStatus.NotInstalled;
-            }
-
-            if (updateInfo.needsUpdate) {
-                return InstallStatus.NeedsUpdate;
-            }
-
-            return InstallStatus.UpToDate;
-        } catch (e) {
-            console.error(e);
-            return InstallStatus.Unknown;
-        }
-    };
-
-    console.log(selectedTrack());
-
-    const downloadAddon = async (track: AddonTrack) => {
-        // Initialize abort controller for downloads
-        const abortControllerID = lowestAvailableAbortControllerID;
-
-        abortControllers[abortControllerID] = new AbortController;
-        const signal = abortControllers[abortControllerID].signal;
-
-        dispatch(registerNewDownload({ id: selectedAddon.key, module: "", abortControllerID: abortControllerID }));
-
-        const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-        const tempDir = Directories.temp();
-
-        console.log("Installing", track);
-        console.log("Installing into", installDir, "using temp dir", tempDir);
-
-        // Prepare temporary directory
-        fs.removeSync(tempDir);
-        fs.mkdirSync(tempDir);
-
-        // Copy current install to temporary directory
-        console.log("Checking for existing install");
-        if (Directories.isFragmenterInstall(installDir)) {
-            setCurrentInstallStatus(InstallStatus.DownloadPrep);
-            console.log("Found existing install at", installDir);
-            console.log("Copying existing install to", tempDir);
-            await fs.copy(installDir, tempDir);
-            console.log("Finished copying");
-        }
-
-        try {
-            let lastPercent = 0;
-            setCurrentInstallStatus(InstallStatus.Downloading);
-
-            // Perform the fragmenter download
-            const installer = new FragmenterInstaller(track.url, tempDir);
-
-            installer.on("downloadStarted", (module) => {
-                console.log("Downloading started for module", module.name);
-                setCurrentInstallStatus(InstallStatus.Downloading);
-            });
-            installer.on("downloadProgress", (module, progress) => {
-                if (lastPercent !== progress.percent) {
-                    lastPercent = progress.percent;
-                    dispatch(
-                        updateDownloadProgress({
-                            id: selectedAddon.key,
-                            module: module.name,
-                            progress: progress.percent,
-                        }));
-                }
-            });
-            installer.on("unzipStarted", (module) => {
-                console.log("Started unzipping module", module.name);
-                setCurrentInstallStatus(InstallStatus.Decompressing);
-            });
-            installer.on("retryScheduled", (module, retryCount, waitSeconds) => {
-                console.log("Scheduling a retry for module", module.name);
-                console.log("Retry count", retryCount);
-                console.log("Waiting for", waitSeconds, "seconds");
-
-                setCurrentInstallStatus(InstallStatus.DownloadRetry);
-            });
-            installer.on("retryStarted", (module, retryCount) => {
-                console.log("Starting a retry for module", module.name);
-                console.log("Retry count", retryCount);
-
-                setCurrentInstallStatus(InstallStatus.Downloading);
-            });
-
-            console.log("Starting fragmenter download for URL", track.url);
-            const installResult = await installer.install(signal, {
-                forceCacheBust: !(settings.get("mainSettings.useCdnCache") as boolean),
-                forceFreshInstall: false,
-                forceManifestCacheBust: true,
-            });
-            console.log("Fragmenter download finished for URL", track.url);
-
-            // Copy files from temp dir
-            setCurrentInstallStatus(InstallStatus.DownloadEnding);
-            Directories.removeTargetForAddon(selectedAddon);
-            console.log("Copying files from", tempDir, "to", installDir);
-            await fs.copy(tempDir, installDir, { recursive: true });
-            console.log("Finished copying files from", tempDir, "to", installDir);
-
-            // Remove installs existing under alternative names
-            console.log("Removing installs existing under alternative names");
-            Directories.removeAlternativesForAddon(selectedAddon);
-            console.log(
-                "Finished removing installs existing under alternative names",
-            );
-
-            dispatch(deleteDownload({ id: selectedAddon.key }));
-            notifyDownload(true);
-
-            // Flash completion text
-            setCurrentlyInstalledTrack(track);
-            setCurrentInstallStatus(InstallStatus.DownloadDone);
-
-            console.log("Finished download", installResult);
-        } catch (e) {
-            if (signal.aborted) {
-                setCurrentInstallStatus(InstallStatus.DownloadCanceled);
-            } else {
-                console.error(e);
-                setCurrentInstallStatus(InstallStatus.DownloadError);
-                notifyDownload(false);
-            }
-            setTimeout(async () => setCurrentInstallStatus(await getInstallStatus()), 3_000);
-        }
-
-        dispatch(deleteDownload({ id: selectedAddon.key }));
-
-        // Clean up temp dir
-        fs.removeSync(tempDir);
-    };
-
-    const { showModal } = useModals();
-
-    const uninstallAddon = async () => {
-        showModal(
-            <PromptModal
-                title='Are you sure?'
-                bodyText={`You are about to uninstall the addon ${selectedAddon.name}. You cannot undo this, except by reinstalling.`}
-                confirmColor={ButtonType.Danger}
-                onConfirm={async () => {
-                    const installDir = Directories.inCommunity(selectedAddon.targetDirectory);
-                    console.log('uninstalling ', installedTrack);
-
-                    if (fs.existsSync(installDir)) {
-                        fs.removeSync(installDir);
-                    }
-                    if (fs.existsSync(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))) {
-                        await fs.promises.readdir(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory))
-                            .then((f) => Promise.all(f.map(e => {
-                                if (e !== 'work') {
-                                    fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(selectedAddon.targetDirectory), e));
-                                }
-                            })));
-                    }
-                    if (fs.existsSync(Directories.inPackagesSteam(selectedAddon.targetDirectory))) {
-                        await fs.promises.readdir(Directories.inPackagesSteam(selectedAddon.targetDirectory))
-                            .then((f) => Promise.all(f.map(e => {
-                                if (e !== 'work') {
-                                    fs.promises.unlink(path.join(Directories.inPackagesSteam(selectedAddon.targetDirectory), e));
-                                }
-                            })));
-                    }
-                    setCurrentInstallStatus(InstallStatus.NotInstalled);
-                    setCurrentlyInstalledTrack(null);
-                }}/>,
-        );
-    };
+    const { showModal, showModalAsync } = useModals();
 
     const selectAndSetTrack = (key: string) => {
         const newTrack = selectedAddon.tracks.find((track) => track.key === key);
@@ -484,76 +300,46 @@ export const AircraftSection = (): JSX.Element => {
         }
     };
 
-    const handleInstall = () => {
+    const handleInstall = async () => {
         if (settings.has("mainSettings.msfsPackagePath")) {
-            downloadAddon(selectedTrack()).then(() =>
-                console.log("Download and install complete"),
-            );
+            await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
         } else {
-            setupInstallPath().then();
+            await setupInstallPath();
         }
     };
 
-    const handleCancel = () => {
-        if (isDownloading) {
-            console.log("Cancel download");
-            abortControllers[download.abortControllerID].abort();
-            dispatch(deleteDownload({ id: selectedAddon.key }));
+    const handleCancel = useCallback(() => {
+        if (isInstalling && !isFinishingDependencyInstall) {
+            InstallManager.cancelDownload(selectedAddon);
         }
-    };
-
-    const notifyDownload = (successful: boolean) => {
-        console.log("Requesting notification");
-        Notification.requestPermission()
-            .then(() => {
-                console.log("Showing notification");
-                if (successful) {
-                    new Notification(`${selectedAddon.name} download complete!`, {
-                        icon: path.join(
-                            process.resourcesPath,
-                            "extraResources",
-                            "icon.ico",
-                        ),
-                        body: "Take to the skies!",
-                    });
-                } else {
-                    new Notification("Download failed!", {
-                        icon: path.join(
-                            process.resourcesPath,
-                            "extraResources",
-                            "icon.ico",
-                        ),
-                        body: "Oops, something went wrong",
-                    });
-                }
-            })
-            .catch((e) => console.log(e));
-    };
+    }, [isInstalling]);
 
     const UninstallButton = (): JSX.Element => {
-        switch (getCurrentInstallStatus()) {
+        switch (status) {
             case InstallStatus.UpToDate:
             case InstallStatus.NeedsUpdate:
             case InstallStatus.TrackSwitch:
             case InstallStatus.DownloadDone:
-            case InstallStatus.GitInstall:
-                if (applicationStatus.msfs !== ApplicationStatus.Closed || applicationStatus.mcduServer !== ApplicationStatus.Closed) {
-                    return <></>;
-                }
+            case InstallStatus.GitInstall: {
                 return (
                     <SidebarButton
                         type={ButtonType.Neutral}
-                        onClick={uninstallAddon}
+                        onClick={() => InstallManager.uninstallAddon(selectedAddon, publisherData, showModalAsync)}
                     >
                         Uninstall
                     </SidebarButton>
                 );
+            }
             default: return <></>;
         }
     };
 
     if (!publisherData) {
         return null;
+    }
+
+    if (publisherData.addons.length === 0) {
+        return <NoAvailableAddonsSection/>;
     }
 
     return (
@@ -570,33 +356,50 @@ export const AircraftSection = (): JSX.Element => {
                                 enabled={addon.enabled || !!addon.hidesAddon}
                                 addon={addon}
                                 key={addon.key}
-                                onClick={() => setSelectedAddon(addon)}
+                                onClick={() => {
+                                    history.push(`/addon-section/${publisherData.name}/`);
+
+                                    setSelectedAddon(addon);
+                                }}
                             />
                         ))}
 
-                        {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category) => {
-                            const categoryAddons = publisherData.addons.filter((it) => it.category?.substring(1) === category.key);
+                        <div className="h-full flex flex-col gap-y-4">
+                            {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category: AddonCategoryDefinition) => {
+                                const categoryAddons = publisherData.addons.filter((it) => it.category?.substring(1) === category.key);
 
-                            if (categoryAddons.length === 0) {
-                                return null;
-                            }
+                                if (categoryAddons.length === 0) {
+                                    return null;
+                                }
 
-                            return (
-                                <>
-                                    <span className="text-3xl font-manrope font-medium">{category.title}</span>
+                                let classes = '';
+                                if (category.styles?.includes('align-bottom')) {
+                                    classes += 'mt-auto';
+                                }
 
-                                    {publisherData.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
-                                        <AddonBarItem
-                                            selected={selectedAddon.key === addon.key && addon.enabled}
-                                            enabled={addon.enabled || !!addon.hidesAddon}
-                                            addon={addon}
-                                            key={addon.key}
-                                            onClick={() => setSelectedAddon(addon)}
-                                        />
-                                    ))}
-                                </>
-                            );
-                        })}
+                                return (
+                                    <div className={classes}>
+                                        <h4 className="text-quasi-white font-manrope font-medium">{category.title}</h4>
+
+                                        <div className="flex flex-col gap-y-4">
+                                            {publisherData.addons.filter((it) => it.category?.substring(1) === category.key).map((addon) => (
+                                                <AddonBarItem
+                                                    selected={selectedAddon.key === addon.key && addon.enabled}
+                                                    enabled={addon.enabled || !!addon.hidesAddon}
+                                                    addon={addon}
+                                                    key={addon.key}
+                                                    onClick={() => {
+                                                        history.push(`/addon-section/${publisherData.name}/`);
+
+                                                        setSelectedAddon(addon);
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </AddonBar>
                 </div>
             </div>
@@ -605,6 +408,9 @@ export const AircraftSection = (): JSX.Element => {
             >
                 <div className="flex flex-row h-full relative">
                     <div className="w-full">
+                        <Route path={`/addon-section/FlyByWire Simulations/configuration/fbw-local-api-config`}>
+                            <LocalApiConfigEditUI />
+                        </Route>
 
                         <Route exact path={`/addon-section/${publisherName}`}>
                             {publisherData.addons.every(addon => !addon.enabled) ?
@@ -630,103 +436,34 @@ export const AircraftSection = (): JSX.Element => {
                         </Route>
 
                         <Route path={`/addon-section/${publisherName}/main`}>
-                            <div className="h-full">
+                            <div className="h-full flex flex-col">
                                 <div
-                                    className="h-1/2 relative bg-cover bg-center"
+                                    className="flex-shrink-0 relative bg-cover bg-center"
                                     style={{
-                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)), url(${selectedAddon.backgroundImageUrls[0]})`,
+                                        height: '44vh',
+                                        backgroundImage: (selectedAddon.backgroundImageShadow ?? true)
+                                            ? `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)), url(${selectedAddon.backgroundImageUrls[0]})`
+                                            : `url(${selectedAddon.backgroundImageUrls[0]})`,
                                     }}
                                 >
-                                    <div className="absolute bottom-0 left-0 flex flex-row items-end justify-between p-6 w-full">
-                                        <div>
-                                            <ActiveStateText
-                                                installStatus={installStatus[selectedAddon.key]}
-                                                download={download}
-                                            />
-                                        </div>
-                                        {getCurrentInstallStatus() === InstallStatus.Downloading && (
-                                            // TODO: Replace this with a JIT value
-                                            <div
-                                                className="text-white font-semibold"
-                                                style={{ fontSize: "38px" }}
-                                            >
-                                                {download?.progress}%
-                                            </div>
-                                        )}
+                                    <div className="absolute bottom-0 left-0 flex flex-row items-end gap-x-1 w-full bg-navy">
+                                        <StateSection publisher={publisherData} addon={selectedAddon} />
                                     </div>
-                                    {isInstalling && (
-                                        <div className="absolute -bottom-1 w-full h-2 z-10 bg-black">
-                                            <div
-                                                className="absolute h-2 z-11 bg-cyan progress-bar-animated"
-                                                style={{ width: `${download?.progress}%` }}
-                                            />
-                                        </div>
-                                    )}
                                 </div>
-                                <div className="flex flex-row h-1/2">
-
-                                    <Route path={`/addon-section/${publisherName}/main/configure`}>
-                                        <div className="p-7 overflow-y-scroll">
-                                            <h2 className="text-white font-bold">
-                                                Choose Your Version
-                                            </h2>
-                                            <div className="flex flex-row gap-x-8">
-                                                <div>
-                                                    <Tracks>
-                                                        {selectedAddon.tracks
-                                                            .filter((track) => !track.isExperimental)
-                                                            .map((track) => (
-                                                                <Track
-                                                                    addon={selectedAddon}
-                                                                    key={track.key}
-                                                                    track={track}
-                                                                    isSelected={selectedTrack() === track}
-                                                                    isInstalled={installedTrack() === track}
-                                                                    handleSelected={() => handleTrackSelection(track)}
-                                                                />
-                                                            ))}
-                                                    </Tracks>
-                                                    <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
-                                                        Mainline Releases
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <Tracks>
-                                                        {selectedAddon.tracks
-                                                            .filter((track) => track.isExperimental)
-                                                            .map((track) => (
-                                                                <Track
-                                                                    addon={selectedAddon}
-                                                                    key={track.key}
-                                                                    track={track}
-                                                                    isSelected={selectedTrack() === track}
-                                                                    isInstalled={installedTrack() === track}
-                                                                    handleSelected={() => handleTrackSelection(track)}
-                                                                />
-                                                            ))}
-                                                    </Tracks>
-
-                                                    {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
-                                                        <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
-                                                            Experimental versions
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            {selectedTrack() && selectedTrack().description &&
-                                            <div className="mt-10">
-                                                <h2 className="text-white font-bold">Description</h2>
-                                                <p className="text-xl text-white font-manrope leading-relaxed">
-                                                    <ReactMarkdown
-                                                        className="text-xl text-white font-light font-manrope leading-relaxed"
-                                                        children={selectedTrack().description}
-                                                        linkTarget={"_blank"}
-                                                    />
-                                                </p>
-                                            </div>
-                                            }
-                                        </div>
+                                <div className="h-0 flex-grow flex flex-row">
+                                    <Route exact path={`/addon-section/${publisherName}/main/configure`}>
+                                        <Redirect to={`/addon-section/${publisherName}/main/configure/release-track`} />
                                     </Route>
+
+                                    <Route path={`/addon-section/:publisher/main/configure/:aspectKey`} render={({ match: { params: { aspectKey } } }) => (
+                                        <Configure
+                                            routeAspectKey={aspectKey}
+                                            selectedAddon={selectedAddon}
+                                            selectedTrack={selectedTrack}
+                                            installedTrack={installedTrack}
+                                            onTrackSelection={handleTrackSelection}
+                                        />
+                                    )} />
 
                                     <Route path={`/addon-section/${publisherName}/main/release-notes`}>
                                         {releaseNotes && releaseNotes.length > 0 ? (
@@ -734,6 +471,10 @@ export const AircraftSection = (): JSX.Element => {
                                         ) :
                                             <Redirect to={`/addon-section/${publisherName}/main/configure`}/>
                                         }
+                                    </Route>
+
+                                    <Route path={`/addon-section/${publisherName}/main/simbridge-config`}>
+                                        <LocalApiConfigEditUI />
                                     </Route>
 
                                     <Route path={`/addon-section/${publisherName}/main/about`}>
@@ -752,10 +493,12 @@ export const AircraftSection = (): JSX.Element => {
                                                     Release Notes
                                                 </SideBarLink>
                                             )}
-                                            {/* <SideBarLink to="/addon-section/main/liveries">
-                                                <Palette size={24} />
-                                                Liveries
-                                            </SideBarLink> */}
+                                            {selectedAddon.key === 'simbridge' && ( // TODO find a better way to do this...
+                                                <SideBarLink to={`/addon-section/${publisherName}/main/simbridge-config`} disabled={InstallStatusCategories.installing.includes(status)}>
+                                                    <Gear size={22} />
+                                                    Settings
+                                                </SideBarLink>
+                                            )}
                                             <SideBarLink to={`/addon-section/${publisherName}/main/about`}>
                                                 <InfoCircle size={22} />
                                                 About
@@ -764,11 +507,13 @@ export const AircraftSection = (): JSX.Element => {
 
                                         <div className="flex flex-col gap-y-4">
                                             <UninstallButton />
-                                            <MainActionButton
-                                                installStatus={installStatus[selectedAddon.key]}
-                                                onInstall={handleInstall}
-                                                onCancel={handleCancel}
-                                            />
+                                            {installStates[selectedAddon.key] && (
+                                                <MainActionButton
+                                                    installState={installStates[selectedAddon.key]}
+                                                    onInstall={handleInstall}
+                                                    onCancel={handleCancel}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </div>

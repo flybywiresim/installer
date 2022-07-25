@@ -10,7 +10,15 @@ export class Directories {
     }
 
     static inCommunity(targetDir: string): string {
-        return path.join(settings.get('mainSettings.msfsPackagePath') as string, targetDir);
+        return path.join(Directories.community(), targetDir);
+    }
+
+    static tempLocation(): string {
+        return settings.get('mainSettings.separateTempLocation') ? settings.get('mainSettings.tempLocation') as string : settings.get('mainSettings.msfsPackagePath') as string;
+    }
+
+    static inTempLocation(targetDir: string): string {
+        return path.join(Directories.tempLocation(), targetDir);
     }
 
     static liveries(): string {
@@ -29,22 +37,26 @@ export class Directories {
     }
 
     static temp(): string {
-        return path.join(settings.get('mainSettings.msfsPackagePath') as string, `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
+        const dir = path.join(Directories.tempLocation(), `flybywire_current_install_${(Math.random() * 1000).toFixed(0)}`);
+        if (fs.existsSync(dir)) {
+            return Directories.temp();
+        }
+        return dir;
     }
 
     static removeAllTemp(): void {
         console.log('[CLEANUP] Removing all temp directories');
 
-        if (!fs.existsSync(Directories.community())) {
-            console.warn('[CLEANUP] Install directory does not exist. Aborting');
+        if (!fs.existsSync(Directories.tempLocation())) {
+            console.warn('[CLEANUP] Location of temporary folders does not exist. Aborting');
             return;
         }
 
-        fs.readdirSync(Directories.community(), { withFileTypes: true })
+        fs.readdirSync(Directories.tempLocation(), { withFileTypes: true })
             .filter(dirEnt => dirEnt.isDirectory())
             .filter(dirEnt => dirEnt.name.startsWith('flybywire_current_install_'))
             .forEach(dir => {
-                const fullPath = Directories.inCommunity(dir.name);
+                const fullPath = Directories.inTempLocation(dir.name);
 
                 console.log('[CLEANUP] Removing', fullPath);
                 fs.removeSync(fullPath);

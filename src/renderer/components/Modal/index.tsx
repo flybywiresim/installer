@@ -11,6 +11,7 @@ import { Button, ButtonType } from "renderer/components/Button";
 
 interface ModalContextInterface{
     showModal: (modal: JSX.Element) => void;
+    showModalAsync: (modal: JSX.Element) => Promise<boolean>;
     modal?: JSX.Element;
     popModal: () => void;
 }
@@ -30,8 +31,27 @@ export const ModalProvider: FC = ({ children }) => {
         setModal(modal);
     };
 
+    const showModalAsync = (modal: JSX.Element): Promise<boolean> => {
+        return new Promise((resolve) => {
+            setModal(React.cloneElement(modal, {
+                onConfirm: () => {
+                    resolve(true);
+                    modal.props.onConfirm?.();
+                },
+                onCancel: () => {
+                    resolve(false);
+                    modal.props.onCancel?.();
+                },
+                onAcknowledge: () => {
+                    resolve(true);
+                    modal.props.onAcknowledge?.();
+                },
+            }));
+        });
+    };
+
     return (
-        <ModalContext.Provider value={{ modal, showModal, popModal }}>
+        <ModalContext.Provider value={{ modal, showModal, showModalAsync, popModal }}>
             {children}
         </ModalContext.Provider>
     );
@@ -39,36 +59,33 @@ export const ModalProvider: FC = ({ children }) => {
 
 interface BaseModalProps {
     title: string;
-    bodyText: string;
+    bodyText: React.ReactElement | string;
     dontShowAgainSettingName?: string;
+    closeIfDontShowAgain?: boolean,
 }
 
 interface PromptModalProps extends BaseModalProps {
     onConfirm?: () => void;
     onCancel?: () => void;
+    cancelText?: string;
     confirmColor?: ButtonType;
     confirmText?: string;
-    cancelText?: string;
-}
-
-interface AlertModalProps extends BaseModalProps {
-    onAcknowledge?: () => void;
-    acknowledgeText?: string;
-
+    confirmEnabled?: boolean;
 }
 
 export const PromptModal: FC<PromptModalProps> = ({
-    title,
-    bodyText,
     onConfirm,
     onCancel,
-    confirmText,
-    confirmColor,
     cancelText,
+    confirmColor,
+    confirmText,
+    confirmEnabled = true,
+    title,
+    bodyText,
     dontShowAgainSettingName,
+    closeIfDontShowAgain = true,
 }) => {
-
-    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
+    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '', false);
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
     const { popModal } = useModals();
@@ -86,19 +103,23 @@ export const PromptModal: FC<PromptModalProps> = ({
         popModal();
     };
 
-    if (dontShowAgain) {
+    if (dontShowAgain && closeIfDontShowAgain) {
         handleConfirm();
     }
 
     return (
         <div className="modal">
             <h2 className="modal-title">{title}</h2>
-            <ReactMarkdown
-                className="mt-6 markdown-body-modal"
-                children={bodyText}
-                remarkPlugins={[remarkGfm]}
-                linkTarget={"_blank"}
-            />
+            {typeof bodyText === 'string' ? (
+                <ReactMarkdown
+                    className="mt-6 markdown-body-modal"
+                    children={bodyText}
+                    remarkPlugins={[remarkGfm]}
+                    linkTarget={"_blank"}
+                />
+            ) : (
+                bodyText
+            )}
 
             {dontShowAgainSettingName && (
                 <div className="w-auto gap-x-4 mt-8">
@@ -117,7 +138,7 @@ export const PromptModal: FC<PromptModalProps> = ({
                 <Button className="flex-grow" onClick={handleCancel}>
                     {cancelText ?? 'Cancel'}
                 </Button>
-                <Button className="flex-grow" type={confirmColor} onClick={handleConfirm}>
+                <Button className="flex-grow" type={confirmColor ?? ButtonType.Emphasis} disabled={!confirmEnabled} onClick={handleConfirm}>
                     {confirmText ?? 'Confirm'}
                 </Button>
             </div>
@@ -125,15 +146,22 @@ export const PromptModal: FC<PromptModalProps> = ({
     );
 };
 
+interface AlertModalProps extends BaseModalProps {
+    onAcknowledge?: () => void;
+    acknowledgeText?: string;
+    acknowledgeColor?: ButtonType,
+}
+
 export const AlertModal: FC<AlertModalProps> = ({
     title,
     bodyText,
     onAcknowledge,
     acknowledgeText,
+    acknowledgeColor = ButtonType.Neutral,
     dontShowAgainSettingName,
+    closeIfDontShowAgain = true,
 }) => {
-
-    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '');
+    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '', false);
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
     const { popModal } = useModals();
@@ -146,19 +174,23 @@ export const AlertModal: FC<AlertModalProps> = ({
         popModal();
     };
 
-    if (dontShowAgain) {
+    if (dontShowAgain && closeIfDontShowAgain) {
         handleAcknowledge();
     }
 
     return (
-        <div className="p-8 w-5/12 rounded-xl border-2 bg-theme-body border-theme-accent">
-            <h1 className="leading-none font-bold">{title}</h1>
-            <ReactMarkdown
-                className="mt-6 markdown-body-modal"
-                children={bodyText}
-                remarkPlugins={[remarkGfm]}
-                linkTarget={"_blank"}
-            />
+        <div className="modal">
+            <h1 className="modal-title">{title}</h1>
+            {typeof bodyText === 'string' ? (
+                <ReactMarkdown
+                    className="mt-6 markdown-body-modal"
+                    children={bodyText}
+                    remarkPlugins={[remarkGfm]}
+                    linkTarget={"_blank"}
+                />
+            ) : (
+                bodyText
+            )}
 
             {dontShowAgainSettingName ? <div className="w-auto space-x-4 mt-8">
                 <input
@@ -170,11 +202,10 @@ export const AlertModal: FC<AlertModalProps> = ({
                 <span className="ml-2">Don't show me this again</span>
             </div> : <div></div>}
 
-            <div
-                className="py-3 px-8 mt-8 text-xl text-center rounded-md bg-theme-highlight text-theme-body"
-                onClick={handleAcknowledge}
-            >
-                {acknowledgeText ?? 'Okay'}
+            <div className="flex flex-row mt-8 gap-x-4">
+                <Button className="flex-grow" type={acknowledgeColor} onClick={handleAcknowledge}>
+                    {acknowledgeText ?? 'Confirm'}
+                </Button>
             </div>
         </div>
     );
