@@ -34,5 +34,7 @@ export const DependencyDialogBody: FC<DependencyDialogBodyProps> = ({ addon, dep
         </div>
 
         <p>{dependency.modalText}</p>
+
+        <p>Do you wish to install it?</p>
     </>
 );
