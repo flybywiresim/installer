@@ -105,7 +105,7 @@ export const AddonSection = (): JSX.Element => {
             history.push(`/addon-section/${publisherName}/hidden-addon-cover`);
         } else {
             setHiddenAddon(undefined);
-            history.push(`/addon-section/${publisherName}/main/configure`);
+            history.push(`/addon-section/${publisherName}/main/configure/release-track`);
         }
 
         settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
