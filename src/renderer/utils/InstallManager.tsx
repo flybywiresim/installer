@@ -185,22 +185,31 @@ export class InstallManager {
                 let doInstallDependency = true;
 
                 if (dependency.optional && isDependencyNotInstalled) {
-                    doInstallDependency = await showModal(
-                        <PromptModal
-                            title="Dependency"
-                            bodyText={
-                                <DependencyDialogBody
-                                    addon={addon}
-                                    dependency={dependency}
-                                    dependencyAddon={dependencyAddon}
-                                    dependencyPublisher={dependencyPublisher}
-                                />
-                            }
-                            cancelText="No"
-                            confirmText="Yes"
-                            confirmColor={ButtonType.Positive}
-                        />,
-                    );
+                    const settingString = `mainSettings.disableDependencyPrompt.${publisher.key}.${addon.key}.@${dependencyPublisher.key}/${dependencyAddon.key}`;
+                    const doNotAsk = settings.get(settingString);
+
+                    doInstallDependency = false;
+
+                    if (!doNotAsk) {
+                        doInstallDependency = await showModal(
+                            <PromptModal
+                                title="Dependency"
+                                bodyText={
+                                    <DependencyDialogBody
+                                        addon={addon}
+                                        dependency={dependency}
+                                        dependencyAddon={dependencyAddon}
+                                        dependencyPublisher={dependencyPublisher}
+                                    />
+                                }
+                                cancelText="No"
+                                confirmText="Yes"
+                                confirmColor={ButtonType.Positive}
+                                dontShowAgainSettingName={settingString}
+                            />,
+                        );
+                    }
+
                 }
 
                 if (doInstallDependency) {
