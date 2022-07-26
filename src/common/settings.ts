@@ -84,6 +84,7 @@ interface Settings {
     mainSettings: {
         autoStartApp: boolean,
         disableExperimentalWarning: boolean,
+        disableDependencyPrompt: { [k: string]: { [k: string]: boolean } },
         disableBackgroundServiceAutoStartPrompt: { [k: string]: { [k: string]: boolean } },
         useCdnCache: boolean,
         dateLayout: string,
@@ -120,6 +121,22 @@ const schema: Schema<Settings> = {
             disableExperimentalWarning: {
                 type: "boolean",
                 default: false,
+            },
+            disableDependencyPrompt: {
+                type: "object",
+                default: {},
+                additionalProperties: {
+                    type: "object",
+                    default: {},
+                    additionalProperties: {
+                        type: "object",
+                        default: {},
+                        additionalProperties: {
+                            type: "boolean",
+                            default: false,
+                        },
+                    },
+                },
             },
             disableBackgroundServiceAutoStartPrompt: {
                 type: "object",
