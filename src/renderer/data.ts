@@ -109,7 +109,6 @@ export const defaultConfiguration: Configuration = {
                                 // move old experimental users over to dev
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
-                                'https://cdn.flybywiresim.com/addons/a32nx/experimental',
                             ],
                             description: 'Development will have the latest features that will end up in the next stable. ' +
                                 'Bugs are to be expected. It updates whenever something is added to the \'master\' ' +
