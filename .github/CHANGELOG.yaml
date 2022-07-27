@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.2.1
+    changes:
+      - title: Fix detection of A32NX experimental version as development versions
+        categories: [Addons]
+        authors: [FoxtrotSierra]
   - name: 3.2.0
     changes:
       - title: Add FlyByWire Simulations SimBridge
