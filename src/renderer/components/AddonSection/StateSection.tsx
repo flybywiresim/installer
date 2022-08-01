@@ -226,7 +226,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
                     {stateText}
                 </div>
 
-                {(InstallStatusCategories.installing.includes(installState.status)) && (
+                {(InstallStatusCategories.installing.includes(installState.status) && installState.status !== InstallStatus.Decompressing) && (
                     <div
                         className="text-white font-semibold"
                         style={{ fontSize: "38px" }}
