@@ -253,6 +253,23 @@ export const defaultConfiguration: Configuration = {
                         runCheckExternalAppRef: '@/simbridge-app',
                         commandLineArgs: ['--hide'],
                     },
+                    myInstallPage: {
+                        links: [
+                            {
+                                url: 'https://docs.flybywiresim.com/simbridge/',
+                                title: 'Documentation',
+                            },
+                        ],
+                        directories: [
+                            {
+                                location: {
+                                    in: 'package',
+                                    path: 'resources',
+                                },
+                                title: 'Resources',
+                            },
+                        ],
+                    },
                 },
             ],
             buttons: [

@@ -7,7 +7,7 @@ import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/stor
 import { Addon, AddonCategoryDefinition, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
-import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
+import { Gear, Hdd, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
@@ -27,6 +27,7 @@ import { Configure } from "renderer/components/AddonSection/Configure";
 import { InstallManager } from "renderer/utils/InstallManager";
 import { StateSection } from "renderer/components/AddonSection/StateSection";
 import { ExternalApps } from "renderer/utils/ExternalApps";
+import { MyInstall } from "renderer/components/AddonSection/MyInstall";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -466,8 +467,12 @@ export const AddonSection = (): JSX.Element => {
                                         <LocalApiConfigEditUI />
                                     </Route>
 
+                                    <Route path={`/addon-section/${publisherName}/main/my-install`}>
+                                        <MyInstall addon={selectedAddon} />
+                                    </Route>
+
                                     <Route path={`/addon-section/${publisherName}/main/about`}>
-                                        <About addon={selectedAddon}/>
+                                        <About addon={selectedAddon} />
                                     </Route>
 
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy-dark p-7 flex-shrink-0">
@@ -488,6 +493,10 @@ export const AddonSection = (): JSX.Element => {
                                                     Settings
                                                 </SideBarLink>
                                             )}
+                                            <SideBarLink to={`/addon-section/${publisherName}/main/my-install`} disabled={!InstallStatusCategories.installed.includes(status)}>
+                                                <Hdd size={22} />
+                                                My Install
+                                            </SideBarLink>
                                             <SideBarLink to={`/addon-section/${publisherName}/main/about`}>
                                                 <InfoCircle size={22} />
                                                 About
