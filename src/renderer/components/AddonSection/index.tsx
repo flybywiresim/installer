@@ -16,7 +16,6 @@ import { ReleaseNotes } from "./ReleaseNotes";
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
 import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
-import { HiddenAddonCover } from "renderer/components/AddonSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
@@ -421,18 +420,6 @@ export const AddonSection = (): JSX.Element => {
 
                         <Route path={`/addon-section/${publisherName}/no-available-addons`}>
                             <NoAvailableAddonsSection />
-                        </Route>
-
-                        <Route path={`/addon-section/${publisherName}/hidden-addon-cover`}>
-                            {addonDiscovered ? (
-                                <Redirect to={`/addon-section/${publisherName}/main/configure`} />
-                            ) : (
-                                hiddenAddon ? (
-                                    <HiddenAddonCover addon={hiddenAddon} />
-                                ) : (
-                                    <Redirect to={`/addon-section/${publisherName}/main/configure`} />
-                                )
-                            )}
                         </Route>
 
                         <Route path={`/addon-section/${publisherName}/main`}>
