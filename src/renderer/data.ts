@@ -1,15 +1,11 @@
 import { Configuration } from "./utils/InstallerConfiguration";
 
-import FBWLogo from "renderer/assets/FBW-Tail.svg";
-import SynapticLogo from "renderer/assets/Synaptic-Logo.png";
-import SaltyLogo from "renderer/assets/Salty-Logo.svg";
-
 export const defaultConfiguration: Configuration = {
     publishers: [
         {
             name: 'FlyByWire Simulations',
             key: 'flybywiresim',
-            logoUrl: FBWLogo,
+            logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/flybywiresim/0.svg',
             defs: [
                 {
                     kind: 'addonCategory',
@@ -286,7 +282,7 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'Salty Simulations',
             key: 'salty',
-            logoUrl: SaltyLogo,
+            logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/salty/0.svg',
             defs: [
                 {
                     kind: 'addonCategory',
@@ -365,7 +361,7 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'Synaptic Simulations',
             key: 'synaptic',
-            logoUrl: SynapticLogo,
+            logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/synaptic/0.png',
             defs: [
                 {
                     kind: 'addonCategory',
