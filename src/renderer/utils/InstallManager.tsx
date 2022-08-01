@@ -326,10 +326,11 @@ export class InstallManager {
                         const [module] = args as FragmenterEventArguments<typeof event>;
 
                         console.log("Downloading started for module", module.name);
+
                         this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
                         break;
                     }
-                    case "downloadProgress": {
+                    case 'downloadProgress': {
                         const [module, progress] = args as FragmenterEventArguments<typeof event>;
 
                         if (lastPercent !== progress.percent) {
@@ -338,7 +339,12 @@ export class InstallManager {
                                 updateDownloadProgress({
                                     id: addon.key,
                                     module: module.name,
-                                    progress: progress.percent,
+                                    progress: {
+                                        totalPercent: progress.percent,
+                                        splitPartPercent: progress.partPercent,
+                                        splitPartIndex: progress.partIndex,
+                                        splitPartCount: progress.numParts,
+                                    },
                                 }));
                         }
                         break;
@@ -376,6 +382,12 @@ export class InstallManager {
                         this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
                         break;
                     }
+                    case 'error': {
+                        const [error] = args as FragmenterEventArguments<typeof event>;
+
+                        console.error('Error from Fragmenter:', error);
+                        Sentry.captureException(error);
+                    }
                 }
             };
 
@@ -389,7 +401,12 @@ export class InstallManager {
 
             console.log("Starting fragmenter download for URL", track.url);
 
-            await ipcRenderer.invoke(channels.installManager.installFromUrl, ourInstallID, track.url, tempDir, destDir);
+            const installResult = await ipcRenderer.invoke(channels.installManager.installFromUrl, ourInstallID, track.url, tempDir, destDir);
+
+            // Throw any error so we can display the error dialog
+            if (typeof installResult === 'object') {
+                throw installResult;
+            }
 
             console.log("Fragmenter download finished for URL", track.url);
 

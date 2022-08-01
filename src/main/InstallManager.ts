@@ -2,6 +2,8 @@ import { FragmenterInstaller, FragmenterInstallerEvents } from "@flybywiresim/fr
 import channels from "common/channels";
 import { ipcMain, WebContents } from "electron";
 
+let lastProgressSent = 0;
+
 export class InstallManager {
     static async install(
         sender: WebContents,
@@ -9,14 +11,25 @@ export class InstallManager {
         url: string,
         tempDir: string,
         destDir: string,
-    ): Promise<void> {
-        const fragmenterInstaller = new FragmenterInstaller(url, destDir);
-
+    ): Promise<boolean | Error> {
         const abortController = new AbortController();
+
+        const fragmenterInstaller = new FragmenterInstaller(url, destDir, abortController.signal, { temporaryDirectory: tempDir, maxModuleRetries: 1 });
 
         const forwardFragmenterEvent = (event: keyof FragmenterInstallerEvents) => {
             fragmenterInstaller.on(event, (...args: unknown[]) => {
-                sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
+                if (event === 'downloadProgress') {
+                    const currentTime = performance.now();
+                    const timeSinceLastProgress = currentTime - lastProgressSent;
+
+                    if (timeSinceLastProgress > 50) {
+                        sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
+
+                        lastProgressSent = currentTime;
+                    }
+                } else {
+                    sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
+                }
             });
         };
 
@@ -46,13 +59,24 @@ export class InstallManager {
         forwardFragmenterEvent('logWarn');
         forwardFragmenterEvent('logError');
 
-        await fragmenterInstaller.install(
-            abortController.signal,
-            { temporaryDirectory: tempDir },
-        );
+        let ret = false;
+
+        try {
+            await fragmenterInstaller.install();
+
+            ret = true;
+        } catch (e) {
+            if (e.message.startsWith('FragmenterError')) {
+                ret = e;
+            } else {
+                throw e;
+            }
+        }
 
         // Tear down cancel event listener
         ipcMain.removeListener(channels.installManager.cancelInstall, handleCancelInstall);
+
+        return ret;
     }
 
     static setupIpcListeners(): void {

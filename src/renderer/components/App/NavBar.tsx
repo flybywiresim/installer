@@ -76,7 +76,7 @@ export const NavBarPublisher: FC<NavBarPublisherProps> = ({ to, publisher }) => 
             showNotification={hasAvailableUpdates}
             notificationColor="orange"
         >
-            <img width={32} src={publisher.logoUrl} alt={`${publisher.name} Logo`}/>
+            <img width={publisher.logoSize ?? 32} src={publisher.logoUrl} alt={`${publisher.name} Logo`}/>
         </NavbarItem>
     );
 };

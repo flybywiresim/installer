@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TypedAction } from "renderer/redux/store";
-import { DownloadsState } from "renderer/redux/types";
+import { DownloadProgress, DownloadsState } from "renderer/redux/types";
 
 const initialState: DownloadsState = [];
 
@@ -8,7 +8,7 @@ export const downloadSlice = createSlice({
     name: "downloads",
     initialState,
     reducers: {
-        updateDownloadProgress: (state, action: TypedAction<{ id: string, progress: number, module: string }>) => {
+        updateDownloadProgress: (state, action: TypedAction<{ id: string, progress: DownloadProgress, module: string }>) => {
             state.forEach(download => {
                 if (download.id === action.payload.id) {
                     download.progress = action.payload.progress;
@@ -19,7 +19,9 @@ export const downloadSlice = createSlice({
         registerNewDownload: (state, action: TypedAction<{ id: string, module: string, abortControllerID: number }>) => {
             state.push({
                 id: action.payload.id,
-                progress: 0,
+                progress: {
+                    totalPercent: 0,
+                },
                 module: action.payload.module,
                 abortControllerID: action.payload.abortControllerID,
             });

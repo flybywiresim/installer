@@ -1,8 +1,15 @@
 import { ReleaseInfo } from "renderer/utils/AddonData";
 
+export interface DownloadProgress {
+    totalPercent: number,
+    splitPartPercent?: number,
+    splitPartIndex?: number,
+    splitPartCount?: number,
+}
+
 export interface DownloadItem {
     id: string
-    progress: number
+    progress: DownloadProgress,
     module: string,
     abortControllerID: number,
 }

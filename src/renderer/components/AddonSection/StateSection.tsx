@@ -177,9 +177,14 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
         case InstallStatus.DownloadPrep:
             stateText = <StateText>Preparing update</StateText>;
             break;
-        case InstallStatus.Downloading:
-            stateText = <StateText>{`Downloading ${download?.module.toLowerCase()} module`}</StateText>;
+        case InstallStatus.Downloading: {
+            const part = Number.isFinite(download.progress.splitPartIndex) && !Number.isFinite(download.progress.totalPercent)
+                ? <span className="text-gray-300 ml-3">part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}</span>
+                : null;
+
+            stateText = <StateText>{`Downloading ${download?.module.toLowerCase()} module`}{part}</StateText>;
             break;
+        }
         case InstallStatus.Decompressing:
         case InstallStatus.InstallingDependencyEnding:
             stateText = <StateText>Decompressing</StateText>;
@@ -210,6 +215,8 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
             break;
     }
 
+    const percentToShow = Number.isFinite(download.progress.totalPercent) ? download.progress.totalPercent : download.progress.splitPartPercent;
+
     return (
         <div className="flex-grow" style={{ flexGrow: 10 }}>
             <StateContainer>
@@ -224,12 +231,12 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
                         className="text-white font-semibold"
                         style={{ fontSize: "38px" }}
                     >
-                        {download.progress}%
+                        {percentToShow}%
                     </div>
                 )}
             </StateContainer>
 
-            <ProgressBar className="bg-cyan" value={download.progress} />
+            <ProgressBar className="bg-cyan" value={percentToShow} />
         </div>
     );
 };

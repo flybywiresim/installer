@@ -143,10 +143,10 @@ export const AddonSection = (): JSX.Element => {
             console.log("Currently installed", manifest);
 
             let track = selectedAddon.tracks.find(track => track.url.includes(manifest.source));
-
             if (!track) {
-                track = selectedAddon.tracks.find(track => track.alternativeUrls.includes(manifest.source));
+                track = selectedAddon.tracks.find(track => track.alternativeUrls?.includes(manifest.source));
             }
+
             console.log("Currently installed", track);
             setCurrentlyInstalledTrack(track);
             if (selectedTrack()) {
@@ -212,7 +212,7 @@ export const AddonSection = (): JSX.Element => {
         state.downloads.find(download => download.id === selectedAddon.key),
     );
 
-    const isDownloading = download?.progress >= 0;
+    const isDownloading = download?.progress.totalPercent >= 0;
     const status = getCurrentInstallStatus()?.status;
     const isInstalling = InstallStatusCategories.installing.includes(status);
     const isFinishingDependencyInstall = status === InstallStatus.InstallingDependencyEnding;
@@ -257,7 +257,7 @@ export const AddonSection = (): JSX.Element => {
 
     useEffect(() => {
         if (download && isDownloading) {
-            ipcRenderer.send("set-window-progress-bar", download.progress / 100);
+            ipcRenderer.send("set-window-progress-bar", download.progress.totalPercent / 100);
         } else {
             ipcRenderer.send("set-window-progress-bar", -1);
         }
@@ -349,19 +349,21 @@ export const AddonSection = (): JSX.Element => {
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
                     <AddonBar>
-                        {publisherData.addons.filter((it) => !it.category).map((addon) => (
-                            <AddonBarItem
-                                selected={selectedAddon.key === addon.key && addon.enabled}
-                                enabled={addon.enabled || !!addon.hidesAddon}
-                                addon={addon}
-                                key={addon.key}
-                                onClick={() => {
-                                    history.push(`/addon-section/${publisherData.name}/`);
+                        <div className="flex flex-col gap-y-4">
+                            {publisherData.addons.filter((it) => !it.category).map((addon) => (
+                                <AddonBarItem
+                                    selected={selectedAddon.key === addon.key && addon.enabled}
+                                    enabled={addon.enabled || !!addon.hidesAddon}
+                                    addon={addon}
+                                    key={addon.key}
+                                    onClick={() => {
+                                        history.push(`/addon-section/${publisherData.name}/`);
 
-                                    setSelectedAddon(addon);
-                                }}
-                            />
-                        ))}
+                                        setSelectedAddon(addon);
+                                    }}
+                                />
+                            ))}
+                        </div>
 
                         <div className="h-full flex flex-col gap-y-4">
                             {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category: AddonCategoryDefinition) => {
