@@ -410,7 +410,7 @@ export class InstallManager {
             this.setCurrentlyInstalledTrack(addon, track);
 
             // If we have a background service, ask if we want to enable it
-            if (addon.backgroundService) {
+            if (addon.backgroundService && (addon.backgroundService.enableAutostartConfiguration ?? true)) {
                 const app = BackgroundServices.getExternalAppFromBackgroundService(addon, publisher);
 
                 const isAutoStartEnabled = await BackgroundServices.isAutoStartEnabled(addon);
@@ -498,7 +498,7 @@ export class InstallManager {
         }
 
         // Remove autostart of the background service if the addon has one
-        if (addon.backgroundService) {
+        if (addon.backgroundService && (addon.backgroundService.enableAutostartConfiguration ?? true)) {
             await BackgroundServices.setAutoStartEnabled(addon, publisher, false);
         }
 

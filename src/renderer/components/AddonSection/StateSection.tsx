@@ -135,10 +135,12 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                     </div>
 
                     <div className="flex gap-x-14 items-center">
-                        <span className="flex items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan cursor-pointer" onClick={handleClickAutostart}>
-                            <Gear size={22} />
-                            Autostart...
-                        </span>
+                        {(addon.backgroundService.enableAutostartConfiguration ?? true) && (
+                            <span className="flex items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan cursor-pointer" onClick={handleClickAutostart}>
+                                <Gear size={22} />
+                                Autostart...
+                            </span>
+                        )}
 
                         <Button className="w-64" type={ButtonType.Neutral} onClick={handleStartStop}>{isRunning ? 'Stop' : 'Start'}</Button>
                     </div>

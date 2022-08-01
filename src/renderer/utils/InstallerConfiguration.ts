@@ -49,7 +49,14 @@ export interface AddonBackgroundService {
     runCheckExternalAppRef: string,
 
     /**
+     * Whether autostart configuration is available for the background service
+     */
+    enableAutostartConfiguration?: boolean,
+
+    /**
      * Command line arguments to run this background service with
+     *
+     * Defaults to `true`.
      */
     commandLineArgs?: string[],
 }
