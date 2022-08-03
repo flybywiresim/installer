@@ -92,6 +92,12 @@ interface Settings {
         allowSeasonalEffects: boolean,
         msfsPackagePath: string,
     },
+    advanced: {
+        showAll: boolean,
+        disableHardwareAcceleration: boolean,
+        disableGpuSandbox: boolean,
+        noSandbox: boolean,
+    }
     cache: {
         main: {
             lastWindowX: number,
@@ -164,6 +170,26 @@ const schema: Schema<Settings> = {
             tempLocation: {
                 type: "string",
                 default: defaultCommunityDir(),
+            },
+        },
+    },
+    advanced: {
+        type: "object",
+        default: {},
+        properties: {
+            showAll: {
+                type: "boolean",
+                default: false,
+            },
+            disableHardwareAcceleration: {
+                type: "boolean",
+                default: false,
+            },
+            disableGpuSandbox: {
+                type: "boolean",
+            },
+            noSandbox: {
+                type: "boolean",
             },
         },
     },

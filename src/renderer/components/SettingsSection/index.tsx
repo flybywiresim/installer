@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import GeneralSettings from 'renderer/components/SettingsSection/General';
 import { Redirect, Route } from "react-router-dom";
 import { AboutSettings } from "renderer/components/SettingsSection/About";
+import AdvancedSettings from "renderer/components/SettingsSection/Advanced";
 import { SideBar, SideBarLink, SideBarTitle } from "renderer/components/SideBar";
 import CustomizationSettings from './Customization';
 import DownloadSettings from './Download';
@@ -73,11 +74,18 @@ export const SettingsSection = (): JSX.Element => {
                     {/*    </span>*/}
                     {/*</SideBarLink>*/}
 
+                    <SideBarLink to="/settings/advanced">
+                        <span className="text-3xl font-manrope font-semibold">
+                            Advanced
+                        </span>
+                    </SideBarLink>
+
                     <SideBarLink to="/settings/about">
                         <span className="text-3xl font-manrope font-semibold">
                             About
                         </span>
                     </SideBarLink>
+
                     <div className="relative mt-auto">
                         <ResetButton type={ButtonType.Neutral} onClick={handleReset}>
                             Reset Settings
@@ -104,6 +112,10 @@ export const SettingsSection = (): JSX.Element => {
 
                     <Route path="/settings/about">
                         <AboutSettings />
+                    </Route>
+
+                    <Route path="/settings/advanced">
+                        <AdvancedSettings />
                     </Route>
                 </div>
             </div>

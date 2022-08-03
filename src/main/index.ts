@@ -22,6 +22,30 @@ Menu.setApplicationMenu(null);
 
 const serve = process.argv.slice(1).some((arg) => arg === "--serve");
 
+const disableGpu = process.argv.slice(1).some((arg) => arg === "--disable-gpu");
+if (disableGpu) {
+    settings.set("advanced.disableHardwareAcceleration", true);
+}
+if (settings.get("advanced.disableHardwareAcceleration")) {
+    app.disableHardwareAcceleration();
+}
+
+const disableGpuSandbox = process.argv.slice(1).some((arg) => arg === "--disable-gpu-sandbox");
+if (disableGpuSandbox) {
+    settings.set("advanced.disableGpuSandbox", true);
+}
+if (settings.get("advanced.disableGpuSandbox")) {
+    app.commandLine.appendSwitch('disable-gpu-sandbox');
+}
+
+const noSandbox = process.argv.slice(1).some((arg) => arg === "--no-sandbox");
+if (noSandbox) {
+    settings.set("advanced.noSandbox", true);
+}
+if (settings.get("advanced.noSandbox")) {
+    app.commandLine.appendSwitch('no-sandbox');
+}
+
 const createWindow = (): void => {
     // Create the browser window.
     mainWindow = new BrowserWindow({
