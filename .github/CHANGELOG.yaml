@@ -9,7 +9,7 @@
 
 
 releases:
-- name: 3.2.2
+  - name: 3.2.2
     changes:
       - title: Add advanced settings (e.g. disable hardware acceleration)
         categories: [Core]
