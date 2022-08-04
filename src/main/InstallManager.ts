@@ -1,6 +1,9 @@
 import { FragmenterInstaller, FragmenterInstallerEvents } from "@flybywiresim/fragmenter";
 import channels from "common/channels";
 import { ipcMain, WebContents } from "electron";
+import fs from "fs";
+import { promisify } from "util";
+import path from "path";
 
 let lastProgressSent = 0;
 
@@ -79,9 +82,41 @@ export class InstallManager {
         return ret;
     }
 
+    static async uninstall(
+        sender: WebContents,
+        communityPackageDir: string,
+        packageCacheDirs: string,
+    ): Promise<boolean | Error> {
+        const communityPackageDirExists = await promisify(fs.exists)(communityPackageDir);
+
+        if (communityPackageDirExists) {
+            await fs.promises.rm(communityPackageDir, { recursive: true });
+        }
+
+        for (const packageCacheDir of packageCacheDirs) {
+            const packageCacheDirExists = await promisify(fs.exists)(packageCacheDir);
+
+            if (packageCacheDirExists) {
+                const dirents = await fs.promises.readdir(packageCacheDir);
+
+                for (const dirent of dirents) {
+                    if (dirent !== 'work') {
+                        await fs.promises.unlink(path.join(packageCacheDir, dirent));
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
     static setupIpcListeners(): void {
         ipcMain.handle(channels.installManager.installFromUrl, async (event, installID: number, url: string, tempDir: string, destDir: string) => {
             return InstallManager.install(event.sender, installID, url, tempDir, destDir);
+        });
+
+        ipcMain.handle(channels.installManager.uninstall, async (event, communityPackageDir: string, packageCacheDirs: string) => {
+            return InstallManager.uninstall(event.sender, communityPackageDir, packageCacheDirs);
         });
     }
 }

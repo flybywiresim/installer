@@ -520,31 +520,15 @@ export class InstallManager {
         }
 
         const installDir = Directories.inCommunity(addon.targetDirectory);
-        console.log('uninstalling ', this.getAddonInstalledTrack(addon));
 
-        if (fs.existsSync(installDir)) {
-            fs.removeSync(installDir);
-        }
-
-        // Cleanup in MS store packages
-        if (fs.existsSync(Directories.inPackagesMicrosoftStore(addon.targetDirectory))) {
-            await fs.promises.readdir(Directories.inPackagesMicrosoftStore(addon.targetDirectory))
-                .then((f) => Promise.all(f.map(e => {
-                    if (e !== 'work') {
-                        fs.promises.unlink(path.join(Directories.inPackagesMicrosoftStore(addon.targetDirectory), e));
-                    }
-                })));
-        }
-
-        // Cleanup in Steam packages
-        if (fs.existsSync(Directories.inPackagesSteam(addon.targetDirectory))) {
-            await fs.promises.readdir(Directories.inPackagesSteam(addon.targetDirectory))
-                .then((f) => Promise.all(f.map(e => {
-                    if (e !== 'work') {
-                        fs.promises.unlink(path.join(Directories.inPackagesSteam(addon.targetDirectory), e));
-                    }
-                })));
-        }
+        await ipcRenderer.invoke(
+            channels.installManager.uninstall,
+            installDir,
+            [
+                Directories.inPackagesMicrosoftStore(addon.targetDirectory),
+                Directories.inPackagesSteam(addon.targetDirectory),
+            ],
+        );
 
         this.setCurrentInstallState(addon, { status: InstallStatus.NotInstalled });
         this.setCurrentlyInstalledTrack(addon, null);
