@@ -55,7 +55,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
     };
 
     return (
-        <div className="flex flex-col w-full h-full p-7 gap-y-5 text-quasi-white">
+        <div className="flex flex-row w-full h-full mt-5 gap-x-8 text-quasi-white">
             {links.length > 0 && (
                 <div>
                     <h3 className="text-white font-bold">Links</h3>
@@ -64,7 +64,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
                         {links.map((it) => (
                             <button
                                 key={it.title}
-                                className="flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-5 text-3xl rounded-md transition-colors duration-100"
+                                className="flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-4 text-3xl rounded-md transition-colors duration-100"
                                 onClick={() => handleClickLink(it)}
                             >
                                 <BoxArrowRight size={24}/>
@@ -84,7 +84,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
                         {directories.map((it) => (
                             <button
                                 key={it.title}
-                                className="flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-5 text-3xl rounded-md transition-colors duration-100"
+                                className="flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-4 text-3xl rounded-md transition-colors duration-100"
                                 onClick={() => handleClickDirectory(it)}
                             >
                                 <Folder size={24} />
