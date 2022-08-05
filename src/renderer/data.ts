@@ -147,6 +147,23 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
+                    myInstallPage: {
+                        links: [
+                            {
+                                url: 'https://docs.flybywiresim.com/fbw-a32nx/',
+                                title: 'Documentation',
+                            },
+                        ],
+                        directories: [
+                            {
+                                location: {
+                                    in: 'packageCache',
+                                    path: 'work',
+                                },
+                                title: 'Work Folder',
+                            },
+                        ],
+                    },
                     disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server', '@/simbridge-app'],
                 },
                 {
@@ -225,28 +242,6 @@ export const defaultConfiguration: Configuration = {
                             description: 'SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.',
                         },
                     ],
-                    // configurationAspects: [
-                    //     {
-                    //         key: 'terrain-db',
-                    //         tabTitle: 'Terrain Database',
-                    //         tabSupertitle: 'Update',
-                    //         title: 'Enable or Disable Terrain Database',
-                    //         applyChoiceKeyTo: 'optionalFragmenterModule',
-                    //         choiceKind: 'yesNo',
-                    //         choices: [
-                    //             {
-                    //                 key: 'yes',
-                    //                 title: '@translations[Data.FBW.SimBridge.ConfigTerrainDB.ChoiceYes.Title]',
-                    //                 description: 'Download and install the terrain database to enable terrain display in the FBW A32NX and A380X addons.',
-                    //             },
-                    //             {
-                    //                 key: 'yes',
-                    //                 title: 'Disable Terrain Database',
-                    //                 description: 'Do not install the terrain database. Terrain display will not be available in the FBW A32NX and A380X addons.',
-                    //             },
-                    //         ],
-                    //     },
-                    // ],
                     disallowedRunningExternalApps: ['@/simbridge-app'],
                     backgroundService: {
                         executableFileBasename: 'fbw-simbridge',
