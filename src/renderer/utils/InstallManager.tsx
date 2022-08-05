@@ -22,6 +22,8 @@ import { ExternalApps } from "renderer/utils/ExternalApps";
 import { ExternalAppsUI } from "./ExternalAppsUI";
 import { ipcRenderer } from "electron";
 import channels from 'common/channels';
+import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
+import checkDiskSpace from "check-disk-space";
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents> = Parameters<FragmenterInstallerEvents[K]>
 
@@ -238,6 +240,28 @@ export class InstallManager {
                         console.log(`Dependency @${publisherKey}/${addonKey} installed successfully.`);
                     }
                 }
+            }
+        }
+
+        const destDir = Directories.inCommunity(addon.targetDirectory);
+        const tempDir = Directories.temp();
+        const restoreDir = `${Directories.temp()}-existing`;
+
+        const fragmenterUpdateChecker = new FragmenterUpdateChecker();
+        const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, destDir);
+
+        // Confirm download size and required disk space with user
+        const requiredDiskSpace = updateInfo.requiredDiskSpace;
+        const availableDiskSpace = (await checkDiskSpace(destDir)).free;
+
+        const diskSpaceModalSettingString = `mainSettings.disableAddonDiskSpaceModal.${publisher.key}.${addon.key}`;
+        const dontAsk = settings.get(diskSpaceModalSettingString);
+
+        if (Number.isFinite(requiredDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
+            const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo} availableDiskSpace={availableDiskSpace} dontShowAgainSettingName={diskSpaceModalSettingString} />);
+
+            if (!continueInstall) {
+                return InstallResult.Cancelled;
             }
         }
 

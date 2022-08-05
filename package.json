@@ -111,6 +111,7 @@
     "@types/winreg": "^1.2.31",
     "@types/ws": "^8.5.3",
     "antd": "^4.12.2",
+    "check-disk-space": "^3.3.1",
     "config-ini-parser": "~1.5.9",
     "dateformat": "^5.0.1",
     "electron-store": "^8.0.1",

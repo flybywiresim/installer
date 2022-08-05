@@ -150,6 +150,18 @@ const schema: Schema<Settings> = {
                     },
                 },
             },
+            disableAddonDiskSpaceModal: {
+                type: "object",
+                default: {},
+                additionalProperties: {
+                    type: "object",
+                    default: {},
+                    additionalProperties: {
+                        type: "boolean",
+                        default: false,
+                    },
+                },
+            },
             useCdnCache: {
                 type: "boolean",
                 default: true,
