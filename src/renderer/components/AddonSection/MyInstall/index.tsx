@@ -8,12 +8,16 @@ import {
 import { BoxArrowRight, Folder } from "react-bootstrap-icons";
 import { shell } from "electron";
 import { Directories } from "renderer/utils/Directories";
+import { useAppSelector } from "renderer/redux/store";
+import { InstallStatusCategories } from "renderer/components/AddonSection/Enums";
 
 export interface MyInstallProps {
     addon: Addon,
 }
 
 export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
+    const installStates = useAppSelector((state) => state.installStatus);
+
     const links: ExternalLink[] = [
         ...(addon.myInstallPage?.links ?? []),
     ];
@@ -54,6 +58,8 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         shell.openPath(fullPath).then();
     };
 
+    const directoriesDisabled = !InstallStatusCategories.installed.includes(installStates[addon.key].status);
+
     return (
         <div className="flex flex-row w-full h-full mt-5 gap-x-8 text-quasi-white">
             {links.length > 0 && (
@@ -84,7 +90,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
                         {directories.map((it) => (
                             <button
                                 key={it.title}
-                                className="flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-4 text-3xl rounded-md transition-colors duration-100"
+                                className={`flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-4 text-3xl rounded-md transition-colors duration-100 ${directoriesDisabled ? 'opacity-60 pointer-events-none' : ''}`}
                                 onClick={() => handleClickDirectory(it)}
                             >
                                 <Folder size={24} />

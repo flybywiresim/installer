@@ -7,7 +7,7 @@ import { InstallerStore, useAppDispatch, useAppSelector } from "../../redux/stor
 import { Addon, AddonCategoryDefinition, AddonTrack } from "renderer/utils/InstallerConfiguration";
 import { Directories } from "renderer/utils/Directories";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
-import { Gear, Hdd, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
+import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "common/settings";
 import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
@@ -467,10 +467,6 @@ export const AddonSection = (): JSX.Element => {
                                         <LocalApiConfigEditUI />
                                     </Route>
 
-                                    <Route path={`/addon-section/${publisherName}/main/my-install`}>
-                                        <MyInstall addon={selectedAddon} />
-                                    </Route>
-
                                     <Route path={`/addon-section/${publisherName}/main/about`}>
                                         <About addon={selectedAddon} />
                                     </Route>
@@ -493,10 +489,6 @@ export const AddonSection = (): JSX.Element => {
                                                     Settings
                                                 </SideBarLink>
                                             )}
-                                            <SideBarLink to={`/addon-section/${publisherName}/main/my-install`} disabled={!InstallStatusCategories.installed.includes(status)}>
-                                                <Hdd size={22} />
-                                                My Install
-                                            </SideBarLink>
                                             <SideBarLink to={`/addon-section/${publisherName}/main/about`}>
                                                 <InfoCircle size={22} />
                                                 About
@@ -539,7 +531,7 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
 
         {addon.techSpecs && addon.techSpecs.length > 0 && (
             <>
-                <h2 className="text-white font-bold">Tech Specs</h2>
+                <h3 className="text-white font-bold">Tech Specs</h3>
 
                 <div className="flex flex-row gap-x-16">
                     {addon.techSpecs.map((spec) => (
@@ -551,5 +543,7 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
                 </div>
             </>
         )}
+
+        <MyInstall addon={addon} />
     </div>
 );
