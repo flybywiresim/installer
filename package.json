@@ -104,7 +104,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.4.0",
-    "@flybywiresim/fragmenter": "^0.7.0-alpha.12",
+    "@flybywiresim/fragmenter": "^0.7.0-alpha.16",
     "@flybywiresim/react-components": "^0.2.5",
     "@reduxjs/toolkit": "^1.7.1",
     "@types/js-yaml": "^4.0.5",
