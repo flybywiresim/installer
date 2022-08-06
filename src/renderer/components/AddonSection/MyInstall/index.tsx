@@ -58,7 +58,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         shell.openPath(fullPath).then();
     };
 
-    const directoriesDisabled = !InstallStatusCategories.installed.includes(installStates[addon.key].status);
+    const directoriesDisabled = !InstallStatusCategories.installed.includes(installStates[addon.key]?.status);
 
     return (
         <div className="flex flex-row w-full h-full mt-5 gap-x-8 text-quasi-white">
