@@ -17,7 +17,7 @@ export class InstallManager {
     ): Promise<boolean | Error> {
         const abortController = new AbortController();
 
-        const fragmenterInstaller = new FragmenterInstaller(url, destDir, abortController.signal, { temporaryDirectory: tempDir, maxModuleRetries: 1 });
+        const fragmenterInstaller = new FragmenterInstaller(url, destDir, abortController.signal, { temporaryDirectory: tempDir });
 
         const forwardFragmenterEvent = (event: keyof FragmenterInstallerEvents) => {
             fragmenterInstaller.on(event, (...args: unknown[]) => {
