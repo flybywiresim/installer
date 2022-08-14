@@ -164,7 +164,7 @@ export const defaultConfiguration: Configuration = {
                             },
                         ],
                     },
-                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server', '@/simbridge-app'],
+                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server'],
                 },
                 {
                     name: 'A380X',
