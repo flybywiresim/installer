@@ -167,61 +167,103 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
     }
 
     let stateText;
+    let progressBarBg;
+    let progressBarValue;
     switch (installState.status) {
         case InstallStatus.UpToDate:
             stateText = <></>;
+            progressBarBg = 'bg-cyan';
+            progressBarValue = 100;
             break;
         case InstallStatus.NeedsUpdate:
             stateText = <StateText>New release available</StateText>;
+            progressBarBg = 'bg-cyan';
+            progressBarValue = 100;
             break;
         case InstallStatus.DownloadPrep:
             stateText = <StateText>Preparing update</StateText>;
+            progressBarBg = 'bg-cyan';
+            progressBarValue = 0;
             break;
         case InstallStatus.Downloading: {
-            const part = Number.isFinite(download.progress.splitPartIndex) && !Number.isFinite(download.progress.totalPercent)
-                ? <span className="text-gray-300 ml-3">part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}</span>
-                : null;
+            if (download.progress.interrupted) {
+                stateText = <StateText>{`Download of ${download?.module.toLocaleLowerCase()} module interrupted`}</StateText>;
+                progressBarBg = 'bg-utility-red';
+            } else {
+                const part = Number.isFinite(download.progress.splitPartIndex) && !Number.isFinite(download.progress.totalPercent)
+                    ? <span className="text-gray-300 ml-3">part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}</span>
+                    : null;
 
-            stateText = <StateText>{`Downloading ${download?.module.toLowerCase()} module`}{part}</StateText>;
+                stateText = <StateText>{`Downloading ${download?.module.toLowerCase()} module`}{part}</StateText>;
+                progressBarBg = 'bg-cyan';
+            }
+
+            progressBarValue = Number.isFinite(download.progress.totalPercent) ? download.progress.totalPercent : download.progress.splitPartPercent;
+
             break;
         }
         case InstallStatus.Decompressing:
         case InstallStatus.InstallingDependencyEnding:
             stateText = <StateText>Decompressing</StateText>;
+            progressBarBg = 'bg-cyan';
+            progressBarValue = installState.percent;
             break;
         case InstallStatus.DownloadEnding:
             stateText = <StateText>Finishing update</StateText>;
+            progressBarBg = 'bg-cyan';
+            progressBarValue = 100;
             break;
         case InstallStatus.DownloadDone:
             stateText = <StateText>Completed!</StateText>;
+            progressBarBg = 'bg-cyan';
+            progressBarValue = 100;
             break;
         case InstallStatus.DownloadRetry:
             stateText = <StateText>Retrying {download?.module.toLowerCase()} module</StateText>;
+            progressBarBg = 'bg-utility-amber';
+            progressBarValue = 100;
             break;
         case InstallStatus.DownloadError:
             stateText = <StateText>Failed to install</StateText>;
+            progressBarBg = 'bg-utility-red';
+            progressBarValue = 100;
             break;
         case InstallStatus.DownloadCanceled:
             stateText = <StateText>Download canceled</StateText>;
+            progressBarBg = 'bg-utility-amber';
+            progressBarValue = 100;
             break;
         case InstallStatus.Unknown:
             stateText = <StateText>Unknown state</StateText>;
+            progressBarBg = 'bg-utility-amber';
+            progressBarValue = 100;
             break;
         case InstallStatus.NotInstalled:
         case InstallStatus.GitInstall:
         case InstallStatus.TrackSwitch:
         default:
             stateText = <></>;
+            progressBarBg = 'bg-cyan';
+            progressBarValue = 0;
             break;
     }
 
-    const percentToShow = Number.isFinite(download.progress.totalPercent) ? download.progress.totalPercent : download.progress.splitPartPercent;
+    let smallStateText;
+    if (installState.status === InstallStatus.Downloading && download?.progress.interrupted) {
+        smallStateText = <SmallStateText>Waiting for network connection</SmallStateText>;
+    } else {
+        if (isDependency) {
+            smallStateText = <SmallStateText>Installing dependency</SmallStateText>;
+        } else {
+            smallStateText = <SmallStateText>Installing</SmallStateText>;
+        }
+    }
 
     return (
         <div className="flex-grow" style={{ flexGrow: 10 }}>
             <StateContainer>
                 <div className="flex flex-col gap-y-2">
-                    <SmallStateText>Installing {isDependency ? 'Dependency' : ''}</SmallStateText>
+                    {smallStateText}
 
                     {stateText}
                 </div>
@@ -231,12 +273,12 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
                         className="text-white font-semibold"
                         style={{ fontSize: "38px" }}
                     >
-                        {percentToShow}%
+                        {progressBarValue}%
                     </div>
                 )}
             </StateContainer>
 
-            <ProgressBar className="bg-cyan" value={percentToShow} />
+            <ProgressBar className={progressBarBg} value={progressBarValue} />
         </div>
     );
 };

@@ -2,7 +2,13 @@ import React from "react";
 import { Addon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
 import { PromptModal } from "renderer/components/Modal";
 import { ButtonType } from "renderer/components/Button";
-import { deleteDownload, registerNewDownload, updateDownloadProgress } from "renderer/redux/features/downloads";
+import {
+    clearDownloadInterrupted,
+    deleteDownload,
+    registerNewDownload,
+    setDownloadInterrupted,
+    updateDownloadProgress,
+} from "renderer/redux/features/downloads";
 import { Directories } from "renderer/utils/Directories";
 import fs from "fs-extra";
 import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
@@ -164,7 +170,7 @@ export class InstallManager {
 
         if (runningExternalApps.length > 0) {
             const doInstall = await showModal(
-                <CannotInstallDialog addon={addon} publisher={publisher} />,
+                <CannotInstallDialog addon={addon} publisher={publisher}/>,
             );
 
             if (!doInstall) {
@@ -247,7 +253,6 @@ export class InstallManager {
 
         const destDir = Directories.inCommunity(addon.targetDirectory);
         const tempDir = Directories.temp();
-        const restoreDir = `${Directories.temp()}-existing`;
 
         const fragmenterUpdateChecker = new FragmenterUpdateChecker();
         const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, destDir);
@@ -277,38 +282,6 @@ export class InstallManager {
 
         store.dispatch(registerNewDownload({ id: addon.key, module: "", abortControllerID: abortControllerID }));
 
-        const destDir = Directories.inCommunity(addon.targetDirectory);
-        const tempDir = Directories.temp();
-        const restoreDir = `${Directories.temp()}-existing`;
-
-        const restoreOldInstall = async () => {
-            console.log('Install failure - attempting to restore old install');
-
-            const restoreDirExists = fs.existsSync(restoreDir);
-
-            if (restoreDirExists) {
-                console.log('Restore directory exists - Restoring old install');
-                await fs.copy(restoreDir, destDir, { recursive: true });
-                console.log('Finished restoring old install');
-            } else {
-                console.warn('Restore directory was not created - not restoring');
-            }
-        };
-
-        const deleteOldInstall = async () => {
-            console.log('Install success - attempting to restore old install');
-
-            const restoreDirExists = fs.existsSync(restoreDir);
-
-            if (restoreDirExists) {
-                console.log('Restore directory exists - deleting old install');
-                await fs.rm(restoreDir, { recursive: true });
-                console.log('Finished deleting old install');
-            } else {
-                console.warn('Restore directory was not created - not deleting');
-            }
-        };
-
         if (tempDir === Directories.community()) {
             console.error('Community directory equals temp directory');
             this.notifyDownload(addon, false);
@@ -322,24 +295,15 @@ export class InstallManager {
         console.log(`tempDir:    ${tempDir}`);
         console.log('---');
 
-        // Copy current install to restore directory
-        console.log("Checking for existing install");
-        if (Directories.isFragmenterInstall(destDir)) {
-            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadPrep });
-
-            console.log("Found existing install at", destDir);
-            console.log("Copying existing install to", restoreDir);
-            await fs.copy(destDir, restoreDir, { recursive: true });
-            console.log("Finished copying");
-        }
-
+        // Create dest dir if it doesn't exist
         if (!fs.existsSync(destDir)) {
             fs.mkdirSync(destDir);
         }
 
         try {
             let lastPercent = 0;
-            this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+
+            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadPrep });
 
             // Generate a random install iD to keep track of events related to our install
             const ourInstallID = Math.floor(Math.random() * 1_000_000);
@@ -368,6 +332,7 @@ export class InstallManager {
                                     id: addon.key,
                                     module: module.name,
                                     progress: {
+                                        interrupted: false,
                                         totalPercent: progress.percent,
                                         splitPartPercent: progress.partPercent,
                                         splitPartIndex: progress.partIndex,
@@ -377,18 +342,55 @@ export class InstallManager {
                         }
                         break;
                     }
+                    case 'downloadInterrupted': {
+                        const [module] = args as FragmenterEventArguments<typeof event>;
+
+                        store.dispatch(
+                            setDownloadInterrupted({
+                                id: addon.key,
+                                module: module.name,
+                            }),
+                        );
+
+                        break;
+                    }
                     case 'unzipStarted': {
                         const [module] = args as FragmenterEventArguments<typeof event>;
 
                         console.log("Started unzipping module", module.name);
-                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing });
+                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing, percent: 0 });
 
                         if (dependencyOf) {
                             this.setCurrentInstallState(dependencyOf, {
                                 status: InstallStatus.InstallingDependencyEnding,
                                 dependencyAddonKey: addon.key, dependencyPublisherKey: publisher.key,
+                                percent: 0,
                             });
                         }
+                        break;
+                    }
+                    case 'unzipProgress': {
+                        const [, progress] = args as FragmenterEventArguments<typeof event>;
+
+                        const percent = Math.round(((progress.entryIndex + 1) / progress.entryCount) * 100);
+
+                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing, percent });
+
+                        if (dependencyOf) {
+                            this.setCurrentInstallState(dependencyOf, {
+                                status: InstallStatus.InstallingDependencyEnding,
+                                dependencyAddonKey: addon.key, dependencyPublisherKey: publisher.key,
+                                percent,
+                            });
+                        }
+                        break;
+                    }
+                    case 'copyStarted': {
+                        const [module] = args as FragmenterEventArguments<typeof event>;
+
+                        console.log("Started moving over module", module.name);
+                        this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
+
                         break;
                     }
                     case 'retryScheduled': {
@@ -397,6 +399,13 @@ export class InstallManager {
                         console.log("Scheduling a retry for module", module.name);
                         console.log("Retry count", retryCount);
                         console.log("Waiting for", waitSeconds, "seconds");
+
+                        store.dispatch(
+                            clearDownloadInterrupted({
+                                id: addon.key,
+                                module: module.name,
+                            }),
+                        );
 
                         this.setCurrentInstallState(addon, { status: InstallStatus.DownloadRetry });
                         break;
@@ -463,7 +472,7 @@ export class InstallManager {
 
                 if (!isAutoStartEnabled && !doNotAskAgain) {
                     await showModal(
-                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true} />,
+                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true}/>,
                     );
                 }
             }
@@ -473,8 +482,6 @@ export class InstallManager {
 
                 setCancelledState();
                 startResetStateTimer();
-
-                await restoreOldInstall();
 
                 return InstallResult.Cancelled;
             } else {
@@ -489,8 +496,6 @@ export class InstallManager {
                 return InstallResult.Failure;
             }
         }
-
-        await deleteOldInstall();
 
         removeDownloadState();
 

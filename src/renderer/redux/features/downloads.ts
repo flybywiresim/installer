@@ -16,10 +16,27 @@ export const downloadSlice = createSlice({
                 }
             });
         },
+        setDownloadInterrupted: (state, action: TypedAction<{ id: string, module: string }>) => {
+            state.forEach(download => {
+                if (download.id === action.payload.id) {
+                    download.progress.interrupted = true;
+                    download.module = action.payload.module;
+                }
+            });
+        },
+        clearDownloadInterrupted: (state, action: TypedAction<{ id: string, module: string }>) => {
+            state.forEach(download => {
+                if (download.id === action.payload.id) {
+                    download.progress.interrupted = false;
+                    download.module = action.payload.module;
+                }
+            });
+        },
         registerNewDownload: (state, action: TypedAction<{ id: string, module: string, abortControllerID: number }>) => {
             state.push({
                 id: action.payload.id,
                 progress: {
+                    interrupted: false,
                     totalPercent: 0,
                 },
                 module: action.payload.module,
@@ -36,5 +53,5 @@ export const downloadSlice = createSlice({
     },
 });
 
-export const { updateDownloadProgress, registerNewDownload, deleteDownload } = downloadSlice.actions;
+export const { updateDownloadProgress, setDownloadInterrupted, clearDownloadInterrupted, registerNewDownload, deleteDownload } = downloadSlice.actions;
 export default downloadSlice.reducer;

@@ -1,4 +1,4 @@
-import { FragmenterInstaller, FragmenterInstallerEvents } from "@flybywiresim/fragmenter";
+import { FragmenterContext, FragmenterInstaller, FragmenterInstallerEvents } from "@flybywiresim/fragmenter";
 import channels from "common/channels";
 import { ipcMain, WebContents } from "electron";
 import fs from "fs";
@@ -17,11 +17,12 @@ export class InstallManager {
     ): Promise<boolean | Error> {
         const abortController = new AbortController();
 
-        const fragmenterInstaller = new FragmenterInstaller(url, destDir, abortController.signal, { temporaryDirectory: tempDir });
+        const context = new FragmenterContext({ useConsoleLog: true }, abortController.signal);
+        const fragmenterInstaller = new FragmenterInstaller(context, url, destDir, { temporaryDirectory: tempDir });
 
         const forwardFragmenterEvent = (event: keyof FragmenterInstallerEvents) => {
             fragmenterInstaller.on(event, (...args: unknown[]) => {
-                if (event === 'downloadProgress') {
+                if (event === 'downloadProgress' || event === 'unzipProgress' || event === 'copyProgress') {
                     const currentTime = performance.now();
                     const timeSinceLastProgress = currentTime - lastProgressSent;
 
@@ -50,10 +51,13 @@ export class InstallManager {
         forwardFragmenterEvent('error');
         forwardFragmenterEvent('downloadStarted');
         forwardFragmenterEvent('downloadProgress');
+        forwardFragmenterEvent('downloadInterrupted');
         forwardFragmenterEvent('downloadFinished');
         forwardFragmenterEvent('unzipStarted');
+        forwardFragmenterEvent('unzipProgress');
         forwardFragmenterEvent('unzipFinished');
         forwardFragmenterEvent('copyStarted');
+        forwardFragmenterEvent('copyProgress');
         forwardFragmenterEvent('copyFinished');
         forwardFragmenterEvent('retryScheduled');
         forwardFragmenterEvent('retryStarted');

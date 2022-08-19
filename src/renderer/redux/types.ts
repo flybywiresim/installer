@@ -1,6 +1,7 @@
 import { ReleaseInfo } from "renderer/utils/AddonData";
 
 export interface DownloadProgress {
+    interrupted: boolean,
     totalPercent: number,
     splitPartPercent?: number,
     splitPartIndex?: number,
