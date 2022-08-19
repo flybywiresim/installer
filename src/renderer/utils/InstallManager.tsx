@@ -136,6 +136,8 @@ export class InstallManager {
     }
 
     static async installAddon(addon: Addon, publisher: Publisher, showModal: (modal: JSX.Element) => Promise<boolean>, dependencyOf?: Addon): Promise<InstallResult> {
+        this.setCurrentInstallState(addon, { status: InstallStatus.DownloadPending });
+
         const setErrorState = () => {
             store.dispatch(deleteDownload({ id: addon.key }));
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadError });
@@ -261,6 +263,8 @@ export class InstallManager {
             const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo} availableDiskSpace={availableDiskSpace} dontShowAgainSettingName={diskSpaceModalSettingString} />);
 
             if (!continueInstall) {
+                startResetStateTimer();
+
                 return InstallResult.Cancelled;
             }
         }
