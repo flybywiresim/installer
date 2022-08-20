@@ -5,6 +5,9 @@ import { ipcRenderer } from 'electron';
 import { WindowsControl } from 'react-windows-controls';
 import channels from 'common/channels';
 import { Directories } from 'renderer/utils/Directories';
+import { store } from "renderer/redux/store";
+import { InstallStatusCategories } from "renderer/components/AddonSection/Enums";
+import { AlertModal, useModals } from "renderer/components/Modal";
 
 export type ButtonProps = { id?: string, className?: string, onClick?: () => void, isClose?: boolean }
 
@@ -21,6 +24,8 @@ export const Button: React.FC<ButtonProps> = ({ id, className, onClick, isClose,
 };
 
 export const WindowButtons: React.FC = () => {
+    const { showModal } = useModals();
+
     const openGithub = () => shell.openExternal("https://github.com/flybywiresim/a32nx/issues/new/choose");
 
     const handleMinimize = () => {
@@ -32,8 +37,18 @@ export const WindowButtons: React.FC = () => {
     };
 
     const handleClose = () => {
-        Directories.removeAllTemp();
-        ipcRenderer.send(channels.window.close);
+        const installStatuses = store.getState().installStatus;
+
+        const anyInstalling = Object.values(installStatuses).some((it) => InstallStatusCategories.installing.includes(it.status));
+
+        if (anyInstalling) {
+            showModal(
+                <AlertModal title="Hold on" bodyText="You currently have addons being installed or updated. Please finish or cancel those before closing the app." acknowledgeText="OK" />,
+            );
+        } else {
+            Directories.removeAllTemp();
+            ipcRenderer.send(channels.window.close);
+        }
     };
 
     return (
