@@ -174,7 +174,9 @@ export class InstallManager {
             );
 
             if (!doInstall) {
-                return;
+                startResetStateTimer(0);
+
+                return InstallResult.Cancelled;
             }
         }
 
