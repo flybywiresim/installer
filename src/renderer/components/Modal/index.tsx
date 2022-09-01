@@ -59,7 +59,7 @@ export const ModalProvider: FC = ({ children }) => {
 };
 
 interface BaseModalProps {
-    title: string;
+    title: React.ReactElement | string;
     bodyText: React.ReactElement | string;
     dontShowAgainSettingName?: string;
     closeIfDontShowAgain?: boolean,
@@ -110,7 +110,11 @@ export const PromptModal: FC<PromptModalProps> = ({
 
     return (
         <div className="modal">
-            <h2 className="modal-title">{title}</h2>
+            {typeof title === 'string' ? (
+                <h1 className="modal-title">{title}</h1>
+            ) : (
+                title
+            )}
             {typeof bodyText === 'string' ? (
                 <ReactMarkdown
                     className="mt-6 markdown-body-modal"
@@ -172,7 +176,11 @@ export const AlertModal: FC<AlertModalProps> = ({
 
     return (
         <div className="modal">
-            <h1 className="modal-title">{title}</h1>
+            {typeof title === 'string' ? (
+                <h1 className="modal-title">{title}</h1>
+            ) : (
+                title
+            )}
             {typeof bodyText === 'string' ? (
                 <ReactMarkdown
                     className="mt-6 markdown-body-modal"

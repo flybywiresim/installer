@@ -27,13 +27,12 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Sentry from '@sentry/electron/renderer';
+import { BrowserTracing } from '@sentry/tracing';
 import { Provider } from 'react-redux';
 import App, { fetchLatestVersionNames } from 'renderer/components/App';
 import { Configuration, InstallerConfiguration } from 'renderer/utils/InstallerConfiguration';
 import { ipcRenderer } from "electron";
-
-import 'antd/dist/antd.less';
-import 'simplebar/dist/simplebar.min.css';
 import { Directories } from "renderer/utils/Directories";
 import channels from "common/channels";
 import { MemoryRouter } from 'react-router-dom';
@@ -42,8 +41,27 @@ import { setConfiguration } from './redux/features/configuration';
 import { GitVersions } from "@flybywiresim/api-client";
 import { addReleases } from "renderer/redux/features/releaseNotes";
 import { ModalProvider } from "renderer/components/Modal";
+import { setSentrySessionID } from "renderer/redux/features/sentrySessionID";
+import packageJson from '../../package.json';
 
+import 'antd/dist/antd.less';
+import 'simplebar/dist/simplebar.min.css';
 import './index.scss';
+
+// Setup Sentry
+Sentry.init({
+    release: packageJson.version,
+    integrations: [
+        new BrowserTracing(),
+    ],
+    tracesSampleRate: 1.0,
+    // sampleRate: 0.1,
+});
+
+// Request Sentry session ID
+ipcRenderer.invoke(channels.sentry.requestSessionID).then((sessionID) => {
+    store.dispatch(setSentrySessionID(sessionID));
+});
 
 // Obtain configuration and use it
 InstallerConfiguration.obtain().then((config: Configuration) => {

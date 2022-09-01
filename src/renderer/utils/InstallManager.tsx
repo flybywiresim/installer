@@ -28,6 +28,8 @@ import { ExternalApps } from "renderer/utils/ExternalApps";
 import { ExternalAppsUI } from "./ExternalAppsUI";
 import { ipcRenderer } from "electron";
 import channels from 'common/channels';
+import * as Sentry from '@sentry/electron/renderer';
+import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
 
@@ -493,7 +495,8 @@ export class InstallManager {
                 setErrorState();
                 startResetStateTimer();
 
-                await restoreOldInstall();
+                Sentry.captureException(e);
+                await showModal(<ErrorDialog error={e}/>);
 
                 return InstallResult.Failure;
             }

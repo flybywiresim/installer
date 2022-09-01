@@ -17,4 +17,8 @@ export default {
         cancelInstall: 'installManager/cancelInstall',
         uninstall: 'installManager/uninstall',
     },
+    sentry: {
+        requestSessionID: 'sentry/requestSessionID',
+        provideSessionID: 'sentry/provideSessionID',
+    },
 };
