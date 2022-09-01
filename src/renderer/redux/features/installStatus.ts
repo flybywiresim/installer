@@ -21,11 +21,13 @@ export interface InstallingDependencyEndingInstallState extends BaseInstallState
     dependencyPublisherKey: string,
     dependencyAddonKey: string,
     percent: number,
+    entry?: string,
 }
 
 export interface DecompressingInstallState extends BaseInstallState {
     status: InstallStatus.Decompressing,
     percent: number,
+    entry?: string,
 }
 
 export type InstallState = GenericInstallState | InstallingDependencyInstallState | InstallingDependencyEndingInstallState | DecompressingInstallState

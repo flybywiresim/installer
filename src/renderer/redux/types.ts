@@ -12,6 +12,8 @@ export interface DownloadItem {
     id: string
     progress: DownloadProgress,
     module: string,
+    moduleIndex: number,
+    moduleCount: number,
     abortControllerID: number,
 }
 

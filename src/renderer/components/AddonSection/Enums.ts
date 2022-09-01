@@ -31,6 +31,7 @@ export const InstallStatusCategories = {
         InstallStatus.DownloadEnding,
     ],
     installingNoProgress: [
+        InstallStatus.DownloadPrep,
         InstallStatus.DownloadPending,
         InstallStatus.DownloadRetry,
         InstallStatus.DownloadEnding,

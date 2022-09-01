@@ -1,4 +1,9 @@
-import { FragmenterContext, FragmenterInstaller, FragmenterInstallerEvents } from "@flybywiresim/fragmenter";
+import {
+    FragmenterContext,
+    FragmenterContextEvents,
+    FragmenterInstaller,
+    FragmenterInstallerEvents,
+} from "@flybywiresim/fragmenter";
 import channels from "common/channels";
 import { ipcMain, WebContents } from "electron";
 import fs from "fs";
@@ -17,16 +22,16 @@ export class InstallManager {
     ): Promise<boolean | Error> {
         const abortController = new AbortController();
 
-        const context = new FragmenterContext({ useConsoleLog: true }, abortController.signal);
-        const fragmenterInstaller = new FragmenterInstaller(context, url, destDir, { temporaryDirectory: tempDir });
+        const fragmenterContext = new FragmenterContext({ useConsoleLog: true }, abortController.signal);
+        const fragmenterInstaller = new FragmenterInstaller(fragmenterContext, url, destDir, { temporaryDirectory: tempDir });
 
-        const forwardFragmenterEvent = (event: keyof FragmenterInstallerEvents) => {
+        const forwardFragmenterInstallerEvent = (event: keyof FragmenterInstallerEvents) => {
             fragmenterInstaller.on(event, (...args: unknown[]) => {
                 if (event === 'downloadProgress' || event === 'unzipProgress' || event === 'copyProgress') {
                     const currentTime = performance.now();
                     const timeSinceLastProgress = currentTime - lastProgressSent;
 
-                    if (timeSinceLastProgress > 50) {
+                    if (timeSinceLastProgress > 25) {
                         sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
 
                         lastProgressSent = currentTime;
@@ -34,6 +39,12 @@ export class InstallManager {
                 } else {
                     sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
                 }
+            });
+        };
+
+        const forwardFragmenterContextEvent = (event: keyof FragmenterContextEvents) => {
+            fragmenterContext.on(event, (...args: unknown[]) => {
+                sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
             });
         };
 
@@ -48,23 +59,25 @@ export class InstallManager {
         // Setup cancel event listener
         ipcMain.on(channels.installManager.cancelInstall, handleCancelInstall);
 
-        forwardFragmenterEvent('error');
-        forwardFragmenterEvent('downloadStarted');
-        forwardFragmenterEvent('downloadProgress');
-        forwardFragmenterEvent('downloadInterrupted');
-        forwardFragmenterEvent('downloadFinished');
-        forwardFragmenterEvent('unzipStarted');
-        forwardFragmenterEvent('unzipProgress');
-        forwardFragmenterEvent('unzipFinished');
-        forwardFragmenterEvent('copyStarted');
-        forwardFragmenterEvent('copyProgress');
-        forwardFragmenterEvent('copyFinished');
-        forwardFragmenterEvent('retryScheduled');
-        forwardFragmenterEvent('retryStarted');
-        forwardFragmenterEvent('fullDownload');
-        forwardFragmenterEvent('logInfo');
-        forwardFragmenterEvent('logWarn');
-        forwardFragmenterEvent('logError');
+        forwardFragmenterInstallerEvent('error');
+        forwardFragmenterInstallerEvent('downloadStarted');
+        forwardFragmenterInstallerEvent('downloadProgress');
+        forwardFragmenterInstallerEvent('downloadInterrupted');
+        forwardFragmenterInstallerEvent('downloadFinished');
+        forwardFragmenterInstallerEvent('unzipStarted');
+        forwardFragmenterInstallerEvent('unzipProgress');
+        forwardFragmenterInstallerEvent('unzipFinished');
+        forwardFragmenterInstallerEvent('copyStarted');
+        forwardFragmenterInstallerEvent('copyProgress');
+        forwardFragmenterInstallerEvent('copyFinished');
+        forwardFragmenterInstallerEvent('retryScheduled');
+        forwardFragmenterInstallerEvent('retryStarted');
+        forwardFragmenterInstallerEvent('fullDownload');
+        forwardFragmenterInstallerEvent('cancelled');
+        forwardFragmenterInstallerEvent('logInfo');
+        forwardFragmenterInstallerEvent('logWarn');
+        forwardFragmenterInstallerEvent('logError');
+        forwardFragmenterContextEvent('phaseChange');
 
         let ret = false;
 

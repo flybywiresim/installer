@@ -4,7 +4,7 @@ import { useAppSelector } from "renderer/redux/store";
 import { Addon, Publisher } from "renderer/utils/InstallerConfiguration";
 import { InstallingDependencyInstallState, InstallState } from "renderer/redux/features/installStatus";
 import { DownloadItem } from "renderer/redux/types";
-import { Activity, Gear } from "react-bootstrap-icons";
+import { Activity, Download, Gear, Stopwatch, WifiOff, XOctagon } from "react-bootstrap-icons";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
 import { Button, ButtonType } from "renderer/components/Button";
 import { PromptModal, useModals } from "renderer/components/Modal";
@@ -43,7 +43,7 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
     return (
         <>
             <BackgroundServiceBanner publisher={publisher} addon={addon} installState={dependencyAddonInstallState ?? addonInstallState} />
-            <DownloadProgressBanner installState={dependencyAddonInstallState ?? addonInstallState} download={dependencyAddonDownload ?? addonDownload} isDependency={isInstallingDependency} />
+            <DownloadProgressBanner addon={addon} installState={dependencyAddonInstallState ?? addonInstallState} download={dependencyAddonDownload ?? addonDownload} isDependency={isInstallingDependency} />
         </>
     );
 };
@@ -60,7 +60,7 @@ const SmallStateText: FC = ({ children }) => (
 );
 
 const StateText: FC = ({ children }) => (
-    <div className="text-white text-3xl font-bold">{children}</div>
+    <div className="text-gray-300 text-4xl font-medium">{children}</div>
 );
 
 interface ProgressBarProps {
@@ -72,7 +72,7 @@ interface ProgressBarProps {
 const ProgressBar: FC<ProgressBarProps> = ({ className, value }) => (
     <div className="w-full h-2 z-10 bg-black">
         <div
-            className={`h-2 z-11 ${className}`}
+            className={`h-2 z-11 transition-all duration-75 ${className}`}
             style={{ width: `${value}%` }}
         />
         {/* FIXME animation */}
@@ -156,45 +156,41 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
 };
 
 interface DownloadProgressBannerProps {
+    addon: Addon,
     installState: InstallState,
     download: DownloadItem,
     isDependency: boolean,
 }
 
-const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState, download, isDependency }) => {
+const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, installState, download, isDependency }) => {
     if (!installState || !download) {
         return null;
     }
 
+    let stateIcon;
     let stateText;
     let progressBarBg;
     let progressBarValue;
     switch (installState.status) {
-        case InstallStatus.UpToDate:
-            stateText = <></>;
-            progressBarBg = 'bg-cyan';
-            progressBarValue = 100;
-            break;
-        case InstallStatus.NeedsUpdate:
-            stateText = <StateText>New release available</StateText>;
-            progressBarBg = 'bg-cyan';
-            progressBarValue = 100;
-            break;
         case InstallStatus.DownloadPrep:
-            stateText = <StateText>Preparing update</StateText>;
+            stateIcon = <Download size={40} className="text-white mr-6" />;
+            stateText = <SmallStateText>Preparing update</SmallStateText>;
             progressBarBg = 'bg-cyan';
             progressBarValue = 0;
             break;
         case InstallStatus.Downloading: {
             if (download.progress.interrupted) {
-                stateText = <StateText>{`Download of ${download?.module.toLocaleLowerCase()} module interrupted`}</StateText>;
+                stateIcon = <WifiOff size={42} className="text-white mr-6"/>;
+                stateText = <SmallStateText>{`Download interrupted`}</SmallStateText>;
                 progressBarBg = 'bg-utility-red';
             } else {
                 const part = Number.isFinite(download.progress.splitPartIndex) && !Number.isFinite(download.progress.totalPercent)
-                    ? <span className="text-gray-300 ml-3">part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}</span>
+                    ? <span
+                        className="text-gray-300 ml-3">part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}</span>
                     : null;
 
-                stateText = <StateText>{`Downloading ${download?.module.toLowerCase()} module`}{part}</StateText>;
+                stateIcon = <Download size={40} className="text-white mr-6" />;
+                stateText = <SmallStateText>{`Downloading`}{part}</SmallStateText>;
                 progressBarBg = 'bg-cyan';
             }
 
@@ -204,37 +200,40 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
         }
         case InstallStatus.Decompressing:
         case InstallStatus.InstallingDependencyEnding:
-            stateText = <StateText>Decompressing</StateText>;
+            stateIcon = <Download size={40} className="text-white mr-6"/>;
+            stateText = <SmallStateText>Decompressing</SmallStateText>;
             progressBarBg = 'bg-cyan';
             progressBarValue = installState.percent;
             break;
         case InstallStatus.DownloadEnding:
-            stateText = <StateText>Finishing update</StateText>;
+            stateText = <SmallStateText>Finishing update</SmallStateText>;
             progressBarBg = 'bg-cyan';
             progressBarValue = 100;
             break;
         case InstallStatus.DownloadDone:
-            stateText = <StateText>Completed!</StateText>;
+            stateText = <SmallStateText>Completed!</SmallStateText>;
             progressBarBg = 'bg-cyan';
             progressBarValue = 100;
             break;
         case InstallStatus.DownloadRetry:
-            stateText = <StateText>Retrying {download?.module.toLowerCase()} module</StateText>;
+            stateIcon = <Stopwatch size={40} className="text-white mr-6"/>;
+            stateText = <SmallStateText>Retrying {download?.module.toLowerCase()} module</SmallStateText>;
             progressBarBg = 'bg-utility-amber';
             progressBarValue = 100;
             break;
         case InstallStatus.DownloadError:
-            stateText = <StateText>Failed to install</StateText>;
+            stateText = <SmallStateText>Failed to install</SmallStateText>;
             progressBarBg = 'bg-utility-red';
             progressBarValue = 100;
             break;
         case InstallStatus.DownloadCanceled:
-            stateText = <StateText>Download canceled</StateText>;
+            stateIcon = <XOctagon size={40} className="text-white mr-6"/>;
+            stateText = <SmallStateText>Download canceled</SmallStateText>;
             progressBarBg = 'bg-utility-amber';
             progressBarValue = 100;
             break;
         case InstallStatus.Unknown:
-            stateText = <StateText>Unknown state</StateText>;
+            stateText = <SmallStateText>Unknown state</SmallStateText>;
             progressBarBg = 'bg-utility-amber';
             progressBarValue = 100;
             break;
@@ -248,33 +247,65 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ installState,
             break;
     }
 
-    let smallStateText;
-    if (installState.status === InstallStatus.Downloading && download?.progress.interrupted) {
-        smallStateText = <SmallStateText>Waiting for network connection</SmallStateText>;
+    const showProgress = InstallStatusCategories.installing.includes(installState.status) && !(InstallStatusCategories.installingNoProgress.includes(installState.status));
+
+    // let smallStateText;
+    // if (installState.status === InstallStatus.Downloading && download?.progress.interrupted) {
+    //     smallStateText = <SmallStateText>Waiting for network connection</SmallStateText>;
+    // } else if (isDependency) {
+    //     smallStateText = <SmallStateText>Installing dependency</SmallStateText>;
+    // } else {
+    //     smallStateText = <SmallStateText>Installing</SmallStateText>;
+    // }
+
+    let moduleStateText;
+    if (download.module && installState.status !== InstallStatus.DownloadCanceled) {
+        const moduleIndicator = showProgress && download.moduleCount > 1 ? <span className=" text-gray-400">{download.moduleIndex + 1}/{download.moduleCount}</span> : null;
+
+        moduleStateText = (
+            <span className="flex items-center gap-x-3 mr-12 text-white text-4xl">
+                {moduleIndicator}
+
+                <span className="flex items-center gap-x-4">
+                    <span>{download.module === 'full' ? 'Full package' : download.module}</span>
+                </span>
+            </span>
+        );
     } else {
-        if (isDependency) {
-            smallStateText = <SmallStateText>Installing dependency</SmallStateText>;
-        } else {
-            smallStateText = <SmallStateText>Installing</SmallStateText>;
-        }
+        moduleStateText = (
+            <span className="flex items-center gap-x-3 mr-12 text-white text-4xl">
+                <span className="flex items-center gap-x-4">
+                    {addon.name}
+                </span>
+            </span>
+        );
     }
 
     return (
         <div className="flex-grow" style={{ flexGrow: 10 }}>
             <StateContainer>
-                <div className="flex flex-col gap-y-2">
-                    {smallStateText}
+                <span className="flex items-center">
+                    {stateIcon}
 
-                    {stateText}
-                </div>
+                    <div className="w-0.5 h-20 mr-6 bg-gray-700"></div>
 
-                {(InstallStatusCategories.installing.includes(installState.status) && !(InstallStatusCategories.installingNoProgress.includes(installState.status))) && (
-                    <div
-                        className="text-white font-semibold"
-                        style={{ fontSize: "38px" }}
-                    >
-                        {progressBarValue}%
+                    <div className="flex items-center gap-x-12">
+                        <div className="flex flex-col gap-y-2">
+                            {moduleStateText}
+                            {stateText}
+                        </div>
                     </div>
+                </span>
+
+                {showProgress && (
+                    <span className="flex items-center text-white">
+                        <span
+                            className="font-semibold"
+                            style={{ fontSize: "38px" }}
+                        >
+                            {progressBarValue}%
+                        </span>
+                    </span>
                 )}
             </StateContainer>
 

@@ -6,13 +6,13 @@ import {
     clearDownloadInterrupted,
     deleteDownload,
     registerNewDownload,
-    setDownloadInterrupted,
+    setDownloadInterrupted, setDownloadModuleIndex,
     updateDownloadProgress,
 } from "renderer/redux/features/downloads";
 import { Directories } from "renderer/utils/Directories";
 import fs from "fs-extra";
 import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
-import { FragmenterInstallerEvents, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
+import { FragmenterContextEvents, FragmenterInstallerEvents, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
 import settings from "common/settings";
 import { store } from "renderer/redux/store";
 import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
@@ -33,7 +33,7 @@ import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
 
-type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents> = Parameters<FragmenterInstallerEvents[K]>
+type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<(FragmenterInstallerEvents & FragmenterContextEvents)[K]>
 
 export enum InstallResult {
     Success,
@@ -147,17 +147,18 @@ export class InstallManager {
         this.setCurrentInstallState(addon, { status: InstallStatus.DownloadPending });
 
         const setErrorState = () => {
-            store.dispatch(deleteDownload({ id: addon.key }));
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadError });
         };
 
         const setCancelledState = () => {
-            store.dispatch(deleteDownload({ id: addon.key }));
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
         };
 
-        const startResetStateTimer = () => {
-            setTimeout(async () => this.setCurrentInstallState(addon, await this.determineAddonInstallState(addon)), 3_000);
+        const startResetStateTimer = (timeout = 3_000) => {
+            setTimeout(async () => {
+                store.dispatch(deleteDownload({ id: addon.key }));
+                this.setCurrentInstallState(addon, await this.determineAddonInstallState(addon));
+            }, timeout);
         };
 
         const removeDownloadState = () => {
@@ -172,7 +173,7 @@ export class InstallManager {
 
         if (runningExternalApps.length > 0) {
             const doInstall = await showModal(
-                <CannotInstallDialog addon={addon} publisher={publisher}/>,
+                <CannotInstallDialog addon={addon} publisher={publisher} />,
             );
 
             if (!doInstall) {
@@ -284,7 +285,12 @@ export class InstallManager {
         this.abortControllers[abortControllerID] = new AbortController();
         const signal = this.abortControllers[abortControllerID].signal;
 
-        store.dispatch(registerNewDownload({ id: addon.key, module: "", abortControllerID: abortControllerID }));
+        let moduleCount = updateInfo.isFreshInstall ? 1 : updateInfo.updatedModules.length + updateInfo.addedModules.length;
+        if (updateInfo.baseChanged) {
+            moduleCount++;
+        }
+
+        store.dispatch(registerNewDownload({ id: addon.key, module: '', moduleCount, abortControllerID: abortControllerID }));
 
         if (tempDir === Directories.community()) {
             console.error('Community directory equals temp directory');
@@ -312,7 +318,7 @@ export class InstallManager {
             // Generate a random install iD to keep track of events related to our install
             const ourInstallID = Math.floor(Math.random() * 1_000_000);
 
-            const handleForwardedFragmenterEvent = (_: unknown, installID: number, event: keyof FragmenterInstallerEvents, ...args: unknown[]) => {
+            const handleForwardedFragmenterEvent = (_: unknown, installID: number, event: keyof FragmenterInstallerEvents | keyof FragmenterContextEvents, ...args: unknown[]) => {
                 if (installID !== ourInstallID) {
                     return;
                 }
@@ -324,6 +330,33 @@ export class InstallManager {
                         console.log("Downloading started for module", module.name);
 
                         this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+
+                        store.dispatch(
+                            updateDownloadProgress({
+                                id: addon.key,
+                                module: module.name,
+                                progress: {
+                                    interrupted: false,
+                                    totalPercent: 0,
+                                    splitPartPercent: 0,
+                                    splitPartIndex: 0,
+                                    splitPartCount: 0,
+                                },
+                            }));
+
+                        break;
+                    }
+                    case 'phaseChange': {
+                        const [phase] = args as FragmenterEventArguments<typeof event>;
+
+                        if ('moduleIndex' in phase) {
+                            store.dispatch(
+                                setDownloadModuleIndex({
+                                    id: addon.key,
+                                    moduleIndex: phase.moduleIndex,
+                                }),
+                            );
+                        }
                         break;
                     }
                     case 'downloadProgress': {
@@ -347,13 +380,8 @@ export class InstallManager {
                         break;
                     }
                     case 'downloadInterrupted': {
-                        const [module] = args as FragmenterEventArguments<typeof event>;
-
                         store.dispatch(
-                            setDownloadInterrupted({
-                                id: addon.key,
-                                module: module.name,
-                            }),
+                            setDownloadInterrupted({ id: addon.key }),
                         );
 
                         break;
@@ -378,7 +406,7 @@ export class InstallManager {
 
                         const percent = Math.round(((progress.entryIndex + 1) / progress.entryCount) * 100);
 
-                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing, percent });
+                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing, percent, entry: progress.entryName });
 
                         if (dependencyOf) {
                             this.setCurrentInstallState(dependencyOf, {
@@ -393,7 +421,6 @@ export class InstallManager {
                         const [module] = args as FragmenterEventArguments<typeof event>;
 
                         console.log("Started moving over module", module.name);
-                        this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
 
                         break;
                     }
@@ -405,10 +432,7 @@ export class InstallManager {
                         console.log("Waiting for", waitSeconds, "seconds");
 
                         store.dispatch(
-                            clearDownloadInterrupted({
-                                id: addon.key,
-                                module: module.name,
-                            }),
+                            clearDownloadInterrupted({ id: addon.key }),
                         );
 
                         this.setCurrentInstallState(addon, { status: InstallStatus.DownloadRetry });
@@ -421,6 +445,10 @@ export class InstallManager {
                         console.log("Retry count", retryCount);
 
                         this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+                        break;
+                    }
+                    case 'cancelled': {
+                        this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
                         break;
                     }
                     case 'error': {
@@ -453,8 +481,6 @@ export class InstallManager {
 
             // Stop listening to forwarded fragmenter events
             ipcRenderer.removeListener(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
-
-            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
 
             // Remove installs existing under alternative names
             console.log("Removing installs existing under alternative names");
