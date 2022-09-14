@@ -286,7 +286,7 @@ export class InstallManager {
         const signal = this.abortControllers[abortControllerID].signal;
 
         let moduleCount = updateInfo.isFreshInstall ? 1 : updateInfo.updatedModules.length + updateInfo.addedModules.length;
-        if (updateInfo.baseChanged) {
+        if (!updateInfo.isFreshInstall && updateInfo.baseChanged) {
             moduleCount++;
         }
 
