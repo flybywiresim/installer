@@ -167,6 +167,8 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
         return null;
     }
 
+    // TODO dependency state
+
     let stateIcon;
     let stateText;
     let progressBarBg;
