@@ -37,7 +37,7 @@ const localApiDefaultConfiguration: LocalApiConfiguration = {
 
 class LocalApiConfigurationHandler {
     private static get simbridgeDirectory(): string {
-        return path.join(Directories.inCommunity(SIMBRIDGE_DIRECTORY));
+        return path.join(Directories.inInstallLocation(SIMBRIDGE_DIRECTORY));
     }
 
     private static get simbridgeConfigPath(): string {

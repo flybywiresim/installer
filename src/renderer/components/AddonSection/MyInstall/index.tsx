@@ -45,10 +45,10 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         let fullPath;
         switch (def.location.in) {
             case 'community':
-                fullPath = Directories.inCommunity(def.location.path);
+                fullPath = Directories.inInstallLocation(def.location.path);
                 break;
             case 'package':
-                fullPath = Directories.inCommunityPackage(addon, def.location.path);
+                fullPath = Directories.inInstallPackage(addon, def.location.path);
                 break;
             case "packageCache":
                 fullPath = Directories.inPackageCache(addon, def.location.path);

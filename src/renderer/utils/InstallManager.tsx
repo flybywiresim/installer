@@ -74,7 +74,7 @@ export class InstallManager {
 
         console.log("Checking install status");
 
-        const installDir = Directories.inCommunity(addon.targetDirectory);
+        const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
         if (!fs.existsSync(installDir)) {
             return { status: InstallStatus.NotInstalled };
@@ -264,6 +264,7 @@ export class InstallManager {
 
         // Find incompatible add-ons
         for (const incompatibility of addon.incompatibleAddons ?? []) {
+            console.log('Community folder: ', Directories.communityLocation(), 'Install folder: ', Directories.installLocation());
             console.log('Checking for incompatible add-ons',
                 incompatibility.title,
                 incompatibility.creator,
@@ -271,7 +272,7 @@ export class InstallManager {
                 incompatibility.description);
         }
 
-        const destDir = Directories.inCommunity(addon.targetDirectory);
+        const destDir = Directories.inInstallLocation(addon.targetDirectory);
         const tempDir = Directories.temp();
 
         const fragmenterUpdateChecker = new FragmenterUpdateChecker();
@@ -312,7 +313,7 @@ export class InstallManager {
 
         store.dispatch(registerNewDownload({ id: addon.key, module: '', moduleCount, abortControllerID: abortControllerID }));
 
-        if (tempDir === Directories.community()) {
+        if (tempDir === Directories.installLocation()) {
             console.error('Community directory equals temp directory');
             this.notifyDownload(addon, false);
             return InstallResult.Failure;
@@ -612,7 +613,7 @@ export class InstallManager {
             await BackgroundServices.setAutoStartEnabled(addon, publisher, false);
         }
 
-        const installDir = Directories.inCommunity(addon.targetDirectory);
+        const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
         await ipcRenderer.invoke(
             channels.installManager.uninstall,
