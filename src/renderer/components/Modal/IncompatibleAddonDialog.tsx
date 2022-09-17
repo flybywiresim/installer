@@ -8,39 +8,26 @@ export interface IncompatibleAddonDialogBodyProps {
 
 export const IncompatibleAddonDialogBody: FC<IncompatibleAddonDialogBodyProps> = ({ addon, incompatibleAddons }) => (
     <>
-        The following addons are incompatible with "{addon.name}":
-        <p/>
-        <ul>
-            {incompatibleAddons.map((a) => (
-                <li>- {a.title} ({a.folder})</li>
-            ))}
-        </ul>
-        <p/>
-        It is recommended to uninstall these addons before installing "{addon.name}".
-        <p/>
-        <span className="text-4xl">Continue installing "{addon.name}"?</span>
-        {/*<p>*/}
-        {/*    <b>{dependencyAddon.name}</b>*/}
-        {/*    {' '}*/}
-        {/*    by*/}
-        {/*    {' '}*/}
-        {/*    <b>{dependencyPublisher.name}</b>*/}
-        {/*    {' '}*/}
-        {/*    needs to be installed to use the full functionality of*/}
-        {/*    {' '}*/}
-        {/*    <b>{addon.name}</b>*/}
-        {/*    .*/}
-        {/*</p>*/}
-
-        {/*<div className="flex items-center gap-x-7 bg-navy px-7 py-6 rounded-md my-6">*/}
-        {/*    <Box size={36} />*/}
-
-        {/*    <div className="flex flex-col gap-y-2">*/}
-        {/*        <span className="text-3xl font-medium">{dependencyPublisher.name}</span>*/}
-        {/*        <span className="text-4xl font-semibold">{dependencyAddon.name}</span>*/}
-        {/*    </div>*/}
-        {/*</div>*/}
-
-        {/*<p>{dependency.modalText}</p>*/}
+        <p>
+            The following addons are incompatible with "{addon.name}":
+        </p>
+        <p className="h-80 overflow-y-scroll">
+            <ul className="pl-2">
+                {incompatibleAddons.map((a) => (
+                    <div className="flex items-center gap-x-7 bg-navy px-7 py-6 rounded-md my-6">
+                        <div className="flex flex-col gap-y-2">
+                            <span className="text-2xl font-bold">{a.title}</span>
+                            {' '}
+                            <span>{a.folder}</span>
+                            {' '}
+                            <span className="text-l">{a.description}</span>
+                        </div>
+                    </div>
+                ))}
+            </ul>
+        </p>
+        <p>
+            <span className="text-4xl">Continue installing "{addon.name}"?</span>
+        </p>
     </>
 );

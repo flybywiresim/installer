@@ -150,20 +150,19 @@ export const defaultConfiguration: Configuration = {
                     ],
                     incompatibleAddons: [
                         {
-                            title: 'FSUIPC7 WASM Event Module',
-                            creator: "John L. Dowson",
-                            package_version: "",
-                            description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
+                            title: 'LVFR A321neo FBW A32NX Compatibility Mod',
+                            creator: 'TJC.Aviation',
+                            description: "REMOVE this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
                         },
                         {
-                            title: 'A32NX Liveries',
-                            creator: "CdrMaverick",
-                            package_version: "1.0.5",
-                            description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
+                            title: 'Toolbar Pushback',
+                            creator: "AmbitiousPilots",
+                            description: "This add-on sometimes causes performance issues and also prevents the A32NX from taxiing. Consider removing it in case of issues.",
                         },
                         {
-                            title: 'Salty 747-8',
-                            description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
+                            title: '[MOD] Mugz FBW A32NX Dev',
+                            creator: "Mugz",
+                            description: "REMOVE this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
                         },
                     ],
                     myInstallPage: {

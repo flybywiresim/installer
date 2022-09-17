@@ -322,11 +322,6 @@ export class InstallManager {
             }
         }
 
-        // DEBUG
-        startResetStateTimer();
-        return InstallResult.Cancelled;
-        // DEBUG
-
         const destDir = Directories.inInstallLocation(addon.targetDirectory);
         const tempDir = Directories.temp();
 
