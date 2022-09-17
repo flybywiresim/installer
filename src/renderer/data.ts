@@ -148,6 +148,14 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
+                    incompatibleAddons: [
+                        {
+                            title: 'FSUIPC7 WASM Event Module',
+                            creator: "John L. Dowson",
+                            package_version: "",
+                            description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
+                        }
+                    ],
                     myInstallPage: {
                         links: [
                             {

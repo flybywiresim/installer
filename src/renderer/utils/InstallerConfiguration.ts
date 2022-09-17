@@ -111,6 +111,7 @@ export interface Addon {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     dependencies?: AddonDependency[],
+    incompatibleAddons?: AddonIncompatibleAddon[],
     configurationAspects?: ConfigurationAspect[],
     disallowedRunningExternalApps?: string[],
     backgroundService?: AddonBackgroundService,
@@ -150,6 +151,19 @@ export interface AddonDependency {
      * Modal text that shows below the dependency / parent addon on the pre-install modal (if optional) and the removal dialog (if not optional).
      */
     modalText?: string,
+}
+
+/**
+ * fields from the addon's manifest.json
+ */
+export interface AddonIncompatibleAddon {
+    title?: string,
+    creator?: string,
+    package_version?: string,
+    /**
+     * Description of the nature of the incompatibility to display to the user in a warning dialog
+     */
+    description?: string
 }
 
 export interface AddonTechSpec {

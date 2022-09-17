@@ -262,6 +262,15 @@ export class InstallManager {
             }
         }
 
+        // Find incompatible add-ons
+        for (const incompatibility of addon.incompatibleAddons ?? []) {
+            console.log('Checking for incompatible add-ons',
+                incompatibility.title,
+                incompatibility.creator,
+                incompatibility.package_version,
+                incompatibility.description);
+        }
+
         const destDir = Directories.inCommunity(addon.targetDirectory);
         const tempDir = Directories.temp();
 
