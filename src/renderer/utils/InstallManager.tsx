@@ -266,38 +266,36 @@ export class InstallManager {
         // Find incompatible add-ons
         // This iterates through the first level of folders of the  MSFS Community folder looking for the manifest.json
         // file. It compares the manifest.json file content with the configured incompatible add-ons (data.ts) and if it
-        // finds a match, it will issue a warning.
+        // finds one or more matches, it will issue a warning.
         console.log('Searching incompatible add-ons');
+        const manifestFileName = 'manifest.json';
         const comDir = Directories.communityLocation();
         const incompatibleAddons: AddonIncompatibleAddon[] = [];
         try {
-            const dirs = fs.readdirSync(comDir);
-            for (const entry of dirs) {
+            const addonFolders = fs.readdirSync(comDir);
+            for (const entry of addonFolders) {
                 const filePath = path.join(comDir, entry);
                 const stat = fs.statSync(filePath);
                 if (stat.isDirectory()) {
                     const dirEntries = fs.readdirSync(filePath);
-                    dirEntries.forEach((f) => {
-                        if (f === 'manifest.json') {
-                            const data = fs.readFileSync(path.join(filePath, f), 'utf8');
-                            const manifest = JSON.parse(data);
-                            for (const item of addon.incompatibleAddons) {
-                                if ((!item.title || manifest.title === item.title) &&
-                                    (!item.creator || manifest.creator === item.creator) &&
-                                    (!item.package_version || manifest.package_version === item.package_version)
-                                ) {
-                                    console.log("!!! %s: %s", manifest.title, item.description);
-                                    incompatibleAddons.push({
-                                        title: item.title,
-                                        creator: item.creator,
-                                        package_version: item.package_version,
-                                        folder: entry,
-                                        description: item.description,
-                                    });
-                                }
+                    if (dirEntries.includes(manifestFileName)) {
+                        const manifest = JSON.parse(fs.readFileSync(path.join(filePath, manifestFileName), 'utf8'));
+                        for (const item of addon.incompatibleAddons) {
+                            if ((!item.title || manifest.title === item.title) &&
+                                (!item.creator || manifest.creator === item.creator) &&
+                                (!item.package_version || manifest.package_version === item.package_version)
+                            ) {
+                                console.log("!!! %s: %s", manifest.title, item.description);
+                                incompatibleAddons.push({
+                                    title: item.title,
+                                    creator: item.creator,
+                                    package_version: item.package_version,
+                                    folder: entry,
+                                    description: item.description,
+                                });
                             }
                         }
-                    });
+                    }
                 }
             }
         } catch (e) {

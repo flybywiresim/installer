@@ -12,10 +12,7 @@ export const setupMsfsCommunityPath = async (): Promise<string> => {
     });
 
     if (path.filePaths[0]) {
-        settings.set('mainSettings.installPath', path.filePaths[0]);
-        if (!settings.get('mainSettings.separateLiveriesPath')) {
-            settings.set('mainSettings.liveriesPath', path.filePaths[0]);
-        }
+        settings.set('mainSettings.msfsCommunityPath', path.filePaths[0]);
         return path.filePaths[0];
     } else {
         return "";
