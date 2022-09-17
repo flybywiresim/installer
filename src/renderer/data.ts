@@ -164,7 +164,7 @@ export const defaultConfiguration: Configuration = {
                         {
                             title: 'Salty 747-8',
                             description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
-                        }
+                        },
                     ],
                     myInstallPage: {
                         links: [

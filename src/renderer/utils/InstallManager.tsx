@@ -26,6 +26,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import path from "path";
 import { DependencyDialogBody } from "renderer/components/Modal/DependencyDialog";
+import { IncompatibleAddonDialogBody } from "renderer/components/Modal/IncompatibleAddonDialog";
 import { Resolver } from "renderer/utils/Resolver";
 import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
@@ -38,7 +39,6 @@ import * as Sentry from '@sentry/electron/renderer';
 import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
-import {forEach} from "lodash";
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<(FragmenterInstallerEvents & FragmenterContextEvents)[K]>
 
@@ -180,7 +180,7 @@ export class InstallManager {
 
         if (runningExternalApps.length > 0) {
             const doInstall = await showModal(
-                <CannotInstallDialog addon={addon} publisher={publisher} />,
+                <CannotInstallDialog addon={addon} publisher={publisher}/>,
             );
 
             if (!doInstall) {
@@ -264,47 +264,68 @@ export class InstallManager {
         }
 
         // Find incompatible add-ons
-        console.log('Searching incompatible add-ons =================');
+        // This iterates through the first level of folders of the  MSFS Community folder looking for the manifest.json
+        // file. It compares the manifest.json file content with the configured incompatible add-ons (data.ts) and if it
+        // finds a match, it will issue a warning.
+        console.log('Searching incompatible add-ons');
         const comDir = Directories.communityLocation();
-        fs.readdir(comDir, (err, files) => {
-            if (err) {
-                console.error("Could not list the directory.", err);
-                process.exit(1);
-            }
-            files.forEach((entry) => {
+        const incompatibleAddons: AddonIncompatibleAddon[] = [];
+        try {
+            const dirs = fs.readdirSync(comDir);
+            for (const entry of dirs) {
                 const filePath = path.join(comDir, entry);
-                fs.stat(filePath, (error, stat) => {
-                    if (error) {
-                        console.error("Error stating entry.", error);
-                        return;
-                    }
-                    if (stat.isDirectory()) {
-                        fs.readdir(filePath, (err, pfiles) => {
-                            pfiles.forEach((f) => {
-                                if (f === 'manifest.json') {
-                                    fs.readFile(path.join(filePath, f), 'utf8', (err, data) => {
-                                        if (err) {
-                                            console.error("Error reading file %s: %s", filePath, error);
-                                            return;
-                                        }
-                                        const manifest = JSON.parse(data);
-                                        // debugger;
-                                        forEach(addon.incompatibleAddons, (item) => {
-                                            if ((!item.title || manifest.title === item.title) &&
-                                                (!item.creator || manifest.creator === item.creator) &&
-                                                (!item.package_version || manifest.package_version === item.package_version)
-                                            ) {
-                                                console.log("!!! %s: %s", manifest.title, item.description);
-                                            }
-                                        });
+                const stat = fs.statSync(filePath);
+                if (stat.isDirectory()) {
+                    const dirEntries = fs.readdirSync(filePath);
+                    dirEntries.forEach((f) => {
+                        if (f === 'manifest.json') {
+                            const data = fs.readFileSync(path.join(filePath, f), 'utf8');
+                            const manifest = JSON.parse(data);
+                            for (const item of addon.incompatibleAddons) {
+                                if ((!item.title || manifest.title === item.title) &&
+                                    (!item.creator || manifest.creator === item.creator) &&
+                                    (!item.package_version || manifest.package_version === item.package_version)
+                                ) {
+                                    console.log("!!! %s: %s", manifest.title, item.description);
+                                    incompatibleAddons.push({
+                                        title: item.title,
+                                        creator: item.creator,
+                                        package_version: item.package_version,
+                                        folder: entry,
+                                        description: item.description,
                                     });
                                 }
-                            });
-                        });
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.error("Error searching incompatible add-ons in %s: %s", comDir, e);
+        }
+        if (incompatibleAddons.length > 0) {
+            console.log('Incompatible add-ons found');
+            const continueInstall = await showModal(
+                <PromptModal
+                    title="Incompatible Add-ons Found!"
+                    bodyText={
+                        <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons}/>
                     }
-                });
-            });
-        });
+                    cancelText="No"
+                    confirmText="Yes"
+                    confirmColor={ButtonType.Positive}
+                />,
+            );
+            if (!continueInstall) {
+                startResetStateTimer();
+                return InstallResult.Cancelled;
+            }
+        }
+
+        // DEBUG
+        startResetStateTimer();
+        return InstallResult.Cancelled;
+        // DEBUG
 
         const destDir = Directories.inInstallLocation(addon.targetDirectory);
         const tempDir = Directories.temp();
@@ -325,7 +346,9 @@ export class InstallManager {
         const dontAsk = settings.get(diskSpaceModalSettingString);
 
         if (Number.isFinite(requiredDiskSpace) && Number.isFinite(availableDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
-            const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo} availableDiskSpace={availableDiskSpace} dontShowAgainSettingName={diskSpaceModalSettingString} />);
+            const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo}
+                availableDiskSpace={availableDiskSpace}
+                dontShowAgainSettingName={diskSpaceModalSettingString}/>);
 
             if (!continueInstall) {
                 startResetStateTimer();
@@ -345,7 +368,12 @@ export class InstallManager {
             moduleCount++;
         }
 
-        store.dispatch(registerNewDownload({ id: addon.key, module: '', moduleCount, abortControllerID: abortControllerID }));
+        store.dispatch(registerNewDownload({
+            id: addon.key,
+            module: '',
+            moduleCount,
+            abortControllerID: abortControllerID,
+        }));
 
         if (tempDir === Directories.installLocation()) {
             console.error('Community directory equals temp directory');
@@ -466,7 +494,11 @@ export class InstallManager {
 
                         const percent = Math.round(((progress.entryIndex + 1) / progress.entryCount) * 100);
 
-                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing, percent, entry: progress.entryName });
+                        this.setCurrentInstallState(addon, {
+                            status: InstallStatus.Decompressing,
+                            percent,
+                            entry: progress.entryName,
+                        });
 
                         if (dependencyOf) {
                             this.setCurrentInstallState(dependencyOf, {
