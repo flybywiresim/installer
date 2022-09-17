@@ -154,6 +154,16 @@ export const defaultConfiguration: Configuration = {
                             creator: "John L. Dowson",
                             package_version: "",
                             description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
+                        },
+                        {
+                            title: 'A32NX Liveries',
+                            creator: "CdrMaverick",
+                            package_version: "1.0.5",
+                            description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
+                        },
+                        {
+                            title: 'Salty 747-8',
+                            description: "This add-on is incompatible with the A32NX. Please remove them before installing the A32NX.",
                         }
                     ],
                     myInstallPage: {

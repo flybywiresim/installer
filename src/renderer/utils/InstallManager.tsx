@@ -1,5 +1,5 @@
 import React from "react";
-import { Addon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonIncompatibleAddon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
 import { PromptModal } from "renderer/components/Modal";
 import { ButtonType } from "renderer/components/Button";
 import {
@@ -38,6 +38,7 @@ import * as Sentry from '@sentry/electron/renderer';
 import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
+import {forEach} from "lodash";
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<(FragmenterInstallerEvents & FragmenterContextEvents)[K]>
 
@@ -263,14 +264,47 @@ export class InstallManager {
         }
 
         // Find incompatible add-ons
-        for (const incompatibility of addon.incompatibleAddons ?? []) {
-            console.log('Community folder: ', Directories.communityLocation(), 'Install folder: ', Directories.installLocation());
-            console.log('Checking for incompatible add-ons',
-                incompatibility.title,
-                incompatibility.creator,
-                incompatibility.package_version,
-                incompatibility.description);
-        }
+        console.log('Searching incompatible add-ons =================');
+        const comDir = Directories.communityLocation();
+        fs.readdir(comDir, (err, files) => {
+            if (err) {
+                console.error("Could not list the directory.", err);
+                process.exit(1);
+            }
+            files.forEach((entry) => {
+                const filePath = path.join(comDir, entry);
+                fs.stat(filePath, (error, stat) => {
+                    if (error) {
+                        console.error("Error stating entry.", error);
+                        return;
+                    }
+                    if (stat.isDirectory()) {
+                        fs.readdir(filePath, (err, pfiles) => {
+                            pfiles.forEach((f) => {
+                                if (f === 'manifest.json') {
+                                    fs.readFile(path.join(filePath, f), 'utf8', (err, data) => {
+                                        if (err) {
+                                            console.error("Error reading file %s: %s", filePath, error);
+                                            return;
+                                        }
+                                        const manifest = JSON.parse(data);
+                                        // debugger;
+                                        forEach(addon.incompatibleAddons, (item) => {
+                                            if ((!item.title || manifest.title === item.title) &&
+                                                (!item.creator || manifest.creator === item.creator) &&
+                                                (!item.package_version || manifest.package_version === item.package_version)
+                                            ) {
+                                                console.log("!!! %s: %s", manifest.title, item.description);
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+        });
 
         const destDir = Directories.inInstallLocation(addon.targetDirectory);
         const tempDir = Directories.temp();
