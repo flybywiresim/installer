@@ -1,4 +1,5 @@
 import { defaultConfiguration } from "renderer/data";
+import settings from "common/settings";
 
 export interface ExternalLink {
     url: string,
@@ -338,10 +339,9 @@ export interface Configuration {
 export class InstallerConfiguration {
 
     static async obtain(): Promise<Configuration> {
-        console.log("Obtaining configuration");
         return this.fetchConfigurationFromCdn().then((config) => {
             if (this.isConfigurationValid(config)) {
-                console.log("Configuration from API is valid");
+                console.log("Configuration from CDN is valid");
                 return config;
             } else {
                 console.warn('Network configuration was invalid, using local configuration');
@@ -357,7 +357,7 @@ export class InstallerConfiguration {
         }).catch(() => {
             return this.loadConfigurationFromLocalStorage().then((config) => {
                 if (this.isConfigurationValid(config)) {
-                    console.warn('Network configuration was invalid, using local configuration');
+                    console.warn('Network configuration could not be loaded, using local configuration');
                     return config;
                 } else {
                     return Promise.reject('Could not retrieve network configuration, and local configuration is invalid');
@@ -367,20 +367,15 @@ export class InstallerConfiguration {
     }
 
     private static async fetchConfigurationFromCdn(): Promise<Configuration> {
-        console.log("Obtaining configuration from CDN");
-
-        const configJson: Configuration = await fetch('https://cdn.flybywiresim.com/installer/config/staging.json')
+        const url = settings.get('mainSettings.configDownloadUrl') as string;
+        console.log("Obtaining configuration from CDN (%s)", url);
+        return await fetch(url)
             .then(res => res.blob())
             .then(blob => blob.text())
             .then(text => JSON.parse(text))
             .catch(() => {
                 return Promise.reject('Could not retrieve CDN configuration');
             });
-
-        console.log("Configuration from CDN: ", configJson);
-        console.log("Configuration default: ", defaultConfiguration);
-
-        return configJson;
     }
 
     private static async loadConfigurationFromLocalStorage(): Promise<Configuration> {
