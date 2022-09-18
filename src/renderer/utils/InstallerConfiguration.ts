@@ -110,6 +110,7 @@ export interface Addon {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     dependencies?: AddonDependency[],
+    incompatibleAddons?: AddonIncompatibleAddon[],
     configurationAspects?: ConfigurationAspect[],
     disallowedRunningExternalApps?: string[],
     backgroundService?: AddonBackgroundService,
@@ -154,6 +155,28 @@ export interface AddonDependency {
 export interface AddonTechSpec {
     name: string,
     value: string,
+}
+
+/**
+ * fields from the addon's manifest.json
+ */
+export interface AddonIncompatibleAddon {
+    /**
+     * Fields from the addon's manifest.json
+     * This need to be configured identically to the addon's manifest.json
+     * Leaving a field empty ignores it for the search.
+     */
+    title?: string,
+    creator?: string,
+    package_version?: string,
+    /**
+     * folder name in community - added later to show the user the corresponding folder name - not used for searching
+     */
+    folder?: string,
+    /**
+     * Description of the nature of the incompatibility to display to the user in a warning dialog
+     */
+    description?: string
 }
 
 /**
@@ -307,7 +330,8 @@ export type Publisher = {
     buttons?: PublisherButton[],
 }
 
-export type Configuration = {
+export interface Configuration {
+    version: number,
     publishers: Publisher[],
 }
 
@@ -343,7 +367,20 @@ export class InstallerConfiguration {
     }
 
     private static async fetchConfigurationFromCdn(): Promise<Configuration> {
-        return defaultConfiguration;
+        console.log("Obtaining configuration from CDN");
+
+        const configJson: Configuration = await fetch('https://cdn.flybywiresim.com/installer/config/staging.json')
+            .then(res => res.blob())
+            .then(blob => blob.text())
+            .then(text => JSON.parse(text))
+            .catch(() => {
+                return Promise.reject('Could not retrieve CDN configuration');
+            });
+
+        console.log("Configuration from CDN: ", configJson);
+        console.log("Configuration default: ", defaultConfiguration);
+
+        return configJson;
     }
 
     private static async loadConfigurationFromLocalStorage(): Promise<Configuration> {
