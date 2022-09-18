@@ -162,7 +162,7 @@ interface DownloadProgressBannerProps {
     isDependency: boolean,
 }
 
-const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, installState, download, isDependency }) => {
+const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, installState, download }) => {
     if (!installState || !download) {
         return null;
     }

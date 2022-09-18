@@ -1,4 +1,5 @@
 import { defaultConfiguration } from "renderer/data";
+import settings from "common/settings";
 
 export interface ExternalLink {
     url: string,
@@ -307,39 +308,51 @@ export type Publisher = {
     buttons?: PublisherButton[],
 }
 
-export type Configuration = {
+export interface Configuration {
+    version: number,
     publishers: Publisher[],
 }
 
 export class InstallerConfiguration {
 
     static async obtain(): Promise<Configuration> {
-        return this.fetchConfigurationFromApi().then((config) => {
+        return this.fetchConfigurationFromCdn().then((config) => {
             if (this.isConfigurationValid(config)) {
+                console.log("Configuration from CDN is valid");
                 return config;
             } else {
+                console.warn('CDN configuration was invalid, using local configuration');
                 return this.loadConfigurationFromLocalStorage().then((config) => {
                     if (this.isConfigurationValid(config)) {
+                        console.log("Configuration from local storage is valid");
                         return config;
                     } else {
-                        return Promise.reject('Both network and local configurations are invalid');
+                        return Promise.reject('Both CDN and local configurations are invalid');
                     }
                 });
             }
         }).catch(() => {
             return this.loadConfigurationFromLocalStorage().then((config) => {
                 if (this.isConfigurationValid(config)) {
-                    console.warn('Network configuration was invalid, using local configuration');
+                    console.warn('CDN configuration could not be loaded, using local configuration');
                     return config;
                 } else {
-                    return Promise.reject('Could not retrieve network configuration, and local configuration is invalid');
+                    return Promise.reject('Could not retrieve CDN configuration, and local configuration is invalid');
                 }
             });
         });
     }
 
-    private static async fetchConfigurationFromApi(): Promise<Configuration> {
-        return defaultConfiguration;
+    private static async fetchConfigurationFromCdn(): Promise<Configuration> {
+        const url = settings.get('mainSettings.configDownloadUrl') as string;
+        console.log("Obtaining configuration from CDN (%s)", url);
+        return await fetch(url)
+            .then(res => res.blob())
+            .then(blob => blob.text())
+            .then(text => JSON.parse(text))
+            .catch(() => {
+                return Promise.reject('Could not retrieve CDN configuration');
+            });
     }
 
     private static async loadConfigurationFromLocalStorage(): Promise<Configuration> {

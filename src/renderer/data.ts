@@ -1,6 +1,7 @@
 import { Configuration } from "./utils/InstallerConfiguration";
 
 export const defaultConfiguration: Configuration = {
+    version: 1,
     publishers: [
         {
             name: 'FlyByWire Simulations',
@@ -147,6 +148,7 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
+                    incompatibleAddons: [],
                     myInstallPage: {
                         links: [
                             {

@@ -92,6 +92,7 @@ interface Settings {
         useDarkTheme: boolean,
         allowSeasonalEffects: boolean,
         msfsPackagePath: string,
+        configDownloadUrl: string,
     },
     cache: {
         main: {
@@ -193,6 +194,10 @@ const schema: Schema<Settings> = {
             tempLocation: {
                 type: "string",
                 default: defaultCommunityDir(),
+            },
+            configDownloadUrl: {
+                type: "string",
+                default: "https://cdn.flybywiresim.com/installer/config/staging.json",
             },
         },
     },
