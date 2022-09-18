@@ -314,12 +314,16 @@ export type Configuration = {
 export class InstallerConfiguration {
 
     static async obtain(): Promise<Configuration> {
-        return this.fetchConfigurationFromApi().then((config) => {
+        console.log("Obtaining configuration");
+        return this.fetchConfigurationFromCdn().then((config) => {
             if (this.isConfigurationValid(config)) {
+                console.log("Configuration from API is valid");
                 return config;
             } else {
+                console.warn('Network configuration was invalid, using local configuration');
                 return this.loadConfigurationFromLocalStorage().then((config) => {
                     if (this.isConfigurationValid(config)) {
+                        console.log("Configuration from local storage is valid");
                         return config;
                     } else {
                         return Promise.reject('Both network and local configurations are invalid');
@@ -338,7 +342,7 @@ export class InstallerConfiguration {
         });
     }
 
-    private static async fetchConfigurationFromApi(): Promise<Configuration> {
+    private static async fetchConfigurationFromCdn(): Promise<Configuration> {
         return defaultConfiguration;
     }
 
