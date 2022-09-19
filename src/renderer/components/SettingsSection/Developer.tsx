@@ -12,7 +12,7 @@ const index = (): JSX.Element => {
     const [configDownloadUrl, setConfigDownloadUrl] = useSetting<string>('mainSettings.configDownloadUrl');
     const [configDownloadUrlValid, setConfigDownloadUrlValid] = useState<boolean>(false);
 
-    useEffect(() => {
+    const validateUrl = () => {
         try {
             fetch(configDownloadUrl)
                 .then((response) => {
@@ -21,7 +21,11 @@ const index = (): JSX.Element => {
         } catch (e) {
             setConfigDownloadUrlValid(false);
         }
-    }, [configDownloadUrl]);
+    };
+
+    useEffect(() => {
+        validateUrl();
+    }, []);
 
     return (
         <div>
@@ -35,6 +39,7 @@ const index = (): JSX.Element => {
                                 value={configDownloadUrl}
                                 type="url"
                                 onChange={(event) => setConfigDownloadUrl(event.target.value)}
+                                onBlur={() => validateUrl()}
                                 size={50}
                             />
                         </div>
