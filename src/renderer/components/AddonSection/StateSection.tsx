@@ -42,8 +42,11 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
 
     return (
         <>
-            <BackgroundServiceBanner publisher={publisher} addon={addon} installState={dependencyAddonInstallState ?? addonInstallState} />
-            <DownloadProgressBanner addon={addon} installState={dependencyAddonInstallState ?? addonInstallState} download={dependencyAddonDownload ?? addonDownload} isDependency={isInstallingDependency} />
+            <BackgroundServiceBanner publisher={publisher} addon={addon}
+                installState={dependencyAddonInstallState ?? addonInstallState}/>
+            <DownloadProgressBanner addon={addon} installState={dependencyAddonInstallState ?? addonInstallState}
+                download={dependencyAddonDownload ?? addonDownload}
+                isDependency={isInstallingDependency}/>
         </>
     );
 };
@@ -97,7 +100,7 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
         const bgAccentColor = isRunning ? 'bg-utility-green' : 'bg-gray-500';
 
         const handleClickAutostart = () => showModal(
-            <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={false} />,
+            <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={false}/>,
         );
 
         const handleStartStop = async () => {
@@ -105,7 +108,7 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                 const md = `Are you sure you want to shut down **${addon.name}**?. All related functionality will no longer be available.`;
 
                 const doStop = await showModalAsync(
-                    <PromptModal title={"Are you sure?"} bodyText={md} confirmColor={ButtonType.Danger} />,
+                    <PromptModal title={"Are you sure?"} bodyText={md} confirmColor={ButtonType.Danger}/>,
                 );
 
                 if (doStop) {
@@ -122,9 +125,9 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                     <div className="flex gap-x-7 items-center">
                         {
                             isRunning ? (
-                                <Activity size={32} className={`text-utility-green fill-current animate-pulse`} />
+                                <Activity size={32} className={`text-utility-green fill-current animate-pulse`}/>
                             ) : (
-                                <Activity size={32} className={`text-gray-500 fill-current`} />
+                                <Activity size={32} className={`text-gray-500 fill-current`}/>
                             )
                         }
 
@@ -136,17 +139,20 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
 
                     <div className="flex gap-x-14 items-center">
                         {(addon.backgroundService.enableAutostartConfiguration ?? true) && (
-                            <span className="flex items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan cursor-pointer" onClick={handleClickAutostart}>
-                                <Gear size={22} />
+                            <span
+                                className="flex items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan cursor-pointer"
+                                onClick={handleClickAutostart}>
+                                <Gear size={22}/>
                                 Autostart...
                             </span>
                         )}
 
-                        <Button className="w-64" type={ButtonType.Neutral} onClick={handleStartStop}>{isRunning ? 'Stop' : 'Start'}</Button>
+                        <Button className="w-64" type={ButtonType.Neutral}
+                            onClick={handleStartStop}>{isRunning ? 'Stop' : 'Start'}</Button>
                     </div>
                 </StateContainer>
 
-                <ProgressBar className={bgAccentColor} value={100} animated={isRunning} />
+                <ProgressBar className={bgAccentColor} value={100} animated={isRunning}/>
             </div>
 
         );
@@ -162,6 +168,7 @@ interface DownloadProgressBannerProps {
     isDependency: boolean,
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, installState, download, isDependency }) => {
     if (!installState || !download) {
         return null;
@@ -173,7 +180,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
     let progressBarValue;
     switch (installState.status) {
         case InstallStatus.DownloadPrep:
-            stateIcon = <Download size={40} className="text-white mr-6" />;
+            stateIcon = <Download size={40} className="text-white mr-6"/>;
             stateText = <SmallStateText>Preparing update</SmallStateText>;
             progressBarBg = 'bg-cyan';
             progressBarValue = 0;
@@ -189,7 +196,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
                         className="text-gray-300 ml-3">part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}</span>
                     : null;
 
-                stateIcon = <Download size={40} className="text-white mr-6" />;
+                stateIcon = <Download size={40} className="text-white mr-6"/>;
                 stateText = <SmallStateText>{`Downloading`}{part}</SmallStateText>;
                 progressBarBg = 'bg-cyan';
             }
@@ -260,7 +267,8 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
 
     let moduleStateText;
     if (download.module && installState.status !== InstallStatus.DownloadCanceled) {
-        const moduleIndicator = showProgress && download.moduleCount > 1 ? <span className=" text-gray-400">{download.moduleIndex + 1}/{download.moduleCount}</span> : null;
+        const moduleIndicator = showProgress && download.moduleCount > 1 ?
+            <span className=" text-gray-400">{download.moduleIndex + 1}/{download.moduleCount}</span> : null;
 
         moduleStateText = (
             <span className="flex items-center gap-x-3 mr-12 text-white text-4xl">
@@ -309,7 +317,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
                 )}
             </StateContainer>
 
-            <ProgressBar className={progressBarBg} value={progressBarValue} />
+            <ProgressBar className={progressBarBg} value={progressBarValue}/>
         </div>
     );
 };
