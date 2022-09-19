@@ -344,23 +344,23 @@ export class InstallerConfiguration {
                 console.log("Configuration from CDN is valid");
                 return config;
             } else {
-                console.warn('Network configuration was invalid, using local configuration');
+                console.warn('CDN configuration was invalid, using local configuration');
                 return this.loadConfigurationFromLocalStorage().then((config) => {
                     if (this.isConfigurationValid(config)) {
                         console.log("Configuration from local storage is valid");
                         return config;
                     } else {
-                        return Promise.reject('Both network and local configurations are invalid');
+                        return Promise.reject('Both CDN and local configurations are invalid');
                     }
                 });
             }
         }).catch(() => {
             return this.loadConfigurationFromLocalStorage().then((config) => {
                 if (this.isConfigurationValid(config)) {
-                    console.warn('Network configuration could not be loaded, using local configuration');
+                    console.warn('CDN configuration could not be loaded, using local configuration');
                     return config;
                 } else {
-                    return Promise.reject('Could not retrieve network configuration, and local configuration is invalid');
+                    return Promise.reject('Could not retrieve CDN configuration, and local configuration is invalid');
                 }
             });
         });
