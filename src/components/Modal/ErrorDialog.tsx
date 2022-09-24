@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { AlertModal } from "./index";
 import { ExclamationTriangle, Hdd } from "react-bootstrap-icons";
-import { shell } from "electron";
+// import { shell } from "electron";
 import { FragmenterError, FragmenterErrorCode } from "@flybywiresim/fragmenter";
 import { SentrySessionCard } from "../SentrySessionCard";
 
@@ -14,7 +14,7 @@ export interface ErrorDialogProps {
 
 export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
     const handleOpenDiscordSupport = async () => {
-        await shell.openExternal(DISCORD_SUPPORT_URL);
+        // await shell.openExternal(DISCORD_SUPPORT_URL);
     };
 
     let fragmenterError;
@@ -75,6 +75,7 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
 
 interface ErrorVisualisationBoxProps {
     icon: JSX.Element,
+    children: React.ReactNode
 }
 
 const ErrorVisualisationBox: FC<ErrorVisualisationBoxProps> = ({ icon, children }) => (

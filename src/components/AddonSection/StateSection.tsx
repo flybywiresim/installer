@@ -48,18 +48,18 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
     );
 };
 
-const StateContainer: FC = ({ children }) => (
+const StateContainer: FC<{children: React.ReactNode}> = ({ children }) => (
     <div
         className="h-32 bottom-0 left-0 flex flex-row items-center justify-between px-6 pt-6 pb-5 w-full bg-navy-dark bg-opacity-95">
         {children}
     </div>
 );
 
-const SmallStateText: FC = ({ children }) => (
+const SmallStateText: FC<{children: React.ReactNode}> = ({ children }) => (
     <div className="text-white text-2xl font-bold">{children}</div>
 );
 
-const StateText: FC = ({ children }) => (
+const StateText: FC<{children: React.ReactNode}> = ({ children }) => (
     <div className="text-gray-300 text-4xl font-medium">{children}</div>
 );
 

@@ -4,6 +4,7 @@ import { NavLink, useRouteMatch } from "react-router-dom";
 
 export interface SideBarProps {
     className?: string;
+    children: React.ReactNode
 }
 
 export const SideBar: FC<SideBarProps> = ({ className, children }) => {
@@ -23,6 +24,7 @@ export interface SideBarItemProps {
     selected?: boolean;
     onClick?: () => void;
     className?: string;
+    children: React.ReactNode
 }
 
 export const SideBarItem: FC<SideBarItemProps> = ({ enabled = true, selected = false, onClick = () => {}, className, children }) => {
@@ -44,7 +46,7 @@ export const SideBarItem: FC<SideBarItemProps> = ({ enabled = true, selected = f
     );
 };
 
-export const SideBarTitle: FC = ({ children }) => {
+export const SideBarTitle: FC<{children: React.ReactNode}> = ({ children }) => {
     const darkTheme = useIsDarkTheme();
 
     const textClass = darkTheme ? 'text-quasi-white' : 'text-navy';
@@ -58,6 +60,7 @@ export const SideBarTitle: FC = ({ children }) => {
 
 export interface SideBarLinkProps {
     to: string;
+    children: React.ReactNode
 }
 
 export const SideBarLink: FC<SideBarLinkProps> = ({ to, children }) => {

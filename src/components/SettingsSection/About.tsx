@@ -19,12 +19,12 @@ export const AboutSettings: FC = () => {
     });
 
     const handleOpenThirdPartyLicenses = () => {
-        const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
-
-        if (!fs.existsSync(licensesPath)) {
-            alert('The requested file does not exist.');
-            return;
-        }
+        // const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
+        //
+        // if (!fs.existsSync(licensesPath)) {
+        //     alert('The requested file does not exist.');
+        //     return;
+        // }
 
         // shell.openExternal(licensesPath)
         //     .catch(console.error);

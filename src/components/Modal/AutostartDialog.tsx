@@ -64,6 +64,7 @@ interface YesNoOptionToggleProps {
     onToggle: () => void,
     enabledBgColor?: string,
     disabledBgColor?: string,
+    children: React.ReactNode
 }
 
 export const YesNoOptionToggle: FC<YesNoOptionToggleProps> = ({ enabled, onToggle, enabledBgColor = 'bg-utility-green', disabledBgColor = 'bg-navy-light', children }) => {

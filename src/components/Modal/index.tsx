@@ -21,7 +21,7 @@ const ModalContext = createContext<ModalContextInterface>(undefined);
 
 export const useModals = (): ModalContextInterface => useContext(ModalContext);
 
-export const ModalProvider: FC = ({ children }) => {
+export const ModalProvider: FC<{children: React.ReactNode}> = ({ children }) => {
     const [modal, setModal] = useState<JSX.Element | undefined>(undefined);
 
     const popModal = () => {

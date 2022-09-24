@@ -6,7 +6,7 @@ import { Addon, AddonTrack } from "../../../utils/InstallerConfiguration";
 
 import '../index.css';
 
-export const Tracks: React.FC = ({ children }) => (
+export const Tracks: React.FC<{children: React.ReactNode}> = ({ children }) => (
     <div className="flex flex-row justify-start items-stretch gap-3">
         {children}
     </div>

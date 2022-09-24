@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import settings, { useSetting } from "../../common/settings";
-import { ipcRenderer } from 'electron';
+// import { ipcRenderer } from 'electron';
 import { Toggle } from '../Toggle';
 
-const SettingsItem: FC<{name: string}> = ({ name, children }) => (
+const SettingsItem: FC<{name: string, children: React.ReactNode}> = ({ name, children }) => (
     <div className="flex flex-row items-center justify-between py-3.5">
         {/* TODO: Remove this styling later */}
         <p className="m-0">{name}</p>
@@ -21,7 +21,7 @@ const AutoStartSettingItem = ({ value, setValue }: SettingItemProps<boolean>) =>
         const newState = !value;
         setValue(newState);
         settings.set('mainSettings.autoStartApp', newState);
-        ipcRenderer.send('request-startup-at-login-changed', newState);
+        // ipcRenderer.send('request-startup-at-login-changed', newState);
     };
 
     return (

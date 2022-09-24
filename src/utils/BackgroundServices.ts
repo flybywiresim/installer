@@ -5,8 +5,8 @@ import { ApplicationStatus } from "../components/AddonSection/Enums";
 import { ExternalApps } from "./ExternalApps";
 import path from "path";
 import { Directories } from "./Directories";
-import { shell } from "@electron/remote";
-import { promises } from "fs-extra";
+// import { shell } from "@electron/remote";
+// import { promises } from "fs-extra";
 
 export const STARTUP_FOLDER_PATH = 'Microsoft\\Windows\\Start Menu\\Programs\\Startup\\';
 
@@ -47,7 +47,7 @@ export class BackgroundServices {
 
         let folderEntries;
         try {
-            folderEntries = await promises.readdir(path.join(process.env.APPDATA, STARTUP_FOLDER_PATH), { withFileTypes: true });
+            // folderEntries = await promises.readdir(path.join(process.env.APPDATA, STARTUP_FOLDER_PATH), { withFileTypes: true });
         } catch (e) {
             console.error('[BackgroundServices](isAutoStartEnabled) Could not read contents of startup folder. See exception below');
             console.error(e);
@@ -57,10 +57,10 @@ export class BackgroundServices {
             return false;
         }
 
-        const shortcuts = folderEntries.filter((it) => it.isFile() && path.extname(it.name) === '.lnk');
-        const matchingShortcut = shortcuts.find((it) => path.parse(it.name).name === backgroundService.executableFileBasename);
+        // const shortcuts = folderEntries.filter((it) => it.isFile() && path.extname(it.name) === '.lnk');
+        // const matchingShortcut = shortcuts.find((it) => path.parse(it.name).name === backgroundService.executableFileBasename);
 
-        return matchingShortcut !== undefined;
+        // return matchingShortcut !== undefined;
     }
 
     static async setAutoStartEnabled(addon: Addon, publisher: Publisher, enabled: boolean): Promise<void> {
@@ -82,24 +82,24 @@ export class BackgroundServices {
         const shortcutDir = path.join(process.env.APPDATA, STARTUP_FOLDER_PATH);
         const shortcutPath = path.join(shortcutDir, `${backgroundService.executableFileBasename}.lnk`);
 
-        if (enabled) {
-            const created = shell.writeShortcutLink(shortcutPath, 'create', {
-                target: exePath,
-                args: commandLineArgs,
-                cwd: path.dirname(exePath),
-            });
-
-            if (!created) {
-                console.error('[BackgroundServices](setAutoStartEnabled) Could not create shortcut');
-            } else {
-                console.log('[BackgroundServices](setAutoStartEnabled) Shortcut created');
-            }
-        } else {
-            promises.rm(shortcutPath).catch((e) => {
-                console.error('[BackgroundServices](setAutoStartEnabled) Could not remove shortcut. See exception below.');
-                console.error(e);
-            });
-        }
+        // if (enabled) {
+        //     const created = shell.writeShortcutLink(shortcutPath, 'create', {
+        //         target: exePath,
+        //         args: commandLineArgs,
+        //         cwd: path.dirname(exePath),
+        //     });
+        //
+        //     if (!created) {
+        //         console.error('[BackgroundServices](setAutoStartEnabled) Could not create shortcut');
+        //     } else {
+        //         console.log('[BackgroundServices](setAutoStartEnabled) Shortcut created');
+        //     }
+        // } else {
+        //     promises.rm(shortcutPath).catch((e) => {
+        //         console.error('[BackgroundServices](setAutoStartEnabled) Could not remove shortcut. See exception below.');
+        //         console.error(e);
+        //     });
+        // }
     }
 
     static async start(addon: Addon): Promise<void> {
@@ -115,7 +115,7 @@ export class BackgroundServices {
 
         const exePath = path.normalize(path.join(Directories.inCommunity(addon.targetDirectory), `${backgroundService.executableFileBasename}.exe`));
 
-        await shell.openPath(exePath);
+        // await shell.openPath(exePath);
 
         // if (exePath.startsWith('..')) {
         //     throw new Error('Validated and normalized path still traversed directory.');

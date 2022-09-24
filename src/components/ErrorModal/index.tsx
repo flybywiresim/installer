@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { setupInstallPath } from 'renderer/actions/install-path.utils';
-import settings from "common/settings";
-import { Directories } from "renderer/utils/Directories";
+import { setupInstallPath } from '../../actions/install-path.utils';
+import settings from "../../common/settings";
+import { Directories } from "../../utils/Directories";
 import * as fs from "fs";
 
 export const ErrorModal = (): JSX.Element => {

@@ -9,7 +9,7 @@ import { Directories } from "../../utils/Directories";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
 import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
 import settings, { useSetting } from "../../common/settings";
-import { ipcRenderer } from "electron";
+// import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
 import { ReleaseNotes } from "./ReleaseNotes";
@@ -37,6 +37,7 @@ interface InstallButtonProps {
     disabled?: boolean,
     className?: string;
     onClick?: () => void;
+    children: React.ReactNode
 }
 
 export const SidebarButton: FC<InstallButtonProps> = ({
@@ -58,6 +59,7 @@ export const SidebarButton: FC<InstallButtonProps> = ({
 interface SideBarLinkProps {
     to: string;
     disabled?: boolean;
+    children: React.ReactNode
 }
 
 const SideBarLink: FC<SideBarLinkProps> = ({ to, children, disabled = false }) => (
@@ -258,9 +260,9 @@ export const AddonSection = (): JSX.Element => {
 
     useEffect(() => {
         if (download && isDownloading) {
-            ipcRenderer.send("set-window-progress-bar", download.progress.totalPercent / 100);
+            // ipcRenderer.send("set-window-progress-bar", download.progress.totalPercent / 100);
         } else {
-            ipcRenderer.send("set-window-progress-bar", -1);
+            // ipcRenderer.send("set-window-progress-bar", -1);
         }
     }, [download]);
 

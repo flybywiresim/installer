@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ipcRenderer } from "electron";
+// import { ipcRenderer } from "electron";
 import * as path from 'path';
 import channels from "../../common/channels";
 
@@ -8,25 +8,25 @@ const index = (): JSX.Element => {
     const [updateNeeded, setUpdateNeeded] = useState(false);
 
     useEffect(() => {
-        ipcRenderer.on(channels.update.error, (_, args) => {
-            console.error('Update error', args);
-        });
-        ipcRenderer.on(channels.update.available, () => {
-            console.log('Update available');
-            setUpdateNeeded(true);
-            setButtonText('Downloading update');
-        });
-        ipcRenderer.on(channels.update.downloaded, (_, args) => {
-            console.log('Update downloaded', args);
-            setButtonText('Restart to update');
-            Notification.requestPermission().then(() => {
-                console.log('Showing Update notification');
-                new Notification('Restart to update!', {
-                    'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
-                    'body': "An update to the installer has been downloaded",
-                });
-            }).catch(e => console.log(e));
-        });
+        // ipcRenderer.on(channels.update.error, (_, args) => {
+        //     console.error('Update error', args);
+        // });
+        // ipcRenderer.on(channels.update.available, () => {
+        //     console.log('Update available');
+        //     setUpdateNeeded(true);
+        //     setButtonText('Downloading update');
+        // });
+        // ipcRenderer.on(channels.update.downloaded, (_, args) => {
+        //     console.log('Update downloaded', args);
+        //     setButtonText('Restart to update');
+        //     Notification.requestPermission().then(() => {
+        //         console.log('Showing Update notification');
+        //         new Notification('Restart to update!', {
+        //             'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
+        //             'body': "An update to the installer has been downloaded",
+        //         });
+        //     }).catch(e => console.log(e));
+        // });
     }, []);
 
     return (
@@ -35,7 +35,7 @@ const index = (): JSX.Element => {
             hidden={!updateNeeded}
             onClick={() => {
                 if (buttonText === 'Restart to update') {
-                    ipcRenderer.send('restartAndUpdate');
+                    // ipcRenderer.send('restartAndUpdate');
                 }
             }}
         >

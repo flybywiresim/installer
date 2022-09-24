@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import path from "path";
-import { ipcRenderer } from "electron";
+// import { ipcRenderer } from "electron";
 import channels from "../../common/channels";
 
 export const DebugSection = (): JSX.Element => {
     const [ipcMessage, setIpcMessage] = useState<string>(channels.window.minimize);
 
     const sendNotification = () => {
-        Notification.requestPermission().then(() => {
-            console.log('Showing test notification');
-            console.log(path.join(process.resourcesPath, 'extraResources', 'icon.ico'));
-            new Notification('This is a test!', {
-                'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
-                'body': "We did something that you should know about.",
-            });
-        }).catch(e => console.log(e));
+        // Notification.requestPermission().then(() => {
+        //     console.log('Showing test notification');
+        //     console.log(path.join(process.resourcesPath, 'extraResources', 'icon.ico'));
+        //     new Notification('This is a test!', {
+        //         'icon': path.join(process.resourcesPath, 'extraResources', 'icon.ico'),
+        //         'body': "We did something that you should know about.",
+        //     });
+        // }).catch(e => console.log(e));
     };
 
     const sendIpcMessage = () => {
-        ipcRenderer.send(ipcMessage);
+        // ipcRenderer.send(ipcMessage);
     };
 
     return (

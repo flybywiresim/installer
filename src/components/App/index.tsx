@@ -17,7 +17,7 @@ import { store, useAppSelector } from '../../redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from '../../redux/features/latestVersionNames';
 import settings from '../../common/settings';
 import "./index.css";
-import { ipcRenderer } from 'electron';
+// import { ipcRenderer } from 'electron';
 import channels from '../../common/channels';
 import { ModalContainer } from '../Modal';
 import { PublisherSection } from "../PublisherSection";
@@ -100,7 +100,7 @@ const App = () => {
 
     useEffect(() => {
         const updateCheck = setInterval(() => {
-            ipcRenderer.send(channels.checkForInstallerUpdate);
+            // ipcRenderer.send(channels.checkForInstallerUpdate);
             addons.forEach(AddonData.checkForUpdates);
             addons.forEach(fetchLatestVersionNames);
         }, 5 * 60 * 1000);

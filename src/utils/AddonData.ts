@@ -1,7 +1,7 @@
 import { Addon, AddonTrack, GithubBranchReleaseModel } from "../utils/InstallerConfiguration";
 import { GitVersions } from "@flybywiresim/api-client";
 import { Directories } from "./Directories";
-import fs from 'fs-extra';
+// import fs from 'fs-extra';
 import { getCurrentInstall, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
 import settings from "../common/settings";
 import { store } from "../redux/store";
@@ -116,11 +116,11 @@ export class AddonData {
 
         const installDir = Directories.inCommunity(addon.targetDirectory);
 
-        if (!fs.existsSync(installDir)) {
-            console.log ('no existing install dir for', addon.key);
-            setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
-            return;
-        }
+        // if (!fs.existsSync(installDir)) {
+        //     console.log ('no existing install dir for', addon.key);
+        //     setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
+        //     return;
+        // }
 
         console.log('Checking for git install');
         if (Directories.isGitInstall(installDir)) {

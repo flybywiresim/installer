@@ -13,6 +13,7 @@ export interface ButtonProps {
     disabled?: boolean,
     className?: string,
     onClick?: () => void,
+    children: React.ReactNode
 }
 
 export const Button: FC<ButtonProps> = ({ type = ButtonType.Neutral, disabled = false, className = '', onClick = () => {}, children }) => {

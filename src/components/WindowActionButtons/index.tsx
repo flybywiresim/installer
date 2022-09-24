@@ -1,7 +1,7 @@
 import React from 'react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { shell } from 'electron';
-import { ipcRenderer } from 'electron';
+// import { shell } from 'electron';
+// import { ipcRenderer } from 'electron';
 import { WindowsControl } from 'react-windows-controls';
 import channels from '../../common/channels';
 import { Directories } from '../../utils/Directories';
@@ -9,7 +9,7 @@ import { store } from "../../redux/store";
 import { InstallStatusCategories } from "../AddonSection/Enums";
 import { AlertModal, useModals } from "../Modal";
 
-export type ButtonProps = { id?: string, className?: string, onClick?: () => void, isClose?: boolean }
+export type ButtonProps = { id?: string, className?: string, onClick?: () => void, isClose?: boolean, children: React.ReactNode }
 
 export const Button: React.FC<ButtonProps> = ({ id, className, onClick, isClose, children }) => {
     return (
@@ -26,14 +26,14 @@ export const Button: React.FC<ButtonProps> = ({ id, className, onClick, isClose,
 export const WindowButtons: React.FC = () => {
     const { showModal } = useModals();
 
-    const openGithub = () => shell.openExternal("https://github.com/flybywiresim/a32nx/issues/new/choose");
+    // const openGithub = () => shell.openExternal("https://github.com/flybywiresim/a32nx/issues/new/choose");
 
     const handleMinimize = () => {
-        ipcRenderer.send(channels.window.minimize);
+        // ipcRenderer.send(channels.window.minimize);
     };
 
     const handleMaximize = () => {
-        ipcRenderer.send(channels.window.maximize);
+        // ipcRenderer.send(channels.window.maximize);
     };
 
     const handleClose = () => {
@@ -47,13 +47,13 @@ export const WindowButtons: React.FC = () => {
             );
         } else {
             Directories.removeAllTemp();
-            ipcRenderer.send(channels.window.close);
+            // ipcRenderer.send(channels.window.close);
         }
     };
 
     return (
         <div className="h-12 flex flex-row ml-auto">
-            <Button onClick={openGithub}><ExclamationCircleOutlined /></Button>
+            {/*<Button onClick={openGithub}><ExclamationCircleOutlined /></Button>*/}
             <WindowsControl minimize whiteIcon onClick={handleMinimize} />
             <WindowsControl maximize whiteIcon onClick={handleMaximize} />
             <WindowsControl close whiteIcon onClick={handleClose} />

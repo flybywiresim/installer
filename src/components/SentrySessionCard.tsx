@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { useAppSelector } from "../redux/store";
 import { Clipboard, ClipboardCheck } from "react-bootstrap-icons";
-import { clipboard } from "electron";
+// import { clipboard } from "electron";
 
 export const SentrySessionCard: FC = () => {
     const sessionID = useAppSelector((state) => state.sentrySessionID.sessionID);
@@ -9,7 +9,7 @@ export const SentrySessionCard: FC = () => {
     const [showCopied, setShowCopied] = useState(false);
 
     const handleCopy = () => {
-        clipboard.writeText(sessionID, 'clipboard');
+        // clipboard.writeText(sessionID, 'clipboard');
 
         setShowCopied(true);
 

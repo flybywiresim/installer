@@ -1,8 +1,8 @@
 import React, { FC } from "react";
-import { ButtonType } from "renderer/components/Button";
-import { SidebarButton } from "renderer/components/AddonSection/index";
-import { InstallStatus } from "renderer/components/AddonSection/Enums";
-import { InstallState } from "renderer/redux/features/installStatus";
+import { ButtonType } from "../Button";
+import { SidebarButton } from "./index";
+import { InstallStatus } from "./Enums";
+import { InstallState } from "../../redux/features/installStatus";
 
 interface ActiveInstallButtonProps {
     installState: InstallState,

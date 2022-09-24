@@ -20,7 +20,7 @@ export enum UITheme {
     Dark = 'dark',
 }
 
-export const AddonBar: FC = ({ children }) => {
+export const AddonBar: FC<{children: React.ReactNode}> = ({ children }) => {
     const darkTheme = useIsDarkTheme();
 
     const { publisherName } = useParams<AircraftSectionURLParams>();
@@ -140,7 +140,7 @@ const AddonBarPublisherButton: FC<AddonBarPublisherButtonProps> = ({ button }) =
     const handleClick = async () => {
         switch (button.action) {
             case 'openBrowser':
-                await shell.openExternal(button.url);
+                // await shell.openExternal(button.url);
                 break;
             case 'internal':
                 switch (button.call) {

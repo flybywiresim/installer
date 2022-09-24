@@ -5,7 +5,7 @@ import { InstallerStore } from "../../redux/store";
 import { Addon } from "../../utils/InstallerConfiguration";
 import { InstallStatus } from "../AddonSection/Enums";
 
-export type SidebarItemProps = { enabled?: boolean, selected: boolean, onClick: () => void, className?: string }
+export type SidebarItemProps = { enabled?: boolean, selected: boolean, onClick: () => void, className?: string, children: React.ReactNode }
 
 export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, selected, onClick, children, className }) => {
     return (
@@ -18,7 +18,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, select
     );
 };
 
-export type SidebarPublisherProps = { name: string, logo: string }
+export type SidebarPublisherProps = { name: string, logo: string, children: React.ReactNode }
 
 export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, children }) => {
     const [expanded, setExpanded] = useState(true);

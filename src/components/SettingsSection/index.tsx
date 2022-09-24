@@ -15,6 +15,7 @@ interface InstallButtonProps {
     disabled?: boolean,
     className?: string;
     onClick?: () => void;
+    children: React.ReactNode
 }
 
 export const ResetButton: FC<InstallButtonProps> = ({

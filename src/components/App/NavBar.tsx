@@ -7,7 +7,7 @@ import { useAppSelector } from "../../redux/store";
 import { Gear, Wrench } from "react-bootstrap-icons";
 import { InstallStatus } from "../AddonSection/Enums";
 
-export const NavBar: FC = ({ children }) => {
+export const NavBar: FC<{children: React.ReactNode}> = ({ children }) => {
     const darkTheme = useIsDarkTheme();
 
     const bg = darkTheme ? 'bg-navy-dark' : 'bg-navy';
@@ -39,6 +39,7 @@ export interface NavBarItemProps {
     showNotification?: boolean;
     notificationColor?: string;
     className?: string;
+    children: React.ReactNode
 }
 
 export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', showNotification = false, notificationColor = 'orange', className, children }) => (

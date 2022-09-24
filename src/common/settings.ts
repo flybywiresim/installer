@@ -46,13 +46,13 @@ const defaultCommunityDir = (): string => {
     }
 };
 
-export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
-    store.set('cache.main.maximized', window.isMaximized());
-
-    const winSize = window.getSize();
-    store.set('cache.main.lastWindowX', winSize[0]);
-    store.set('cache.main.lastWindowY', winSize[1]);
-};
+// export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
+//     store.set('cache.main.maximized', window.isMaximized());
+//
+//     const winSize = window.getSize();
+//     store.set('cache.main.lastWindowX', winSize[0]);
+//     store.set('cache.main.lastWindowY', winSize[1]);
+// };
 
 export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetStateAction<T>>] => {
     const [storedValue, setStoredValue] = useState(store.get<string, T>(key, defaultValue));

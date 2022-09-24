@@ -6,7 +6,7 @@ import {
     NamedDirectoryDefinition,
 } from "../../../utils/InstallerConfiguration";
 import { BoxArrowRight, Folder } from "react-bootstrap-icons";
-import { shell } from "electron";
+// import { shell } from "electron";
 import { Directories } from "../../../utils/Directories";
 import { useAppSelector } from "../../../redux/store";
 import { InstallStatusCategories } from "../Enums";
@@ -37,7 +37,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         const parsed = new URL(link.url);
 
         if (parsed.protocol.match(/https?/)) {
-            shell.openExternal(link.url).then();
+            // shell.openExternal(link.url).then();
         }
     };
 
@@ -55,7 +55,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
                 break;
         }
 
-        shell.openPath(fullPath).then();
+        // shell.openPath(fullPath).then();
     };
 
     const directoriesDisabled = !InstallStatusCategories.installed.includes(installStates[addon.key]?.status);
