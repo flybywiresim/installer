@@ -15,5 +15,10 @@ export default {
         fragmenterEvent: 'installManager/fragmenterEvent',
         installFromUrl: 'installManager/installFromUrl',
         cancelInstall: 'installManager/cancelInstall',
+        uninstall: 'installManager/uninstall',
+    },
+    sentry: {
+        requestSessionID: 'sentry/requestSessionID',
+        provideSessionID: 'sentry/provideSessionID',
     },
 };

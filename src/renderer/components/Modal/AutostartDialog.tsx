@@ -66,7 +66,7 @@ interface YesNoOptionToggleProps {
     disabledBgColor?: string,
 }
 
-const YesNoOptionToggle: FC<YesNoOptionToggleProps> = ({ enabled, onToggle, enabledBgColor = 'bg-utility-green', disabledBgColor = 'bg-navy-light', children }) => {
+export const YesNoOptionToggle: FC<YesNoOptionToggleProps> = ({ enabled, onToggle, enabledBgColor = 'bg-utility-green', disabledBgColor = 'bg-navy-light', children }) => {
     const handleClick = onToggle;
 
     const bgColor = enabled ? enabledBgColor : disabledBgColor;
@@ -78,6 +78,23 @@ const YesNoOptionToggle: FC<YesNoOptionToggleProps> = ({ enabled, onToggle, enab
 
             <span className="flex gap-x-20">
                 <span className={`font-manrope font-bold text-4xl ${titleColor}`}>{children}</span>
+            </span>
+        </div>
+    );
+};
+
+export const CompactYesNoOptionToggle: FC<YesNoOptionToggleProps> = ({ enabled, onToggle, enabledBgColor = 'bg-utility-green', children }) => {
+    const handleClick = onToggle;
+
+    const borderColor = enabled ? 'border-cyan' : 'border-navy-light';
+    const titleColor = enabled ? 'text-cyan' : 'text-quasi-white';
+
+    return (
+        <div className={`flex items-center gap-x-6 border-2 ${borderColor} px-6 py-5 rounded-md transition-color duration-200 cursor-pointer`} onClick={handleClick}>
+            <Toggle value={enabled} onToggle={handleClick} scale={1.2} onColor={enabledBgColor} />
+
+            <span className="flex gap-x-20">
+                <span className={`font-manrope font-bold text-3xl ${titleColor}`}>{children}</span>
             </span>
         </div>
     );

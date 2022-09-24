@@ -54,6 +54,7 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
                     Cancel
                 </SidebarButton>
             );
+        case InstallStatus.DownloadPending:
         case InstallStatus.DownloadPrep:
         case InstallStatus.Decompressing:
         case InstallStatus.DownloadEnding:

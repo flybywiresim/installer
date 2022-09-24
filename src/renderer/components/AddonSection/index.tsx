@@ -16,7 +16,6 @@ import { ReleaseNotes } from "./ReleaseNotes";
 import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
 import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
 import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
-import { HiddenAddonCover } from "renderer/components/AddonSection/HiddenAddonCover/HiddenAddonCover";
 import { PromptModal, useModals } from "renderer/components/Modal";
 import ReactMarkdown from "react-markdown";
 import { Button, ButtonType } from "renderer/components/Button";
@@ -28,6 +27,7 @@ import { Configure } from "renderer/components/AddonSection/Configure";
 import { InstallManager } from "renderer/utils/InstallManager";
 import { StateSection } from "renderer/components/AddonSection/StateSection";
 import { ExternalApps } from "renderer/utils/ExternalApps";
+import { MyInstall } from "renderer/components/AddonSection/MyInstall";
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController);
@@ -105,7 +105,7 @@ export const AddonSection = (): JSX.Element => {
             history.push(`/addon-section/${publisherName}/hidden-addon-cover`);
         } else {
             setHiddenAddon(undefined);
-            history.push(`/addon-section/${publisherName}/main/configure`);
+            history.push(`/addon-section/${publisherName}/main/configure/release-track`);
         }
 
         settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
@@ -144,10 +144,10 @@ export const AddonSection = (): JSX.Element => {
             console.log("Currently installed", manifest);
 
             let track = selectedAddon.tracks.find(track => track.url.includes(manifest.source));
-
             if (!track) {
-                track = selectedAddon.tracks.find(track => track.alternativeUrls.includes(manifest.source));
+                track = selectedAddon.tracks.find(track => track.alternativeUrls?.includes(manifest.source));
             }
+
             console.log("Currently installed", track);
             setCurrentlyInstalledTrack(track);
             if (selectedTrack()) {
@@ -213,7 +213,7 @@ export const AddonSection = (): JSX.Element => {
         state.downloads.find(download => download.id === selectedAddon.key),
     );
 
-    const isDownloading = download?.progress >= 0;
+    const isDownloading = download?.progress.totalPercent >= 0;
     const status = getCurrentInstallStatus()?.status;
     const isInstalling = InstallStatusCategories.installing.includes(status);
     const isFinishingDependencyInstall = status === InstallStatus.InstallingDependencyEnding;
@@ -258,7 +258,7 @@ export const AddonSection = (): JSX.Element => {
 
     useEffect(() => {
         if (download && isDownloading) {
-            ipcRenderer.send("set-window-progress-bar", download.progress / 100);
+            ipcRenderer.send("set-window-progress-bar", download.progress.totalPercent / 100);
         } else {
             ipcRenderer.send("set-window-progress-bar", -1);
         }
@@ -350,19 +350,21 @@ export const AddonSection = (): JSX.Element => {
             >
                 <div className="h-full flex flex-col divide-y divide-gray-700">
                     <AddonBar>
-                        {publisherData.addons.filter((it) => !it.category).map((addon) => (
-                            <AddonBarItem
-                                selected={selectedAddon.key === addon.key && addon.enabled}
-                                enabled={addon.enabled || !!addon.hidesAddon}
-                                addon={addon}
-                                key={addon.key}
-                                onClick={() => {
-                                    history.push(`/addon-section/${publisherData.name}/`);
+                        <div className="flex flex-col gap-y-4">
+                            {publisherData.addons.filter((it) => !it.category).map((addon) => (
+                                <AddonBarItem
+                                    selected={selectedAddon.key === addon.key && addon.enabled}
+                                    enabled={addon.enabled || !!addon.hidesAddon}
+                                    addon={addon}
+                                    key={addon.key}
+                                    onClick={() => {
+                                        history.push(`/addon-section/${publisherData.name}/`);
 
-                                    setSelectedAddon(addon);
-                                }}
-                            />
-                        ))}
+                                        setSelectedAddon(addon);
+                                    }}
+                                />
+                            ))}
+                        </div>
 
                         <div className="h-full flex flex-col gap-y-4">
                             {publisherData.defs?.filter((it) => it.kind === 'addonCategory').map((category: AddonCategoryDefinition) => {
@@ -423,18 +425,6 @@ export const AddonSection = (): JSX.Element => {
                             <NoAvailableAddonsSection />
                         </Route>
 
-                        <Route path={`/addon-section/${publisherName}/hidden-addon-cover`}>
-                            {addonDiscovered ? (
-                                <Redirect to={`/addon-section/${publisherName}/main/configure`} />
-                            ) : (
-                                hiddenAddon ? (
-                                    <HiddenAddonCover addon={hiddenAddon} />
-                                ) : (
-                                    <Redirect to={`/addon-section/${publisherName}/main/configure`} />
-                                )
-                            )}
-                        </Route>
-
                         <Route path={`/addon-section/${publisherName}/main`}>
                             <div className="h-full flex flex-col">
                                 <div
@@ -478,7 +468,7 @@ export const AddonSection = (): JSX.Element => {
                                     </Route>
 
                                     <Route path={`/addon-section/${publisherName}/main/about`}>
-                                        <About addon={selectedAddon}/>
+                                        <About addon={selectedAddon} />
                                     </Route>
 
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy-dark p-7 flex-shrink-0">
@@ -541,7 +531,7 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
 
         {addon.techSpecs && addon.techSpecs.length > 0 && (
             <>
-                <h2 className="text-white font-bold">Tech Specs</h2>
+                <h3 className="text-white font-bold">Tech Specs</h3>
 
                 <div className="flex flex-row gap-x-16">
                     {addon.techSpecs.map((spec) => (
@@ -553,5 +543,7 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
                 </div>
             </>
         )}
+
+        <MyInstall addon={addon} />
     </div>
 );

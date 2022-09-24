@@ -1,15 +1,11 @@
 import { Configuration } from "./utils/InstallerConfiguration";
 
-import FBWLogo from "renderer/assets/FBW-Tail.svg";
-import SynapticLogo from "renderer/assets/Synaptic-Logo.png";
-import SaltyLogo from "renderer/assets/Salty-Logo.svg";
-
 export const defaultConfiguration: Configuration = {
     publishers: [
         {
             name: 'FlyByWire Simulations',
             key: 'flybywiresim',
-            logoUrl: FBWLogo,
+            logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/flybywiresim/0.svg',
             defs: [
                 {
                     kind: 'addonCategory',
@@ -151,7 +147,24 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
-                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server', '@/simbridge-app'],
+                    myInstallPage: {
+                        links: [
+                            {
+                                url: 'https://docs.flybywiresim.com/fbw-a32nx/',
+                                title: 'Documentation',
+                            },
+                        ],
+                        directories: [
+                            {
+                                location: {
+                                    in: 'packageCache',
+                                    path: 'work',
+                                },
+                                title: 'Work Folder',
+                            },
+                        ],
+                    },
+                    disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server'],
                 },
                 {
                     name: 'A380X',
@@ -229,33 +242,28 @@ export const defaultConfiguration: Configuration = {
                             description: 'SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.',
                         },
                     ],
-                    // configurationAspects: [
-                    //     {
-                    //         key: 'terrain-db',
-                    //         tabTitle: 'Terrain Database',
-                    //         tabSupertitle: 'Update',
-                    //         title: 'Enable or Disable Terrain Database',
-                    //         applyChoiceKeyTo: 'optionalFragmenterModule',
-                    //         choiceKind: 'yesNo',
-                    //         choices: [
-                    //             {
-                    //                 key: 'yes',
-                    //                 title: '@translations[Data.FBW.SimBridge.ConfigTerrainDB.ChoiceYes.Title]',
-                    //                 description: 'Download and install the terrain database to enable terrain display in the FBW A32NX and A380X addons.',
-                    //             },
-                    //             {
-                    //                 key: 'yes',
-                    //                 title: 'Disable Terrain Database',
-                    //                 description: 'Do not install the terrain database. Terrain display will not be available in the FBW A32NX and A380X addons.',
-                    //             },
-                    //         ],
-                    //     },
-                    // ],
                     disallowedRunningExternalApps: ['@/simbridge-app'],
                     backgroundService: {
                         executableFileBasename: 'fbw-simbridge',
                         runCheckExternalAppRef: '@/simbridge-app',
                         commandLineArgs: ['--hide'],
+                    },
+                    myInstallPage: {
+                        links: [
+                            {
+                                url: 'https://docs.flybywiresim.com/simbridge/',
+                                title: 'Documentation',
+                            },
+                        ],
+                        directories: [
+                            {
+                                location: {
+                                    in: 'package',
+                                    path: 'resources',
+                                },
+                                title: 'Resources',
+                            },
+                        ],
                     },
                 },
             ],
@@ -286,7 +294,7 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'Salty Simulations',
             key: 'salty',
-            logoUrl: SaltyLogo,
+            logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/salty/0.svg',
             defs: [
                 {
                     kind: 'addonCategory',
@@ -365,7 +373,7 @@ export const defaultConfiguration: Configuration = {
         {
             name: 'Synaptic Simulations',
             key: 'synaptic',
-            logoUrl: SynapticLogo,
+            logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/synaptic/0.png',
             defs: [
                 {
                     kind: 'addonCategory',

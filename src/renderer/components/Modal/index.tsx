@@ -8,6 +8,7 @@ import "./index.css";
 import changelog from './../../../../.github/CHANGELOG.yaml';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from "renderer/components/Button";
+import { CompactYesNoOptionToggle } from './AutostartDialog';
 
 interface ModalContextInterface{
     showModal: (modal: JSX.Element) => void;
@@ -58,7 +59,7 @@ export const ModalProvider: FC = ({ children }) => {
 };
 
 interface BaseModalProps {
-    title: string;
+    title: React.ReactElement | string;
     bodyText: React.ReactElement | string;
     dontShowAgainSettingName?: string;
     closeIfDontShowAgain?: boolean,
@@ -109,7 +110,11 @@ export const PromptModal: FC<PromptModalProps> = ({
 
     return (
         <div className="modal">
-            <h2 className="modal-title">{title}</h2>
+            {typeof title === 'string' ? (
+                <h1 className="modal-title">{title}</h1>
+            ) : (
+                title
+            )}
             {typeof bodyText === 'string' ? (
                 <ReactMarkdown
                     className="mt-6 markdown-body-modal"
@@ -122,16 +127,7 @@ export const PromptModal: FC<PromptModalProps> = ({
             )}
 
             {dontShowAgainSettingName && (
-                <div className="w-auto gap-x-4 mt-8">
-                    <input
-                        type="checkbox"
-                        checked={checkMark}
-                        onChange={() => setCheckMark(!checkMark)}
-                        className=" w-5 h-5 rounded-sm checked:bg-blue-600 checked:border-transparent"
-                    />
-
-                    <span className="ml-2 text-2xl">Don't show me this again</span>
-                </div>
+                <DoNotAskAgain checked={checkMark} toggleChecked={() => setCheckMark((old) => !old)} />
             )}
 
             <div className="flex flex-row mt-8 gap-x-4">
@@ -180,7 +176,11 @@ export const AlertModal: FC<AlertModalProps> = ({
 
     return (
         <div className="modal">
-            <h1 className="modal-title">{title}</h1>
+            {typeof title === 'string' ? (
+                <h1 className="modal-title">{title}</h1>
+            ) : (
+                title
+            )}
             {typeof bodyText === 'string' ? (
                 <ReactMarkdown
                     className="mt-6 markdown-body-modal"
@@ -270,8 +270,20 @@ export const ChangelogModal: React.FC = () => {
     );
 };
 
-export const ModalContainer: FC = () => {
+interface DoNotAskAgainProps {
+    checked: boolean,
+    toggleChecked: () => void,
+}
 
+const DoNotAskAgain: FC<DoNotAskAgainProps> = ({ checked, toggleChecked }) => (
+    <div className="w-auto gap-x-4 mt-8">
+        <CompactYesNoOptionToggle enabled={checked} onToggle={toggleChecked} enabledBgColor="bg-cyan">
+                Don't show this again
+        </CompactYesNoOptionToggle>
+    </div>
+);
+
+export const ModalContainer: FC = () => {
     const onVersionChanged = () => {
         const { showModal } = useModals();
 
@@ -280,6 +292,7 @@ export const ModalContainer: FC = () => {
             showModal(<ChangelogModal/>);
         }
     };
+
     onVersionChanged();
     const { modal } = useModals();
 

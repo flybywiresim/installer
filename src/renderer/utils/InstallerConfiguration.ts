@@ -1,5 +1,21 @@
 import { defaultConfiguration } from "renderer/data";
 
+export interface ExternalLink {
+    url: string,
+    title: string,
+}
+
+export interface DirectoryDefinition {
+    location: {
+        in: 'community' | 'packageCache' | 'package',
+        path: string,
+    },
+}
+
+export interface NamedDirectoryDefinition extends DirectoryDefinition {
+    title: string,
+}
+
 export type AddonVersion = {
     title: string,
     date: Date,
@@ -49,9 +65,31 @@ export interface AddonBackgroundService {
     runCheckExternalAppRef: string,
 
     /**
+     * Whether autostart configuration is available for the background service
+     */
+    enableAutostartConfiguration?: boolean,
+
+    /**
      * Command line arguments to run this background service with
+     *
+     * Defaults to `true`.
      */
     commandLineArgs?: string[],
+}
+
+/**
+ * Configuration for an addon's "My Install" page
+ */
+export interface AddonMyInstallPageConfiguration {
+    /**
+     * Links to show on the page. Those will be shown in a section on top, without a header, and open the user's browser.
+     */
+    links: ExternalLink[],
+
+    /**
+     * Folder quick-links to show. Those will be shown in a section on the bottom, with a header, and open the file explorer.
+     */
+    directories: NamedDirectoryDefinition[],
 }
 
 export interface Addon {
@@ -75,6 +113,18 @@ export interface Addon {
     configurationAspects?: ConfigurationAspect[],
     disallowedRunningExternalApps?: string[],
     backgroundService?: AddonBackgroundService,
+
+    /**
+     * Configuration for the "My Install" page of this addon. If not provided, a default page described below will be shown:
+     *
+     * Links: none
+     *
+     * Directories: Package in community directory
+     *
+     * If it is specified, the above elements are appended to the specified page contents.
+     */
+    myInstallPage?: AddonMyInstallPageConfiguration,
+
     enabled: boolean,
     hidesAddon?: string,
     hidden?: boolean,
@@ -251,6 +301,7 @@ export type Publisher = {
     name: string,
     key: string,
     logoUrl: string,
+    logoSize?: number,
     defs?: Definition[],
     addons: Addon[],
     buttons?: PublisherButton[],

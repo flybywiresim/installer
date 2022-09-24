@@ -9,12 +9,22 @@ const MSFS_APPDATA_PATH = 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\Lo
 const MSFS_STEAM_PATH = 'Microsoft Flight Simulator\\Packages';
 
 export class Directories {
+    private static sanitize(suffix: string): string {
+        return path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, '');
+    }
+
     static community(): string {
         return settings.get('mainSettings.msfsPackagePath') as string;
     }
 
     static inCommunity(targetDir: string): string {
-        return path.join(Directories.community(), targetDir);
+        return path.join(Directories.community(), this.sanitize(targetDir));
+    }
+
+    static inCommunityPackage(addon: Addon, targetDir: string): string {
+        const baseDir = this.inCommunity(this.sanitize(addon.targetDirectory));
+
+        return path.join(baseDir, this.sanitize(targetDir));
     }
 
     static tempLocation(): string {
@@ -22,7 +32,7 @@ export class Directories {
     }
 
     static inTempLocation(targetDir: string): string {
-        return path.join(Directories.tempLocation(), targetDir);
+        return path.join(Directories.tempLocation(), this.sanitize(targetDir));
     }
 
     static liveries(): string {
@@ -30,15 +40,21 @@ export class Directories {
     }
 
     static inLiveries(targetDir: string): string {
-        return path.join(settings.get('mainSettings.liveriesPath') as string, targetDir);
+        return path.join(settings.get('mainSettings.liveriesPath') as string, this.sanitize(targetDir));
     }
 
     static inPackagesMicrosoftStore(targetDir: string): string {
-        return path.join(process.env.LOCALAPPDATA, MSFS_APPDATA_PATH, targetDir);
+        return path.join(process.env.LOCALAPPDATA, MSFS_APPDATA_PATH, this.sanitize(targetDir));
     }
 
     static inPackagesSteam(targetDir: string): string {
-        return path.join(process.env.APPDATA, MSFS_STEAM_PATH, targetDir);
+        return path.join(process.env.APPDATA, MSFS_STEAM_PATH, this.sanitize(targetDir));
+    }
+
+    static inPackageCache(addon: Addon, targetDir: string): string {
+        const baseDir = this.inPackagesSteam(this.sanitize(addon.targetDirectory));
+
+        return path.join(baseDir, this.sanitize(targetDir));
     }
 
     static temp(): string {

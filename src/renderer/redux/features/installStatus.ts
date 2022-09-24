@@ -6,17 +6,31 @@ interface BaseInstallState {
     status: InstallStatus,
 }
 
+export interface GenericInstallState {
+    status: Exclude<InstallStatus, InstallStatus.InstallingDependency | InstallStatus.InstallingDependencyEnding | InstallStatus.Decompressing>,
+}
+
 export interface InstallingDependencyInstallState extends BaseInstallState {
-    status: InstallStatus.InstallingDependency | InstallStatus.InstallingDependencyEnding,
+    status: InstallStatus.InstallingDependency,
     dependencyPublisherKey: string,
     dependencyAddonKey: string,
 }
 
-export interface GenericInstallState {
-    status: Exclude<InstallStatus, InstallStatus.InstallingDependency>,
+export interface InstallingDependencyEndingInstallState extends BaseInstallState {
+    status: InstallStatus.InstallingDependencyEnding,
+    dependencyPublisherKey: string,
+    dependencyAddonKey: string,
+    percent: number,
+    entry?: string,
 }
 
-export type InstallState = GenericInstallState | InstallingDependencyInstallState
+export interface DecompressingInstallState extends BaseInstallState {
+    status: InstallStatus.Decompressing,
+    percent: number,
+    entry?: string,
+}
+
+export type InstallState = GenericInstallState | InstallingDependencyInstallState | InstallingDependencyEndingInstallState | DecompressingInstallState
 
 const initialState : Record<string, InstallState> = {};
 

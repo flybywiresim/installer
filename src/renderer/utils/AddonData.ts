@@ -84,8 +84,9 @@ export class AddonData {
 
                 let track = addon.tracks.find(track => track.url.includes(manifest.source));
                 if (!track) {
-                    track = addon.tracks.find(track => track.alternativeUrls.includes(manifest.source));
+                    track = addon.tracks.find(track => track.alternativeUrls?.includes(manifest.source));
                 }
+
                 console.log('Currently installed', track);
                 setCurrentlyInstalledTrack(track);
                 setCurrentlySelectedTrack(track);
@@ -131,7 +132,6 @@ export class AddonData {
             const updateInfo = await new FragmenterUpdateChecker().needsUpdate(selectedTrack.url, installDir, {
                 forceCacheBust: true,
             });
-            console.log('Update info for', addon.key, updateInfo);
 
             if (updateInfo.isFreshInstall) {
                 setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
@@ -165,7 +165,6 @@ export class AddonData {
             const updateInfo = await new FragmenterUpdateChecker().needsUpdate(state.selectedTracks[addon.key].url, installDir, {
                 forceCacheBust: true,
             });
-            console.log("Update info", addon.key, updateInfo);
             if (updateInfo.needsUpdate) {
                 dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.NeedsUpdate } }));
             }

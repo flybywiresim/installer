@@ -5,9 +5,9 @@ import path from "path";
 import fs from "fs";
 import { shell } from "electron";
 import { ChangelogModal, useModals } from "../Modal";
+import { SentrySessionCard } from "renderer/components/SentrySessionCard";
 
 export const AboutSettings: FC = () => {
-
     const [logoRotation, setLogoRotation] = useState(0);
 
     useEffect(() => {
@@ -50,13 +50,17 @@ export const AboutSettings: FC = () => {
             </div>
 
             <div className="flex flex-col justify-center">
-                <span className="text-xl">Copyright (c) 2020-2022 FlyByWire Simulations and its contributors</span>
-                <span className="text-xl">Licensed under the GNU General Public License Version 3</span>
+                <span className="text-2xl">Copyright (c) 2020-2022 FlyByWire Simulations and its contributors</span>
+                <span className="text-2xl">Licensed under the GNU General Public License Version 3</span>
 
-                <span className="text-xl text-gray-200 mt-4">
+                <span className="text-2xl text-gray-200 mt-4">
                     All publisher associated logos are the intellectual property of their respective owners.
                     Media content included is licensed under the terms set by the publisher.
                 </span>
+
+                <div className="mt-5" style={{ width: '520px' }}>
+                    <SentrySessionCard />
+                </div>
 
                 <a
                     className="mt-4 text-gray-500 hover:text-gray-600"

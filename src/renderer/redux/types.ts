@@ -1,9 +1,19 @@
 import { ReleaseInfo } from "renderer/utils/AddonData";
 
+export interface DownloadProgress {
+    interrupted: boolean,
+    totalPercent: number,
+    splitPartPercent?: number,
+    splitPartIndex?: number,
+    splitPartCount?: number,
+}
+
 export interface DownloadItem {
     id: string
-    progress: number
+    progress: DownloadProgress,
     module: string,
+    moduleIndex: number,
+    moduleCount: number,
     abortControllerID: number,
 }
 

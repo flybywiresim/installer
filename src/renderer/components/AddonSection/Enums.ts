@@ -6,6 +6,7 @@ export enum InstallStatus {
     TrackSwitch,
     InstallingDependency,
     InstallingDependencyEnding,
+    DownloadPending,
     DownloadPrep,
     Downloading,
     Decompressing,
@@ -20,13 +21,20 @@ export enum InstallStatus {
 
 export const InstallStatusCategories = {
     installing: [
+        InstallStatus.DownloadPending,
         InstallStatus.Downloading,
         InstallStatus.DownloadPrep,
         InstallStatus.InstallingDependency,
         InstallStatus.InstallingDependencyEnding,
         InstallStatus.Decompressing,
-        InstallStatus.DownloadEnding,
         InstallStatus.DownloadRetry,
+        InstallStatus.DownloadEnding,
+    ],
+    installingNoProgress: [
+        InstallStatus.DownloadPrep,
+        InstallStatus.DownloadPending,
+        InstallStatus.DownloadRetry,
+        InstallStatus.DownloadEnding,
     ],
     installingDependency: [
         InstallStatus.InstallingDependency,
