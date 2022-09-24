@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import settings, { useSetting } from "../../common/settings";
+import React, {FC, useState} from 'react';
+// import settings, { useSetting } from "../../common/settings";
 // import { ipcRenderer } from 'electron';
 import { Toggle } from '../Toggle';
 
@@ -20,7 +20,7 @@ const AutoStartSettingItem = ({ value, setValue }: SettingItemProps<boolean>) =>
     const handleClick = () => {
         const newState = !value;
         setValue(newState);
-        settings.set('mainSettings.autoStartApp', newState);
+        // settings.set('mainSettings.autoStartApp', newState);
         // ipcRenderer.send('request-startup-at-login-changed', newState);
     };
 
@@ -36,7 +36,7 @@ const AutoStartSettingItem = ({ value, setValue }: SettingItemProps<boolean>) =>
 
 const DateLayoutItem = ({ value, setValue }: SettingItemProps<string>) => {
     const handleSelect = (value: string) => {
-        settings.set('mainSettings.dateLayout', value);
+        // settings.set('mainSettings.dateLayout', value);
         setValue(value);
     };
 
@@ -58,7 +58,7 @@ const DateLayoutItem = ({ value, setValue }: SettingItemProps<string>) => {
 
 const LongDateFormatItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     const handleClick = (value: boolean) => {
-        settings.set('mainSettings.useLongDateFormat', value);
+        // settings.set('mainSettings.useLongDateFormat', value);
         setValue(value);
     };
 
@@ -73,9 +73,9 @@ const LongDateFormatItem = ({ value, setValue }: SettingItemProps<boolean>) => {
 };
 
 const index = (): JSX.Element => {
-    const [autoStart, setAutoStart] = useSetting<boolean>('mainSettings.autoStartApp');
-    const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
-    const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
+    const [autoStart, setAutoStart] = useState<boolean>(false);
+    const [dateLayout, setDateLayout] = useState<string>("yyyy:MM:DD");
+    const [useLongDate, setUseLongDate] = useState<boolean>(true);
 
     return (
         <div>

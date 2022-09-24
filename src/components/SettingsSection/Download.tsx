@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React, {FC, useState} from 'react';
 import { setupInstallPath, setupTempLocation } from '../../actions/install-path.utils';
-import settings, { useSetting } from "../../common/settings";
+// import settings, { useSetting } from "../../common/settings";
 import { Toggle } from '../Toggle';
 
 const SettingsItem: FC<{name: string, children: React.ReactNode}> = ({ name, children }) => (
@@ -52,8 +52,8 @@ const SeparateTempLocationSettingItem = ({ value, setValue }: SettingItemProps<b
     const handleClick = () => {
         const newState = !value;
         setValue(newState);
-        settings.set('mainSettings.separateTempLocation', newState);
-        settings.set('mainSettings.tempLocation', settings.get('mainSettings.msfsPackagePath'));
+        // settings.set('mainSettings.separateTempLocation', newState);
+        // settings.set('mainSettings.tempLocation', settings.get('mainSettings.msfsPackagePath'));
     };
 
     return (
@@ -70,7 +70,7 @@ const DisableWarningSettingItem = ({ value, setValue }: SettingItemProps<boolean
     const handleClick = () => {
         const newState = !value;
         setValue(newState);
-        settings.set('mainSettings.disableExperimentalWarning', newState);
+        // settings.set('mainSettings.disableExperimentalWarning', newState);
     };
 
     return (
@@ -87,7 +87,7 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     const handleClick = () => {
         const newState = !value;
         setValue(newState);
-        settings.set('mainSettings.useCdnCache', newState);
+        // settings.set('mainSettings.useCdnCache', newState);
     };
 
     return (
@@ -101,11 +101,11 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
 };
 
 const index = (): JSX.Element => {
-    const [installPath, setInstallPath] = useSetting<string>('mainSettings.msfsPackagePath');
-    const [tempLocation, setTempLocation] = useSetting<string>('mainSettings.tempLocation');
-    const [separateTempLocation, setSeparateTempLocation] = useSetting<boolean>('mainSettings.separateTempLocation');
-    const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
-    const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
+    const [installPath, setInstallPath] = useState<string>("");
+    const [tempLocation, setTempLocation] = useState<string>("");
+    const [separateTempLocation, setSeparateTempLocation] = useState<boolean>(false);
+    const [disableVersionWarning, setDisableVersionWarning] = useState<boolean>(false);
+    const [useCdnCache, setUseCdnCache] = useState<boolean>(true);
 
     return (
         <div>

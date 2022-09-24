@@ -15,7 +15,7 @@ import { NavBar, NavBarPublisher } from "./NavBar";
 import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import { store, useAppSelector } from '../../redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from '../../redux/features/latestVersionNames';
-import settings from '../../common/settings';
+// import settings from '../../common/settings';
 import "./index.css";
 // import { ipcRenderer } from 'electron';
 import channels from '../../common/channels';
@@ -88,14 +88,14 @@ const App = () => {
         addons.forEach(AddonData.configureInitialAddonState);
         addons.forEach(fetchLatestVersionNames);
 
-        if (settings.get('cache.main.lastShownSection')) {
-            history.push(settings.get('cache.main.lastShownSection'));
-        }
+        // if (settings.get('cache.main.lastShownSection')) {
+        //     history.push(settings.get('cache.main.lastShownSection'));
+        // }
 
         // Let's listen for a route change and set the last shown section to the incoming route pathname
-        history.listen((location) => {
-            settings.set("cache.main.lastShownSection", location.pathname);
-        });
+        // history.listen((location) => {
+        //     settings.set("cache.main.lastShownSection", location.pathname);
+        // });
     }, []);
 
     useEffect(() => {

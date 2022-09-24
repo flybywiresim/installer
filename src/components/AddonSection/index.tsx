@@ -8,7 +8,7 @@ import { Addon, AddonCategoryDefinition, AddonTrack } from "../../utils/Installe
 import { Directories } from "../../utils/Directories";
 import { NavLink, Redirect, Route, useHistory, useParams } from "react-router-dom";
 import { Gear, InfoCircle, JournalText, Sliders } from "react-bootstrap-icons";
-import settings, { useSetting } from "../../common/settings";
+// import settings, { useSetting } from "../../common/settings";
 // import { ipcRenderer } from "electron";
 import { AddonBar, AddonBarItem } from "../App/AddonBar";
 import { NoAvailableAddonsSection } from "../NoAvailableAddonsSection";
@@ -110,7 +110,7 @@ export const AddonSection = (): JSX.Element => {
             history.push(`/addon-section/${publisherName}/main/configure/release-track`);
         }
 
-        settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
+        // settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
     }, [selectedAddon]);
 
     useEffect(() => {
@@ -121,10 +121,10 @@ export const AddonSection = (): JSX.Element => {
             return;
         }
 
-        const lastSeenAddonKey = settings.get('cache.main.lastShownAddonKey');
-        const addonToSelect = publisherData.addons.find(addon => addon.key === lastSeenAddonKey) || publisherData.addons.find(addon => addon.key === firstAvailableAddon.key);
+        // const lastSeenAddonKey = settings.get('cache.main.lastShownAddonKey');
+        // const addonToSelect = publisherData.addons.find(addon => addon.key === lastSeenAddonKey) || publisherData.addons.find(addon => addon.key === firstAvailableAddon.key);
 
-        setSelectedAddon(addonToSelect);
+        // setSelectedAddon(addonToSelect);
     }, [publisherName]);
 
     const findInstalledTrack = (): AddonTrack => {
@@ -266,15 +266,15 @@ export const AddonSection = (): JSX.Element => {
         }
     }, [download]);
 
-    const [addonDiscovered] = useSetting<boolean>(
-        "cache.main.discoveredAddons." + hiddenAddon?.key,
-    );
+    // const [addonDiscovered] = useSetting<boolean>(
+    //     "cache.main.discoveredAddons." + hiddenAddon?.key,
+    // );
 
-    useEffect(() => {
-        if (addonDiscovered) {
-            setSelectedAddon(hiddenAddon);
-        }
-    }, [addonDiscovered]);
+    // useEffect(() => {
+    //     if (addonDiscovered) {
+    //         setSelectedAddon(hiddenAddon);
+    //     }
+    // }, [addonDiscovered]);
 
     const { showModal, showModalAsync } = useModals();
 
@@ -303,11 +303,11 @@ export const AddonSection = (): JSX.Element => {
     };
 
     const handleInstall = async () => {
-        if (settings.has("mainSettings.msfsPackagePath")) {
-            await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
-        } else {
-            await setupInstallPath();
-        }
+        // if (settings.has("mainSettings.msfsPackagePath")) {
+        //     await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
+        // } else {
+        //     await setupInstallPath();
+        // }
     };
 
     const handleCancel = useCallback(() => {

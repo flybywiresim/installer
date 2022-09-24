@@ -5,7 +5,7 @@ import { AboutSettings } from "./About";
 import { SideBar, SideBarLink, SideBarTitle } from "../SideBar";
 import CustomizationSettings from './Customization';
 import DownloadSettings from './Download';
-import settings from '../../common/settings';
+// import settings from '../../common/settings';
 import * as packageInfo from '../../../package.json';
 import { Button, ButtonType } from '../Button';
 import { PromptModal, useModals } from "../Modal";
@@ -42,10 +42,10 @@ export const SettingsSection = (): JSX.Element => {
                 bodyText={`You are about to reset all settings to their default values. You cannot undo this.`}
                 confirmColor={ButtonType.Danger}
                 onConfirm={async () => {
-                    settings.reset('mainSettings' as never);
+                    // settings.reset('mainSettings' as never);
 
                     // Workaround to flush the defaults
-                    settings.set('metaInfo.lastVersion', packageInfo.version);
+                    // settings.set('metaInfo.lastVersion', packageInfo.version);
                 }}/>,
         );
     };

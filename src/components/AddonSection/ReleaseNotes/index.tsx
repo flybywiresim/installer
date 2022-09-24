@@ -8,7 +8,7 @@ import { useInView } from "react-intersection-observer";
 import { ReleaseData } from "../../../redux/types";
 import { GitVersions } from "@flybywiresim/api-client";
 import { addReleases } from "../../../redux/features/releaseNotes";
-import { useSetting } from '../../../common/settings';
+// import { useSetting } from '../../../common/settings';
 import dateFormat from 'dateformat';
 import { ArrowUp } from "react-bootstrap-icons";
 
@@ -18,8 +18,8 @@ interface ReleaseNoteCardProps {
 }
 
 const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ release, isLatest }, ref) => {
-    let [dateLayout] = useSetting<string>('mainSettings.dateLayout');
-    const [useLongDateFormat] = useSetting<boolean>('mainSettings.useLongDateFormat');
+    let [dateLayout] = useState<string>("yyyy:MM:DD");
+    const [useLongDateFormat] = useState<boolean>(true);
 
     if (useLongDateFormat) {
         dateLayout = dateLayout.

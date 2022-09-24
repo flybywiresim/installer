@@ -10,10 +10,10 @@ import {
     updateDownloadProgress,
 } from "../redux/features/downloads";
 import { Directories } from "../utils/Directories";
-import fs from "fs-extra";
+// import fs from "fs-extra";
 import { ApplicationStatus, InstallStatus } from "../components/AddonSection/Enums";
 import { FragmenterContextEvents, FragmenterInstallerEvents, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
-import settings from "../common/settings";
+// import settings from "../common/settings";
 import { store } from "../redux/store";
 import { InstallState, setInstallStatus } from "../redux/features/installStatus";
 import { setSelectedTrack } from "../redux/features/selectedTrack";
@@ -26,9 +26,9 @@ import { BackgroundServices } from "./BackgroundServices";
 import { CannotInstallDialog } from "../components/Modal/CannotInstallDialog";
 import { ExternalApps } from "./ExternalApps";
 import { ExternalAppsUI } from "./ExternalAppsUI";
-import { ipcRenderer } from "electron";
+// import { ipcRenderer } from "electron";
 import channels from '../common/channels';
-import * as Sentry from '@sentry/electron/renderer';
+// import * as Sentry from '@sentry/electron/renderer';
 import { ErrorDialog } from "../components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "../components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
@@ -70,9 +70,9 @@ export class InstallManager {
 
         const installDir = Directories.inCommunity(addon.targetDirectory);
 
-        if (!fs.existsSync(installDir)) {
-            return { status: InstallStatus.NotInstalled };
-        }
+        // if (!fs.existsSync(installDir)) {
+        //     return { status: InstallStatus.NotInstalled };
+        // }
 
         console.log("Checking for git install");
         if (Directories.isGitInstall(installDir)) {
@@ -205,29 +205,29 @@ export class InstallManager {
 
                 if (dependency.optional && isDependencyNotInstalled) {
                     const settingString = `mainSettings.disableDependencyPrompt.${publisher.key}.${addon.key}.@${dependencyPublisher.key}/${dependencyAddon.key}`;
-                    const doNotAsk = settings.get(settingString);
+                    // const doNotAsk = settings.get(settingString);
 
                     doInstallDependency = false;
 
-                    if (!doNotAsk) {
-                        doInstallDependency = await showModal(
-                            <PromptModal
-                                title="Dependency"
-                                bodyText={
-                                    <DependencyDialogBody
-                                        addon={addon}
-                                        dependency={dependency}
-                                        dependencyAddon={dependencyAddon}
-                                        dependencyPublisher={dependencyPublisher}
-                                    />
-                                }
-                                cancelText="No"
-                                confirmText="Yes"
-                                confirmColor={ButtonType.Positive}
-                                dontShowAgainSettingName={settingString}
-                            />,
-                        );
-                    }
+                    // if (!doNotAsk) {
+                    //     doInstallDependency = await showModal(
+                    //         <PromptModal
+                    //             title="Dependency"
+                    //             bodyText={
+                    //                 <DependencyDialogBody
+                    //                     addon={addon}
+                    //                     dependency={dependency}
+                    //                     dependencyAddon={dependencyAddon}
+                    //                     dependencyPublisher={dependencyPublisher}
+                    //                 />
+                    //             }
+                    //             cancelText="No"
+                    //             confirmText="Yes"
+                    //             confirmColor={ButtonType.Positive}
+                    //             dontShowAgainSettingName={settingString}
+                    //         />,
+                    //     );
+                    // }
 
                 }
 
@@ -267,17 +267,17 @@ export class InstallManager {
         const availableDiskSpace = (await checkDiskSpace(destDir)).free;
 
         const diskSpaceModalSettingString = `mainSettings.disableAddonDiskSpaceModal.${publisher.key}.${addon.key}`;
-        const dontAsk = settings.get(diskSpaceModalSettingString);
+        // const dontAsk = settings.get(diskSpaceModalSettingString);
 
-        if (Number.isFinite(requiredDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
-            const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo} availableDiskSpace={availableDiskSpace} dontShowAgainSettingName={diskSpaceModalSettingString} />);
-
-            if (!continueInstall) {
-                startResetStateTimer();
-
-                return InstallResult.Cancelled;
-            }
-        }
+        // if (Number.isFinite(requiredDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
+        //     const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo} availableDiskSpace={availableDiskSpace} dontShowAgainSettingName={diskSpaceModalSettingString} />);
+        //
+        //     if (!continueInstall) {
+        //         startResetStateTimer();
+        //
+        //         return InstallResult.Cancelled;
+        //     }
+        // }
 
         // Initialize abort controller for downloads
         const abortControllerID = this.lowestAvailableAbortControllerID();
@@ -306,9 +306,9 @@ export class InstallManager {
         console.log('---');
 
         // Create dest dir if it doesn't exist
-        if (!fs.existsSync(destDir)) {
-            fs.mkdirSync(destDir);
-        }
+        // if (!fs.existsSync(destDir)) {
+        //     fs.mkdirSync(destDir);
+        // }
 
         try {
             let lastPercent = 0;
@@ -455,32 +455,32 @@ export class InstallManager {
                         const [error] = args as FragmenterEventArguments<typeof event>;
 
                         console.error('Error from Fragmenter:', error);
-                        Sentry.captureException(error);
+                        // Sentry.captureException(error);
                     }
                 }
             };
 
             // Listen to forwarded fragmenter events
-            ipcRenderer.on(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
+            // ipcRenderer.on(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
 
             // Send cancel message when abort controller is aborted
             this.abortControllers[abortControllerID].signal.addEventListener('abort', () => {
-                ipcRenderer.send(channels.installManager.cancelInstall, ourInstallID);
+                // ipcRenderer.send(channels.installManager.cancelInstall, ourInstallID);
             });
 
             console.log("Starting fragmenter download for URL", track.url);
 
-            const installResult = await ipcRenderer.invoke(channels.installManager.installFromUrl, ourInstallID, track.url, tempDir, destDir);
+            // const installResult = await ipcRenderer.invoke(channels.installManager.installFromUrl, ourInstallID, track.url, tempDir, destDir);
 
             // Throw any error so we can display the error dialog
-            if (typeof installResult === 'object') {
-                throw installResult;
-            }
+            // if (typeof installResult === 'object') {
+            //     throw installResult;
+            // }
 
             console.log("Fragmenter download finished for URL", track.url);
 
             // Stop listening to forwarded fragmenter events
-            ipcRenderer.removeListener(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
+            // ipcRenderer.removeListener(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
 
             // Remove installs existing under alternative names
             console.log("Removing installs existing under alternative names");
@@ -498,13 +498,13 @@ export class InstallManager {
                 const app = BackgroundServices.getExternalAppFromBackgroundService(addon, publisher);
 
                 const isAutoStartEnabled = await BackgroundServices.isAutoStartEnabled(addon);
-                const doNotAskAgain = settings.get<string, boolean>(`mainSettings.disableBackgroundServiceAutoStartPrompt.${publisher.key}.${addon.key}`);
+                // const doNotAskAgain = settings.get<string, boolean>(`mainSettings.disableBackgroundServiceAutoStartPrompt.${publisher.key}.${addon.key}`);
 
-                if (!isAutoStartEnabled && !doNotAskAgain) {
-                    await showModal(
-                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true}/>,
-                    );
-                }
+                // if (!isAutoStartEnabled && !doNotAskAgain) {
+                //     await showModal(
+                //         <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true}/>,
+                //     );
+                // }
             }
         } catch (e) {
             if (signal.aborted) {
@@ -521,7 +521,7 @@ export class InstallManager {
                 setErrorState();
                 startResetStateTimer();
 
-                Sentry.captureException(e);
+                // Sentry.captureException(e);
                 await showModal(<ErrorDialog error={e}/>);
 
                 return InstallResult.Failure;
@@ -585,14 +585,14 @@ export class InstallManager {
 
         const installDir = Directories.inCommunity(addon.targetDirectory);
 
-        await ipcRenderer.invoke(
-            channels.installManager.uninstall,
-            installDir,
-            [
-                Directories.inPackagesMicrosoftStore(addon.targetDirectory),
-                Directories.inPackagesSteam(addon.targetDirectory),
-            ],
-        );
+        // await ipcRenderer.invoke(
+        //     channels.installManager.uninstall,
+        //     installDir,
+        //     [
+        //         Directories.inPackagesMicrosoftStore(addon.targetDirectory),
+        //         Directories.inPackagesSteam(addon.targetDirectory),
+        //     ],
+        // );
 
         this.setCurrentInstallState(addon, { status: InstallStatus.NotInstalled });
         this.setCurrentlyInstalledTrack(addon, null);
@@ -604,23 +604,23 @@ export class InstallManager {
             .then(() => {
                 console.log("Showing notification");
                 if (successful) {
-                    new Notification(`${addon.name} download complete!`, {
-                        icon: path.join(
-                            process.resourcesPath,
-                            "extraResources",
-                            "icon.ico",
-                        ),
-                        body: "Take to the skies!",
-                    });
+                    // new Notification(`${addon.name} download complete!`, {
+                    //     icon: path.join(
+                    //         process.resourcesPath,
+                    //         "extraResources",
+                    //         "icon.ico",
+                    //     ),
+                    //     body: "Take to the skies!",
+                    // });
                 } else {
-                    new Notification("Download failed!", {
-                        icon: path.join(
-                            process.resourcesPath,
-                            "extraResources",
-                            "icon.ico",
-                        ),
-                        body: "Oops, something went wrong",
-                    });
+                    // new Notification("Download failed!", {
+                    //     icon: path.join(
+                    //         process.resourcesPath,
+                    //         "extraResources",
+                    //         "icon.ico",
+                    //     ),
+                    //     body: "Oops, something went wrong",
+                    // });
                 }
             })
             .catch((e) => console.log(e));

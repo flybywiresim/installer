@@ -3,7 +3,7 @@ import { GitVersions } from "@flybywiresim/api-client";
 import { Directories } from "./Directories";
 // import fs from 'fs-extra';
 import { getCurrentInstall, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
-import settings from "../common/settings";
+// import settings from "../common/settings";
 import { store } from "../redux/store";
 import { setInstalledTrack } from "../redux/features/installedTrack";
 import { setSelectedTrack } from "../redux/features/selectedTrack";
@@ -99,12 +99,12 @@ export class AddonData {
             }
         }
 
-        const addonDiscovered = settings.get('cache.main.discoveredAddons.' + addon.key);
+        // const addonDiscovered = settings.get('cache.main.discoveredAddons.' + addon.key);
 
-        if (addon.hidden && !addonDiscovered) {
-            setCurrentInstallStatus({ status: InstallStatus.Hidden });
-            return;
-        }
+        // if (addon.hidden && !addonDiscovered) {
+        //     setCurrentInstallStatus({ status: InstallStatus.Hidden });
+        //     return;
+        // }
 
         if (!selectedTrack) {
             console.log (addon.key, 'has unknown install status');

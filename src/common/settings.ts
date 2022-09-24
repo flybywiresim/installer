@@ -1,5 +1,5 @@
-import Store, { Schema } from "electron-store";
-import * as fs from "fs-extra";
+// import Store, { Schema } from "electron-store";
+// import * as fs from "fs-extra";
 import walk from "walkdir";
 import * as path from "path";
 import * as os from 'os';
@@ -16,29 +16,29 @@ const defaultCommunityDir = (): string => {
     const steamPath = path.join(process.env.APPDATA, "\\Microsoft Flight Simulator\\UserCfg.opt");
     const storePath = path.join(process.env.LOCALAPPDATA, "\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\UserCfg.opt");
 
-    if (fs.existsSync(steamPath)) {
-        msfsConfigPath = steamPath;
-    } else if (fs.existsSync(storePath)) {
-        msfsConfigPath = storePath;
-    } else {
-        walk(process.env.LOCALAPPDATA, (path) => {
-            if (path.includes("Flight") && path.includes("UserCfg.opt")) {
-                msfsConfigPath = path;
-            }
-        });
-    }
+    // if (fs.existsSync(steamPath)) {
+    //     msfsConfigPath = steamPath;
+    // } else if (fs.existsSync(storePath)) {
+    //     msfsConfigPath = storePath;
+    // } else {
+    //     walk(process.env.LOCALAPPDATA, (path) => {
+    //         if (path.includes("Flight") && path.includes("UserCfg.opt")) {
+    //             msfsConfigPath = path;
+    //         }
+    //     });
+    // }
 
     if (!msfsConfigPath) {
         return 'C:\\';
     }
 
     try {
-        const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
-        const msfsConfigLines = msfsConfig.split(/\r?\n/);
-        const packagesPathLine = msfsConfigLines.find(line => line.includes('InstalledPackagesPath'));
-        const communityDir = path.join(packagesPathLine.split(" ").slice(1).join(" ").replaceAll('"', ''), "\\Community");
-
-        return fs.existsSync(communityDir) ? communityDir : 'C:\\';
+        // const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
+        // const msfsConfigLines = msfsConfig.split(/\r?\n/);
+        // const packagesPathLine = msfsConfigLines.find(line => line.includes('InstalledPackagesPath'));
+        // const communityDir = path.join(packagesPathLine.split(" ").slice(1).join(" ").replaceAll('"', ''), "\\Community");
+        //
+        // return fs.existsSync(communityDir) ? communityDir : 'C:\\';
     } catch (e) {
         console.warn('Could not parse community dir from file', msfsConfigPath);
         console.error(e);
@@ -54,27 +54,27 @@ const defaultCommunityDir = (): string => {
 //     store.set('cache.main.lastWindowY', winSize[1]);
 // };
 
-export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetStateAction<T>>] => {
-    const [storedValue, setStoredValue] = useState(store.get<string, T>(key, defaultValue));
-
-    useEffect(() => {
-        setStoredValue(store.get<string, T>(key, defaultValue));
-
-        const cancel = store.onDidChange(key as never, (val) => {
-            setStoredValue(val as T);
-        });
-
-        return () => {
-            cancel();
-        };
-    }, [key]);
-
-    const setValue = (newVal: T) => {
-        store.set(key, newVal);
-    };
-
-    return [storedValue, setValue];
-};
+// export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetStateAction<T>>] => {
+//     const [storedValue, setStoredValue] = useState(store.get<string, T>(key, defaultValue));
+//
+//     useEffect(() => {
+//         setStoredValue(store.get<string, T>(key, defaultValue));
+//
+//         const cancel = store.onDidChange(key as never, (val) => {
+//             setStoredValue(val as T);
+//         });
+//
+//         return () => {
+//             cancel();
+//         };
+//     }, [key]);
+//
+//     const setValue = (newVal: T) => {
+//         store.set(key, newVal);
+//     };
+//
+//     return [storedValue, setValue];
+// };
 
 export const useIsDarkTheme = (): boolean => {
     return true;
@@ -108,143 +108,143 @@ interface Settings {
     },
 }
 
-const schema: Schema<Settings> = {
-    mainSettings: {
-        type: "object",
-        // Empty defaults are required when using type: "object" (https://github.com/sindresorhus/conf/issues/85#issuecomment-531651424)
-        default: {},
-        properties: {
-            autoStartApp: {
-                type: "boolean",
-                default: false,
-            },
-            disableExperimentalWarning: {
-                type: "boolean",
-                default: false,
-            },
-            disableDependencyPrompt: {
-                type: "object",
-                default: {},
-                additionalProperties: {
-                    type: "object",
-                    default: {},
-                    additionalProperties: {
-                        type: "object",
-                        default: {},
-                        additionalProperties: {
-                            type: "boolean",
-                            default: false,
-                        },
-                    },
-                },
-            },
-            disableBackgroundServiceAutoStartPrompt: {
-                type: "object",
-                default: {},
-                additionalProperties: {
-                    type: "object",
-                    default: {},
-                    additionalProperties: {
-                        type: "boolean",
-                        default: false,
-                    },
-                },
-            },
-            disableAddonDiskSpaceModal: {
-                type: "object",
-                default: {},
-                additionalProperties: {
-                    type: "object",
-                    default: {},
-                    additionalProperties: {
-                        type: "boolean",
-                        default: false,
-                    },
-                },
-            },
-            useCdnCache: {
-                type: "boolean",
-                default: true,
-            },
-            dateLayout: {
-                type: "string",
-                default: "yyyy/mm/dd",
-            },
-            useLongDateFormat: {
-                type: "boolean",
-                default: false,
-            },
-            useDarkTheme: {
-                type: "boolean",
-                default: false,
-            },
-            allowSeasonalEffects: {
-                type: "boolean",
-                default: true,
-            },
-            msfsPackagePath: {
-                type: "string",
-                default: defaultCommunityDir(),
-            },
-            separateTempLocation: {
-                type: "boolean",
-                default: false,
-            },
-            tempLocation: {
-                type: "string",
-                default: defaultCommunityDir(),
-            },
-        },
-    },
-    cache: {
-        type: "object",
-        default: {},
-        properties: {
-            main: {
-                type: "object",
-                default: {},
-                properties: {
-                    lastWindowX: {
-                        type: "integer",
-                    },
-                    lastWindowY: {
-                        type: "integer",
-                    },
-                    maximized: {
-                        type: "boolean",
-                        default: false,
-                    },
-                    lastShownSection: {
-                        type: "string",
-                        default: "",
-                    },
-                    lastShownAddonKey: {
-                        type: "string",
-                        default: "",
-                    },
-                },
-            },
-        },
-    },
-    metaInfo: {
-        type: "object",
-        default: {},
-        properties: {
-            lastVersion: {
-                type: "string",
-                default: "",
-            },
-            lastLaunch: {
-                type: "integer",
-                default: 0,
-            },
-        },
-    },
-};
+// const schema: Schema<Settings> = {
+//     mainSettings: {
+//         type: "object",
+//         // Empty defaults are required when using type: "object" (https://github.com/sindresorhus/conf/issues/85#issuecomment-531651424)
+//         default: {},
+//         properties: {
+//             autoStartApp: {
+//                 type: "boolean",
+//                 default: false,
+//             },
+//             disableExperimentalWarning: {
+//                 type: "boolean",
+//                 default: false,
+//             },
+//             disableDependencyPrompt: {
+//                 type: "object",
+//                 default: {},
+//                 additionalProperties: {
+//                     type: "object",
+//                     default: {},
+//                     additionalProperties: {
+//                         type: "object",
+//                         default: {},
+//                         additionalProperties: {
+//                             type: "boolean",
+//                             default: false,
+//                         },
+//                     },
+//                 },
+//             },
+//             disableBackgroundServiceAutoStartPrompt: {
+//                 type: "object",
+//                 default: {},
+//                 additionalProperties: {
+//                     type: "object",
+//                     default: {},
+//                     additionalProperties: {
+//                         type: "boolean",
+//                         default: false,
+//                     },
+//                 },
+//             },
+//             disableAddonDiskSpaceModal: {
+//                 type: "object",
+//                 default: {},
+//                 additionalProperties: {
+//                     type: "object",
+//                     default: {},
+//                     additionalProperties: {
+//                         type: "boolean",
+//                         default: false,
+//                     },
+//                 },
+//             },
+//             useCdnCache: {
+//                 type: "boolean",
+//                 default: true,
+//             },
+//             dateLayout: {
+//                 type: "string",
+//                 default: "yyyy/mm/dd",
+//             },
+//             useLongDateFormat: {
+//                 type: "boolean",
+//                 default: false,
+//             },
+//             useDarkTheme: {
+//                 type: "boolean",
+//                 default: false,
+//             },
+//             allowSeasonalEffects: {
+//                 type: "boolean",
+//                 default: true,
+//             },
+//             msfsPackagePath: {
+//                 type: "string",
+//                 default: defaultCommunityDir(),
+//             },
+//             separateTempLocation: {
+//                 type: "boolean",
+//                 default: false,
+//             },
+//             tempLocation: {
+//                 type: "string",
+//                 default: defaultCommunityDir(),
+//             },
+//         },
+//     },
+//     cache: {
+//         type: "object",
+//         default: {},
+//         properties: {
+//             main: {
+//                 type: "object",
+//                 default: {},
+//                 properties: {
+//                     lastWindowX: {
+//                         type: "integer",
+//                     },
+//                     lastWindowY: {
+//                         type: "integer",
+//                     },
+//                     maximized: {
+//                         type: "boolean",
+//                         default: false,
+//                     },
+//                     lastShownSection: {
+//                         type: "string",
+//                         default: "",
+//                     },
+//                     lastShownAddonKey: {
+//                         type: "string",
+//                         default: "",
+//                     },
+//                 },
+//             },
+//         },
+//     },
+//     metaInfo: {
+//         type: "object",
+//         default: {},
+//         properties: {
+//             lastVersion: {
+//                 type: "string",
+//                 default: "",
+//             },
+//             lastLaunch: {
+//                 type: "integer",
+//                 default: 0,
+//             },
+//         },
+//     },
+// };
 
-const store = new Store({ schema, clearInvalidConfig: true });
+// const store = new Store({ schema, clearInvalidConfig: true });
 
 // Workaround to flush the defaults
-store.set('metaInfo.lastLaunch', Date.now());
+// store.set('metaInfo.lastLaunch', Date.now());
 
-export default store;
+// export default store;

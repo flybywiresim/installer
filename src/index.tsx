@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as Sentry from '@sentry/electron/renderer';
-import { BrowserTracing } from '@sentry/tracing';
+// import * as Sentry from '@sentry/electron/renderer';
+// import { BrowserTracing } from '@sentry/tracing';
 import { Provider } from 'react-redux';
 import App, { fetchLatestVersionNames } from './components/App';
 import { Configuration, InstallerConfiguration } from './utils/InstallerConfiguration';
 // import { ipcRenderer } from "electron";
 import { Directories } from "./utils/Directories";
-import channels from "./common/channels";
+// import channels from "./common/channels";
 import { MemoryRouter } from 'react-router-dom';
 import { store } from "./redux/store";
 import { setConfiguration } from './redux/features/configuration';

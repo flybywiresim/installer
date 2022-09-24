@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { setupInstallPath } from '../../actions/install-path.utils';
-import settings from "../../common/settings";
+// import settings from "../../common/settings";
 import { Directories } from "../../utils/Directories";
 import * as fs from "fs";
 
@@ -16,8 +16,8 @@ export const ErrorModal = (): JSX.Element => {
     const handleSelectPath = async () => {
         const path = await setupInstallPath();
         if (path) {
-            settings.set('mainSettings.liveriesPath', path);
-            settings.set('mainSettings.separateLiveriesPath', false);
+            // settings.set('mainSettings.liveriesPath', path);
+            // settings.set('mainSettings.separateLiveriesPath', false);
             handleClose();
         }
     };

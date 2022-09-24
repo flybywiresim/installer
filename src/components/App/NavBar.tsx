@@ -58,7 +58,11 @@ export const NavbarItem: FC<NavBarItemProps> = ({ to = '/', showNotification = f
     </NavLink>
 );
 
-export interface NavBarPublisherProps extends NavBarItemProps {
+export interface NavBarPublisherProps {
+    to: string;
+    showNotification?: boolean;
+    notificationColor?: string;
+    className?: string;
     publisher: Publisher;
 }
 

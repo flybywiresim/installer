@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import FbwTail from 'renderer/assets/FBW-Tail.svg';
+import FbwTail from '../../assets/FBW-Tail.svg';
 import * as packageInfo from "../../../package.json";
 import path from "path";
 import fs from "fs";

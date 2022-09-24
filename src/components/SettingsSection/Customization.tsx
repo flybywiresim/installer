@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import settings, { useSetting } from "../../common/settings";
+import React, {FC, useState} from 'react';
+// import settings, { useSetting } from "../../common/settings";
 import { Toggle } from '../Toggle';
 
 const SettingsItem: FC<{name: string, children: React.ReactNode}> = ({ name, children }) => (
@@ -19,7 +19,7 @@ const DarkThemeItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     const handleClick = () => {
         const newState = !value;
         setValue(newState);
-        settings.set('mainSettings.useDarkTheme', newState);
+        // settings.set('mainSettings.useDarkTheme', newState);
     };
 
     return (
@@ -36,7 +36,7 @@ const SeasonalEffectsItem = ({ value, setValue }: SettingItemProps<boolean>) => 
     const handleClick = () => {
         const newState = !value;
         setValue(newState);
-        settings.set('mainSettings.allowSeasonalEffects', newState);
+        // settings.set('mainSettings.allowSeasonalEffects', newState);
     };
 
     return (
@@ -50,8 +50,8 @@ const SeasonalEffectsItem = ({ value, setValue }: SettingItemProps<boolean>) => 
 };
 
 const index = (): JSX.Element => {
-    const [useDarkTheme, setUseDarkTheme] = useSetting<boolean>('mainSettings.useDarkTheme');
-    const [seasonalEffects, setSeasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
+    const [useDarkTheme, setUseDarkTheme] = useState<boolean>(true);
+    const [seasonalEffects, setSeasonalEffects] = useState<boolean>(false);
 
     return (
         <div>

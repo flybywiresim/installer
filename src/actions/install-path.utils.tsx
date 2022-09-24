@@ -1,4 +1,4 @@
-import settings from "../common/settings";
+// import settings from "../common/settings";
 import { Directories } from "../utils/Directories";
 // import { dialog } from "@electron/remote";
 

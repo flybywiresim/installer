@@ -1,11 +1,11 @@
-import settings, { useSetting } from '../../common/settings';
+// import settings, { useSetting } from '../../common/settings';
 import React, { createContext, FC, useContext, useState } from 'react';
 import { Dot, X } from 'react-bootstrap-icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import "./index.css";
 // @ts-ignore
-import changelog from './../../../../.github/CHANGELOG.yaml';
+import changelog from '../../../.github/CHANGELOG.yaml';
 import * as packageInfo from '../../../package.json';
 import { Button, ButtonType } from "../Button";
 import { CompactYesNoOptionToggle } from './AutostartDialog';
@@ -86,7 +86,7 @@ export const PromptModal: FC<PromptModalProps> = ({
     dontShowAgainSettingName,
     closeIfDontShowAgain = true,
 }) => {
-    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '', false);
+    const [dontShowAgain, setDontShowAgain] = useState<boolean>(false);
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
     const { popModal } = useModals();
@@ -157,7 +157,7 @@ export const AlertModal: FC<AlertModalProps> = ({
     dontShowAgainSettingName,
     closeIfDontShowAgain = true,
 }) => {
-    const [dontShowAgain, setDontShowAgain] = useSetting<boolean>(dontShowAgainSettingName ?? '', false);
+    const [dontShowAgain, setDontShowAgain] = useState<boolean>(false);
     const [checkMark, setCheckMark] = useState<boolean>(dontShowAgain);
 
     const { popModal } = useModals();
@@ -287,10 +287,10 @@ export const ModalContainer: FC = () => {
     const onVersionChanged = () => {
         const { showModal } = useModals();
 
-        if (packageInfo.version !== settings.get<string>('metaInfo.lastVersion')) {
-            settings.set('metaInfo.lastVersion', packageInfo.version);
-            showModal(<ChangelogModal/>);
-        }
+        // if (packageInfo.version !== settings.get<string>('metaInfo.lastVersion')) {
+        //     settings.set('metaInfo.lastVersion', packageInfo.version);
+        //     showModal(<ChangelogModal/>);
+        // }
     };
 
     onVersionChanged();
