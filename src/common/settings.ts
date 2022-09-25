@@ -197,7 +197,7 @@ const schema: Schema<Settings> = {
             },
             configDownloadUrl: {
                 type: "string",
-                default: "https://cdn.flybywiresim.com/installer/config/staging.json",
+                default: "https://cdn.flybywiresim.com/installer/config/production.json",
             },
         },
     },
