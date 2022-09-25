@@ -42,11 +42,17 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
 
     return (
         <>
-            <BackgroundServiceBanner publisher={publisher} addon={addon}
-                installState={dependencyAddonInstallState ?? addonInstallState}/>
-            <DownloadProgressBanner addon={addon} installState={dependencyAddonInstallState ?? addonInstallState}
+            <BackgroundServiceBanner
+                publisher={publisher}
+                addon={addon}
+                installState={dependencyAddonInstallState ?? addonInstallState}
+            />
+            <DownloadProgressBanner
+                addon={addon}
+                installState={dependencyAddonInstallState ?? addonInstallState}
                 download={dependencyAddonDownload ?? addonDownload}
-                isDependency={isInstallingDependency}/>
+                isDependency={isInstallingDependency}
+            />
         </>
     );
 };
@@ -100,7 +106,7 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
         const bgAccentColor = isRunning ? 'bg-utility-green' : 'bg-gray-500';
 
         const handleClickAutostart = () => showModal(
-            <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={false}/>,
+            <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={false} />,
         );
 
         const handleStartStop = async () => {
@@ -108,7 +114,7 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                 const md = `Are you sure you want to shut down **${addon.name}**?. All related functionality will no longer be available.`;
 
                 const doStop = await showModalAsync(
-                    <PromptModal title={"Are you sure?"} bodyText={md} confirmColor={ButtonType.Danger}/>,
+                    <PromptModal title={"Are you sure?"} bodyText={md} confirmColor={ButtonType.Danger} />,
                 );
 
                 if (doStop) {
@@ -125,9 +131,9 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                     <div className="flex gap-x-7 items-center">
                         {
                             isRunning ? (
-                                <Activity size={32} className={`text-utility-green fill-current animate-pulse`}/>
+                                <Activity size={32} className={`text-utility-green fill-current animate-pulse`} />
                             ) : (
-                                <Activity size={32} className={`text-gray-500 fill-current`}/>
+                                <Activity size={32} className={`text-gray-500 fill-current`} />
                             )
                         }
 
@@ -142,7 +148,7 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                             <span
                                 className="flex items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan cursor-pointer"
                                 onClick={handleClickAutostart}>
-                                <Gear size={22}/>
+                                <Gear size={22} />
                                 Autostart...
                             </span>
                         )}
@@ -152,7 +158,7 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
                     </div>
                 </StateContainer>
 
-                <ProgressBar className={bgAccentColor} value={100} animated={isRunning}/>
+                <ProgressBar className={bgAccentColor} value={100} animated={isRunning} />
             </div>
 
         );
@@ -181,14 +187,14 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
     let progressBarValue;
     switch (installState.status) {
         case InstallStatus.DownloadPrep:
-            stateIcon = <Download size={40} className="text-white mr-6"/>;
+            stateIcon = <Download size={40} className="text-white mr-6" />;
             stateText = <SmallStateText>Preparing update</SmallStateText>;
             progressBarBg = 'bg-cyan';
             progressBarValue = 0;
             break;
         case InstallStatus.Downloading: {
             if (download.progress.interrupted) {
-                stateIcon = <WifiOff size={42} className="text-white mr-6"/>;
+                stateIcon = <WifiOff size={42} className="text-white mr-6" />;
                 stateText = <SmallStateText>{`Download interrupted`}</SmallStateText>;
                 progressBarBg = 'bg-utility-red';
             } else {
@@ -197,7 +203,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
                         className="text-gray-300 ml-3">part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}</span>
                     : null;
 
-                stateIcon = <Download size={40} className="text-white mr-6"/>;
+                stateIcon = <Download size={40} className="text-white mr-6" />;
                 stateText = <SmallStateText>{`Downloading`}{part}</SmallStateText>;
                 progressBarBg = 'bg-cyan';
             }
@@ -208,7 +214,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
         }
         case InstallStatus.Decompressing:
         case InstallStatus.InstallingDependencyEnding:
-            stateIcon = <Download size={40} className="text-white mr-6"/>;
+            stateIcon = <Download size={40} className="text-white mr-6" />;
             stateText = <SmallStateText>Decompressing</SmallStateText>;
             progressBarBg = 'bg-cyan';
             progressBarValue = installState.percent;
@@ -225,7 +231,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
             progressBarValue = 100;
             break;
         case InstallStatus.DownloadRetry:
-            stateIcon = <Stopwatch size={40} className="text-white mr-6"/>;
+            stateIcon = <Stopwatch size={40} className="text-white mr-6" />;
             stateText = <SmallStateText>Retrying {download?.module.toLowerCase()} module</SmallStateText>;
             progressBarBg = 'bg-utility-amber';
             progressBarValue = 100;
@@ -236,7 +242,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
             progressBarValue = 100;
             break;
         case InstallStatus.DownloadCanceled:
-            stateIcon = <XOctagon size={40} className="text-white mr-6"/>;
+            stateIcon = <XOctagon size={40} className="text-white mr-6" />;
             stateText = <SmallStateText>Download canceled</SmallStateText>;
             progressBarBg = 'bg-utility-amber';
             progressBarValue = 100;
@@ -319,7 +325,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
                 )}
             </StateContainer>
 
-            <ProgressBar className={progressBarBg} value={progressBarValue}/>
+            <ProgressBar className={progressBarBg} value={progressBarValue} />
         </div>
     );
 };

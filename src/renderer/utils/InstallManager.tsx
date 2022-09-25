@@ -180,7 +180,7 @@ export class InstallManager {
 
         if (runningExternalApps.length > 0) {
             const doInstall = await showModal(
-                <CannotInstallDialog addon={addon} publisher={publisher}/>,
+                <CannotInstallDialog addon={addon} publisher={publisher} />,
             );
 
             if (!doInstall) {
@@ -307,7 +307,7 @@ export class InstallManager {
                 <PromptModal
                     title="Incompatible Add-ons Found!"
                     bodyText={
-                        <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons}/>
+                        <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons} />
                     }
                     cancelText="No"
                     confirmText="Yes"
@@ -341,7 +341,7 @@ export class InstallManager {
         if (Number.isFinite(requiredDiskSpace) && Number.isFinite(availableDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
             const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo}
                 availableDiskSpace={availableDiskSpace}
-                dontShowAgainSettingName={diskSpaceModalSettingString}/>);
+                dontShowAgainSettingName={diskSpaceModalSettingString} />);
 
             if (!continueInstall) {
                 startResetStateTimer();
@@ -591,7 +591,7 @@ export class InstallManager {
 
                 if (!isAutoStartEnabled && !doNotAskAgain) {
                     await showModal(
-                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true}/>,
+                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true} />,
                     );
                 }
             }
@@ -611,7 +611,7 @@ export class InstallManager {
                 startResetStateTimer();
 
                 Sentry.captureException(e);
-                await showModal(<ErrorDialog error={e}/>);
+                await showModal(<ErrorDialog error={e} />);
 
                 return InstallResult.Failure;
             }
