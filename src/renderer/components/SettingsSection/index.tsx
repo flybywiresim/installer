@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import GeneralSettings from 'renderer/components/SettingsSection/General';
 import { Redirect, Route } from "react-router-dom";
 import { AboutSettings } from "renderer/components/SettingsSection/About";
 import { SideBar, SideBarLink, SideBarTitle } from "renderer/components/SideBar";
 import CustomizationSettings from './Customization';
 import DownloadSettings from './Download';
+import DeveloperSettings from './Developer';
 import settings from 'common/settings';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from '../Button';
@@ -34,6 +35,8 @@ export const ResetButton: FC<InstallButtonProps> = ({
 export const SettingsSection = (): JSX.Element => {
     const { showModal } = useModals();
 
+    const [showDevSettings, setShowDevSettings] = useState(false);
+
     const handleReset = async () => {
         showModal(
             <PromptModal
@@ -53,7 +56,13 @@ export const SettingsSection = (): JSX.Element => {
         <div className="w-full bg-navy-lighter text-white overflow-hidden">
             <div className="w-full h-full flex flex-row items-stretch">
                 <SideBar className="flex-shrink-0">
-                    <SideBarTitle>Settings</SideBarTitle>
+                    <div onClick={(event) => {
+                        if (event.ctrlKey && event.altKey) {
+                            setShowDevSettings((old) => !old);
+                        }
+                    }}>
+                        <SideBarTitle>Settings</SideBarTitle>
+                    </div>
 
                     <SideBarLink to="/settings/general">
                         <span className="text-3xl font-manrope font-semibold">
@@ -72,6 +81,14 @@ export const SettingsSection = (): JSX.Element => {
                     {/*        Customization*/}
                     {/*    </span>*/}
                     {/*</SideBarLink>*/}
+
+                    {showDevSettings && (
+                        <SideBarLink to="/settings/developer">
+                            <span className="text-3xl font-manrope font-semibold">
+                            Developer
+                            </span>
+                        </SideBarLink>
+                    )}
 
                     <SideBarLink to="/settings/about">
                         <span className="text-3xl font-manrope font-semibold">
@@ -101,6 +118,12 @@ export const SettingsSection = (): JSX.Element => {
                     <Route path="/settings/customization">
                         <CustomizationSettings />
                     </Route>
+
+                    {showDevSettings && (
+                        <Route path="/settings/developer">
+                            <DeveloperSettings />
+                        </Route>
+                    )}
 
                     <Route path="/settings/about">
                         <AboutSettings />

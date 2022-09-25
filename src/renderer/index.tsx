@@ -92,13 +92,14 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
         }
     }
 
-    console.log(config);
+    console.log("Using this configuration:", config);
+
     Directories.removeAllTemp();
     ReactDOM.render(
         <Provider store={store}>
             <MemoryRouter>
                 <ModalProvider>
-                    <App />
+                    <App/>
                 </ModalProvider>
             </MemoryRouter>
         </Provider>,
