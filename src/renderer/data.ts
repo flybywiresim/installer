@@ -148,7 +148,6 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
-                    incompatibleAddons: [],
                     myInstallPage: {
                         links: [
                             {
