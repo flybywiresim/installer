@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: '16.9'
 
+      - name: Create .sentrydsn file
+        run: |
+          echo ${{ secrets.SENTRY_DSN_INSTALLER }} >> ./extraResources/.sentrydsn
+
       - name: Install NPM dependencies
         run: npm ci
 
