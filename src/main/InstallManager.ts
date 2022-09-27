@@ -23,7 +23,7 @@ export class InstallManager {
         const abortController = new AbortController();
 
         const fragmenterContext = new FragmenterContext({ useConsoleLog: true }, abortController.signal);
-        const fragmenterInstaller = new FragmenterInstaller(fragmenterContext, url, destDir, { temporaryDirectory: tempDir });
+        const fragmenterInstaller = new FragmenterInstaller(fragmenterContext, url, destDir, { temporaryDirectory: tempDir, forceManifestCacheBust: true });
 
         const forwardFragmenterInstallerEvent = (event: keyof FragmenterInstallerEvents) => {
             fragmenterInstaller.on(event, (...args: unknown[]) => {
