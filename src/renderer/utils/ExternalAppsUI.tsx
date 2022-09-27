@@ -39,7 +39,7 @@ export class ExternalAppsUI {
 
         if (runningExternalApps.length > 0) {
             return await showModal(
-                <CannotInstallDialog addon={addon} publisher={publisher}/>,
+                <CannotInstallDialog addon={addon} publisher={publisher} />,
             );
         }
 
