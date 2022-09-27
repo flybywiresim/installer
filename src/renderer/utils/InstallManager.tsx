@@ -6,13 +6,19 @@ import {
     clearDownloadInterrupted,
     deleteDownload,
     registerNewDownload,
-    setDownloadInterrupted, setDownloadModuleIndex,
+    setDownloadInterrupted,
+    setDownloadModuleIndex,
     updateDownloadProgress,
 } from "renderer/redux/features/downloads";
 import { Directories } from "renderer/utils/Directories";
 import fs from "fs-extra";
 import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
-import { FragmenterContextEvents, FragmenterInstallerEvents, FragmenterUpdateChecker } from "@flybywiresim/fragmenter";
+import {
+    FragmenterContextEvents,
+    FragmenterInstallerEvents,
+    FragmenterOperation,
+    FragmenterUpdateChecker,
+} from "@flybywiresim/fragmenter";
 import settings from "common/settings";
 import { store } from "renderer/redux/store";
 import { InstallState, setInstallStatus } from "renderer/redux/features/installStatus";
@@ -349,6 +355,11 @@ export class InstallManager {
                     case 'phaseChange': {
                         const [phase] = args as FragmenterEventArguments<typeof event>;
 
+                        if (phase.op === FragmenterOperation.InstallFinish) {
+                            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
+                            return;
+                        }
+
                         if ('moduleIndex' in phase) {
                             store.dispatch(
                                 setDownloadModuleIndex({
@@ -421,6 +432,10 @@ export class InstallManager {
                         const [module] = args as FragmenterEventArguments<typeof event>;
 
                         console.log("Started moving over module", module.name);
+
+                        if (module.name === 'full') {
+                            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
+                        }
 
                         break;
                     }
