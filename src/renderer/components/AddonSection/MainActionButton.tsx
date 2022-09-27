@@ -49,6 +49,7 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
             );
         case InstallStatus.InstallingDependency:
         case InstallStatus.Downloading:
+        case InstallStatus.Decompressing:
             return (
                 <SidebarButton type={ButtonType.Danger} onClick={onCancel}>
                     Cancel
@@ -56,7 +57,6 @@ export const MainActionButton: FC<ActiveInstallButtonProps> = ({
             );
         case InstallStatus.DownloadPending:
         case InstallStatus.DownloadPrep:
-        case InstallStatus.Decompressing:
         case InstallStatus.DownloadEnding:
         case InstallStatus.InstallingDependencyEnding:
             return (
