@@ -9,6 +9,32 @@
 
 
 releases:
+  - name: 3.3.0
+    changes:
+      - title: New backend system providing more reliable downloads and less RAM usage
+        categories: [Core]
+        authors: [holland]
+      - title: Package/install size checks before installing or updating an addon
+        categories: [Core]
+        authors: [holland]
+      - title: Improved install progress UI to show more relevant information
+        categories: [UI]
+        authors: [holland]
+      - title: Seamless updates of installer content
+        categories: [Core]
+        authors: [holland, Mav]
+      - title: Uninstalling will no longer freeze the app for a short amount of time
+        categories: [Core]
+        authors: [holland]
+      - title: Errors now show a code that can be given to support for quick diagnostic
+        categories: [Core]
+        authors: [holland]
+      - title: External apps that the installer can close can now be stopped from the modal that appears if running programs block an install or update
+        categories: [Core]
+        authors: [holland]
+      - title: SimBridge no longer required to be closed when updating the A32NX
+        categories: [Addons]
+        authors: [holland]
   - name: 3.2.2
     changes:
       - title: Update dependency to mitigate potential security issue
