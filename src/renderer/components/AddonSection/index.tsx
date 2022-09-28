@@ -312,7 +312,7 @@ export const AddonSection = (): JSX.Element => {
         if (isInstalling && !isFinishingDependencyInstall) {
             InstallManager.cancelDownload(selectedAddon);
         }
-    }, [isInstalling]);
+    }, [selectedAddon, isInstalling]);
 
     const UninstallButton = (): JSX.Element => {
         switch (status) {
