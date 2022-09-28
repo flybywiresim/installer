@@ -94,6 +94,12 @@ interface Settings {
         msfsPackagePath: string,
         configDownloadUrl: string,
     },
+    advanced: {
+        showAll: boolean,
+        disableHardwareAcceleration: boolean,
+        disableGpuSandbox: boolean,
+        noSandbox: boolean,
+    }
     cache: {
         main: {
             lastWindowX: number,
@@ -198,6 +204,26 @@ const schema: Schema<Settings> = {
             configDownloadUrl: {
                 type: "string",
                 default: "https://cdn.flybywiresim.com/installer/config/production.json",
+            },
+        },
+    },
+    advanced: {
+        type: "object",
+        default: {},
+        properties: {
+            showAll: {
+                type: "boolean",
+                default: false,
+            },
+            disableHardwareAcceleration: {
+                type: "boolean",
+                default: false,
+            },
+            disableGpuSandbox: {
+                type: "boolean",
+            },
+            noSandbox: {
+                type: "boolean",
             },
         },
     },

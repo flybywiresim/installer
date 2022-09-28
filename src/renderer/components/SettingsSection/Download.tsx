@@ -1,20 +1,8 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { setupInstallPath, setupTempLocation } from 'renderer/actions/install-path.utils';
 import settings, { useSetting } from "common/settings";
 import { Toggle } from '../Toggle';
-
-const SettingsItem: FC<{name: string}> = ({ name, children }) => (
-    <div className="flex flex-row items-center justify-between py-3.5">
-        {/* TODO: Remove this styling later */}
-        <p className="m-0">{name}</p>
-        {children}
-    </div>
-);
-
-interface SettingItemProps<T> {
-    value: T;
-    setValue: (value: T) => void;
-}
+import { SettingItemProps, SettingsItem } from './General';
 
 const InstallPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => {
     const handleClick = async () => {

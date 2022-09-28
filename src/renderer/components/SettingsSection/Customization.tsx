@@ -1,19 +1,7 @@
-import React, { FC } from 'react';
+import React from 'react';
 import settings, { useSetting } from "common/settings";
 import { Toggle } from '../Toggle';
-
-const SettingsItem: FC<{name: string}> = ({ name, children }) => (
-    <div className="flex flex-row items-center justify-between py-3.5">
-        {/* TODO: Remove this styling later */}
-        <p className="m-0">{name}</p>
-        {children}
-    </div>
-);
-
-interface SettingItemProps<T> {
-    value: T;
-    setValue: (value: T) => void;
-}
+import { SettingItemProps, SettingsItem } from './General';
 
 const DarkThemeItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     const handleClick = () => {
