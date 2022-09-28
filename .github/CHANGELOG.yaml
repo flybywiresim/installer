@@ -9,11 +9,16 @@
 
 
 releases:
-  - name: 3.2.2
+  - name: 3.2.3
     changes:
       - title: Add advanced settings (e.g. disable hardware acceleration)
         categories: [Core]
         authors: [FoxtrotSierra]
+  - name: 3.2.2
+    changes:
+      - title: Update dependency to mitigate potential security issue
+        categories: [Core]
+        authors: [holland]
   - name: 3.2.1
     changes:
       - title: Fix detection of A32NX experimental version as development versions

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { TypedAction } from "../store";
 import { Configuration } from "renderer/utils/InstallerConfiguration";
 
-const initialState: Configuration = { publishers: [] };
+const initialState: Configuration = { version: 0, publishers: [] };
 
 export const configurationSlice = createSlice({
     name: "configuration",

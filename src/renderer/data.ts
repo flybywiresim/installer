@@ -1,6 +1,7 @@
 import { Configuration } from "./utils/InstallerConfiguration";
 
 export const defaultConfiguration: Configuration = {
+    version: 1,
     publishers: [
         {
             name: 'FlyByWire Simulations',

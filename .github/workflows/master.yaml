@@ -19,6 +19,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16.9'
+      - name: Create .sentrydsn file
+        run: |
+          echo ${{ secrets.SENTRY_DSN_INSTALLER }} >> ./extraResources/.sentrydsn
       - name: Set BUILT_DATE_TIME
         run: echo "BUILT_DATE_TIME=$(date -u -Iseconds)" >> $GITHUB_ENV
       - name: Install NPM dependencies
