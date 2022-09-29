@@ -9,6 +9,14 @@
 
 
 releases:
+  - name: 3.3.1
+    changes:
+      - title: Do not fail install if free disk space check fails
+        categories: [Core]
+        authors: [holland]
+      - title: Fix Sentry DSN key in production releases
+        categories: [Core]
+        authors: [holland]
   - name: 3.3.0
     changes:
       - title: New backend system providing more reliable downloads and less RAM usage
