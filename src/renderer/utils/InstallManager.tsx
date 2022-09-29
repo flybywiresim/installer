@@ -270,12 +270,17 @@ export class InstallManager {
 
         // Confirm download size and required disk space with user
         const requiredDiskSpace = updateInfo.requiredDiskSpace;
-        const availableDiskSpace = (await checkDiskSpace(destDir)).free;
+        let availableDiskSpace;
+        try {
+            availableDiskSpace = (await checkDiskSpace(destDir)).free;
+        } catch (e) {
+            console.warn('Could not check free disk space.');
+        }
 
         const diskSpaceModalSettingString = `mainSettings.disableAddonDiskSpaceModal.${publisher.key}.${addon.key}`;
         const dontAsk = settings.get(diskSpaceModalSettingString);
 
-        if (Number.isFinite(requiredDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
+        if (Number.isFinite(requiredDiskSpace) && Number.isFinite(availableDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
             const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo} availableDiskSpace={availableDiskSpace} dontShowAgainSettingName={diskSpaceModalSettingString} />);
 
             if (!continueInstall) {
