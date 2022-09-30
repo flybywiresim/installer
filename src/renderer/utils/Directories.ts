@@ -80,8 +80,12 @@ export class Directories {
                 const fullPath = Directories.inTempLocation(dir.name);
 
                 console.log('[CLEANUP] Removing', fullPath);
-                fs.removeSync(fullPath);
-                console.log('[CLEANUP] Removed', fullPath);
+                try {
+                    fs.removeSync(fullPath);
+                    console.log('[CLEANUP] Removed', fullPath);
+                } catch (e) {
+                    console.error('[CLEANUP] Could not remove', fullPath, e);
+                }
             });
         console.log('[CLEANUP] Finished removing all temp directories');
     }
