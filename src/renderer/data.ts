@@ -148,28 +148,7 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
-                    incompatibleAddons: [
-                        {
-                            title: 'LVFR A321neo FBW A32NX Compatibility Mod',
-                            creator: 'TJC.Aviation',
-                            description: "REMOVE this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
-                        },
-                        {
-                            title: '[MOD] Mugz FBW A32NX Dev',
-                            creator: "Mugz",
-                            description: "REMOVE this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
-                        },
-                        {
-                            title: '[MOD] Mugz FBW A32NX Stable',
-                            creator: "Mugz",
-                            description: "REMOVE this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
-                        },
-                        {
-                            title: 'Toolbar Pushback',
-                            creator: "AmbitiousPilots",
-                            description: "This add-on sometimes causes performance issues and also prevents the A32NX from taxiing. Consider removing it in case of issues.",
-                        },
-                    ],
+                    incompatibleAddons: [],
                     myInstallPage: {
                         links: [
                             {
