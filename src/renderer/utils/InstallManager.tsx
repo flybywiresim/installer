@@ -283,13 +283,13 @@ export class InstallManager {
                         for (const item of addon.incompatibleAddons) {
                             if ((!item.title || manifest.title === item.title) &&
                                 (!item.creator || manifest.creator === item.creator) &&
-                                (!item.package_version || manifest.package_version === item.package_version)
+                                (!item.packageVersion || manifest.package_version === item.packageVersion)
                             ) {
                                 console.log("!!! %s: %s", manifest.title, item.description);
                                 incompatibleAddons.push({
                                     title: item.title,
                                     creator: item.creator,
-                                    package_version: item.package_version,
+                                    packageVersion: item.packageVersion,
                                     folder: entry,
                                     description: item.description,
                                 });
