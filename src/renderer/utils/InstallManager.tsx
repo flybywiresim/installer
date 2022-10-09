@@ -281,11 +281,16 @@ export class InstallManager {
                     if (dirEntries.includes(manifestFileName)) {
                         const manifest = JSON.parse(fs.readFileSync(path.join(filePath, manifestFileName), 'utf8'));
                         for (const item of addon.incompatibleAddons) {
+                            // this checks the configuration item properties (if set) against the manifest.json file
+                            // entry property values. If all properties match, the add-on is considered incompatible.
+                            // Future improvement would be to allow for regular expressions in the configuration item and
+                            // a more sophisticated version comparison.
                             if ((!item.title || manifest.title === item.title) &&
                                 (!item.creator || manifest.creator === item.creator) &&
                                 (!item.packageVersion || manifest.package_version === item.packageVersion)
                             ) {
-                                console.log("!!! %s: %s", manifest.title, item.description);
+                                // Also write this to the log as this info might be useful for support.
+                                console.log("Incompatible Add-On found: %s: %s", manifest.title, item.description);
                                 incompatibleAddons.push({
                                     title: item.title,
                                     creator: item.creator,
