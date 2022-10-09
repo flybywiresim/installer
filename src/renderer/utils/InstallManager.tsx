@@ -40,6 +40,8 @@ import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
 
+const semverSatisfies = require('semver/functions/satisfies');
+
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<(FragmenterInstallerEvents & FragmenterContextEvents)[K]>
 
 export enum InstallResult {
@@ -283,11 +285,11 @@ export class InstallManager {
                         for (const item of addon.incompatibleAddons) {
                             // this checks the configuration item properties (if set) against the manifest.json file
                             // entry property values. If all properties match, the add-on is considered incompatible.
-                            // Future improvement would be to allow for regular expressions in the configuration item and
-                            // a more sophisticated version comparison.
+                            // packageVersion syntax follows: https://www.npmjs.com/package/semver
+                            // Future improvement would be to allow for regular expressions in the configuration item
                             if ((!item.title || manifest.title === item.title) &&
                                 (!item.creator || manifest.creator === item.creator) &&
-                                (!item.packageVersion || manifest.package_version === item.packageVersion)
+                                (!item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion))
                             ) {
                                 // Also write this to the log as this info might be useful for support.
                                 console.log("Incompatible Add-On found: %s: %s", manifest.title, item.description);
