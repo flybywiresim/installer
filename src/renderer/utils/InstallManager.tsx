@@ -1,5 +1,5 @@
 import React from "react";
-import { Addon, AddonIncompatibleAddon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
+import { Addon, AddonTrack, Publisher } from "renderer/utils/InstallerConfiguration";
 import { PromptModal } from "renderer/components/Modal";
 import { ButtonType } from "renderer/components/Button";
 import {
@@ -39,8 +39,7 @@ import * as Sentry from '@sentry/electron/renderer';
 import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
-
-const semverSatisfies = require('semver/functions/satisfies');
+import { IncompatibleAddOnsCheck } from "renderer/utils/IncompatibleAddOnsCheck";
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<(FragmenterInstallerEvents & FragmenterContextEvents)[K]>
 
@@ -265,51 +264,8 @@ export class InstallManager {
             }
         }
 
-        // Find incompatible add-ons
-        // This iterates through the first level of folders of the  MSFS Community folder looking for the manifest.json
-        // file. It compares the manifest.json file content with the configured incompatible add-ons (data.ts) and if it
-        // finds one or more matches, it will issue a warning.
-        console.log('Searching incompatible add-ons');
-        const manifestFileName = 'manifest.json';
-        const comDir = Directories.communityLocation();
-        const incompatibleAddons: AddonIncompatibleAddon[] = [];
-        try {
-            const addonFolders = fs.readdirSync(comDir);
-            for (const entry of addonFolders) {
-                const filePath = path.join(comDir, entry);
-                const stat = fs.statSync(filePath);
-                if (stat.isDirectory()) {
-                    const dirEntries = fs.readdirSync(filePath);
-                    if (dirEntries.includes(manifestFileName)) {
-                        const manifest = JSON.parse(fs.readFileSync(path.join(filePath, manifestFileName), 'utf8'));
-                        for (const item of addon.incompatibleAddons) {
-                            // this checks the configuration item properties (if set) against the manifest.json file
-                            // entry property values. If all properties match, the add-on is considered incompatible.
-                            // packageVersion syntax follows: https://www.npmjs.com/package/semver
-                            // Future improvement would be to allow for regular expressions in the configuration item
-                            if ((!item.title || manifest.title === item.title) &&
-                                (!item.creator || manifest.creator === item.creator) &&
-                                (!item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion))
-                            ) {
-                                // Also write this to the log as this info might be useful for support.
-                                console.log("Incompatible Add-On found: %s: %s", manifest.title, item.description);
-                                incompatibleAddons.push({
-                                    title: item.title,
-                                    creator: item.creator,
-                                    packageVersion: item.packageVersion,
-                                    folder: entry,
-                                    description: item.description,
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (e) {
-            console.error("Error searching incompatible add-ons in %s: %s", comDir, e);
-        }
+        const incompatibleAddons = await IncompatibleAddOnsCheck.checkIncompatibleAddOns(addon);
         if (incompatibleAddons.length > 0) {
-            console.log('Incompatible add-ons found');
             const continueInstall = await showModal(
                 <PromptModal
                     title="Incompatible Add-ons Found!"
