@@ -9,6 +9,28 @@
 
 
 releases:
+  - name: 3.3.3
+    changes:
+      - title: Remove temporary folders from previous installers
+        categories: [Logic]
+        authors: [holland]
+      - title: Improve the clarity of some error messages
+        categories: [UI]
+        authors: [holland]
+      - title: Minor progress UI fixes
+        categories: [UI]
+        authors: [holland]
+      - title: Fix some state management during install process
+        categories: [Core]
+        authors: [holland]
+      - title: Bump fragmenter to v0.7.2
+        categories: [Core]
+        authors: [holland]
+  - name: 3.3.2
+    changes:
+      - title: Do not crash if some temporary folders cannot be removed
+        categories: [Core]
+        authors: [holland]
   - name: 3.3.1
     changes:
       - title: Do not fail install if free disk space check fails
