@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { AlertModal } from "renderer/components/Modal/index";
-import { ExclamationTriangle, Hdd } from "react-bootstrap-icons";
+import { ExclamationTriangle, Hdd, Shield } from "react-bootstrap-icons";
 import { shell } from "electron";
 import { FragmenterError, FragmenterErrorCode } from "@flybywiresim/fragmenter";
 import { SentrySessionCard } from "renderer/components/SentrySessionCard";
@@ -27,6 +27,15 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
     let errorVisualisation = null;
     if (fragmenterError) {
         switch (fragmenterError.code) {
+            case FragmenterErrorCode.PermissionsError:
+                errorVisualisation = (
+                    <ErrorVisualisationBox icon={<Shield className="text-utility-red" size={36} />}>
+                        <span className="text-4xl font-bold font-manrope">Windows permissions error</span>
+
+                        <span className="text-2xl">Make sure the install folder has appropriate permissions.</span>
+                    </ErrorVisualisationBox>
+                );
+                break;
             case FragmenterErrorCode.NoSpaceOnDevice:
                 errorVisualisation = (
                     <ErrorVisualisationBox icon={<Hdd className="text-utility-red" size={36} />}>
