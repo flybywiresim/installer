@@ -14,7 +14,7 @@ import { Directories } from "renderer/utils/Directories";
 import fs from "fs-extra";
 import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
 import {
-    FragmenterContextEvents,
+    FragmenterContextEvents, FragmenterError,
     FragmenterInstallerEvents,
     FragmenterOperation,
     FragmenterUpdateChecker,
@@ -248,6 +248,11 @@ export class InstallManager {
 
                     if (result === InstallResult.Failure) {
                         console.error('Error while installing dependency - aborting');
+
+                        setErrorState();
+                        startResetStateTimer();
+
+                        return InstallResult.Failure;
                     } else if (result === InstallResult.Cancelled) {
                         console.log('Dependency install cancelled, canceling main addon too.');
 
@@ -316,12 +321,12 @@ export class InstallManager {
         console.log(`tempDir:    ${tempDir}`);
         console.log('---');
 
-        // Create dest dir if it doesn't exist
-        if (!fs.existsSync(destDir)) {
-            fs.mkdirSync(destDir);
-        }
-
         try {
+            // Create dest dir if it doesn't exist
+            if (!fs.existsSync(destDir)) {
+                fs.mkdirSync(destDir);
+            }
+
             let lastPercent = 0;
 
             this.setCurrentInstallState(addon, { status: InstallStatus.DownloadPrep });
@@ -527,6 +532,8 @@ export class InstallManager {
                 }
             }
         } catch (e) {
+            const isFragmenterError = FragmenterError.isFragmenterError(e);
+
             if (signal.aborted) {
                 console.warn('Download was cancelled');
 
@@ -539,10 +546,11 @@ export class InstallManager {
                 console.error(e);
 
                 setErrorState();
-                startResetStateTimer();
 
                 Sentry.captureException(e);
-                await showModal(<ErrorDialog error={e}/>);
+                await showModal(<ErrorDialog error={isFragmenterError ? e : FragmenterError.createFromError(e)} />);
+
+                startResetStateTimer();
 
                 return InstallResult.Failure;
             }
