@@ -5,6 +5,11 @@ import settings from "common/settings";
 
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
+const TEMP_DIRECTORY_PREFIXES_FOR_CLEANUP = [
+    'flybywire_current_install',
+    TEMP_DIRECTORY_PREFIX,
+];
+
 const MSFS_APPDATA_PATH = 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState\\packages\\';
 const MSFS_STEAM_PATH = 'Microsoft Flight Simulator\\Packages';
 
@@ -85,10 +90,12 @@ export class Directories {
             return;
         }
 
-        fs.readdirSync(Directories.tempLocation(), { withFileTypes: true })
-            .filter(dirEnt => dirEnt.isDirectory())
-            .filter(dirEnt => dirEnt.name.startsWith(TEMP_DIRECTORY_PREFIX))
-            .forEach(dir => {
+        try {
+            const dirents = fs.readdirSync(Directories.tempLocation(), { withFileTypes: true })
+                .filter(dirEnt => dirEnt.isDirectory())
+                .filter(dirEnt => TEMP_DIRECTORY_PREFIXES_FOR_CLEANUP.some((it) => dirEnt.name.startsWith(it)));
+
+            for (const dir of dirents) {
                 const fullPath = Directories.inTempLocation(dir.name);
 
                 console.log('[CLEANUP] Removing', fullPath);
@@ -98,8 +105,13 @@ export class Directories {
                 } catch (e) {
                     console.error('[CLEANUP] Could not remove', fullPath, e);
                 }
-            });
-        console.log('[CLEANUP] Finished removing all temp directories');
+            }
+
+            console.log('[CLEANUP] Finished removing all temp directories');
+        } catch (e) {
+            console.error('[CLEANUP] Could not scan folder', Directories.tempLocation(), e);
+        }
+
     }
 
     static removeAlternativesForAddon(addon: Addon): void {
