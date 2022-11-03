@@ -55,6 +55,13 @@ Sentry.init({
         new BrowserTracing(),
     ],
     tracesSampleRate: 1.0,
+    beforeBreadcrumb: (event) => {
+        if (event.category === 'fetch' && event.data.url.startsWith('http://localhost')) {
+            return null;
+        }
+
+        return event;
+    },
     // sampleRate: 0.1,
 });
 
