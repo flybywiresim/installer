@@ -237,6 +237,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
             progressBarValue = 100;
             break;
         case InstallStatus.DownloadError:
+            stateIcon = <XOctagon size={40} className="text-white mr-6"/>;
             stateText = <SmallStateText>Failed to install</SmallStateText>;
             progressBarBg = 'bg-utility-red';
             progressBarValue = 100;
