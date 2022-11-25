@@ -9,7 +9,7 @@
 
 
 releases:
-  - - name: 3.2.3
+  - - name: 3.3.4
       changes:
         - title: Added check for incompatible add-ons
           categories: [ Addons ]
