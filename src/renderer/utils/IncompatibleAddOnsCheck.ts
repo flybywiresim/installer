@@ -43,7 +43,7 @@ export class IncompatibleAddOnsCheck {
 
                             if (titleMatches && creatorMatches && packageVersionTargeted) {
                                 // Also write this to the log as this info might be useful for support.
-                                console.log("Incompatible Add-On found: %s: %s", manifest.title, item.description);
+                                console.log(`Incompatible Add-On found: ${manifest.title}: ${item.description}`);
 
                                 incompatibleAddons.push({
                                     title: item.title,

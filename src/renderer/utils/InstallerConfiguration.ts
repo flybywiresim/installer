@@ -154,21 +154,37 @@ export interface AddonDependency {
 }
 
 /**
- * fields from the addon's manifest.json
+ * Fields from the addon's manifest.json
  */
 export interface AddonIncompatibleAddon {
     /**
-     * Fields from the addon's manifest.json
+     * Field from the addon's manifest.json
      * This need to be configured identically to the addon's manifest.json
      * Leaving a field empty ignores it for the search.
      */
     title?: string,
+
+    /**
+     * Field from the addon's manifest.json
+     * This need to be configured identically to the addon's manifest.json
+     * Leaving a field empty ignores it for the search.
+     */
     creator?: string,
+
+    /**
+     * Field from the addon's manifest.json
+     * This need to be configured identically to the addon's manifest.json
+     * Leaving a field empty ignores it for the search.
+     *
+     * This supports semver notation.
+     */
     packageVersion?: string,
+
     /**
      * folder name in community - added later to show the user the corresponding folder name - not used for searching
      */
     folder?: string,
+
     /**
      * Description of the nature of the incompatibility to display to the user in a warning dialog
      */
