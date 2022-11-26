@@ -14,29 +14,37 @@ export class IncompatibleAddOnsCheck {
      */
     static async checkIncompatibleAddOns(addon: Addon): Promise<AddonIncompatibleAddon[]> {
         console.log('Searching incompatible add-ons');
+
         const incompatibleAddons: AddonIncompatibleAddon[] = [];
         const manifestFileName = 'manifest.json';
         const comDir = Directories.communityLocation();
+
         try {
             const addonFolders = fs.readdirSync(comDir);
+
             for (const entry of addonFolders) {
                 const filePath = path.join(comDir, entry);
                 const stat = fs.statSync(filePath);
+
                 if (stat.isDirectory()) {
                     const dirEntries = fs.readdirSync(filePath);
+
                     if (dirEntries.includes(manifestFileName)) {
                         const manifest = JSON.parse(fs.readFileSync(path.join(filePath, manifestFileName), 'utf8'));
+
                         for (const item of addon.incompatibleAddons) {
                             // This checks the configuration item properties (if set) against the manifest.json file
                             // entry property values. If all properties match, the add-on is considered incompatible.
                             // packageVersion syntax follows: https://www.npmjs.com/package/semver
                             // Future improvement would be to allow for regular expressions in the configuration item.
-                            if ((!item.title || manifest.title === item.title) &&
-                                (!item.creator || manifest.creator === item.creator) &&
-                                (!item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion))
-                            ) {
+                            const titleMatches = !item.title || manifest.title === item.title;
+                            const creatorMatches = !item.creator || manifest.creator === item.creator;
+                            const packageVersionTargeted = !item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion);
+
+                            if (titleMatches && creatorMatches && packageVersionTargeted) {
                                 // Also write this to the log as this info might be useful for support.
                                 console.log("Incompatible Add-On found: %s: %s", manifest.title, item.description);
+
                                 incompatibleAddons.push({
                                     title: item.title,
                                     creator: item.creator,
@@ -52,11 +60,13 @@ export class IncompatibleAddOnsCheck {
         } catch (e) {
             console.error("Error searching incompatible add-ons in %s: %s", comDir, e);
         }
+
         if (incompatibleAddons.length > 0) {
             console.log('Incompatible add-ons found');
         } else {
             console.log('No incompatible add-ons found');
         }
+
         return incompatibleAddons;
     }
 }
