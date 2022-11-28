@@ -13,22 +13,34 @@ export class Directories {
         return path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, '');
     }
 
-    static community(): string {
-        return settings.get('mainSettings.msfsPackagePath') as string;
+    static communityLocation(): string {
+        return settings.get('mainSettings.msfsCommunityPath') as string;
     }
 
-    static inCommunity(targetDir: string): string {
-        return path.join(Directories.community(), this.sanitize(targetDir));
+    static inCommunityLocation(targetDir: string): string {
+        return path.join(Directories.communityLocation(), this.sanitize(targetDir));
     }
 
     static inCommunityPackage(addon: Addon, targetDir: string): string {
-        const baseDir = this.inCommunity(this.sanitize(addon.targetDirectory));
+        const baseDir = this.inCommunityLocation(this.sanitize(addon.targetDirectory));
+        return path.join(baseDir, this.sanitize(targetDir));
+    }
 
+    static installLocation(): string {
+        return settings.get('mainSettings.installPath') as string;
+    }
+
+    static inInstallLocation(targetDir: string): string {
+        return path.join(Directories.installLocation(), this.sanitize(targetDir));
+    }
+
+    static inInstallPackage(addon: Addon, targetDir: string): string {
+        const baseDir = this.inInstallLocation(this.sanitize(addon.targetDirectory));
         return path.join(baseDir, this.sanitize(targetDir));
     }
 
     static tempLocation(): string {
-        return settings.get('mainSettings.separateTempLocation') ? settings.get('mainSettings.tempLocation') as string : settings.get('mainSettings.msfsPackagePath') as string;
+        return settings.get('mainSettings.separateTempLocation') ? settings.get('mainSettings.tempLocation') as string : settings.get('mainSettings.installPath') as string;
     }
 
     static inTempLocation(targetDir: string): string {
@@ -92,7 +104,7 @@ export class Directories {
 
     static removeAlternativesForAddon(addon: Addon): void {
         addon.alternativeNames?.forEach(altName => {
-            const altDir = Directories.inCommunity(altName);
+            const altDir = Directories.inInstallLocation(altName);
 
             if (fs.existsSync(altDir)) {
                 console.log('Removing alternative', altDir);
@@ -102,7 +114,7 @@ export class Directories {
     }
 
     static removeTargetForAddon(addon: Addon): void {
-        const dir = Directories.inCommunity(addon.targetDirectory);
+        const dir = Directories.inInstallLocation(addon.targetDirectory);
 
         if (fs.existsSync(dir)) {
             console.log('Removing', dir);
@@ -111,13 +123,13 @@ export class Directories {
     }
 
     static isFragmenterInstall(target: string | Addon): boolean {
-        const targetDir = typeof target === 'string' ? target : Directories.inCommunity(target.targetDirectory);
+        const targetDir = typeof target === 'string' ? target : Directories.inInstallLocation(target.targetDirectory);
 
         return fs.existsSync(path.join(targetDir, 'install.json'));
     }
 
     static isGitInstall(target: string | Addon): boolean {
-        const targetDir = typeof target === 'string' ? target : Directories.inCommunity(target.targetDirectory);
+        const targetDir = typeof target === 'string' ? target : Directories.inInstallLocation(target.targetDirectory);
 
         try {
             const symlinkPath = fs.readlinkSync(targetDir);

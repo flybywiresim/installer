@@ -26,6 +26,7 @@ import { setSelectedTrack } from "renderer/redux/features/selectedTrack";
 import { setInstalledTrack } from "renderer/redux/features/installedTrack";
 import path from "path";
 import { DependencyDialogBody } from "renderer/components/Modal/DependencyDialog";
+import { IncompatibleAddonDialogBody } from "renderer/components/Modal/IncompatibleAddonDialog";
 import { Resolver } from "renderer/utils/Resolver";
 import { AutostartDialog } from "renderer/components/Modal/AutostartDialog";
 import { BackgroundServices } from "renderer/utils/BackgroundServices";
@@ -38,6 +39,7 @@ import * as Sentry from '@sentry/electron/renderer';
 import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
 import checkDiskSpace from "check-disk-space";
+import { IncompatibleAddOnsCheck } from "renderer/utils/IncompatibleAddOnsCheck";
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<(FragmenterInstallerEvents & FragmenterContextEvents)[K]>
 
@@ -74,7 +76,7 @@ export class InstallManager {
 
         console.log("Checking install status");
 
-        const installDir = Directories.inCommunity(addon.targetDirectory);
+        const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
         if (!fs.existsSync(installDir)) {
             return { status: InstallStatus.NotInstalled };
@@ -262,7 +264,26 @@ export class InstallManager {
             }
         }
 
-        const destDir = Directories.inCommunity(addon.targetDirectory);
+        const incompatibleAddons = await IncompatibleAddOnsCheck.checkIncompatibleAddOns(addon);
+        if (incompatibleAddons.length > 0) {
+            const continueInstall = await showModal(
+                <PromptModal
+                    title="Incompatible Add-ons Found!"
+                    bodyText={
+                        <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons} />
+                    }
+                    cancelText="No"
+                    confirmText="Yes"
+                    confirmColor={ButtonType.Positive}
+                />,
+            );
+            if (!continueInstall) {
+                startResetStateTimer();
+                return InstallResult.Cancelled;
+            }
+        }
+
+        const destDir = Directories.inInstallLocation(addon.targetDirectory);
         const tempDir = Directories.temp();
 
         const fragmenterUpdateChecker = new FragmenterUpdateChecker();
@@ -281,7 +302,9 @@ export class InstallManager {
         const dontAsk = settings.get(diskSpaceModalSettingString);
 
         if (Number.isFinite(requiredDiskSpace) && Number.isFinite(availableDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
-            const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo} availableDiskSpace={availableDiskSpace} dontShowAgainSettingName={diskSpaceModalSettingString} />);
+            const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo}
+                availableDiskSpace={availableDiskSpace}
+                dontShowAgainSettingName={diskSpaceModalSettingString} />);
 
             if (!continueInstall) {
                 startResetStateTimer();
@@ -301,9 +324,14 @@ export class InstallManager {
             moduleCount++;
         }
 
-        store.dispatch(registerNewDownload({ id: addon.key, module: '', moduleCount, abortControllerID: abortControllerID }));
+        store.dispatch(registerNewDownload({
+            id: addon.key,
+            module: '',
+            moduleCount,
+            abortControllerID: abortControllerID,
+        }));
 
-        if (tempDir === Directories.community()) {
+        if (tempDir === Directories.installLocation()) {
             console.error('Community directory equals temp directory');
             this.notifyDownload(addon, false);
             return InstallResult.Failure;
@@ -422,7 +450,11 @@ export class InstallManager {
 
                         const percent = Math.round(((progress.entryIndex + 1) / progress.entryCount) * 100);
 
-                        this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing, percent, entry: progress.entryName });
+                        this.setCurrentInstallState(addon, {
+                            status: InstallStatus.Decompressing,
+                            percent,
+                            entry: progress.entryName,
+                        });
 
                         if (dependencyOf) {
                             this.setCurrentInstallState(dependencyOf, {
@@ -522,7 +554,7 @@ export class InstallManager {
 
                 if (!isAutoStartEnabled && !doNotAskAgain) {
                     await showModal(
-                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true}/>,
+                        <AutostartDialog app={app} addon={addon} publisher={publisher} isPrompted={true} />,
                     );
                 }
             }
@@ -542,7 +574,7 @@ export class InstallManager {
                 startResetStateTimer();
 
                 Sentry.captureException(e);
-                await showModal(<ErrorDialog error={e}/>);
+                await showModal(<ErrorDialog error={e} />);
 
                 return InstallResult.Failure;
             }
@@ -603,7 +635,7 @@ export class InstallManager {
             await BackgroundServices.setAutoStartEnabled(addon, publisher, false);
         }
 
-        const installDir = Directories.inCommunity(addon.targetDirectory);
+        const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
         await ipcRenderer.invoke(
             channels.installManager.uninstall,

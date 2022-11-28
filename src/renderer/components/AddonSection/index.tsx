@@ -139,7 +139,7 @@ export const AddonSection = (): JSX.Element => {
 
         try {
             const manifest = getCurrentInstall(
-                Directories.inCommunity(selectedAddon.targetDirectory),
+                Directories.inInstallLocation(selectedAddon.targetDirectory),
             );
             console.log("Currently installed", manifest);
 
@@ -301,7 +301,7 @@ export const AddonSection = (): JSX.Element => {
     };
 
     const handleInstall = async () => {
-        if (settings.has("mainSettings.msfsPackagePath")) {
+        if (settings.has("mainSettings.installPath")) {
             await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
         } else {
             await setupInstallPath();

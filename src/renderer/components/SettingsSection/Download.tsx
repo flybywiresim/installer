@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { setupInstallPath, setupTempLocation } from 'renderer/actions/install-path.utils';
+import { setupMsfsCommunityPath, setupInstallPath, setupTempLocation } from 'renderer/actions/install-path.utils';
 import settings, { useSetting } from "common/settings";
 import { Toggle } from '../Toggle';
 
@@ -15,6 +15,22 @@ interface SettingItemProps<T> {
     value: T;
     setValue: (value: T) => void;
 }
+
+const MsfsCommunityPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => {
+    const handleClick = async () => {
+        const path = await setupMsfsCommunityPath();
+
+        if (path) {
+            setValue(path);
+        }
+    };
+
+    return (
+        <SettingsItem name="MSFS Community Directory">
+            <div className="text-white hover:text-gray-400 cursor-pointer underline transition duration-200" onClick={handleClick}>{value}</div>
+        </SettingsItem>
+    );
+};
 
 const InstallPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => {
     const handleClick = async () => {
@@ -53,7 +69,7 @@ const SeparateTempLocationSettingItem = ({ value, setValue }: SettingItemProps<b
         const newState = !value;
         setValue(newState);
         settings.set('mainSettings.separateTempLocation', newState);
-        settings.set('mainSettings.tempLocation', settings.get('mainSettings.msfsPackagePath'));
+        settings.set('mainSettings.tempLocation', settings.get('mainSettings.installPath'));
     };
 
     return (
@@ -101,7 +117,8 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
 };
 
 const index = (): JSX.Element => {
-    const [installPath, setInstallPath] = useSetting<string>('mainSettings.msfsPackagePath');
+    const [communityPath, setCommunityPath] = useSetting<string>('mainSettings.msfsCommunityPath');
+    const [installPath, setInstallPath] = useSetting<string>('mainSettings.installPath');
     const [tempLocation, setTempLocation] = useSetting<string>('mainSettings.tempLocation');
     const [separateTempLocation, setSeparateTempLocation] = useSetting<boolean>('mainSettings.separateTempLocation');
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
@@ -112,6 +129,7 @@ const index = (): JSX.Element => {
             <div className="flex flex-col">
                 <h2 className="text-white">Download Settings</h2>
                 <div className="flex flex-col divide-y divide-gray-600">
+                    <MsfsCommunityPathSettingItem value={communityPath} setValue={setCommunityPath} />
                     <InstallPathSettingItem value={installPath} setValue={setInstallPath} />
                     <SeparateTempLocationSettingItem value={separateTempLocation} setValue={setSeparateTempLocation} />
                     {separateTempLocation &&

@@ -74,7 +74,7 @@ export class BackgroundServices {
             throw new Error('Executable path much match /^[a-zA-Z\\d_-]+$/.');
         }
 
-        const exePath = path.join(Directories.inCommunity(addon.targetDirectory), backgroundService.executableFileBasename);
+        const exePath = path.join(Directories.inInstallLocation(addon.targetDirectory), backgroundService.executableFileBasename);
         const commandLineArgs = backgroundService.commandLineArgs
             ? ` ${backgroundService.commandLineArgs.join(' ')}`
             : '';
@@ -113,7 +113,7 @@ export class BackgroundServices {
             throw new Error('Executable path much match /^[a-zA-Z\\d_-]+$/.');
         }
 
-        const exePath = path.normalize(path.join(Directories.inCommunity(addon.targetDirectory), `${backgroundService.executableFileBasename}.exe`));
+        const exePath = path.normalize(path.join(Directories.inInstallLocation(addon.targetDirectory), `${backgroundService.executableFileBasename}.exe`));
 
         await shell.openPath(exePath);
 

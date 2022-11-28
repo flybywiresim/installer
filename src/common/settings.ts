@@ -183,7 +183,11 @@ const schema: Schema<Settings> = {
                 type: "boolean",
                 default: true,
             },
-            msfsPackagePath: {
+            msfsCommunityPath: {
+                type: "string",
+                default: defaultCommunityDir(),
+            },
+            installPath: {
                 type: "string",
                 default: defaultCommunityDir(),
             },
