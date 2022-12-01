@@ -120,7 +120,7 @@ const App = () => {
                 <div className="flex flex-col h-screen w-full">
                     <div className="flex flex-col h-full overflow-hidden">
                         <div className="absolute w-full h-12 z-50 flex flex-row pl-4 items-center bg-black draggable">
-                            <div className="h-full flex-1 flex flex-row items-stretch">
+                            <div className="h-full flex-1 flex flex-row items-stretch overflow-hidden">
                                 <Logo />
 
                                 {(process.env.NODE_ENV === 'development') && (
