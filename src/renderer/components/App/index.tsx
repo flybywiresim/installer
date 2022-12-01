@@ -12,7 +12,7 @@ import { Addon, AddonVersion } from "renderer/utils/InstallerConfiguration";
 import { AddonData } from "renderer/utils/AddonData";
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from "renderer/components/App/NavBar";
-import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
+import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import settings from 'common/settings';
@@ -108,9 +108,11 @@ const App = () => {
         return () => clearInterval(updateCheck);
     }, []);
 
+    const configUrl = settings.get('mainSettings.configDownloadUrl') as string;
+
     return (
         <>
-            <ErrorModal/>
+            <ErrorModal />
 
             <ModalContainer />
 
@@ -121,13 +123,19 @@ const App = () => {
                             <div className="h-full flex-1 flex flex-row items-stretch">
                                 <Logo />
 
-                                {process.env.NODE_ENV === 'development' && (
+                                {(process.env.NODE_ENV === 'development') && (
                                     <div className="flex gap-x-4 ml-32 my-auto text-gray-400">
                                         <pre>{packageInfo.version}</pre>
                                         <pre className="text-gray-500">|</pre>
                                         <pre className="text-utility-amber">Development mode</pre>
                                         <pre className="text-gray-500">|</pre>
                                         <pre className="text-quasi-white">{location.pathname}</pre>
+                                    </div>
+                                )}
+                                {(configUrl !== "https://cdn.flybywiresim.com/installer/config/production.json") && (
+                                    <div className="flex gap-x-4 ml-32 my-auto text-gray-400">
+                                        <pre className="text-utility-amber">Developer Configuration Used: </pre>
+                                        <pre className="text-quasi-white">{configUrl}</pre>
                                     </div>
                                 )}
                             </div>
@@ -153,7 +161,7 @@ const App = () => {
                             <div className="bg-navy m-0 w-full flex">
                                 <Switch>
                                     <Route exact path="/">
-                                        <Redirect to={`/addon-section/${configuration.publishers[0].name}`}/>
+                                        <Redirect to={`/addon-section/${configuration.publishers[0].name}`} />
                                     </Route>
                                     <Route path="/addon-section/:publisherName">
                                         <PublisherSection />
