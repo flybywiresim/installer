@@ -292,7 +292,7 @@ export class InstallManager {
         const tempDir = Directories.temp();
 
         const fragmenterUpdateChecker = new FragmenterUpdateChecker();
-        const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, destDir, { forceCacheBust: true });
+        const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, destDir, { forceCacheBust: true, forceFullInstallRatio: .5 });
 
         // Confirm download size and required disk space with user
         const requiredDiskSpace = updateInfo.requiredDiskSpace;
