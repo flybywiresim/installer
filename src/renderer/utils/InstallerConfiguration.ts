@@ -111,6 +111,7 @@ export interface Addon {
     alternativeNames?: string[],
     tracks: AddonTrack[],
     dependencies?: AddonDependency[],
+    incompatibleAddons?: AddonIncompatibleAddon[],
     configurationAspects?: ConfigurationAspect[],
     disallowedRunningExternalApps?: string[],
     backgroundService?: AddonBackgroundService,
@@ -150,6 +151,44 @@ export interface AddonDependency {
      * Modal text that shows below the dependency / parent addon on the pre-install modal (if optional) and the removal dialog (if not optional).
      */
     modalText?: string,
+}
+
+/**
+ * Fields from the addon's manifest.json
+ */
+export interface AddonIncompatibleAddon {
+    /**
+     * Field from the addon's manifest.json
+     * This need to be configured identically to the addon's manifest.json
+     * Leaving a field empty ignores it for the search.
+     */
+    title?: string,
+
+    /**
+     * Field from the addon's manifest.json
+     * This need to be configured identically to the addon's manifest.json
+     * Leaving a field empty ignores it for the search.
+     */
+    creator?: string,
+
+    /**
+     * Field from the addon's manifest.json
+     * This need to be configured identically to the addon's manifest.json
+     * Leaving a field empty ignores it for the search.
+     *
+     * This supports semver notation.
+     */
+    packageVersion?: string,
+
+    /**
+     * folder name in community - added later to show the user the corresponding folder name - not used for searching
+     */
+    folder?: string,
+
+    /**
+     * Description of the nature of the incompatibility to display to the user in a warning dialog
+     */
+    description?: string
 }
 
 export interface AddonTechSpec {

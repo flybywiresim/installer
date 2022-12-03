@@ -31,3 +31,7 @@
 .markdown-body-modal a:hover {
     text-decoration: underline;
 }
+
+.h-80 {
+    height: 20rem;
+}

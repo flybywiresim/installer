@@ -5,8 +5,8 @@ import { Directories } from "renderer/utils/Directories";
 import * as fs from "fs";
 
 export const ErrorModal = (): JSX.Element => {
-    const [communityError, setCommunityError] = useState<boolean>(!fs.existsSync(Directories.community()) || Directories.community() === 'C:\\');
-    const [linuxError, setLinuxError] = useState<boolean>(Directories.community() === 'linux');
+    const [communityError, setCommunityError] = useState<boolean>(!fs.existsSync(Directories.installLocation()) || Directories.installLocation() === 'C:\\');
+    const [linuxError, setLinuxError] = useState<boolean>(Directories.installLocation() === 'linux');
 
     const handleClose = () => {
         setCommunityError(false);
@@ -33,11 +33,11 @@ export const ErrorModal = (): JSX.Element => {
                 </>
             );
         }
-        if (communityError && (Directories.community() !== 'linux')) {
+        if (communityError && (Directories.installLocation() !== 'linux')) {
             return (
                 <>
                     <span className="w-3/5 text-center text-2xl">Your Community folder is set to</span>
-                    <pre className="w-3/5 bg-gray-700 text-2xl text-center font-mono px-6 py-2.5 mb-0 rounded-lg">{Directories.community()}</pre>
+                    <pre className="w-3/5 bg-gray-700 text-2xl text-center font-mono px-6 py-2.5 mb-0 rounded-lg">{Directories.installLocation()}</pre>
                     <span className="w-3/5 text-center text-2xl">but we couldn't find it there. Please set the correct location before we can continue.</span>
                     <button className="bg-navy-lightest hover:bg-navy-lighter px-5 py-2 text-lg font-semibold rounded-lg" onClick={handleSelectPath}>Select</button>
                 </>

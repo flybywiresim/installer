@@ -79,7 +79,7 @@ export class AddonData {
         } else {
             console.log (addon.key, 'is installed');
             try {
-                const manifest = getCurrentInstall(Directories.inCommunity(addon.targetDirectory));
+                const manifest = getCurrentInstall(Directories.inInstallLocation(addon.targetDirectory));
                 console.log('Currently installed', manifest);
 
                 let track = addon.tracks.find(track => track.url.includes(manifest.source));
@@ -114,7 +114,7 @@ export class AddonData {
 
         console.log('Checking install status');
 
-        const installDir = Directories.inCommunity(addon.targetDirectory);
+        const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
         if (!fs.existsSync(installDir)) {
             console.log ('no existing install dir for', addon.key);
@@ -157,7 +157,7 @@ export class AddonData {
 
         const dispatch = store.dispatch;
 
-        const installDir = Directories.inCommunity(addon.targetDirectory);
+        const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
         const state = store.getState();
 
