@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.3.4
+    changes:
+      - title: Bump fragmenter to v0.7.3
+        categories: [Core]
+        authors: [holland]
   - name: 3.3.3
     changes:
       - title: Added check for incompatible add-ons
