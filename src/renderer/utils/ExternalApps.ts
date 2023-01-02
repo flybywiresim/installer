@@ -1,6 +1,7 @@
 import { Addon, ExternalApplicationDefinition, Publisher } from "renderer/utils/InstallerConfiguration";
 import net from 'net';
 import ws from 'ws';
+import fetch from 'node-fetch';
 import { Resolver } from "renderer/utils/Resolver";
 
 export class ExternalApps {
