@@ -18,6 +18,14 @@ export interface FreeDiskSpaceInfo {
 export class FreeDiskSpace {
 
     static async analyse(requiredSpace: number): Promise<FreeDiskSpaceInfo> {
+        if (!Number.isFinite(requiredSpace)) {
+            return {
+                freeSpaceInTemp: -1,
+                freeSpaceInDest: -1,
+                status: FreeDiskSpaceStatus.NotLimited,
+            };
+        }
+
         let resolvedDestDir = Directories.installLocation();
         let resolvedTempDir = Directories.tempLocation();
 
