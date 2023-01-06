@@ -3,6 +3,7 @@ import { UpdateInfo } from "@flybywiresim/fragmenter";
 import { PromptModal } from "renderer/components/Modal/index";
 import { Download, Hdd, HddFill } from "react-bootstrap-icons";
 import { ButtonType } from "renderer/components/Button";
+import { FreeDiskSpaceInfo } from "renderer/utils/FreeDiskSpace";
 
 const GIB = 1_074_000_000;
 const MIB = 1_049_000;
@@ -21,18 +22,24 @@ function formatSize(size: number): string {
 
 export interface InstallSizeDialogProps {
     updateInfo: UpdateInfo,
+    freeDeskSpaceInfo: FreeDiskSpaceInfo,
     onConfirm?: () => void,
     onCancel?: () => void,
-    availableDiskSpace: number,
     dontShowAgainSettingName: string,
 }
 
-export const InstallSizeDialog: FC<InstallSizeDialogProps> = ({ updateInfo, onConfirm, onCancel, availableDiskSpace, dontShowAgainSettingName }) => {
+export const InstallSizeDialog: FC<InstallSizeDialogProps> = ({ updateInfo, freeDeskSpaceInfo, onConfirm, onCancel, dontShowAgainSettingName }) => {
     const requiredDiskSpace = (updateInfo.requiredDiskSpace + updateInfo.downloadSize) + (10 * MIB);
 
-    const availableDiskSpaceSufficient = availableDiskSpace > requiredDiskSpace;
+    const showTemporaryAsSeparate = freeDeskSpaceInfo.freeSpaceInDest !== freeDeskSpaceInfo.freeSpaceInTemp;
 
-    const availableDiskSpaceColor = availableDiskSpaceSufficient ? 'text-utility-green' : 'text-utility-red';
+    const sufficientSpaceInDest = freeDeskSpaceInfo.freeSpaceInDest > requiredDiskSpace;
+    const sufficientSpaceInTemp = freeDeskSpaceInfo.freeSpaceInTemp > requiredDiskSpace;
+
+    const canInstall = sufficientSpaceInDest && sufficientSpaceInTemp;
+
+    const availableDiskSpaceColorDest = sufficientSpaceInDest ? 'text-utility-green' : 'text-utility-red';
+    const availableDiskSpaceColorTemp = sufficientSpaceInTemp ? 'text-utility-green' : 'text-utility-red';
 
     return (
         <PromptModal
@@ -70,14 +77,26 @@ export const InstallSizeDialog: FC<InstallSizeDialogProps> = ({ updateInfo, onCo
                             <span className="flex gap-x-6 items-center">
                                 <Hdd size={30} />
 
-                                <span className="text-3xl">Available disk space</span>
+                                <span className="text-3xl">Available disk space (destination)</span>
                             </span>
 
-                            <span className={`text-4xl font-bold font-manrope ${availableDiskSpaceColor}`}>{formatSize(availableDiskSpace)}</span>
+                            <span className={`text-4xl font-bold font-manrope ${availableDiskSpaceColorDest}`}>{formatSize(freeDeskSpaceInfo.freeSpaceInDest)}</span>
                         </span>
+
+                        {showTemporaryAsSeparate && (
+                            <span className="flex gap-x-5 justify-between items-center">
+                                <span className="flex gap-x-6 items-center">
+                                    <Hdd size={30} />
+
+                                    <span className="text-3xl">Available disk space (temporary)</span>
+                                </span>
+
+                                <span className={`text-4xl font-bold font-manrope ${availableDiskSpaceColorTemp}`}>{formatSize(freeDeskSpaceInfo.freeSpaceInTemp)}</span>
+                            </span>
+                        )}
                     </div>
 
-                    {(!availableDiskSpaceSufficient) && (
+                    {!canInstall && (
                         <div className="w-full flex items-center gap-x-7 border-2 px-7 py-3.5 border-utility-red text-utility-red rounded-md">
                             <Hdd className="text-utility-red" size={36} />
 
@@ -93,9 +112,9 @@ export const InstallSizeDialog: FC<InstallSizeDialogProps> = ({ updateInfo, onCo
             confirmText="Install"
             confirmColor={ButtonType.Positive}
             onConfirm={onConfirm}
-            confirmEnabled={availableDiskSpaceSufficient}
+            confirmEnabled={canInstall}
             onCancel={onCancel}
-            dontShowAgainSettingName={availableDiskSpaceSufficient ? dontShowAgainSettingName : undefined}
+            dontShowAgainSettingName={sufficientSpaceInDest ? dontShowAgainSettingName : undefined}
         />
     );
 };
