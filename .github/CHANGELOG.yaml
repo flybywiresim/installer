@@ -9,6 +9,17 @@
 
 
 releases:
+  - name: 3.3.5
+    changes:
+      - title: Fix free disk space check not following symbolic links
+        categories: [Logic]
+        authors: [holland]
+      - title: Fix free disk space check not also verifying temporary directory free space
+        categories: [Logic]
+        authors: [holland]
+      - title: Add banner when a non-default configuration URL is used
+        categories: [Core]
+        authors: [Cdr_Maverick]
   - name: 3.3.4
     changes:
       - title: Bump fragmenter to v0.7.3
