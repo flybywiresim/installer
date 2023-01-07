@@ -110,6 +110,22 @@ const App = () => {
 
     const configUrl = settings.get('mainSettings.configDownloadUrl') as string;
 
+    const isDevelopmentConfigURL = () => {
+        const productionURL = "https://cdn.flybywiresim.com/installer/config/production.json";
+        // Protection against accidental screenshots of confidential config urls
+        // Limited to flybywire config url to prevent 3rd party urls to be hidden
+        let showDevURL = "n/a";
+        if (!configUrl.includes("https://flybywiresim.b-cdn.net/installer/config/confidential")) {
+            showDevURL = configUrl;
+        }
+        return (configUrl !== productionURL) && (
+            <div className="flex gap-x-4 ml-32 my-auto text-gray-400">
+                <pre className="text-utility-amber">Developer Configuration Used: </pre>
+                <pre className="text-quasi-white">{showDevURL}</pre>
+            </div>
+        );
+    };
+
     return (
         <>
             <ErrorModal />
@@ -132,12 +148,7 @@ const App = () => {
                                         <pre className="text-quasi-white">{location.pathname}</pre>
                                     </div>
                                 )}
-                                {(configUrl !== "https://cdn.flybywiresim.com/installer/config/production.json") && (
-                                    <div className="flex gap-x-4 ml-32 my-auto text-gray-400">
-                                        <pre className="text-utility-amber">Developer Configuration Used: </pre>
-                                        <pre className="text-quasi-white">{configUrl}</pre>
-                                    </div>
-                                )}
+                                {isDevelopmentConfigURL()}
                             </div>
 
                             <div className="flex flex-row not-draggable h-full">
