@@ -40,6 +40,11 @@ jobs:
           BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
         run: ./scripts/cdn.sh dist/ installer/dev
 
+      - name: Upload to CloudFlare CDN (dev)
+        env:
+          CLOUDFLARE_BUCKET_PASSWORD: ${{ secrets.CLOUDFLARE_BUCKET_PASSWORD }}
+        run: ./scripts/cdn-cf.sh dist/ installer/dev
+
       - name: Get and delete master pre-release zip asset
         run: |
           echo 'checking for first release asset...'
