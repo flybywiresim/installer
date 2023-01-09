@@ -20,6 +20,9 @@ releases:
       - title: Add banner when a non-default configuration URL is used
         categories: [Core]
         authors: [Cdr_Maverick]
+      - title: Update bundled content to reflect current content on the server
+        categories: [Addons]
+        authors: [holland]
   - name: 3.3.4
     changes:
       - title: Bump fragmenter to v0.7.3
