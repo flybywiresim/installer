@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.3.6
+    changes:
+      - title: Fix bugged free disk space modal for addons with unknown size info
+        categories: [Logic]
+        authors: [holland]
   - name: 3.3.5
     changes:
       - title: Fix free disk space check not following symbolic links
