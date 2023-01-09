@@ -12,7 +12,7 @@ for FILE in "${FILES}"/*; do
     DEST="$CDN_URL/$CDN_DIR/$(basename -- "$FILE")"
     echo "Syncing file: $FILE"
     echo "Destination: $DEST"
-    curl -X PUT -H "X-FBW-Access-Key: $CLOUDFLARE_BUCKET_PASSWORD" -T "$1" "$DEST"
+    curl -X PUT -H "X-FBW-Access-Key: $CLOUDFLARE_BUCKET_PASSWORD" -T "$FILE" "$DEST"
 done
 
 # Purge after all uploads that the files are somewhat in sync
