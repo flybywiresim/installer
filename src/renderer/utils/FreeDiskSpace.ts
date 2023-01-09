@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import checkDiskSpace from "check-disk-space";
 
 export enum FreeDiskSpaceStatus {
+    Unknown,
     NotLimited,
     LimitedByDestination,
     LimitedByTemporary,
@@ -22,7 +23,7 @@ export class FreeDiskSpace {
             return {
                 freeSpaceInTemp: -1,
                 freeSpaceInDest: -1,
-                status: FreeDiskSpaceStatus.NotLimited,
+                status: FreeDiskSpaceStatus.Unknown,
             };
         }
 
