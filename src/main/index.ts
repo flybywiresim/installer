@@ -145,17 +145,17 @@ function initializeApp() {
             if (packageInfo.version.includes('dev')) {
                 updateOptions = {
                     provider:'generic' as const,
-                    url: 'https://cdn.flybywiresim.com/installer/dev',
+                    url: 'https://flybywirecdn.com/installer/dev',
                 };
             } else if (packageInfo.version.includes('rc')) {
                 updateOptions = {
                     provider:'generic' as const,
-                    url: 'https://cdn.flybywiresim.com/installer/rc',
+                    url: 'https://flybywirecdn.com/installer/rc',
                 };
             } else {
                 updateOptions = {
                     provider:'generic' as const,
-                    url: 'https://cdn.flybywiresim.com/installer/release',
+                    url: 'https://flybywirecdn.com/installer/release',
                 };
             }
 
