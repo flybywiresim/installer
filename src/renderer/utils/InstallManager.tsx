@@ -303,7 +303,7 @@ export class InstallManager {
         const diskSpaceModalSettingString = `mainSettings.disableAddonDiskSpaceModal.${publisher.key}.${addon.key}`;
         const dontAsk = settings.get(diskSpaceModalSettingString);
 
-        if (!dontAsk || freeDeskSpaceInfo.status !== FreeDiskSpaceStatus.NotLimited) {
+        if ((!dontAsk || freeDeskSpaceInfo.status !== FreeDiskSpaceStatus.NotLimited) && freeDeskSpaceInfo.status !== FreeDiskSpaceStatus.Unknown) {
             const continueInstall = await showModal(
                 <InstallSizeDialog
                     updateInfo={updateInfo}
