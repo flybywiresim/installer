@@ -42,10 +42,29 @@ export class FreeDiskSpace {
             // noop - it's probably not a link
         }
 
-        const freeDestDirSpace = (await checkDiskSpace(resolvedDestDir)).free;
-        const freeTempDirSpace = (await checkDiskSpace(resolvedTempDir)).free;
+        let freeDestDirSpace = NaN;
+        try {
+            freeDestDirSpace = (await checkDiskSpace(resolvedDestDir)).free;
+        } catch (e) {
+            // noop - user probably does not have `wmic` on their system
+        }
 
-        let status: FreeDiskSpaceStatus;
+        let freeTempDirSpace = NaN;
+        try {
+            freeTempDirSpace = (await checkDiskSpace(resolvedTempDir)).free;
+        } catch (e) {
+            // noop - user probably does not have `wmic` on their system
+        }
+
+        if (!Number.isFinite(freeDestDirSpace) || !Number.isFinite(freeTempDirSpace)) {
+            return {
+                freeSpaceInTemp: -1,
+                freeSpaceInDest: -1,
+                status: FreeDiskSpaceStatus.Unknown,
+            };
+        }
+
+        let status = FreeDiskSpaceStatus.NotLimited;
         if (requiredSpace >= freeDestDirSpace && requiredSpace >= freeTempDirSpace) {
             status = FreeDiskSpaceStatus.LimitedByBoth;
         } else if (requiredSpace >= freeDestDirSpace) {
