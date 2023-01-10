@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.3.7
+    changes:
+      - title: Fix silent error while checking for free disk space on certain Windows installations
+        categories: [Logic]
+        authors: [holland]
   - name: 3.3.6
     changes:
       - title: Fix bugged free disk space modal for addons with unknown size info
