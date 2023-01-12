@@ -270,22 +270,24 @@ export class InstallManager {
             }
         }
 
-        const incompatibleAddons = await IncompatibleAddOnsCheck.checkIncompatibleAddOns(addon);
-        if (incompatibleAddons.length > 0) {
-            const continueInstall = await showModal(
-                <PromptModal
-                    title="Incompatible Add-ons Found!"
-                    bodyText={
-                        <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons} />
-                    }
-                    cancelText="No"
-                    confirmText="Yes"
-                    confirmColor={ButtonType.Positive}
-                />,
-            );
-            if (!continueInstall) {
-                startResetStateTimer();
-                return InstallResult.Cancelled;
+        if (addon.incompatibleAddons && addon.incompatibleAddons.length > 0) {
+            const incompatibleAddons = await IncompatibleAddOnsCheck.checkIncompatibleAddOns(addon);
+            if (incompatibleAddons.length > 0) {
+                const continueInstall = await showModal(
+                    <PromptModal
+                        title="Incompatible Add-ons Found!"
+                        bodyText={
+                            <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons} />
+                        }
+                        cancelText="No"
+                        confirmText="Yes"
+                        confirmColor={ButtonType.Positive}
+                    />,
+                );
+                if (!continueInstall) {
+                    startResetStateTimer();
+                    return InstallResult.Cancelled;
+                }
             }
         }
 
