@@ -145,7 +145,7 @@ export class Directories {
 
         try {
             const symlinkPath = fs.readlinkSync(targetDir);
-            if (symlinkPath && fs.existsSync(path.join(symlinkPath, '/../.git'))) {
+            if (symlinkPath && fs.existsSync(path.join(symlinkPath, '/../../../.git'))) {
                 console.log('Is git repo', targetDir);
                 return true;
             }
