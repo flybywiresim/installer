@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import path from "path";
 import { ipcRenderer } from "electron";
 import channels from "common/channels";
+// import { useModals } from "renderer/components/Modal";
+// import { PluginInstallModal } from "renderer/components/Modal/PluginInstallModal";
+// import { headwindPlugin } from "common/plugins/PluginDistributionFile";
 
 export const DebugSection = (): JSX.Element => {
     const [ipcMessage, setIpcMessage] = useState<string>(channels.window.minimize);
@@ -21,6 +24,12 @@ export const DebugSection = (): JSX.Element => {
         ipcRenderer.send(ipcMessage);
     };
 
+    // const { showModal } = useModals();
+
+    const showPluginTest = () => {
+        // showModal(<PluginInstallModal pluginDistributionFile={headwindPlugin} onAcknowledge={() => {}}/>);
+    };
+
     return (
         <div className="py-8 pl-12">
             <h1 className="text-white font-manrope font-bold">Debug options</h1>
@@ -33,6 +42,9 @@ export const DebugSection = (): JSX.Element => {
                 <input value={ipcMessage} onChange={event => setIpcMessage(event.target.value)} className="p-1 outline-none" />
                 <button className="bg-cyan p-3 font-bold" onClick={sendIpcMessage}>Send message</button>
             </div>
+
+            <h3 className="text-white">Test plugin modal</h3>
+            <button className="bg-cyan p-3 font-bold" onClick={showPluginTest}>Open</button>
         </div>
     );
 };

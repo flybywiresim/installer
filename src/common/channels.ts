@@ -1,4 +1,7 @@
 export default {
+    app: {
+        getUserDataPath: 'app/getUserDataPath',
+    },
     window: {
         minimize: 'window/minimize',
         maximize: 'window/maximize',
@@ -16,6 +19,12 @@ export default {
         installFromUrl: 'installManager/installFromUrl',
         cancelInstall: 'installManager/cancelInstall',
         uninstall: 'installManager/uninstall',
+    },
+    plugins: {
+        promptInstallFromUrl: 'plugins/promptInstallFromUrl',
+        installFromUrl: 'plugins/installFromUrl',
+        checkForUpdates: 'plugins/checkForUpdates',
+        getPluginsToLoad: 'plugins/getPluginsToLoad',
     },
     sentry: {
         requestSessionID: 'sentry/requestSessionID',

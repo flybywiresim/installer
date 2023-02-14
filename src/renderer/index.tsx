@@ -42,6 +42,7 @@ import { GitVersions } from "@flybywiresim/api-client";
 import { addReleases } from "renderer/redux/features/releaseNotes";
 import { ModalProvider } from "renderer/components/Modal";
 import { setSentrySessionID } from "renderer/redux/features/sentrySessionID";
+import { PluginRendererManager } from "renderer/plugins/PluginRendererManager";
 import packageJson from '../../package.json';
 
 import 'antd/dist/antd.less';
@@ -73,6 +74,13 @@ ipcRenderer.invoke(channels.sentry.requestSessionID).then((sessionID) => {
 // Obtain configuration and use it
 InstallerConfiguration.obtain().then((config: Configuration) => {
     store.dispatch(setConfiguration({ configuration: config }));
+
+    // Load plugins
+    ipcRenderer.invoke(channels.plugins.getPluginsToLoad).then((plugins) => {
+        for (const plugin of plugins) {
+            PluginRendererManager.loadPlugin(plugin);
+        }
+    });
 
     for (const publisher of config.publishers) {
         for (const addon of publisher.addons) {
@@ -107,7 +115,7 @@ InstallerConfiguration.obtain().then((config: Configuration) => {
         <Provider store={store}>
             <MemoryRouter>
                 <ModalProvider>
-                    <App/>
+                    <App />
                 </ModalProvider>
             </MemoryRouter>
         </Provider>,

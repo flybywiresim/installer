@@ -352,6 +352,39 @@ export interface Configuration {
     publishers: Publisher[],
 }
 
+interface BaseConfigurationExtensionDirective {
+    directive: string,
+}
+
+interface AddPublisherDirective extends BaseConfigurationExtensionDirective {
+    directive: 'addPublishers',
+    publishers: Publisher[],
+}
+
+interface AddAddonsToPublisherDirective extends BaseConfigurationExtensionDirective {
+    directive: 'addAddonsToPublisher',
+    target: string,
+    addons: Addon[],
+}
+
+interface AddTracksToAddonDirective extends BaseConfigurationExtensionDirective {
+    directive: 'addTracksToAddon',
+    target: string,
+    tracks: AddonTrack[],
+}
+
+interface EnableAddonDirective extends BaseConfigurationExtensionDirective {
+    directive: 'enableAddon',
+    target: string,
+}
+
+type ConfigurationExtensionDirective = AddPublisherDirective | AddAddonsToPublisherDirective | AddTracksToAddonDirective | EnableAddonDirective
+
+export interface ConfigurationExtension {
+    version: number,
+    directives: ConfigurationExtensionDirective[],
+}
+
 export class InstallerConfiguration {
 
     static async obtain(): Promise<Configuration> {

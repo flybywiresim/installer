@@ -19,9 +19,12 @@ import settings from 'common/settings';
 import "./index.css";
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
-import { ModalContainer } from '../Modal';
+import { ModalContainer, useModals } from '../Modal';
 import { PublisherSection } from "renderer/components/PublisherSection";
 import * as packageInfo from "../../../../package.json";
+import { IpcRendererEvent } from 'electron';
+import { PluginUtils } from "common/plugins/PluginUtils";
+import { PluginInstallModal } from "renderer/components/Modal/PluginInstallModal";
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -72,6 +75,8 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
 };
 
 const App = () => {
+    const { showModal } = useModals();
+
     const history = useHistory();
     const location = useLocation();
 
@@ -96,6 +101,22 @@ const App = () => {
         history.listen((location) => {
             settings.set("cache.main.lastShownSection", location.pathname);
         });
+
+        const promptInstallFromUrlHandler = async (event: IpcRendererEvent, url: string) => {
+            const pluginDistBlob = await PluginUtils.downloadPluginDistFile(url);
+            const pluginDistFile = JSON.parse(await pluginDistBlob.text());
+
+            // TODO verify dist file
+
+            showModal(<PluginInstallModal pluginDistributionFile={pluginDistFile} />);
+        };
+
+        // Handle plugin system IPC calls
+        ipcRenderer.on(channels.plugins.promptInstallFromUrl, promptInstallFromUrlHandler);
+
+        return () => {
+            ipcRenderer.off(channels.plugins.promptInstallFromUrl, promptInstallFromUrlHandler);
+        };
     }, []);
 
     useEffect(() => {

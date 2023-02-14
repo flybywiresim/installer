@@ -46,6 +46,10 @@
     .modal-title {
         @apply text-5xl text-quasi-white font-manrope font-bold;
     }
+
+    .modal-title-sm {
+        @apply text-4xl text-quasi-white font-manrope font-bold;
+    }
 }
 
 .button {

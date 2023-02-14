@@ -8,6 +8,7 @@ import channels from "common/channels";
 import * as remote from "@electron/remote/main";
 import { InstallManager } from "main/InstallManager";
 import { SentryClient } from "main/SentryClient";
+import { PluginInstallManager } from "main/plugins/PluginInstallManager";
 
 function initializeApp() {
     function createWindow() {
@@ -63,6 +64,10 @@ function initializeApp() {
         mainWindow.on('closed', () => {
             mainWindow.removeAllListeners();
             app.quit();
+        });
+
+        ipcMain.on(channels.app.getUserDataPath, () => {
+            return app.getPath('userData');
         });
 
         ipcMain.on(channels.window.minimize, () => {
@@ -125,7 +130,7 @@ function initializeApp() {
 
         if (process.env.NODE_ENV === 'development') {
             // Open the DevTools.
-            settings.openInEditor();
+            // settings.openInEditor();
             mainWindow.webContents.once('dom-ready', () => {
                 mainWindow.webContents.openDevTools();
             });
@@ -207,6 +212,8 @@ function initializeApp() {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
+        app.setAsDefaultProtocolClient('fbw-installer', process.execPath, [path.resolve(process.argv[1])]);
+
         createWindow();
 
         if (process.env.NODE_ENV === 'development') {
@@ -238,12 +245,38 @@ function initializeApp() {
     });
 
     // Someone tried to run a second instance, we should focus our window.
-    app.on('second-instance', () => {
+    app.on('second-instance', (event, commandLine) => {
         if (mainWindow) {
             if (mainWindow.isMinimized()) {
                 mainWindow.restore();
             }
             mainWindow.focus();
+        }
+
+        const lastArg = commandLine[commandLine.length - 1];
+
+        if (lastArg) {
+            const parsed = new URL(lastArg);
+
+            const command = parsed.hostname;
+            switch (command) {
+                case 'promptInstallPlugin': {
+                    const url = parsed.searchParams.get('distFileUrl');
+
+                    if (!url) {
+                        console.error('Error in fbw-installer://promptInstallPlugin handler: distFileUrl query param not defined');
+                        return;
+                    }
+
+                    mainWindow.webContents.send(channels.plugins.promptInstallFromUrl, url);
+                    break;
+                }
+                default: {
+                    console.error(`Error in fbw-installer:// handler: unknown command ${command}`);
+                    return;
+                }
+
+            }
         }
     });
 }
@@ -251,5 +284,6 @@ function initializeApp() {
 SentryClient.initialize();
 
 InstallManager.setupIpcListeners();
+PluginInstallManager.setupIpcListeners();
 
 initializeApp();
