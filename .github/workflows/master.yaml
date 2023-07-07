@@ -7,7 +7,7 @@ jobs:
   build:
     # Prevent running this on forks
     if: github.repository_owner == 'flybywiresim'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     env:
       MASTER_PRE_RELEASE_ID: 36189658
       MASTER_PRE_RELEASE_TAG: vmaster
