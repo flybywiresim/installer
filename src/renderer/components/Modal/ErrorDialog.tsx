@@ -5,7 +5,7 @@ import { shell } from "electron";
 import { FragmenterError, FragmenterErrorCode } from "@flybywiresim/fragmenter";
 import { SentrySessionCard } from "renderer/components/SentrySessionCard";
 
-const DISCORD_SUPPORT_URL = 'https://discord.com/channels/738864299392630914/785976111875751956';
+const DISCORD_SUPPORT_URL = 'https://discord.com/channels/738864299392630914/1065394439608078336';
 
 export interface ErrorDialogProps {
     error: Error;
