@@ -10,6 +10,7 @@ import { useIsDarkTheme } from "common/settings";
 import { Button } from "renderer/components/Button";
 import { ChevronRight } from "tabler-icons-react";
 import { InstallStatus } from "renderer/components/AddonSection/Enums";
+import { useDataContext } from "renderer/utils/DataContext";
 
 export interface AddonBarProps {
     publisher: Publisher,
@@ -23,8 +24,7 @@ export enum UITheme {
 export const AddonBar: FC = ({ children }) => {
     const darkTheme = useIsDarkTheme();
 
-    const { publisherName } = useParams<AircraftSectionURLParams>();
-    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
+    const { publisher } = useDataContext();
 
     const PublisherButtons = (buttons: PublisherButton[]) => {
         const groups: PublisherButton[][] = [];
@@ -61,7 +61,7 @@ export const AddonBar: FC = ({ children }) => {
     return (
         <div className={`flex flex-col justify-between gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full`}>
             <div className="flex flex-col -space-y-7">
-                <h3 className={`${textClass} font-bold -mb-1`}>{publisherData.name}</h3>
+                <h3 className={`${textClass} font-bold -mb-1`}>{publisher.name}</h3>
             </div>
 
             <div className="flex-grow flex flex-col">
@@ -69,8 +69,8 @@ export const AddonBar: FC = ({ children }) => {
             </div>
 
             <div className="flex flex-col gap-y-4 mt-auto">
-                {publisherData.buttons && (
-                    PublisherButtons(publisherData.buttons)
+                {publisher.buttons && (
+                    PublisherButtons(publisher.buttons)
                 )}
             </div>
         </div>

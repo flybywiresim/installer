@@ -223,7 +223,7 @@ export interface ConfigurationAspect {
     /**
      * What to apply the list of desired choices to
      */
-    applyChoiceKeyTo: 'optionalFragmenterModule',
+    applyChoiceKeyTo: ConfigurationAspectApplication,
 
     /**
      * The kind of choice to permit
@@ -262,6 +262,19 @@ interface ConfigurationAspectChoice {
      */
     imageUrl?: string,
 }
+
+interface ConfigurationAspectApplicationBase {
+    applyTo: string;
+}
+
+export interface OptionalFragmenterModuleConfigurationAspectApplication extends ConfigurationAspectApplicationBase {
+    applyTo: 'optionalFragmenterModule',
+    moduleName: string
+    yesKey: string,
+    noKey: string,
+}
+
+type ConfigurationAspectApplication = OptionalFragmenterModuleConfigurationAspectApplication
 
 interface DefinitionBase {
     kind: string,

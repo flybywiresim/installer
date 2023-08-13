@@ -16,7 +16,7 @@ function initializeApp() {
             width: 1280,
             height: 800,
             minWidth: 1280,
-            minHeight: 800,
+            minHeight: 760,
             frame: false,
             icon: 'src/main/icons/icon.ico',
             backgroundColor: '#1b2434',

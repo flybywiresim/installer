@@ -32,7 +32,7 @@ export const NavBar: FC = ({ children }) => {
     );
 };
 
-const BASE_STYLE = "w-20 h-20 flex flex-col justify-center items-center rounded-md bg-transparent hover:bg-navy-light transition duration-200 border-2 border-navy-light";
+const BASE_STYLE = "w-20 h-20 flex flex-col justify-center items-center rounded-md bg-transparent hover:bg-navy-light transition duration-200 border border-navy-light";
 
 export interface NavBarItemProps {
     to: string;

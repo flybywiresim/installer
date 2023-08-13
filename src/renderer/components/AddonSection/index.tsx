@@ -72,21 +72,22 @@ const SideBarLink: FC<SideBarLinkProps> = ({ to, children, disabled = false }) =
 );
 
 export interface AircraftSectionURLParams {
-    publisherName: string;
+    publisherKey: string;
+    addonKey: string;
 }
 
 export const AddonSection = (): JSX.Element => {
     const dispatch = useAppDispatch();
     const history = useHistory();
 
-    const { publisherName } = useParams<AircraftSectionURLParams>();
-    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherName) ? state.configuration.publishers.find(pub => pub.name === publisherName) : state.configuration.publishers[0]);
+    const { publisherKey } = useParams<AircraftSectionURLParams>();
+    const publisherData = useAppSelector(state => state.configuration.publishers.find(pub => pub.name === publisherKey) ? state.configuration.publishers.find(pub => pub.name === publisherKey) : state.configuration.publishers[0]);
 
     const [selectedAddon, setSelectedAddon] = useState<Addon>(() => {
         try {
             return publisherData.addons[0];
         } catch (e) {
-            throw new Error('Invalid publisher key: ' + publisherName);
+            throw new Error('Invalid publisher key: ' + publisherKey);
         }
     });
 
@@ -102,10 +103,10 @@ export const AddonSection = (): JSX.Element => {
 
         if (hiddenAddon) {
             setHiddenAddon(hiddenAddon);
-            history.push(`/addon-section/${publisherName}/hidden-addon-cover`);
+            history.push(`/addon-section/${publisherKey}/hidden-addon-cover`);
         } else {
             setHiddenAddon(undefined);
-            history.push(`/addon-section/${publisherName}/main/configure/release-track`);
+            history.push(`/addon-section/${publisherKey}/main/configure/release-track`);
         }
 
         settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
@@ -115,7 +116,7 @@ export const AddonSection = (): JSX.Element => {
         const firstAvailableAddon = publisherData.addons.find((addon) => addon.enabled);
 
         if (!firstAvailableAddon) {
-            history.push(`/addon-section/${publisherName}/no-available-addons`);
+            history.push(`/addon-section/${publisherKey}/no-available-addons`);
             return;
         }
 
@@ -123,7 +124,7 @@ export const AddonSection = (): JSX.Element => {
         const addonToSelect = publisherData.addons.find(addon => addon.key === lastSeenAddonKey) || publisherData.addons.find(addon => addon.key === firstAvailableAddon.key);
 
         setSelectedAddon(addonToSelect);
-    }, [publisherName]);
+    }, [publisherKey]);
 
     const findInstalledTrack = (): AddonTrack => {
         if (!Directories.isFragmenterInstall(selectedAddon)) {
@@ -414,18 +415,18 @@ export const AddonSection = (): JSX.Element => {
                             <LocalApiConfigEditUI />
                         </Route>
 
-                        <Route exact path={`/addon-section/${publisherName}`}>
+                        <Route exact path={`/addon-section/${publisherKey}`}>
                             {publisherData.addons.every(addon => !addon.enabled) ?
-                                <Redirect to={`/addon-section/${publisherName}/no-available-addons`} /> :
-                                <Redirect to={`/addon-section/${publisherName}/main/configure`} />
+                                <Redirect to={`/addon-section/${publisherKey}/no-available-addons`} /> :
+                                <Redirect to={`/addon-section/${publisherKey}/main/configure`} />
                             }
                         </Route>
 
-                        <Route path={`/addon-section/${publisherName}/no-available-addons`}>
+                        <Route path={`/addon-section/${publisherKey}/no-available-addons`}>
                             <NoAvailableAddonsSection />
                         </Route>
 
-                        <Route path={`/addon-section/${publisherName}/main`}>
+                        <Route path={`/addon-section/${publisherKey}/main`}>
                             <div className="h-full flex flex-col">
                                 <div
                                     className="flex-shrink-0 relative bg-cover bg-center"
@@ -441,8 +442,8 @@ export const AddonSection = (): JSX.Element => {
                                     </div>
                                 </div>
                                 <div className="h-0 flex-grow flex flex-row">
-                                    <Route exact path={`/addon-section/${publisherName}/main/configure`}>
-                                        <Redirect to={`/addon-section/${publisherName}/main/configure/release-track`} />
+                                    <Route exact path={`/addon-section/${publisherKey}/main/configure`}>
+                                        <Redirect to={`/addon-section/${publisherKey}/main/configure/release-track`} />
                                     </Route>
 
                                     <Route path={`/addon-section/:publisher/main/configure/:aspectKey`} render={({ match: { params: { aspectKey } } }) => (
@@ -455,41 +456,41 @@ export const AddonSection = (): JSX.Element => {
                                         />
                                     )} />
 
-                                    <Route path={`/addon-section/${publisherName}/main/release-notes`}>
+                                    <Route path={`/addon-section/${publisherKey}/main/release-notes`}>
                                         {releaseNotes && releaseNotes.length > 0 ? (
                                             <ReleaseNotes addon={selectedAddon}/>
                                         ) :
-                                            <Redirect to={`/addon-section/${publisherName}/main/configure`}/>
+                                            <Redirect to={`/addon-section/${publisherKey}/main/configure`}/>
                                         }
                                     </Route>
 
-                                    <Route path={`/addon-section/${publisherName}/main/simbridge-config`}>
+                                    <Route path={`/addon-section/${publisherKey}/main/simbridge-config`}>
                                         <LocalApiConfigEditUI />
                                     </Route>
 
-                                    <Route path={`/addon-section/${publisherName}/main/about`}>
+                                    <Route path={`/addon-section/${publisherKey}/main/about`}>
                                         <About addon={selectedAddon} />
                                     </Route>
 
                                     <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy-dark p-7 flex-shrink-0">
                                         <div className="w-full flex flex-col items-start place-self-start space-y-7">
-                                            <SideBarLink to={`/addon-section/${publisherName}/main/configure`}>
+                                            <SideBarLink to={`/addon-section/${publisherKey}/main/configure`}>
                                                 <Sliders size={22} />
                                                 Configure
                                             </SideBarLink>
                                             {releaseNotes && releaseNotes.length > 0 && (
-                                                <SideBarLink to={`/addon-section/${publisherName}/main/release-notes`}>
+                                                <SideBarLink to={`/addon-section/${publisherKey}/main/release-notes`}>
                                                     <JournalText size={22} />
                                                     Release Notes
                                                 </SideBarLink>
                                             )}
                                             {selectedAddon.key === 'simbridge' && ( // TODO find a better way to do this...
-                                                <SideBarLink to={`/addon-section/${publisherName}/main/simbridge-config`} disabled={InstallStatusCategories.installing.includes(status)}>
+                                                <SideBarLink to={`/addon-section/${publisherKey}/main/simbridge-config`} disabled={InstallStatusCategories.installing.includes(status)}>
                                                     <Gear size={22} />
                                                     Settings
                                                 </SideBarLink>
                                             )}
-                                            <SideBarLink to={`/addon-section/${publisherName}/main/about`}>
+                                            <SideBarLink to={`/addon-section/${publisherKey}/main/about`}>
                                                 <InfoCircle size={22} />
                                                 About
                                             </SideBarLink>

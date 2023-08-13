@@ -43,7 +43,7 @@ export const Configure: FC<ConfigureProps> = ({ routeAspectKey, selectedAddon, s
                                 ))}
                         </Tracks>
                         <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
-                                    Mainline Releases
+                            Mainline Releases
                         </span>
                     </div>
                     <div>
@@ -64,7 +64,7 @@ export const Configure: FC<ConfigureProps> = ({ routeAspectKey, selectedAddon, s
 
                         {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
                             <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">
-                                        Experimental versions
+                                Experimental versions
                             </span>
                         )}
                     </div>
