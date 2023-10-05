@@ -111,11 +111,11 @@ const App = () => {
     const configUrl = settings.get('mainSettings.configDownloadUrl') as string;
 
     const isDevelopmentConfigURL = () => {
-        const productionURL = "https://cdn.flybywiresim.com/installer/config/production.json";
+        const productionURL = packageInfo.configUrls.production;
         // Protection against accidental screenshots of confidential config urls
         // Limited to flybywire config url to prevent 3rd party urls to be hidden
         let showDevURL = "n/a";
-        if (!configUrl.includes("https://flybywiresim.b-cdn.net/installer/config/confidential")) {
+        if (!configUrl.includes(packageInfo.configUrls.confidentialBaseUrl)) {
             showDevURL = configUrl;
         }
         return (configUrl !== productionURL) && (
