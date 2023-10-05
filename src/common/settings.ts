@@ -4,6 +4,7 @@ import walk from "walkdir";
 import * as path from "path";
 import * as os from 'os';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import * as packageInfo from '../../package.json';
 
 const defaultCommunityDir = (): string => {
     if (os.platform().toString() === 'linux') {
@@ -201,7 +202,7 @@ const schema: Schema<Settings> = {
             },
             configDownloadUrl: {
                 type: "string",
-                default: "https://cdn.flybywiresim.com/installer/config/production.json",
+                default: packageInfo.configUrls.production,
             },
         },
     },
