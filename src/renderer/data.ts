@@ -85,9 +85,11 @@ export const defaultConfiguration: Configuration = {
                         {
                             name: 'Stable',
                             key: 'a32nx-stable',
-                            url: 'https://cdn.flybywiresim.com/addons/a32nx/stable',
+                            url: 'https://flybywirecdn.com/addons/a32nx/stable',
                             alternativeUrls: [
                                 'external/a32nx/stable',
+                                // move bunnycdn users to cloudflare
+                                'https://cdn.flybywiresim.com/addons/a32nx/stable',
                             ],
                             description: 'Stable is our variant that has the least bugs and best performance. ' +
                                 'This version will not always be up to date but we guarantee its compatibility ' +
@@ -100,12 +102,14 @@ export const defaultConfiguration: Configuration = {
                         {
                             name: 'Development',
                             key: 'a32nx-dev',
-                            url: 'https://cdn.flybywiresim.com/addons/a32nx/master',
+                            url: 'https://flybywirecdn.com/addons/a32nx/master',
                             alternativeUrls: [
                                 'external/a32nx/master',
                                 // move old experimental users over to dev
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
                                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
+                                // move bunnycdn users to cloudflare
+                                'https://cdn.flybywiresim.com/addons/a32nx/master',
                             ],
                             description: 'Development will have the latest features that will end up in the next stable. ' +
                                 'Bugs are to be expected. It updates whenever something is added to the \'master\' ' +
@@ -119,10 +123,11 @@ export const defaultConfiguration: Configuration = {
                         {
                             name: 'Experimental',
                             key: 'experimental',
-                            url: 'https://github.com/flybywiresim/a32nx/releases/download/assets/experimental/',
+                            url: 'https://flybywirecdn.com/addons/a32nx/experimental',
                             alternativeUrls: [
                                 'external/a32nx/experimental',
                                 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
+                                'https://github.com/flybywiresim/a32nx/releases/download/assets/experimental/',
                             ],
                             description: 'This version is similar to the Development version, ' +
                                 'but contains features that we wish to test publicly as we perfect them. ' +
@@ -148,7 +153,53 @@ export const defaultConfiguration: Configuration = {
                             modalText: 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
                         },
                     ],
-                    incompatibleAddons: [],
+                    incompatibleAddons: [
+                        // title: the exact title as it appears in the manifest.json
+                        // creator: the exact creator as it appears in the manifest.json
+                        // packageVersion syntax follows: https://www.npmjs.com/package/semver
+                        // description: a short description of why the addon is incompatible
+                        {
+                            title: 'Horizon Simulations A319ceo',
+                            packageVersion: '<0.6.1',
+                            description: "It is recommended to upgrade to the latest version (0.6.1 or later) or to remove this add-on before installing and using the A32NX. The older versions of this add-on are known to override A32NX components and to break the A32NX.",
+                        },
+                        {
+                            title: 'Horizon Simulations A321neo',
+                            // packageVersion: '<0.4.0', see https://discord.com/channels/738864299392630914/785976111875751956/1055617417189011546
+                            description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.",
+                        },
+                        {
+                            title: 'LVFR A321neo FBW A32NX Compatibility Mod',
+                            description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and to break the A32NX.",
+                        },
+                        {
+                            title: 'LVFR A321neo Extreme',
+                            description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.",
+                        },
+                        {
+                            title: 'lvfr-airbus-a319-fbw-standalone',
+                            packageVersion: '<0.6.1',
+                            description: "It is recommended to upgrade to the latest version (0.6.1 or later) or to remove this add-on before installing and using the A32NX. The older versions of this add-on are known to override A32NX components and to break the A32NX.",
+                        },
+                        {
+                            title: '[MOD] Mugz FBW A32NX Dev',
+                            description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
+                        },
+                        {
+                            title: '[MOD] Mugz FBW A32NX Stable',
+                            description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
+                        },
+                        {
+                            title: 'Toolbar Pushback',
+                            creator: "AmbitiousPilots",
+                            description: "This add-on sometimes causes performance issues and also sometimes prevents the A32NX from taxiing. Consider removing it if you experience these issues.",
+                        },
+                        {
+                            title: 'Asobo_A320_A (A32NX Converted)',
+                            creator: "UnitDeath",
+                            description: "It is required to remove this livery before installing and using the A32NX as it breaks the A32NX",
+                        },
+                    ],
                     myInstallPage: {
                         links: [
                             {
@@ -368,6 +419,101 @@ export const defaultConfiguration: Configuration = {
                     text: 'Twitter',
                     action: 'openBrowser',
                     url: 'https://twitter.com/Salty_Sim',
+                    inline: true,
+                },
+            ],
+        },
+        {
+            name: 'FSLTL',
+            key: 'fsltl',
+            logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/fsltl/fsltl-test-2.png',
+            logoSize: 36,
+            defs: [
+                {
+                    kind: 'externalApp',
+                    key: 'traffic-injector-app',
+                    prettyName: 'FSLTL Traffic Injector',
+                    detectionType: 'http',
+                    url: 'http://localhost:42888',
+                    killUrl: 'http://localhost:42888/kill',
+                    killMethod: 'POST',
+                },
+                {
+                    kind: 'externalApp',
+                    key: 'msfs',
+                    prettyName: 'MSFS',
+                    detectionType: 'tcp',
+                    port: 500,
+                },
+            ],
+            addons: [
+                {
+                    key: 'traffic-base-models',
+                    name: 'FSLTL Traffic',
+                    aircraftName: 'FSLTL Traffic',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/light.svg',
+                    enabled: true,
+                    backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fsltl/traffic/0.png'],
+                    shortDescription: 'FSLTL Traffic Base Models',
+                    description: 'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS. Utilising native glTF models and MSFS independent online IFR/VFR traffic injection system with stock ATC interaction based on Flightradar24.\n',
+                    targetDirectory: 'fsltl-traffic-base',
+                    alternativeNames: [],
+                    tracks: [
+                        {
+                            name: 'Release',
+                            key: 'release',
+                            url: 'https://github.com/FSLiveTrafficLiveries/base/releases/latest/download/',
+                            isExperimental: false,
+                            releaseModel: {
+                                type: 'CDN',
+                            },
+                            description: 'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS. Utilising native glTF models and MSFS independent online IFR/VFR traffic injection system with stock ATC interaction based on Flightradar24.\n',
+                        },
+                    ],
+                    disallowedRunningExternalApps: ['@/msfs'],
+                },
+                {
+                    key: 'traffic-injector',
+                    name: 'FSLTL Injector',
+                    aircraftName: 'FSLTL Traffic',
+                    titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/injector/dark.svg',
+                    titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/injector/light.svg',
+                    enabled: true,
+                    backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fsltl/traffic/0.png'],
+                    shortDescription: 'FSLTL Traffic Injector Software',
+                    description: 'FSLTL Live Traffic Injector - giving you a more immersive experience at airports globally!\n\n* Live IFR and VFR traffic based on Flightradar24\n* Parked aircraft based on historic real data for immersive full airports\n* Ability to have any combination of IFR, VFR and parked aircraft',
+                    targetDirectory: 'fsltl-traffic-injector',
+                    tracks: [
+                        {
+                            name: 'Release',
+                            key: 'release',
+                            url: 'https://packages.fslivetrafficliveries.com/injector/',
+                            isExperimental: false,
+                            releaseModel: {
+                                type: 'CDN',
+                            },
+                            description: 'FSLTL Live Traffic Injector - giving you a more immersive experience at airports globally!\n\n* Live IFR and VFR traffic based on Flightradar24\n* Parked aircraft based on historic real data for immersive full airports\n* Ability to have any combination of IFR, VFR and parked aircraft',
+                        },
+                    ],
+                    backgroundService: {
+                        executableFileBasename: 'fsltl-trafficinjector',
+                        runCheckExternalAppRef: '@/traffic-injector-app',
+                        enableAutostartConfiguration: false,
+                    },
+                    disallowedRunningExternalApps: ['@/traffic-injector-app'],
+                },
+            ],
+            buttons: [
+                {
+                    text: 'Website',
+                    action: 'openBrowser',
+                    url: 'https://www.fslivetrafficliveries.com/',
+                },
+                {
+                    text: 'Discord',
+                    action: 'openBrowser',
+                    url: 'https://discord.gg/suMR56wCrn',
                     inline: true,
                 },
             ],

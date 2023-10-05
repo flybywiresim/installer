@@ -14,7 +14,8 @@ import { Directories } from "renderer/utils/Directories";
 import fs from "fs-extra";
 import { ApplicationStatus, InstallStatus } from "renderer/components/AddonSection/Enums";
 import {
-    FragmenterContextEvents, FragmenterError,
+    FragmenterContextEvents,
+    FragmenterError,
     FragmenterInstallerEvents,
     FragmenterOperation,
     FragmenterUpdateChecker,
@@ -38,8 +39,8 @@ import channels from 'common/channels';
 import * as Sentry from '@sentry/electron/renderer';
 import { ErrorDialog } from "renderer/components/Modal/ErrorDialog";
 import { InstallSizeDialog } from "renderer/components/Modal/InstallSizeDialog";
-import checkDiskSpace from "check-disk-space";
 import { IncompatibleAddOnsCheck } from "renderer/utils/IncompatibleAddOnsCheck";
+import { FreeDiskSpace, FreeDiskSpaceStatus } from "renderer/utils/FreeDiskSpace";
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<(FragmenterInstallerEvents & FragmenterContextEvents)[K]>
 
@@ -269,22 +270,24 @@ export class InstallManager {
             }
         }
 
-        const incompatibleAddons = await IncompatibleAddOnsCheck.checkIncompatibleAddOns(addon);
-        if (incompatibleAddons.length > 0) {
-            const continueInstall = await showModal(
-                <PromptModal
-                    title="Incompatible Add-ons Found!"
-                    bodyText={
-                        <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons} />
-                    }
-                    cancelText="No"
-                    confirmText="Yes"
-                    confirmColor={ButtonType.Positive}
-                />,
-            );
-            if (!continueInstall) {
-                startResetStateTimer();
-                return InstallResult.Cancelled;
+        if (addon.incompatibleAddons && addon.incompatibleAddons.length > 0) {
+            const incompatibleAddons = await IncompatibleAddOnsCheck.checkIncompatibleAddOns(addon);
+            if (incompatibleAddons.length > 0) {
+                const continueInstall = await showModal(
+                    <PromptModal
+                        title="Incompatible Add-ons Found!"
+                        bodyText={
+                            <IncompatibleAddonDialogBody addon={addon} incompatibleAddons={incompatibleAddons} />
+                        }
+                        cancelText="No"
+                        confirmText="Yes"
+                        confirmColor={ButtonType.Positive}
+                    />,
+                );
+                if (!continueInstall) {
+                    startResetStateTimer();
+                    return InstallResult.Cancelled;
+                }
             }
         }
 
@@ -296,20 +299,20 @@ export class InstallManager {
 
         // Confirm download size and required disk space with user
         const requiredDiskSpace = updateInfo.requiredDiskSpace;
-        let availableDiskSpace;
-        try {
-            availableDiskSpace = (await checkDiskSpace(destDir)).free;
-        } catch (e) {
-            console.warn('Could not check free disk space.');
-        }
+
+        const freeDeskSpaceInfo = await FreeDiskSpace.analyse(requiredDiskSpace);
 
         const diskSpaceModalSettingString = `mainSettings.disableAddonDiskSpaceModal.${publisher.key}.${addon.key}`;
         const dontAsk = settings.get(diskSpaceModalSettingString);
 
-        if (Number.isFinite(requiredDiskSpace) && Number.isFinite(availableDiskSpace) && (!dontAsk || requiredDiskSpace >= availableDiskSpace)) {
-            const continueInstall = await showModal(<InstallSizeDialog updateInfo={updateInfo}
-                availableDiskSpace={availableDiskSpace}
-                dontShowAgainSettingName={diskSpaceModalSettingString} />);
+        if ((!dontAsk || freeDeskSpaceInfo.status !== FreeDiskSpaceStatus.NotLimited) && freeDeskSpaceInfo.status !== FreeDiskSpaceStatus.Unknown) {
+            const continueInstall = await showModal(
+                <InstallSizeDialog
+                    updateInfo={updateInfo}
+                    freeDeskSpaceInfo={freeDeskSpaceInfo}
+                    dontShowAgainSettingName={diskSpaceModalSettingString}
+                />,
+            );
 
             if (!continueInstall) {
                 startResetStateTimer();

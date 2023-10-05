@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Upload Release Asset
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     env:
       ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
       ASSET_DIRECTORY: dist/
@@ -24,7 +24,7 @@ jobs:
         run: npm ci
 
       - name: Install system requirements
-        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32 wine64
+        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 && sudo apt-get install -y wine32 wine64
 
       - name: Package installer
         run: |
@@ -57,3 +57,8 @@ jobs:
           BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
           BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
         run: ./scripts/cdn.sh dist/ installer/release && ./scripts/cdn.sh dist/ installer/rc
+
+      - name: Upload to CloudFlare CDN
+        env:
+          CLOUDFLARE_BUCKET_PASSWORD: ${{ secrets.CLOUDFLARE_BUCKET_PASSWORD }}
+        run: ./scripts/cdn-cf.sh dist/ installer/release && ./scripts/cdn-cf.sh dist/ installer/rc
