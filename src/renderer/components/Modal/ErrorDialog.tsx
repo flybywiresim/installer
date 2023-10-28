@@ -70,7 +70,7 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
                     </div>
 
                     <div className="flex flex-col">
-                        <p>Use this error code to obtain support on <a onClick={handleOpenDiscordSupport}>Discord</a>:</p>
+                        <p>Obtain support with a screenshot of this dialog on <a onClick={handleOpenDiscordSupport}>Discord</a>:</p>
 
                         <SentrySessionCard />
                     </div>
