@@ -131,6 +131,10 @@ function initializeApp() {
             });
         }
 
+        globalShortcut.register('CmdOrCtrl+R', () => {
+            mainWindow.isFocused() && mainWindow.reload();
+        });
+
         globalShortcut.register('CmdOrCtrl+F5', () => {
             mainWindow.isFocused() && mainWindow.reload();
         });
