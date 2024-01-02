@@ -44,7 +44,6 @@ import { ModalProvider } from "renderer/components/Modal";
 import { setSentrySessionID } from "renderer/redux/features/sentrySessionID";
 import packageJson from '../../package.json';
 
-import 'antd/dist/antd.less';
 import 'simplebar/dist/simplebar.min.css';
 import './index.scss';
 

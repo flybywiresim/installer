@@ -49,9 +49,8 @@
 }
 
 .button {
-    @apply text-quasi-white font-inter font-bold px-5 py-2.5 border-2 rounded-md transition-colors duration-150;
+    @apply text-2xl text-quasi-white font-inter font-bold px-5 py-2.5 border-2 rounded-md transition-colors duration-150;
 
-    font-size: 1.25em;
     height: 2.35em;
 
     @mixin color($background, $textColorHover: true, $borderColorHoverValue: $background) {

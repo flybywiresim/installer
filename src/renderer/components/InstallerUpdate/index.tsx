@@ -3,22 +3,42 @@ import { ipcRenderer } from "electron";
 import * as path from 'path';
 import channels from "common/channels";
 
+type IpcCallback = Parameters<(typeof ipcRenderer)['on']>[1]
+
+enum UpdateState {
+    Standby,
+    DownloadingUpdate,
+    RestartToUpdate,
+}
+
 const index = (): JSX.Element => {
-    const [buttonText, setButtonText] = useState('');
-    const [updateNeeded, setUpdateNeeded] = useState(false);
+    const [updateState, setUpdateState] = useState(UpdateState.Standby);
+
+    const updateNeeded = updateState !== UpdateState.Standby;
+
+    let buttonText;
+    switch (updateState) {
+        case UpdateState.Standby: buttonText = ''; break;
+        case UpdateState.DownloadingUpdate: buttonText = 'Downloading update'; break;
+        case UpdateState.RestartToUpdate: buttonText = 'Restart to update'; break;
+    }
 
     useEffect(() => {
-        ipcRenderer.on(channels.update.error, (_, args) => {
+        const updateErrorHandler: IpcCallback = (_, args) => {
             console.error('Update error', args);
-        });
-        ipcRenderer.on(channels.update.available, () => {
+        };
+
+        const updateAvailableHandler: IpcCallback = () => {
             console.log('Update available');
-            setUpdateNeeded(true);
-            setButtonText('Downloading update');
-        });
-        ipcRenderer.on(channels.update.downloaded, (_, args) => {
+
+            setUpdateState(UpdateState.DownloadingUpdate);
+        };
+
+        const updateDownloadedHandler: IpcCallback = (_, args) => {
             console.log('Update downloaded', args);
-            setButtonText('Restart to update');
+
+            setUpdateState(UpdateState.RestartToUpdate);
+
             Notification.requestPermission().then(() => {
                 console.log('Showing Update notification');
                 new Notification('Restart to update!', {
@@ -26,15 +46,26 @@ const index = (): JSX.Element => {
                     'body': "An update to the installer has been downloaded",
                 });
             }).catch(e => console.log(e));
-        });
+        };
+
+        ipcRenderer.on(channels.update.error, updateErrorHandler);
+        ipcRenderer.on(channels.update.available, updateAvailableHandler);
+        ipcRenderer.on(channels.update.downloaded, updateDownloadedHandler);
+
+        return () => {
+            ipcRenderer.off(channels.update.error, updateErrorHandler);
+            ipcRenderer.off(channels.update.available, updateAvailableHandler);
+            ipcRenderer.off(channels.update.downloaded, updateDownloadedHandler);
+        };
     }, []);
 
     return (
         <div
-            className="flex items-center place-self-start justify-center px-4 h-full bg-yellow-500 hover:bg-yellow-600 z-50 cursor-pointer transition duration-200"
-            hidden={!updateNeeded}
+            className={`flex items-center place-self-start justify-center px-4 h-full bg-yellow-500 hover:bg-yellow-600 z-50 cursor-pointer transition duration-200 ${
+                updateNeeded ? 'visible' : 'hidden'
+            }`}
             onClick={() => {
-                if (buttonText === 'Restart to update') {
+                if (updateState === UpdateState.RestartToUpdate) {
                     ipcRenderer.send('restartAndUpdate');
                 }
             }}
