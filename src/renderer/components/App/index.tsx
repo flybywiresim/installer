@@ -140,7 +140,7 @@ const App = () => {
                                 <Logo />
 
                                 {(process.env.NODE_ENV === 'development') && (
-                                    <div className="flex gap-x-4 ml-32 my-auto text-xl text-gray-400">
+                                    <div className="flex gap-x-4 ml-32 my-auto text-2xl text-gray-400">
                                         <pre>{packageInfo.version}</pre>
                                         <pre className="text-gray-500">|</pre>
                                         <pre className="text-utility-amber">Development mode</pre>
