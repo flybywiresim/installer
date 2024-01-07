@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import * as print from 'pdf-to-printer';
 import { PromptModal, useModals } from '../Modal';
-import { ButtonType } from '../Button';
+import { Button, ButtonType } from '../Button';
 import fs from 'fs';
 import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
@@ -131,30 +131,15 @@ export const LocalApiConfigEditUI: FC = () => {
 
                 <div className='flex flex-row space-x-4'>
                     {changesBeenMade && (
-                        <button
-                            className='flex items-center justify-center px-8 py-2 border-2 border-utility-red rounded-md transition duration-100 bg-utility-red hover:bg-navy text-white'
-                            onClick={handleDiscard}
-                        >
-                            Discard
-                        </button>
+                        <Button className="h-16" type={ButtonType.Danger} onClick={handleDiscard}>Discard</Button>
                     )}
 
                     {!isDefaultConfig && (
-                        <button
-                            className='flex items-center justify-center px-8 py-2 border-2 border-utility-red rounded-md transition duration-100 bg-utility-red hover:bg-navy text-white'
-                            onClick={handleReset}
-                        >
-                            Reset
-                        </button>
+                        <Button className="h-16" type={ButtonType.Danger} onClick={handleReset}>Reset</Button>
                     )}
 
                     {changesBeenMade && (
-                        <button
-                            className='flex items-center justify-center px-16 py-2 border-2 border-utility-green rounded-md transition duration-100 bg-utility-green hover:bg-navy text-white'
-                            onClick={handleConfigSave}
-                        >
-                            Save
-                        </button>
+                        <Button className="h-16" type={ButtonType.Positive} onClick={handleConfigSave}>Save</Button>
                     )}
                 </div>
             </div>
@@ -164,8 +149,7 @@ export const LocalApiConfigEditUI: FC = () => {
                     <h3 className='text-white mb-0'>Server</h3>
 
                     <div className='divide-y divide-gray-600'>
-                        <div className='flex flex-row items-center justify-between text-white py-4'>
-                            <p>Port</p>
+                        <SimBridgeSettingItem name="Port">
                             <input className="text-center" value={config.server.port} type="number" onChange={event => setConfig(old => ({
                                 ...old,
                                 server: {
@@ -174,15 +158,14 @@ export const LocalApiConfigEditUI: FC = () => {
                                 },
                             }))}
                             />
-                        </div>
+                        </SimBridgeSettingItem>
                     </div>
                 </div>
                 <div>
                     <h3 className='text-white mb-0'>Printer</h3>
 
                     <div className='divide-y divide-gray-600'>
-                        <div className='flex flex-row items-center justify-between text-white py-4'>
-                            <p>Enabled</p>
+                        <SimBridgeSettingItem name="Enabled">
                             <Toggle value={config.printer.enabled} onToggle={value => setConfig(old => ({
                                 ...old,
                                 printer: {
@@ -190,9 +173,9 @@ export const LocalApiConfigEditUI: FC = () => {
                                     enabled: value,
                                 },
                             }))} />
-                        </div>
-                        <div className='flex flex-row items-center justify-between text-white py-4'>
-                            <p>Printer Name</p>
+                        </SimBridgeSettingItem>
+
+                        <SimBridgeSettingItem name="Printer Name">
                             <select
                                 value={config.printer.printerName ?? ''}
                                 onChange={event => setConfig(old => ({
@@ -202,17 +185,17 @@ export const LocalApiConfigEditUI: FC = () => {
                                         printerName: event.target.value ? event.target.value : null,
                                     },
                                 }))}
-                                className="text-base text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
+                                className="text-xl text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
                             >
                                 <option value=''>None</option>
                                 {printers.map(p => (
                                     <option key={p.name} value={p.name}>{p.name}</option>
                                 ))}
                             </select>
-                        </div>
-                        <div className='flex flex-row items-center justify-between text-white py-4'>
-                            <p>Font Size</p>
-                            <input className="text-center" value={config.printer.fontSize} type="number" onChange={event => setConfig(old => ({
+                        </SimBridgeSettingItem>
+
+                        <SimBridgeSettingItem name="Font Size">
+                            <input className="text-xl text-center" value={config.printer.fontSize} type="number" onChange={event => setConfig(old => ({
                                 ...old,
                                 printer: {
                                     ...old.printer,
@@ -220,10 +203,10 @@ export const LocalApiConfigEditUI: FC = () => {
                                 },
                             }))}
                             />
-                        </div>
-                        <div className='flex flex-row items-center justify-between text-white py-4'>
-                            <p>Paper Size</p>
-                            <input className="text-center" value={config.printer.paperSize} onChange={event => setConfig(old => ({
+                        </SimBridgeSettingItem>
+
+                        <SimBridgeSettingItem name="Paper Size">
+                            <input className="text-xl text-center" value={config.printer.paperSize} onChange={event => setConfig(old => ({
                                 ...old,
                                 printer: {
                                     ...old.printer,
@@ -231,10 +214,10 @@ export const LocalApiConfigEditUI: FC = () => {
                                 },
                             }))}
                             />
-                        </div>
-                        <div className='flex flex-row items-center justify-between text-white py-4'>
-                            <p>Margin</p>
-                            <input className="text-center" value={config.printer.margin} type="number" onChange={event => setConfig(old => ({
+                        </SimBridgeSettingItem>
+
+                        <SimBridgeSettingItem name="Margin">
+                            <input className="text-xl text-center" value={config.printer.margin} type="number" onChange={event => setConfig(old => ({
                                 ...old,
                                 printer: {
                                     ...old.printer,
@@ -242,10 +225,24 @@ export const LocalApiConfigEditUI: FC = () => {
                                 },
                             }))}
                             />
-                        </div>
+                        </SimBridgeSettingItem>
                     </div>
                 </div>
             </div>
+        </div>
+    );
+};
+
+interface SimBridgeSettingItemProps {
+    name: string,
+}
+
+const SimBridgeSettingItem: React.FC<SimBridgeSettingItemProps> = ({ name, children }) => {
+    return (
+        <div className='flex flex-row items-center justify-between text-xl text-white py-4'>
+            <p className="m-0 p-0">{name}</p>
+
+            {children}
         </div>
     );
 };
