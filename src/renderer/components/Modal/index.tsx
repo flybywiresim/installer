@@ -244,7 +244,7 @@ export const ChangelogModal: React.FC = () => {
             <div className="mt-4 h-96 overflow-y-scroll">
                 {(changelog as ChangelogType).releases.map((release) => <div className="mb-6">
                     <div className="text-4xl font-bold mb-2">{release.name}</div>
-                    {release.changes.map((change) => <div className="mb-4 flex">
+                    {release.changes.map((change) => <div className="mb-4 flex text-2xl">
                         <div className="w-7">
                             <Dot className="" size={20} strokeWidth={1}/>
                         </div>
