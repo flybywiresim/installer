@@ -9,11 +9,11 @@
 
 
 releases:
-  - - name: 3.3.4
-      changes:
-        - title: Added check for incompatible add-ons
-          categories: [ Addons ]
-          authors: [ Cdr_Maverick ]
+  - name: 3.3.4
+    changes:
+      - title: Added check for incompatible add-ons
+        categories: [ Addons ]
+        authors: [ Cdr_Maverick ]
   - name: 3.2.2
     changes:
       - title: Update dependency to mitigate potential security issue
