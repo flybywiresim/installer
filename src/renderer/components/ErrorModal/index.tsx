@@ -4,8 +4,6 @@ import settings from "common/settings";
 import { Directories } from "renderer/utils/Directories";
 import * as fs from "fs";
 import { Button, ButtonType } from "renderer/components/Button";
-import { ipcRenderer } from "electron";
-import channels from "common/channels";
 
 export const ErrorModal = (): JSX.Element => {
     const [communityError, setCommunityError] = useState<boolean>(!fs.existsSync(Directories.installLocation()) || Directories.installLocation() === 'C:\\');
