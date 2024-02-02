@@ -19,8 +19,8 @@ export const SentrySessionCard: FC = () => {
     };
 
     return (
-        <div className="relative w-full flex justify-center items-center border-2 border-gray-800 text-5xl text-center p-3.5 rounded-md">
-            <span className="font-mono">{sessionID}</span>
+        <div className="relative w-full flex justify-center items-center border-2 border-gray-800 text-2xl text-center p-3.5 rounded-md">
+            <span className="font-mono">Copy Sentry Code to clipboard: {sessionID}</span>
 
             <div className="absolute right-3">
                 {showCopied ? (
@@ -30,7 +30,8 @@ export const SentrySessionCard: FC = () => {
                         <ClipboardCheck className="transition-colors duration-200 cursor-pointer" size={24} onClick={handleCopy} />
                     </span>
                 ) : (
-                    <Clipboard className="text-gray-500 hover:text-gray-300 transition-colors duration-200 cursor-pointer" size={24} onClick={handleCopy} />
+                    <Clipboard className="text-gray-500 hover:text-gray-300 transition-colors duration-200 cursor-pointer" size={24}
+                        onClick={handleCopy} />
                 )}
             </div>
         </div>
