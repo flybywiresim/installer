@@ -72,8 +72,6 @@ ipcRenderer.invoke(channels.sentry.requestSessionID).then((sessionID) => {
 
 // Obtain configuration and use it
 InstallerConfiguration.obtain().then((config: Configuration) => {
-    throw new Error('a'.repeat(255));
-
     store.dispatch(setConfiguration({ configuration: config }));
 
     for (const publisher of config.publishers) {
