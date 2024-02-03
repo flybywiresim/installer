@@ -95,7 +95,6 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
             bodyText={(
                 <div className="flex flex-col gap-y-5">
                     <div className="flex flex-col">
-                        <p>An error occurred while installing this addon.</p>
                         {errorVisualisation}
                         <pre className="h-96 bg-gray-800 p-2.5 rounded-md">{error.stack}</pre>
                     </div>
