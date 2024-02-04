@@ -51,7 +51,7 @@ export const AutostartDialog: FC<AutostartDialogProps> = ({
       bodyText={
         <>
           <ReactMarkdown
-            className="mt-2 mb-6 markdown-body-modal"
+            className="markdown-body-modal mb-6 mt-2"
             children={`You can choose to automatically start **${app.prettyName}** when you log into your Windows session.`}
             remarkPlugins={[remarkGfm]}
             linkTarget={'_blank'}
@@ -93,13 +93,13 @@ export const YesNoOptionToggle: FC<YesNoOptionToggleProps> = ({
 
   return (
     <div
-      className={`flex items-center gap-x-10 ${bgColor} px-10 py-12 rounded-md transition-color duration-200 cursor-pointer`}
+      className={`flex items-center gap-x-10 ${bgColor} transition-color cursor-pointer rounded-md px-10 py-12 duration-200`}
       onClick={handleClick}
     >
       <Toggle value={enabled} onToggle={handleClick} scale={1.5} bgColor="bg-navy" onColor={enabledBgColor} />
 
       <span className="flex gap-x-20">
-        <span className={`font-manrope font-bold text-4xl ${titleColor}`}>{children}</span>
+        <span className={`font-manrope text-4xl font-bold ${titleColor}`}>{children}</span>
       </span>
     </div>
   );
@@ -118,13 +118,13 @@ export const CompactYesNoOptionToggle: FC<YesNoOptionToggleProps> = ({
 
   return (
     <div
-      className={`flex items-center gap-x-6 border-2 ${borderColor} px-6 py-5 rounded-md transition-color duration-200 cursor-pointer`}
+      className={`flex items-center gap-x-6 border-2 ${borderColor} transition-color cursor-pointer rounded-md px-6 py-5 duration-200`}
       onClick={handleClick}
     >
       <Toggle value={enabled} onToggle={handleClick} scale={1.2} onColor={enabledBgColor} />
 
       <span className="flex gap-x-20">
-        <span className={`font-manrope font-bold text-3xl ${titleColor}`}>{children}</span>
+        <span className={`font-manrope text-3xl font-bold ${titleColor}`}>{children}</span>
       </span>
     </div>
   );

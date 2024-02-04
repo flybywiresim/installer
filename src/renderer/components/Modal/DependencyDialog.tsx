@@ -21,7 +21,7 @@ export const DependencyDialogBody: FC<DependencyDialogBodyProps> = ({
       functionality of <b>{addon.name}</b>.
     </p>
 
-    <div className="flex items-center gap-x-7 bg-navy px-7 py-6 rounded-md my-6">
+    <div className="my-6 flex items-center gap-x-7 rounded-md bg-navy px-7 py-6">
       <Box size={36} />
 
       <div className="flex flex-col gap-y-2">

@@ -13,7 +13,7 @@ export const NavBar: FC = ({ children }) => {
   const bg = darkTheme ? 'bg-navy-dark' : 'bg-navy';
 
   return (
-    <div className={`${bg} px-6 py-7 border-r border-navy-light flex flex-col justify-between h-full`}>
+    <div className={`${bg} flex h-full flex-col justify-between border-r border-navy-light px-6 py-7`}>
       <div className="flex flex-col gap-y-5">{children}</div>
 
       <div className="mt-auto flex flex-col gap-y-5">
@@ -50,7 +50,7 @@ export const NavbarItem: FC<NavBarItemProps> = ({
   <NavLink to={to} className={`${BASE_STYLE} ${className}`} activeClassName={`${BASE_STYLE} bg-navy-light`}>
     {children}
 
-    <span className="absolute w-0 h-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
+    <span className="absolute size-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
       <svg className="relative w-4" viewBox="0 0 10 10" style={{ left: '19px', bottom: '30px' }}>
         <circle cx={5} cy={5} r={5} fill={notificationColor} />
       </svg>

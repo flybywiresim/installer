@@ -57,7 +57,7 @@ interface SideBarLinkProps {
 
 const SideBarLink: FC<SideBarLinkProps> = ({ to, children, disabled = false }) => (
   <NavLink
-    className={`w-full flex flex-row items-center gap-x-5 text-2xl ${disabled ? 'text-gray-500' : 'text-white'} font-manrope font-bold hover:text-cyan no-underline`}
+    className={`flex w-full flex-row items-center gap-x-5 text-2xl ${disabled ? 'text-gray-500' : 'text-white'} font-manrope font-bold no-underline hover:text-cyan`}
     activeClassName="text-cyan"
     to={to}
     style={{ pointerEvents: disabled ? 'none' : 'unset' }}
@@ -344,9 +344,9 @@ export const AddonSection = (): JSX.Element => {
   }
 
   return (
-    <div className="flex flex-row w-full h-full">
-      <div className="flex-none bg-navy-medium z-40 h-full" style={{ width: '29rem' }}>
-        <div className="h-full flex flex-col divide-y divide-gray-700">
+    <div className="flex size-full flex-row">
+      <div className="z-40 h-full flex-none bg-navy-medium" style={{ width: '29rem' }}>
+        <div className="flex h-full flex-col divide-y divide-gray-700">
           <AddonBar>
             <div className="flex flex-col gap-y-4">
               {publisherData.addons
@@ -366,7 +366,7 @@ export const AddonSection = (): JSX.Element => {
                 ))}
             </div>
 
-            <div className="h-full flex flex-col gap-y-4">
+            <div className="flex h-full flex-col gap-y-4">
               {publisherData.defs
                 ?.filter((it) => it.kind === 'addonCategory')
                 .map((category: AddonCategoryDefinition) => {
@@ -385,7 +385,7 @@ export const AddonSection = (): JSX.Element => {
 
                   return (
                     <div className={classes}>
-                      <h4 className="text-quasi-white font-manrope font-medium">{category.title}</h4>
+                      <h4 className="font-manrope font-medium text-quasi-white">{category.title}</h4>
 
                       <div className="flex flex-col gap-y-4">
                         {publisherData.addons
@@ -411,8 +411,8 @@ export const AddonSection = (): JSX.Element => {
           </AddonBar>
         </div>
       </div>
-      <div className={`bg-navy w-full flex flex-col h-full`}>
-        <div className="flex flex-row h-full relative">
+      <div className={`flex size-full flex-col bg-navy`}>
+        <div className="relative flex h-full flex-row">
           <div className="w-full">
             <Route path={`/addon-section/FlyByWire Simulations/configuration/fbw-local-api-config`}>
               <LocalApiConfigEditUI />
@@ -431,9 +431,9 @@ export const AddonSection = (): JSX.Element => {
             </Route>
 
             <Route path={`/addon-section/${publisherName}/main`}>
-              <div className="h-full flex flex-col">
+              <div className="flex h-full flex-col">
                 <div
-                  className="flex-shrink-0 relative bg-cover bg-center"
+                  className="relative shrink-0 bg-cover bg-center"
                   style={{
                     height: '44vh',
                     backgroundImage:
@@ -442,11 +442,11 @@ export const AddonSection = (): JSX.Element => {
                         : `url(${selectedAddon.backgroundImageUrls[0]})`,
                   }}
                 >
-                  <div className="absolute bottom-0 left-0 flex flex-row items-end gap-x-1 w-full bg-navy">
+                  <div className="absolute bottom-0 left-0 flex w-full flex-row items-end gap-x-1 bg-navy">
                     <StateSection publisher={publisherData} addon={selectedAddon} />
                   </div>
                 </div>
-                <div className="h-0 flex-grow flex flex-row">
+                <div className="flex h-0 grow flex-row">
                   <Route exact path={`/addon-section/${publisherName}/main/configure`}>
                     <Redirect to={`/addon-section/${publisherName}/main/configure/release-track`} />
                   </Route>
@@ -484,8 +484,8 @@ export const AddonSection = (): JSX.Element => {
                     <About addon={selectedAddon} />
                   </Route>
 
-                  <div className="flex flex-col items-center ml-auto justify-between h-full relative bg-navy-dark p-7 flex-shrink-0">
-                    <div className="w-full flex flex-col items-start place-self-start space-y-7">
+                  <div className="relative ml-auto flex h-full shrink-0 flex-col items-center justify-between bg-navy-dark p-7">
+                    <div className="flex w-full flex-col items-start space-y-7 place-self-start">
                       <SideBarLink to={`/addon-section/${publisherName}/main/configure`}>
                         <Sliders size={22} />
                         Configure
@@ -533,27 +533,27 @@ export const AddonSection = (): JSX.Element => {
 };
 
 const About: FC<{ addon: Addon }> = ({ addon }) => (
-  <div className="w-full h-full p-7">
-    <div className="flex justify-between items-center">
-      <h2 className="text-white font-bold">About</h2>
+  <div className="size-full p-7">
+    <div className="flex items-center justify-between">
+      <h2 className="font-bold text-white">About</h2>
 
       <h2 className="text-white">{addon.aircraftName}</h2>
     </div>
     <ReactMarkdown
-      className="text-xl text-white font-light font-manrope leading-relaxed"
+      className="font-manrope text-xl font-light leading-relaxed text-white"
       children={addon.description}
       linkTarget={'_blank'}
     />
 
     {addon.techSpecs && addon.techSpecs.length > 0 && (
       <>
-        <h3 className="text-white font-bold">Tech Specs</h3>
+        <h3 className="font-bold text-white">Tech Specs</h3>
 
         <div className="flex flex-row gap-x-16">
           {addon.techSpecs.map((spec) => (
             <span className="flex flex-col items-start">
-              <span className="text-2xl text-quasi-white mb-1">{spec.name}</span>
-              <span className="text-4xl font-manrope font-semibold text-cyan">{spec.value}</span>
+              <span className="mb-1 text-2xl text-quasi-white">{spec.name}</span>
+              <span className="font-manrope text-4xl font-semibold text-cyan">{spec.value}</span>
             </span>
           ))}
         </div>

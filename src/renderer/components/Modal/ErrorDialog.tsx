@@ -30,7 +30,7 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
       case FragmenterErrorCode.PermissionsError:
         errorVisualisation = (
           <ErrorVisualisationBox icon={<Shield className="text-utility-red" size={36} />}>
-            <span className="text-4xl font-bold font-manrope">Windows permissions error</span>
+            <span className="font-manrope text-4xl font-bold">Windows permissions error</span>
 
             <span className="text-2xl">Make sure the install folder has appropriate permissions.</span>
           </ErrorVisualisationBox>
@@ -39,7 +39,7 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
       case FragmenterErrorCode.NoSpaceOnDevice:
         errorVisualisation = (
           <ErrorVisualisationBox icon={<Hdd className="text-utility-red" size={36} />}>
-            <span className="text-4xl font-bold font-manrope">No space left on device</span>
+            <span className="font-manrope text-4xl font-bold">No space left on device</span>
 
             <span className="text-2xl">Try to free up space in order to install this addon.</span>
           </ErrorVisualisationBox>
@@ -54,7 +54,7 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
   return (
     <AlertModal
       title={
-        <div className="flex flex-col items-center gap-y-2.5 text-utility-red fill-current mb-2.5">
+        <div className="mb-2.5 flex flex-col items-center gap-y-2.5 fill-current text-utility-red">
           <ExclamationTriangle size={64} />
           <h1 className="modal-title">Error while installing</h1>
         </div>
@@ -66,7 +66,7 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
 
             {errorVisualisation}
 
-            <pre className="h-96 bg-gray-800 p-2.5 rounded-md">{error.stack}</pre>
+            <pre className="h-96 rounded-md bg-gray-800 p-2.5">{error.stack}</pre>
           </div>
 
           <div className="flex flex-col">
@@ -89,7 +89,7 @@ interface ErrorVisualisationBoxProps {
 }
 
 const ErrorVisualisationBox: FC<ErrorVisualisationBoxProps> = ({ icon, children }) => (
-  <div className="w-full flex items-center gap-x-7 border-2 px-7 py-3.5 mb-5 border-utility-red text-utility-red rounded-md">
+  <div className="mb-5 flex w-full items-center gap-x-7 rounded-md border-2 border-utility-red px-7 py-3.5 text-utility-red">
     {icon}
 
     <div className="flex flex-col gap-y-2.5">{children}</div>

@@ -59,16 +59,16 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
   const directoriesDisabled = !InstallStatusCategories.installed.includes(installStates[addon.key]?.status);
 
   return (
-    <div className="flex flex-row w-full h-full mt-5 gap-x-8 text-quasi-white">
+    <div className="mt-5 flex size-full flex-row gap-x-8 text-quasi-white">
       {links.length > 0 && (
         <div>
-          <h3 className="text-white font-bold">Links</h3>
+          <h3 className="font-bold text-white">Links</h3>
 
           <div className="flex items-center gap-x-3">
             {links.map((it) => (
               <button
                 key={it.title}
-                className="flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-4 text-3xl rounded-md transition-colors duration-100"
+                className="flex items-center gap-x-5 rounded-md border-2 border-navy-light bg-navy-light px-7 py-4 text-3xl transition-colors duration-100 hover:border-cyan hover:bg-transparent"
                 onClick={() => handleClickLink(it)}
               >
                 <BoxArrowRight size={24} />
@@ -82,13 +82,13 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
 
       {directories.length > 0 && (
         <div>
-          <h3 className="text-white font-bold">Directories</h3>
+          <h3 className="font-bold text-white">Directories</h3>
 
           <div className="flex items-center gap-x-3">
             {directories.map((it) => (
               <button
                 key={it.title}
-                className={`flex items-center gap-x-5 bg-navy-light hover:bg-transparent border-2 border-navy-light hover:border-cyan px-7 py-4 text-3xl rounded-md transition-colors duration-100 ${directoriesDisabled ? 'opacity-60 pointer-events-none' : ''}`}
+                className={`flex items-center gap-x-5 rounded-md border-2 border-navy-light bg-navy-light px-7 py-4 text-3xl transition-colors duration-100 hover:border-cyan hover:bg-transparent ${directoriesDisabled ? 'pointer-events-none opacity-60' : ''}`}
                 onClick={() => handleClickDirectory(it)}
               >
                 <Folder size={24} />

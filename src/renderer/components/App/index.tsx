@@ -124,7 +124,7 @@ const App = () => {
     }
     return (
       configUrl !== productionURL && (
-        <div className="flex gap-x-4 ml-32 my-auto text-2xl text-gray-400">
+        <div className="my-auto ml-32 flex gap-x-4 text-2xl text-gray-400">
           <pre className="text-utility-amber">Developer Configuration Used: </pre>
           <pre className="text-quasi-white">{showDevURL}</pre>
         </div>
@@ -139,14 +139,14 @@ const App = () => {
       <ModalContainer />
 
       <SimpleBar>
-        <div className="flex flex-col h-screen w-full">
-          <div className="flex flex-col h-full overflow-hidden">
-            <div className="absolute w-full h-12 z-50 flex flex-row pl-4 items-center bg-black draggable">
-              <div className="h-full flex-1 flex flex-row items-stretch overflow-hidden">
+        <div className="flex h-screen w-full flex-col">
+          <div className="flex h-full flex-col overflow-hidden">
+            <div className="draggable absolute z-50 flex h-12 w-full flex-row items-center bg-black pl-4">
+              <div className="flex h-full flex-1 flex-row items-stretch overflow-hidden">
                 <Logo />
 
                 {process.env.NODE_ENV === 'development' && (
-                  <div className="flex gap-x-4 ml-32 my-auto text-2xl text-gray-400">
+                  <div className="my-auto ml-32 flex gap-x-4 text-2xl text-gray-400">
                     <pre>{packageInfo.version}</pre>
                     <pre className="text-gray-500">|</pre>
                     <pre className="text-utility-amber">Development mode</pre>
@@ -157,13 +157,13 @@ const App = () => {
                 {isDevelopmentConfigURL()}
               </div>
 
-              <div className="flex flex-row not-draggable h-full">
+              <div className="not-draggable flex h-full flex-row">
                 <InstallerUpdate />
                 <WindowButtons />
               </div>
             </div>
 
-            <div className="h-full pt-10 flex flex-row justify-start">
+            <div className="flex h-full flex-row justify-start pt-10">
               <div className="z-40 h-full">
                 <NavBar>
                   {configuration.publishers.map((publisher) => (
@@ -172,7 +172,7 @@ const App = () => {
                 </NavBar>
               </div>
 
-              <div className="bg-navy m-0 w-full flex">
+              <div className="m-0 flex w-full bg-navy">
                 <Switch>
                   <Route exact path="/">
                     <Redirect to={`/addon-section/${configuration.publishers[0].name}`} />

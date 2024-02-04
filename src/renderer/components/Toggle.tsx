@@ -16,12 +16,12 @@ export const Toggle: FC<ToggleProps> = ({
   onColor = 'bg-cyan-medium',
 }) => (
   <div
-    className={`flex text-3xl items-center w-14 h-8 rounded-full cursor-pointer ${bgColor}`}
+    className={`flex h-8 w-14 cursor-pointer items-center rounded-full text-3xl ${bgColor}`}
     onClick={() => onToggle(!value)}
     style={{ transform: `scale(${scale})` }}
   >
     <div
-      className={`w-6 h-6 bg-gray-400 rounded-full transition mx-1.5 duration-200 transform ${value && `${onColor}`}`}
+      className={`mx-1.5 size-6 rounded-full bg-gray-400 transition duration-200${value && `${onColor}`}`}
       style={{ transform: `translate(${value ? '12px' : '1px'}, 0)` }}
     />
   </div>

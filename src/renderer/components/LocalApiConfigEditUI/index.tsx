@@ -113,7 +113,7 @@ export const LocalApiConfigEditUI: FC = () => {
 
   if (config === null) {
     return (
-      <div className="h-full w-full flex items-center justify-center p-8">
+      <div className="flex size-full items-center justify-center p-8">
         <h2 className="text-center text-white">
           Could not load configuration file. This likely means that you do not have SimBridge currently installed.
         </h2>
@@ -126,9 +126,9 @@ export const LocalApiConfigEditUI: FC = () => {
   const isDefaultConfig = JSON.stringify(config) === JSON.stringify(localApiDefaultConfiguration);
 
   return (
-    <div className="h-full p-7 overflow-y-scroll w-full">
+    <div className="size-full overflow-y-scroll p-7">
       <div className="flex flex-row items-center justify-between gap-x-4">
-        <h2 className="font-bold mb-0 text-white">SimBridge Settings</h2>
+        <h2 className="mb-0 font-bold text-white">SimBridge Settings</h2>
 
         <div className="flex flex-row space-x-4">
           {changesBeenMade && (
@@ -151,9 +151,9 @@ export const LocalApiConfigEditUI: FC = () => {
         </div>
       </div>
 
-      <div className="space-y-4 mt-4">
+      <div className="mt-4 space-y-4">
         <div>
-          <h3 className="text-white mb-0">Server</h3>
+          <h3 className="mb-0 text-white">Server</h3>
 
           <div className="divide-y divide-gray-600">
             <SimBridgeSettingItem name="Port">
@@ -175,7 +175,7 @@ export const LocalApiConfigEditUI: FC = () => {
           </div>
         </div>
         <div>
-          <h3 className="text-white mb-0">Printer</h3>
+          <h3 className="mb-0 text-white">Printer</h3>
 
           <div className="divide-y divide-gray-600">
             <SimBridgeSettingItem name="Enabled">
@@ -205,7 +205,7 @@ export const LocalApiConfigEditUI: FC = () => {
                     },
                   }))
                 }
-                className="text-xl text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
+                className="w-auto cursor-pointer rounded-md border-2 border-navy bg-navy-light px-3.5 py-2.5 text-xl text-white outline-none"
               >
                 <option value="">None</option>
                 {printers.map((p) => (
@@ -218,7 +218,7 @@ export const LocalApiConfigEditUI: FC = () => {
 
             <SimBridgeSettingItem name="Font Size">
               <input
-                className="text-xl text-center"
+                className="text-center text-xl"
                 value={config.printer.fontSize}
                 type="number"
                 onChange={(event) =>
@@ -235,7 +235,7 @@ export const LocalApiConfigEditUI: FC = () => {
 
             <SimBridgeSettingItem name="Paper Size">
               <input
-                className="text-xl text-center"
+                className="text-center text-xl"
                 value={config.printer.paperSize}
                 onChange={(event) =>
                   setConfig((old) => ({
@@ -251,7 +251,7 @@ export const LocalApiConfigEditUI: FC = () => {
 
             <SimBridgeSettingItem name="Margin">
               <input
-                className="text-xl text-center"
+                className="text-center text-xl"
                 value={config.printer.margin}
                 type="number"
                 onChange={(event) =>
@@ -278,7 +278,7 @@ interface SimBridgeSettingItemProps {
 
 const SimBridgeSettingItem: React.FC<SimBridgeSettingItemProps> = ({ name, children }) => {
   return (
-    <div className="flex flex-row items-center justify-between text-xl text-white py-4">
+    <div className="flex flex-row items-center justify-between py-4 text-xl text-white">
       <p className="m-0 p-0">{name}</p>
 
       {children}

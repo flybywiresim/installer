@@ -58,14 +58,14 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
 };
 
 const StateContainer: FC = ({ children }) => (
-  <div className="h-32 bottom-0 left-0 flex flex-row items-center justify-between px-6 pt-6 pb-5 w-full bg-navy-dark bg-opacity-95">
+  <div className="bottom-0 left-0 flex h-32 w-full flex-row items-center justify-between bg-navy-dark bg-opacity-95 px-6 pb-5 pt-6">
     {children}
   </div>
 );
 
-const SmallStateText: FC = ({ children }) => <div className="text-white text-2xl font-bold">{children}</div>;
+const SmallStateText: FC = ({ children }) => <div className="text-2xl font-bold text-white">{children}</div>;
 
-const StateText: FC = ({ children }) => <div className="text-gray-300 text-4xl font-medium">{children}</div>;
+const StateText: FC = ({ children }) => <div className="text-4xl font-medium text-gray-300">{children}</div>;
 
 interface ProgressBarProps {
   className: string;
@@ -74,8 +74,8 @@ interface ProgressBarProps {
 }
 
 const ProgressBar: FC<ProgressBarProps> = ({ className, value }) => (
-  <div className="w-full h-2 z-10 bg-black">
-    <div className={`h-2 z-11 transition-all duration-75 ${className}`} style={{ width: `${value}%` }} />
+  <div className="z-10 h-2 w-full bg-black">
+    <div className={`z-11 h-2 transition-all duration-75 ${className}`} style={{ width: `${value}%` }} />
     {/* FIXME animation */}
   </div>
 );
@@ -117,13 +117,13 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
     };
 
     return (
-      <div className="flex-grow" style={{ flexGrow: 10 }}>
+      <div className="grow" style={{ flexGrow: 10 }}>
         <StateContainer>
-          <div className="flex gap-x-7 items-center">
+          <div className="flex items-center gap-x-7">
             {isRunning ? (
-              <Activity size={32} className={`text-utility-green fill-current animate-pulse`} />
+              <Activity size={32} className={`animate-pulse fill-current text-utility-green`} />
             ) : (
-              <Activity size={32} className={`text-gray-500 fill-current`} />
+              <Activity size={32} className={`fill-current text-gray-500`} />
             )}
 
             <div className="flex flex-col gap-y-2">
@@ -132,10 +132,10 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
             </div>
           </div>
 
-          <div className="flex gap-x-14 items-center">
+          <div className="flex items-center gap-x-14">
             {(addon.backgroundService.enableAutostartConfiguration ?? true) && (
               <span
-                className="flex items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan cursor-pointer"
+                className="flex cursor-pointer items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan"
                 onClick={handleClickAutostart}
               >
                 <Gear size={22} />
@@ -177,25 +177,25 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
   let progressBarValue;
   switch (installState.status) {
     case InstallStatus.DownloadPrep:
-      stateIcon = <Download size={40} className="text-white mr-6" />;
+      stateIcon = <Download size={40} className="mr-6 text-white" />;
       stateText = <SmallStateText>Preparing update</SmallStateText>;
       progressBarBg = 'bg-cyan';
       progressBarValue = 0;
       break;
     case InstallStatus.Downloading: {
       if (download.progress.interrupted) {
-        stateIcon = <WifiOff size={42} className="text-white mr-6" />;
+        stateIcon = <WifiOff size={42} className="mr-6 text-white" />;
         stateText = <SmallStateText>{`Download interrupted`}</SmallStateText>;
         progressBarBg = 'bg-utility-red';
       } else {
         const part =
           Number.isFinite(download.progress.splitPartIndex) && !Number.isFinite(download.progress.totalPercent) ? (
-            <span className="text-gray-300 ml-3">
+            <span className="ml-3 text-gray-300">
               part {download.progress.splitPartIndex + 1}/{download.progress.splitPartCount}
             </span>
           ) : null;
 
-        stateIcon = <Download size={40} className="text-white mr-6" />;
+        stateIcon = <Download size={40} className="mr-6 text-white" />;
         stateText = (
           <SmallStateText>
             {`Downloading`}
@@ -213,13 +213,13 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
     }
     case InstallStatus.Decompressing:
     case InstallStatus.InstallingDependencyEnding:
-      stateIcon = <Download size={40} className="text-white mr-6" />;
+      stateIcon = <Download size={40} className="mr-6 text-white" />;
       stateText = <SmallStateText>Decompressing</SmallStateText>;
       progressBarBg = 'bg-cyan';
       progressBarValue = installState.percent;
       break;
     case InstallStatus.DownloadEnding:
-      stateIcon = <Download size={40} className="text-white mr-6" />;
+      stateIcon = <Download size={40} className="mr-6 text-white" />;
       stateText = <SmallStateText>Finishing update</SmallStateText>;
       progressBarBg = 'bg-cyan';
       progressBarValue = 100;
@@ -230,19 +230,19 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
       progressBarValue = 100;
       break;
     case InstallStatus.DownloadRetry:
-      stateIcon = <Stopwatch size={40} className="text-white mr-6" />;
+      stateIcon = <Stopwatch size={40} className="mr-6 text-white" />;
       stateText = <SmallStateText>Retrying {download?.module.toLowerCase()} module</SmallStateText>;
       progressBarBg = 'bg-utility-amber';
       progressBarValue = 100;
       break;
     case InstallStatus.DownloadError:
-      stateIcon = <XOctagon size={40} className="text-white mr-6" />;
+      stateIcon = <XOctagon size={40} className="mr-6 text-white" />;
       stateText = <SmallStateText>Failed to install</SmallStateText>;
       progressBarBg = 'bg-utility-red';
       progressBarValue = 100;
       break;
     case InstallStatus.DownloadCanceled:
-      stateIcon = <XOctagon size={40} className="text-white mr-6" />;
+      stateIcon = <XOctagon size={40} className="mr-6 text-white" />;
       stateText = <SmallStateText>Download canceled</SmallStateText>;
       progressBarBg = 'bg-utility-amber';
       progressBarValue = 100;
@@ -289,7 +289,7 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
       ) : null;
 
     moduleStateText = (
-      <span className="flex items-center gap-x-3 mr-12 text-white text-4xl">
+      <span className="mr-12 flex items-center gap-x-3 text-4xl text-white">
         {moduleIndicator}
 
         <span className="flex items-center gap-x-4">
@@ -299,19 +299,19 @@ const DownloadProgressBanner: FC<DownloadProgressBannerProps> = ({ addon, instal
     );
   } else {
     moduleStateText = (
-      <span className="flex items-center gap-x-3 mr-12 text-white text-4xl">
+      <span className="mr-12 flex items-center gap-x-3 text-4xl text-white">
         <span className="flex items-center gap-x-4">{addon.name}</span>
       </span>
     );
   }
 
   return (
-    <div className="flex-grow" style={{ flexGrow: 10 }}>
+    <div className="grow" style={{ flexGrow: 10 }}>
       <StateContainer>
         <span className="flex items-center">
           {stateIcon}
 
-          <div className="w-0.5 h-20 mr-6 bg-gray-700"></div>
+          <div className="mr-6 h-20 w-0.5 bg-gray-700"></div>
 
           <div className="flex items-center gap-x-12">
             <div className="flex flex-col gap-y-2">

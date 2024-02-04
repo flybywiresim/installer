@@ -69,7 +69,7 @@ const index = (): JSX.Element => {
 
   return (
     <div
-      className={`flex items-center place-self-start justify-center px-4 h-full bg-yellow-500 hover:bg-yellow-600 z-50 cursor-pointer transition duration-200 ${
+      className={`z-50 flex h-full cursor-pointer items-center justify-center place-self-start bg-yellow-500 px-4 transition duration-200 hover:bg-yellow-600 ${
         updateNeeded ? 'visible' : 'hidden'
       }`}
       onClick={() => {
@@ -78,7 +78,7 @@ const index = (): JSX.Element => {
         }
       }}
     >
-      <div className="text-white font-semibold text-lg">{buttonText}</div>
+      <div className="text-lg font-semibold text-white">{buttonText}</div>
     </div>
   );
 };

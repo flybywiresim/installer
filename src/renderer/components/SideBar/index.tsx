@@ -13,7 +13,7 @@ export const SideBar: FC<SideBarProps> = ({ className, children }) => {
 
   return (
     <div
-      className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} px-6 py-7 h-full ${className}`}
+      className={`flex flex-col gap-y-5 ${textClass} ${darkTheme ? 'bg-navy-dark' : 'bg-quasi-white'} h-full px-6 py-7 ${className}`}
       style={{ width: '28rem' }}
     >
       {children}
@@ -49,7 +49,7 @@ export const SideBarItem: FC<SideBarItemProps> = ({
 
   return (
     <div
-      className={`w-full relative p-5 flex justify-between items-center rounded-lg transition duration-200 border-2 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} no-underline ${className}`}
+      className={`relative flex w-full items-center justify-between rounded-lg border-2 p-5 transition duration-200 ${defaultBorderStyle} ${dependantStyles} ${!enabled && 'opacity-50'} ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} no-underline ${className}`}
       onClick={enabled ? onClick : undefined}
     >
       {children}
@@ -64,7 +64,7 @@ export const SideBarTitle: FC = ({ children }) => {
 
   return (
     <div className="flex flex-col -space-y-7">
-      <h2 className={`${textClass} font-bold -mb-1`}>{children}</h2>
+      <h2 className={`${textClass} -mb-1 font-bold`}>{children}</h2>
     </div>
   );
 };

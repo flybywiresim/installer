@@ -46,9 +46,9 @@ export const SettingsSection = (): JSX.Element => {
   };
 
   return (
-    <div className="w-full bg-navy-lighter text-white overflow-hidden">
-      <div className="w-full h-full flex flex-row items-stretch">
-        <SideBar className="flex-shrink-0">
+    <div className="w-full overflow-hidden bg-navy-lighter text-white">
+      <div className="flex size-full flex-row items-stretch">
+        <SideBar className="shrink-0">
           <div
             onClick={(event) => {
               if (event.ctrlKey && event.altKey) {
@@ -60,11 +60,11 @@ export const SettingsSection = (): JSX.Element => {
           </div>
 
           <SideBarLink to="/settings/general">
-            <span className="text-3xl font-manrope font-semibold">General</span>
+            <span className="font-manrope text-3xl font-semibold">General</span>
           </SideBarLink>
 
           <SideBarLink to="/settings/download">
-            <span className="text-3xl font-manrope font-semibold">Download</span>
+            <span className="font-manrope text-3xl font-semibold">Download</span>
           </SideBarLink>
 
           {/*<SideBarLink to="/settings/customization">*/}
@@ -75,12 +75,12 @@ export const SettingsSection = (): JSX.Element => {
 
           {showDevSettings && (
             <SideBarLink to="/settings/developer">
-              <span className="text-3xl font-manrope font-semibold">Developer</span>
+              <span className="font-manrope text-3xl font-semibold">Developer</span>
             </SideBarLink>
           )}
 
           <SideBarLink to="/settings/about">
-            <span className="text-3xl font-manrope font-semibold">About</span>
+            <span className="font-manrope text-3xl font-semibold">About</span>
           </SideBarLink>
           <div className="relative mt-auto">
             <ResetButton type={ButtonType.Neutral} onClick={handleReset}>
@@ -89,7 +89,7 @@ export const SettingsSection = (): JSX.Element => {
           </div>
         </SideBar>
 
-        <div className="flex-grow px-12 py-8 bg-navy border-l border-gray-700">
+        <div className="grow border-l border-gray-700 bg-navy px-12 py-8">
           <Route exact path="/settings">
             <Redirect to="/settings/general" />
           </Route>

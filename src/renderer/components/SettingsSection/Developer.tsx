@@ -32,7 +32,7 @@ const index = (): JSX.Element => {
         <h2 className="text-white">General Settings</h2>
         <div className="flex flex-col divide-y divide-gray-600">
           <SettingsItem name="Configuration Download URL">
-            <div className="flex flex-row items-center justify-between text-white py-4">
+            <div className="flex flex-row items-center justify-between py-4 text-white">
               <input
                 className={`text-right ${configDownloadUrlValid ? 'text-green-500' : 'text-red-500'}`}
                 value={configDownloadUrl}

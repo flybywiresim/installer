@@ -112,7 +112,7 @@ export const PromptModal: FC<PromptModalProps> = ({
       {typeof title === 'string' ? <h1 className="modal-title">{title}</h1> : title}
       {typeof bodyText === 'string' ? (
         <ReactMarkdown
-          className="mt-6 markdown-body-modal"
+          className="markdown-body-modal mt-6"
           children={bodyText}
           remarkPlugins={[remarkGfm]}
           linkTarget={'_blank'}
@@ -125,12 +125,12 @@ export const PromptModal: FC<PromptModalProps> = ({
         <DoNotAskAgain checked={checkMark} toggleChecked={() => setCheckMark((old) => !old)} />
       )}
 
-      <div className="flex flex-row mt-8 gap-x-4">
-        <Button className="flex-grow" onClick={handleCancel}>
+      <div className="mt-8 flex flex-row gap-x-4">
+        <Button className="grow" onClick={handleCancel}>
           {cancelText ?? 'Cancel'}
         </Button>
         <Button
-          className="flex-grow"
+          className="grow"
           type={confirmColor ?? ButtonType.Emphasis}
           disabled={!confirmEnabled}
           onClick={handleConfirm}
@@ -179,7 +179,7 @@ export const AlertModal: FC<AlertModalProps> = ({
       {typeof title === 'string' ? <h1 className="modal-title">{title}</h1> : title}
       {typeof bodyText === 'string' ? (
         <ReactMarkdown
-          className="mt-6 markdown-body-modal"
+          className="markdown-body-modal mt-6"
           children={bodyText}
           remarkPlugins={[remarkGfm]}
           linkTarget={'_blank'}
@@ -189,12 +189,12 @@ export const AlertModal: FC<AlertModalProps> = ({
       )}
 
       {dontShowAgainSettingName ? (
-        <div className="w-auto space-x-4 mt-8">
+        <div className="mt-8 w-auto space-x-4">
           <input
             type="checkbox"
             checked={checkMark}
             onChange={() => setCheckMark(!checkMark)}
-            className=" w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
+            className=" size-4 rounded-sm checked:border-transparent checked:bg-blue-600"
           />
           <span className="ml-2">Don't show me this again</span>
         </div>
@@ -202,8 +202,8 @@ export const AlertModal: FC<AlertModalProps> = ({
         <div></div>
       )}
 
-      <div className="flex flex-row mt-8 gap-x-4">
-        <Button className="flex-grow" type={acknowledgeColor} onClick={handleAcknowledge}>
+      <div className="mt-8 flex flex-row gap-x-4">
+        <Button className="grow" type={acknowledgeColor} onClick={handleAcknowledge}>
           {acknowledgeText ?? 'Confirm'}
         </Button>
       </div>
@@ -231,17 +231,17 @@ export const ChangelogModal: React.FC = () => {
   };
 
   return (
-    <div className="p-8 w-5/12 max-w-screen-sm rounded-xl border-2 bg-navy border-navy-light text-quasi-white">
-      <div className="flex flex-row w-full justify-between items-start">
-        <h2 className="leading-none font-bold text-quasi-white">{'Changelog'}</h2>
+    <div className="w-5/12 max-w-screen-sm rounded-xl border-2 border-navy-light bg-navy p-8 text-quasi-white">
+      <div className="flex w-full flex-row items-start justify-between">
+        <h2 className="font-bold leading-none text-quasi-white">{'Changelog'}</h2>
         <div className="" onClick={handleClose}>
-          <X className="text-red-600 hover:text-red-500 -my-14.06px -mx-14.06px" size={50} strokeWidth={1} />
+          <X className="-m-14.06px text-red-600 hover:text-red-500" size={50} strokeWidth={1} />
         </div>
       </div>
       <div className="mt-4 h-96 overflow-y-scroll">
         {(changelog as ChangelogType).releases.map((release) => (
           <div className="mb-6">
-            <div className="text-4xl font-bold mb-2">{release.name}</div>
+            <div className="mb-2 text-4xl font-bold">{release.name}</div>
             {release.changes.map((change) => (
               <div className="mb-4 flex text-2xl">
                 <div className="w-7">
@@ -252,7 +252,7 @@ export const ChangelogModal: React.FC = () => {
                     {change.title}
                     {change.categories ? (
                       change.categories.map((category) => (
-                        <div className="bg-navy-light border border-cyan rounded-md px-1 py-0 w-auto text-center inline-block ml-2 leading-tight">
+                        <div className="ml-2 inline-block w-auto rounded-md border border-cyan bg-navy-light px-1 py-0 text-center leading-tight">
                           {category}
                         </div>
                       ))
@@ -260,7 +260,7 @@ export const ChangelogModal: React.FC = () => {
                       <></>
                     )}
                   </div>
-                  <div className="flex flex-row justify-start mt-1">
+                  <div className="mt-1 flex flex-row justify-start">
                     {change.authors ? (
                       change.authors.map((author, index) => <div>{index == 0 ? 'by ' + author : ', ' + author}</div>)
                     ) : (
@@ -283,7 +283,7 @@ interface DoNotAskAgainProps {
 }
 
 const DoNotAskAgain: FC<DoNotAskAgainProps> = ({ checked, toggleChecked }) => (
-  <div className="w-auto gap-x-4 mt-8">
+  <div className="mt-8 w-auto gap-x-4">
     <CompactYesNoOptionToggle enabled={checked} onToggle={toggleChecked} enabledBgColor="bg-cyan">
       Don't show this again
     </CompactYesNoOptionToggle>
@@ -305,10 +305,10 @@ export const ModalContainer: FC = () => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 bg-opacity-70 transition duration-200 ${modal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      className={`fixed inset-0 z-50 bg-opacity-70 transition duration-200 ${modal ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >
-      <div className="absolute inset-0 opacity-75 bg-navy-dark" />
-      <div className="flex absolute inset-0 flex-col justify-center items-center">{modal}</div>
+      <div className="absolute inset-0 bg-navy-dark opacity-75" />
+      <div className="absolute inset-0 flex flex-col items-center justify-center">{modal}</div>
     </div>
   );
 };

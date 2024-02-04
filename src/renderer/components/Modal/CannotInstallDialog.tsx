@@ -80,17 +80,17 @@ const RunningExternalAppEntry: FC<RunningExternalAppEntryProps> = ({ addon, publ
   return (
     <div
       key={app.key}
-      className={`flex items-center gap-x-7 bg-navy border-t-4 ${borderColor} px-7 py-6 rounded-md my-6`}
+      className={`flex items-center gap-x-7 border-t-4 bg-navy ${borderColor} my-6 rounded-md px-7 py-6`}
     >
       <Window size={24} className={`${textColor} fill-current`} />
 
-      <div className="w-full flex justify-between items-center">
+      <div className="flex w-full items-center justify-between">
         <span className="flex flex-col gap-y-2">
           {/*<span className="text-3xl font-medium">{publisher.name}</span> /!* TODO when we support external apps in the global scope or other publishers, change this *!/*/}
           <span className="text-4xl font-medium">{app.prettyName}</span>
         </span>
 
-        <span className={`flex justify-between items-center gap-x-5 ${textColor}`}>
+        <span className={`flex items-center justify-between gap-x-5 ${textColor}`}>
           {canAppBeStopped ? (
             <Button className="h-14 px-12 py-1" onClick={handleStop} disabled={!appIsRunning}>
               {appIsRunning ? 'Stop' : 'Stopped'}

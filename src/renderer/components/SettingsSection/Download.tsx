@@ -33,7 +33,7 @@ const PathSettingItem: React.FC<PathSettingItemProps> = ({ value, setValue, name
   return (
     <SettingsItem name={name}>
       <div
-        className="text-xl text-white hover:text-gray-400 cursor-pointer underline transition duration-200"
+        className="cursor-pointer text-xl text-white underline transition duration-200 hover:text-gray-400"
         onClick={handleClick}
       >
         {value}
@@ -67,7 +67,7 @@ const TempLocationSettingItem = ({ value, setValue }: SettingItemProps<string>):
   return (
     <SettingsItem name="Location for temporary folders">
       <div
-        className="text-white hover:text-gray-400 cursor-pointer underline transition duration-200"
+        className="cursor-pointer text-white underline transition duration-200 hover:text-gray-400"
         onClick={handleClick}
       >
         {value}

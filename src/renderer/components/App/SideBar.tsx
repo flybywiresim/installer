@@ -10,7 +10,7 @@ export type SidebarItemProps = { enabled?: boolean; selected: boolean; onClick: 
 export const SidebarItem: React.FC<SidebarItemProps> = ({ enabled = true, selected, onClick, children, className }) => {
   return (
     <div
-      className={`w-full flex flex-row items-center transition-all duration-200 ${selected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} ${enabled ? 'hover:bg-navy-lightest' : ''} pl-5 py-4 ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
+      className={`flex w-full flex-row items-center transition-all duration-200 ${selected ? 'bg-navy-lighter' : 'bg-navy-light-contrast'} ${enabled ? 'hover:bg-navy-lightest' : ''} py-4 pl-5 ${enabled ? 'cursor-pointer' : 'cursor-not-allowed'} ${className}`}
       onClick={onClick}
     >
       {children}
@@ -27,13 +27,13 @@ export const SidebarPublisher: React.FC<SidebarPublisherProps> = ({ name, logo, 
     <>
       <span
         onClick={() => setExpanded((old) => !old)}
-        className="flex flex-row items-center transform transition-colors duration-300 hover:bg-navy-lightest text-lg text-white pl-3 py-3.5 cursor-pointer"
+        className="flex cursor-pointer flex-row items-center py-3.5 pl-3 text-lg text-white transition-colors duration-300 hover:bg-navy-lightest"
       >
         <ChevronDown
-          className={`text-gray-200 transform transition-transform duration-300 ${expanded ? 'rotate-0' : '-rotate-90'}`}
+          className={`text-gray-200 transition-transform duration-300${expanded ? 'rotate-0' : '-rotate-90'}`}
           size={28}
         />
-        <img className="w-4 ml-1 mr-2" src={logo} alt="" />
+        <img className="ml-1 mr-2 w-4" src={logo} alt="" />
         <span className="text-base text-gray-100">{name}</span>
       </span>
       {expanded && children}
@@ -94,15 +94,15 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
   const Icon = () => {
     switch (icon) {
       case 'notAvailable':
-        return <Download className="text-gray-700 ml-auto mr-4" size={28} />;
+        return <Download className="ml-auto mr-4 text-gray-700" size={28} />;
       case 'install':
-        return <Download className="text-gray-400 ml-auto mr-4" size={28} />;
+        return <Download className="ml-auto mr-4 text-gray-400" size={28} />;
       case 'installing':
-        return <Refresh className="text-yellow-400 ml-auto mr-4 animate-spin-reverse" size={28} />;
+        return <Refresh className="ml-auto mr-4 animate-spin-reverse text-yellow-400" size={28} />;
       case 'installed':
-        return <Check className="text-green-400 ml-auto mr-4" size={28} />;
+        return <Check className="ml-auto mr-4 text-green-400" size={28} />;
       case 'update':
-        return <Download className="text-yellow-400 ml-auto mr-4" size={28} />;
+        return <Download className="ml-auto mr-4 text-yellow-400" size={28} />;
     }
   };
 
@@ -116,8 +116,8 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
         }
       }}
     >
-      <div className={`flex flex-col ml-3 ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
-        <span className="text-xl text-gray-200 font-semibold" key={addon.key}>
+      <div className={`ml-3 flex flex-col ${addon.enabled ? 'opacity-100' : 'opacity-60'}`}>
+        <span className="text-xl font-semibold text-gray-200" key={addon.key}>
           {addon.name}
         </span>
         <code className="text-lg text-teal-50">{downloadState}</code>

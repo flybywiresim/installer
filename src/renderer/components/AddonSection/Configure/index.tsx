@@ -29,7 +29,7 @@ export const Configure: FC<ConfigureProps> = ({
   if (routeAspectKey === 'release-track') {
     page = (
       <>
-        <h2 className="text-white font-bold">Choose Your Version</h2>
+        <h2 className="font-bold text-white">Choose Your Version</h2>
         <div className="flex flex-row gap-x-8">
           <div>
             <Tracks>
@@ -46,7 +46,7 @@ export const Configure: FC<ConfigureProps> = ({
                   />
                 ))}
             </Tracks>
-            <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">Mainline Releases</span>
+            <span className="ml-0.5 mt-3 inline-block text-2xl text-quasi-white">Mainline Releases</span>
           </div>
           <div>
             <Tracks>
@@ -65,16 +65,16 @@ export const Configure: FC<ConfigureProps> = ({
             </Tracks>
 
             {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
-              <span className="text-2xl text-quasi-white ml-0.5 mt-3 inline-block">Experimental versions</span>
+              <span className="ml-0.5 mt-3 inline-block text-2xl text-quasi-white">Experimental versions</span>
             )}
           </div>
         </div>
         {selectedTrack() && selectedTrack().description && (
           <div className="mt-10">
-            <h2 className="text-white font-bold">Description</h2>
-            <p className="text-xl text-white font-manrope leading-relaxed">
+            <h2 className="font-bold text-white">Description</h2>
+            <p className="font-manrope text-xl leading-relaxed text-white">
               <ReactMarkdown
-                className="text-xl text-white font-light font-manrope leading-relaxed"
+                className="font-manrope text-xl font-light leading-relaxed text-white"
                 children={selectedTrack().description}
                 linkTarget={'_blank'}
               />
@@ -98,11 +98,11 @@ export const Configure: FC<ConfigureProps> = ({
   }
 
   return (
-    <div className="w-full flex flex-col justify-between">
-      <div className="flex flex-col h-full p-7 overflow-y-scroll">{page}</div>
+    <div className="flex w-full flex-col justify-between">
+      <div className="flex h-full flex-col overflow-y-scroll p-7">{page}</div>
 
       {selectedAddon.configurationAspects?.length > 0 && (
-        <div className="w-full flex gap-x-12 bg-navy-light px-7 py-8">
+        <div className="flex w-full gap-x-12 bg-navy-light px-7 py-8">
           <ConfigurationAspectTab
             aspect={
               {
@@ -134,12 +134,12 @@ const ConfigurationAspectTab: FC<{ aspect: ConfigurationAspect; selected: boolea
 
   return (
     <div
-      className={`flex flex-col gap-y-0.5 pb-3 font-manrope font-medium ${color} cursor-pointer transition-color duration-200`}
+      className={`flex flex-col gap-y-0.5 pb-3 font-manrope font-medium ${color} transition-color cursor-pointer duration-200`}
       data-selected={selected}
       onClick={handleClick}
     >
       <span className="text-2xl">{aspect.tabSupertitle}</span>
-      <span className="text-4xl configuration-aspect-tab-underline">{aspect.tabTitle}</span>
+      <span className="configuration-aspect-tab-underline text-4xl">{aspect.tabTitle}</span>
     </div>
   );
 };

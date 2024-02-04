@@ -25,14 +25,14 @@ export const DebugSection = (): JSX.Element => {
 
   return (
     <div className="py-8 pl-12">
-      <h1 className="text-white font-manrope font-bold">Debug options</h1>
+      <h1 className="font-manrope font-bold text-white">Debug options</h1>
 
       <h3 className="text-white">Notifications</h3>
       <button className="bg-cyan p-3 font-bold" onClick={sendNotification}>
         Send test notification
       </button>
 
-      <h3 className="text-white mt-5">Send IPC message</h3>
+      <h3 className="mt-5 text-white">Send IPC message</h3>
       <div className="flex flex-row">
         <input
           value={ipcMessage}

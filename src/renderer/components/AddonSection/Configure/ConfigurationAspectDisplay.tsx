@@ -20,7 +20,7 @@ export const ConfigurationAspectDisplay: FC<ConfigurationAspectDisplayProps> = (
 
   return (
     <div>
-      <h2 className="flex justify-between items-center text-white font-bold mb-2">{aspect.title}</h2>
+      <h2 className="mb-2 flex items-center justify-between font-bold text-white">{aspect.title}</h2>
       <div className="flex flex-row gap-x-8">
         {/* noop */}
         {aspect.choiceKind === 'yesNo' && (
@@ -29,10 +29,10 @@ export const ConfigurationAspectDisplay: FC<ConfigurationAspectDisplayProps> = (
       </div>
       {chosen && chosen.description && (
         <div className="mt-10">
-          <h2 className="text-white font-bold">Description</h2>
-          <p className="text-xl text-white font-manrope leading-relaxed">
+          <h2 className="font-bold text-white">Description</h2>
+          <p className="font-manrope text-xl leading-relaxed text-white">
             <ReactMarkdown
-              className="text-xl text-white font-light font-manrope leading-relaxed"
+              className="font-manrope text-xl font-light leading-relaxed text-white"
               children={chosen.description}
               linkTarget={'_blank'}
             />

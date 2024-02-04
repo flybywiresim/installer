@@ -36,7 +36,7 @@ export const AboutSettings: FC = () => {
   const { showModal } = useModals();
 
   return (
-    <div className="h-full flex flex-col gap-y-8 px-16 justify-center">
+    <div className="flex h-full flex-col justify-center gap-y-8 px-16">
       <div className="flex flex-row items-center gap-x-10">
         <img
           className="cursor-pointer"
@@ -47,9 +47,9 @@ export const AboutSettings: FC = () => {
         />
 
         <div className="flex flex-col gap-y-3">
-          <span className="text-4xl font-manrope font-bold">FlyByWire Installer</span>
+          <span className="font-manrope text-4xl font-bold">FlyByWire Installer</span>
           <a
-            className="text-2xl text-gray-400 hover:text-gray-600 font-manrope font-bold"
+            className="font-manrope text-2xl font-bold text-gray-400 hover:text-gray-600"
             onClick={() => {
               showModal(<ChangelogModal />);
             }}
@@ -63,7 +63,7 @@ export const AboutSettings: FC = () => {
         <span className="text-2xl">Copyright (c) 2020-2022 FlyByWire Simulations and its contributors</span>
         <span className="text-2xl">Licensed under the GNU General Public License Version 3</span>
 
-        <span className="text-2xl text-gray-200 mt-4">
+        <span className="mt-4 text-2xl text-gray-200">
           All publisher associated logos are the intellectual property of their respective owners. Media content
           included is licensed under the terms set by the publisher.
         </span>

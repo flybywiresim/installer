@@ -14,7 +14,7 @@ export type ButtonProps = { id?: string; className?: string; onClick?: () => voi
 export const Button: React.FC<ButtonProps> = ({ id, className, onClick, isClose, children }) => {
   return (
     <button
-      className={`w-14 h-full flex flex-row justify-center items-center text-gray-200 ${isClose ? 'hover:bg-red-500' : 'hover:bg-gray-700'} ${className}`}
+      className={`flex h-full w-14 flex-row items-center justify-center text-gray-200 ${isClose ? 'hover:bg-red-500' : 'hover:bg-gray-700'} ${className}`}
       onClick={onClick ?? (() => {})}
       id={id}
     >
@@ -58,7 +58,7 @@ export const WindowButtons: React.FC = () => {
   };
 
   return (
-    <div className="h-12 flex flex-row ml-auto">
+    <div className="ml-auto flex h-12 flex-row">
       <Button onClick={openGithub}>
         <ExclamationCircle size={16} />
       </Button>

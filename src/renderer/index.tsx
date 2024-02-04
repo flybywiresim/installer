@@ -115,13 +115,13 @@ InstallerConfiguration.obtain()
   })
   .catch((error: Error) => {
     ReactDOM.render(
-      <div className="h-screen flex flex-col gap-y-5 justify-center items-center bg-navy text-gray-100">
+      <div className="flex h-screen flex-col items-center justify-center gap-y-5 bg-navy text-gray-100">
         <span className="text-5xl font-semibold">Something went very wrong.</span>
         <span className="w-3/5 text-center text-2xl">
           We could not configure your installer. Please seek support on the Discord #support channel or on GitHub and
           provide a screenshot of the following information:
         </span>
-        <pre className="w-3/5 bg-gray-700 text-2xl font-mono px-6 py-2.5 mb-0 rounded-lg overflow-scroll">
+        <pre className="mb-0 w-3/5 overflow-scroll rounded-lg bg-gray-700 px-6 py-2.5 font-mono text-2xl">
           {error.stack}
         </pre>
 

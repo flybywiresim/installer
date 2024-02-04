@@ -15,14 +15,14 @@ export const YesNoOptionToggle: FC<YesNoOptionToggleProps> = ({ enabled, onToggl
 
   return (
     <div
-      className={`flex items-center gap-x-10 ${bgColor} px-10 py-12 rounded-md transition-color duration-200 cursor-pointer`}
+      className={`flex items-center gap-x-10 ${bgColor} transition-color cursor-pointer rounded-md px-10 py-12 duration-200`}
       onClick={handleClick}
     >
       <Toggle value={enabled} onToggle={handleClick} scale={1.5} onColor={'bg-utility-green'} />
 
       <span className="flex gap-x-20">
-        <span className={`font-manrope font-bold text-4xl ${titleColor}`}>Terrain Database</span>
-        {downloadSize && <span className={`font-manrope font-semibold text-4xl ${titleColor}`}>{downloadSize}</span>}
+        <span className={`font-manrope text-4xl font-bold ${titleColor}`}>Terrain Database</span>
+        {downloadSize && <span className={`font-manrope text-4xl font-semibold ${titleColor}`}>{downloadSize}</span>}
       </span>
     </div>
   );

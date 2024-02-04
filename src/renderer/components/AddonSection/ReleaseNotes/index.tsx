@@ -26,12 +26,12 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
   }
 
   return (
-    <div ref={ref} className="border-2 border-navy-light p-7 rounded-lg">
-      <div className="flex flex-row items-center justify-between mb-3.5">
+    <div ref={ref} className="rounded-lg border-2 border-navy-light p-7">
+      <div className="mb-3.5 flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-x-4">
-          <h1 className="text-4xl text-white font-semibold m-0 p-0">{release.name}</h1>
+          <h1 className="m-0 p-0 text-4xl font-semibold text-white">{release.name}</h1>
           {isLatest && (
-            <div className="text-2xl text-cyan mt-1 bg-cyan bg-opacity-20 font-semibold rounded-full px-6">Latest</div>
+            <div className="mt-1 rounded-full bg-cyan bg-opacity-20 px-6 text-2xl font-semibold text-cyan">Latest</div>
           )}
         </div>
         <div className="text-2xl text-white">{dateFormat(new Date(release.publishedAt), dateLayout)}</div>
@@ -116,10 +116,10 @@ export const ReleaseNotes = ({ addon }: { addon: Addon }): JSX.Element => {
       {[...Array(10)].map((index) => (
         <div className="rounded-md bg-navy p-7" key={index}>
           <div className="flex flex-row justify-between">
-            <h3 className="bg-navy-light h-8 w-32 animate-pulse" />
-            <h3 className="bg-navy-light h-8 w-48 animate-pulse" />
+            <h3 className="h-8 w-32 animate-pulse bg-navy-light" />
+            <h3 className="h-8 w-48 animate-pulse bg-navy-light" />
           </div>
-          <div className="h-64 w-full bg-navy-light animate-pulse" />
+          <div className="h-64 w-full animate-pulse bg-navy-light" />
         </div>
       ))}
     </div>
@@ -130,16 +130,16 @@ export const ReleaseNotes = ({ addon }: { addon: Addon }): JSX.Element => {
       {scrollButtonShown && releaseComponent && (
         <div className="absolute inset-0">
           <div
-            className="absolute p-4 z-30 right-0 bottom-0 text-white m-4 bg-cyan bg-opacity-40 hover:bg-opacity-100 transition duration-200 rounded-md cursor-pointer"
+            className="absolute bottom-0 right-0 z-30 m-4 cursor-pointer rounded-md bg-cyan bg-opacity-40 p-4 text-white transition duration-200 hover:bg-opacity-100"
             onClick={handleScrollUp}
           >
             <ArrowUp className="stroke-current" size={20} />
           </div>
         </div>
       )}
-      <div className="w-full h-full p-7 overflow-y-auto relative" ref={releaseNotesRef}>
+      <div className="relative size-full overflow-y-auto p-7" ref={releaseNotesRef}>
         <div className="flex flex-row items-center justify-between">
-          <h2 className="text-white font-bold">Release Notes</h2>
+          <h2 className="font-bold text-white">Release Notes</h2>
 
           <h2 className="text-white">Stable Version</h2>
         </div>
