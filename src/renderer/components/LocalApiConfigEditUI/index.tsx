@@ -10,239 +10,278 @@ import { Toggle } from '../Toggle';
 const SIMBRIDGE_DIRECTORY = 'flybywire-externaltools-simbridge';
 
 interface LocalApiConfiguration {
-    server: {
-        port: number;
-    };
-    printer: {
-        enabled: boolean;
-        printerName: string;
-        fontSize: number;
-        paperSize: string;
-        margin: number;
-    };
+  server: {
+    port: number;
+  };
+  printer: {
+    enabled: boolean;
+    printerName: string;
+    fontSize: number;
+    paperSize: string;
+    margin: number;
+  };
 }
 
 const localApiDefaultConfiguration: LocalApiConfiguration = {
-    server: {
-        port: 8380,
-    },
-    printer: {
-        enabled: false,
-        printerName: null,
-        fontSize: 19,
-        paperSize: "A4",
-        margin: 30,
-    },
+  server: {
+    port: 8380,
+  },
+  printer: {
+    enabled: false,
+    printerName: null,
+    fontSize: 19,
+    paperSize: 'A4',
+    margin: 30,
+  },
 };
 
 class LocalApiConfigurationHandler {
-    private static get simbridgeDirectory(): string {
-        return path.join(Directories.inInstallLocation(SIMBRIDGE_DIRECTORY));
+  private static get simbridgeDirectory(): string {
+    return path.join(Directories.inInstallLocation(SIMBRIDGE_DIRECTORY));
+  }
+
+  private static get simbridgeConfigPath(): string {
+    return path.join(this.simbridgeDirectory, 'resources', 'properties.json');
+  }
+
+  static getConfiguration(): LocalApiConfiguration {
+    if (fs.existsSync(this.simbridgeConfigPath)) {
+      console.log(`Loading configuration from ${this.simbridgeConfigPath}`);
+
+      return JSON.parse(fs.readFileSync(this.simbridgeConfigPath, 'utf8'));
+    } else {
+      console.log(`No configuration found at ${this.simbridgeConfigPath}`);
+
+      if (fs.existsSync(path.join(this.simbridgeDirectory, 'resources'))) {
+        console.log(`Creating configuration at ${this.simbridgeConfigPath}`);
+
+        fs.writeFileSync(path.join(this.simbridgeConfigPath), JSON.stringify(localApiDefaultConfiguration));
+
+        return localApiDefaultConfiguration;
+      } else {
+        throw new Error(`No configuration found and no directory to create it in`);
+      }
     }
+  }
 
-    private static get simbridgeConfigPath(): string {
-        return path.join(this.simbridgeDirectory, 'resources', 'properties.json');
+  static saveConfiguration(propertyConfiguration: LocalApiConfiguration) {
+    if (fs.existsSync(this.simbridgeConfigPath)) {
+      fs.writeFileSync(this.simbridgeConfigPath, JSON.stringify(propertyConfiguration));
     }
-
-    static getConfiguration(): LocalApiConfiguration {
-        if (fs.existsSync(this.simbridgeConfigPath)) {
-            console.log(`Loading configuration from ${this.simbridgeConfigPath}`);
-
-            return JSON.parse(fs.readFileSync(this.simbridgeConfigPath, "utf8"));
-        } else {
-            console.log(`No configuration found at ${this.simbridgeConfigPath}`);
-
-            if (fs.existsSync(path.join(this.simbridgeDirectory, 'resources'))) {
-                console.log(`Creating configuration at ${this.simbridgeConfigPath}`);
-
-                fs.writeFileSync(path.join(this.simbridgeConfigPath), JSON.stringify(localApiDefaultConfiguration));
-
-                return localApiDefaultConfiguration;
-            } else {
-                throw new Error(`No configuration found and no directory to create it in`);
-            }
-        }
-    }
-
-    static saveConfiguration(propertyConfiguration: LocalApiConfiguration) {
-        if (fs.existsSync(this.simbridgeConfigPath)) {
-            fs.writeFileSync(this.simbridgeConfigPath, JSON.stringify(propertyConfiguration));
-        }
-    }
+  }
 }
 
 export const LocalApiConfigEditUI: FC = () => {
-    const [config, setConfig] = useState(null as LocalApiConfiguration);
-    const [printers, setPrinters] = useState([]);
+  const [config, setConfig] = useState(null as LocalApiConfiguration);
+  const [printers, setPrinters] = useState([]);
 
-    useEffect(() => {
-        print.getPrinters().then(p => setPrinters(p));
+  useEffect(() => {
+    print.getPrinters().then((p) => setPrinters(p));
 
-        try {
-            const loaded = LocalApiConfigurationHandler.getConfiguration();
-            setConfig(loaded);
-        } catch (_) {/**/ }
-    }, []);
-
-    const { showModal } = useModals();
-
-    const handleReset = () => {
-        showModal(
-            <PromptModal
-                title='Are you sure you want to do this?'
-                bodyText='This will reset the configuration to the default values and cannot be undone.'
-                confirmColor={ButtonType.Danger}
-                onConfirm={() => {
-                    LocalApiConfigurationHandler.saveConfiguration(localApiDefaultConfiguration);
-                    setConfig(localApiDefaultConfiguration);
-                }}
-            />,
-        );
-    };
-
-    const handleConfigSave = () => {
-        LocalApiConfigurationHandler.saveConfiguration(config);
-        setConfig(LocalApiConfigurationHandler.getConfiguration());
-    };
-
-    const handleDiscard = () => {
-        setConfig(LocalApiConfigurationHandler.getConfiguration());
-    };
-
-    if (config === null) {
-        return (
-            <div className='h-full w-full flex items-center justify-center p-8'>
-                <h2 className='text-center text-white'>
-                    Could not load configuration file. This likely means that you do not have SimBridge currently installed.
-                </h2>
-            </div>
-        );
+    try {
+      const loaded = LocalApiConfigurationHandler.getConfiguration();
+      setConfig(loaded);
+    } catch (_) {
+      /**/
     }
+  }, []);
 
-    const changesBeenMade = JSON.stringify(config)
-        !== JSON.stringify(LocalApiConfigurationHandler.getConfiguration());
+  const { showModal } = useModals();
 
-    const isDefaultConfig = JSON.stringify(config) === JSON.stringify(localApiDefaultConfiguration);
-
-    return (
-        <div className="h-full p-7 overflow-y-scroll w-full">
-            <div className='flex flex-row items-center justify-between gap-x-4'>
-                <h2 className="font-bold mb-0 text-white">SimBridge Settings</h2>
-
-                <div className='flex flex-row space-x-4'>
-                    {changesBeenMade && (
-                        <Button className="h-16" type={ButtonType.Danger} onClick={handleDiscard}>Discard</Button>
-                    )}
-
-                    {!isDefaultConfig && (
-                        <Button className="h-16" type={ButtonType.Danger} onClick={handleReset}>Reset</Button>
-                    )}
-
-                    {changesBeenMade && (
-                        <Button className="h-16" type={ButtonType.Positive} onClick={handleConfigSave}>Save</Button>
-                    )}
-                </div>
-            </div>
-
-            <div className='space-y-4 mt-4'>
-                <div>
-                    <h3 className='text-white mb-0'>Server</h3>
-
-                    <div className='divide-y divide-gray-600'>
-                        <SimBridgeSettingItem name="Port">
-                            <input className="text-center" value={config.server.port} type="number" onChange={event => setConfig(old => ({
-                                ...old,
-                                server: {
-                                    ...old.server,
-                                    port: parseFloat(event.target.value),
-                                },
-                            }))}
-                            />
-                        </SimBridgeSettingItem>
-                    </div>
-                </div>
-                <div>
-                    <h3 className='text-white mb-0'>Printer</h3>
-
-                    <div className='divide-y divide-gray-600'>
-                        <SimBridgeSettingItem name="Enabled">
-                            <Toggle value={config.printer.enabled} onToggle={value => setConfig(old => ({
-                                ...old,
-                                printer: {
-                                    ...old.printer,
-                                    enabled: value,
-                                },
-                            }))} />
-                        </SimBridgeSettingItem>
-
-                        <SimBridgeSettingItem name="Printer Name">
-                            <select
-                                value={config.printer.printerName ?? ''}
-                                onChange={event => setConfig(old => ({
-                                    ...old,
-                                    printer: {
-                                        ...old.printer,
-                                        printerName: event.target.value ? event.target.value : null,
-                                    },
-                                }))}
-                                className="text-xl text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
-                            >
-                                <option value=''>None</option>
-                                {printers.map(p => (
-                                    <option key={p.name} value={p.name}>{p.name}</option>
-                                ))}
-                            </select>
-                        </SimBridgeSettingItem>
-
-                        <SimBridgeSettingItem name="Font Size">
-                            <input className="text-xl text-center" value={config.printer.fontSize} type="number" onChange={event => setConfig(old => ({
-                                ...old,
-                                printer: {
-                                    ...old.printer,
-                                    fontSize: parseInt(event.target.value),
-                                },
-                            }))}
-                            />
-                        </SimBridgeSettingItem>
-
-                        <SimBridgeSettingItem name="Paper Size">
-                            <input className="text-xl text-center" value={config.printer.paperSize} onChange={event => setConfig(old => ({
-                                ...old,
-                                printer: {
-                                    ...old.printer,
-                                    paperSize: event.target.value,
-                                },
-                            }))}
-                            />
-                        </SimBridgeSettingItem>
-
-                        <SimBridgeSettingItem name="Margin">
-                            <input className="text-xl text-center" value={config.printer.margin} type="number" onChange={event => setConfig(old => ({
-                                ...old,
-                                printer: {
-                                    ...old.printer,
-                                    margin: parseFloat(event.target.value),
-                                },
-                            }))}
-                            />
-                        </SimBridgeSettingItem>
-                    </div>
-                </div>
-            </div>
-        </div>
+  const handleReset = () => {
+    showModal(
+      <PromptModal
+        title="Are you sure you want to do this?"
+        bodyText="This will reset the configuration to the default values and cannot be undone."
+        confirmColor={ButtonType.Danger}
+        onConfirm={() => {
+          LocalApiConfigurationHandler.saveConfiguration(localApiDefaultConfiguration);
+          setConfig(localApiDefaultConfiguration);
+        }}
+      />,
     );
+  };
+
+  const handleConfigSave = () => {
+    LocalApiConfigurationHandler.saveConfiguration(config);
+    setConfig(LocalApiConfigurationHandler.getConfiguration());
+  };
+
+  const handleDiscard = () => {
+    setConfig(LocalApiConfigurationHandler.getConfiguration());
+  };
+
+  if (config === null) {
+    return (
+      <div className="h-full w-full flex items-center justify-center p-8">
+        <h2 className="text-center text-white">
+          Could not load configuration file. This likely means that you do not have SimBridge currently installed.
+        </h2>
+      </div>
+    );
+  }
+
+  const changesBeenMade = JSON.stringify(config) !== JSON.stringify(LocalApiConfigurationHandler.getConfiguration());
+
+  const isDefaultConfig = JSON.stringify(config) === JSON.stringify(localApiDefaultConfiguration);
+
+  return (
+    <div className="h-full p-7 overflow-y-scroll w-full">
+      <div className="flex flex-row items-center justify-between gap-x-4">
+        <h2 className="font-bold mb-0 text-white">SimBridge Settings</h2>
+
+        <div className="flex flex-row space-x-4">
+          {changesBeenMade && (
+            <Button className="h-16" type={ButtonType.Danger} onClick={handleDiscard}>
+              Discard
+            </Button>
+          )}
+
+          {!isDefaultConfig && (
+            <Button className="h-16" type={ButtonType.Danger} onClick={handleReset}>
+              Reset
+            </Button>
+          )}
+
+          {changesBeenMade && (
+            <Button className="h-16" type={ButtonType.Positive} onClick={handleConfigSave}>
+              Save
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-4 mt-4">
+        <div>
+          <h3 className="text-white mb-0">Server</h3>
+
+          <div className="divide-y divide-gray-600">
+            <SimBridgeSettingItem name="Port">
+              <input
+                className="text-center"
+                value={config.server.port}
+                type="number"
+                onChange={(event) =>
+                  setConfig((old) => ({
+                    ...old,
+                    server: {
+                      ...old.server,
+                      port: parseFloat(event.target.value),
+                    },
+                  }))
+                }
+              />
+            </SimBridgeSettingItem>
+          </div>
+        </div>
+        <div>
+          <h3 className="text-white mb-0">Printer</h3>
+
+          <div className="divide-y divide-gray-600">
+            <SimBridgeSettingItem name="Enabled">
+              <Toggle
+                value={config.printer.enabled}
+                onToggle={(value) =>
+                  setConfig((old) => ({
+                    ...old,
+                    printer: {
+                      ...old.printer,
+                      enabled: value,
+                    },
+                  }))
+                }
+              />
+            </SimBridgeSettingItem>
+
+            <SimBridgeSettingItem name="Printer Name">
+              <select
+                value={config.printer.printerName ?? ''}
+                onChange={(event) =>
+                  setConfig((old) => ({
+                    ...old,
+                    printer: {
+                      ...old.printer,
+                      printerName: event.target.value ? event.target.value : null,
+                    },
+                  }))
+                }
+                className="text-xl text-white w-auto px-3.5 py-2.5 rounded-md outline-none bg-navy-light border-2 border-navy cursor-pointer"
+              >
+                <option value="">None</option>
+                {printers.map((p) => (
+                  <option key={p.name} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </SimBridgeSettingItem>
+
+            <SimBridgeSettingItem name="Font Size">
+              <input
+                className="text-xl text-center"
+                value={config.printer.fontSize}
+                type="number"
+                onChange={(event) =>
+                  setConfig((old) => ({
+                    ...old,
+                    printer: {
+                      ...old.printer,
+                      fontSize: parseInt(event.target.value),
+                    },
+                  }))
+                }
+              />
+            </SimBridgeSettingItem>
+
+            <SimBridgeSettingItem name="Paper Size">
+              <input
+                className="text-xl text-center"
+                value={config.printer.paperSize}
+                onChange={(event) =>
+                  setConfig((old) => ({
+                    ...old,
+                    printer: {
+                      ...old.printer,
+                      paperSize: event.target.value,
+                    },
+                  }))
+                }
+              />
+            </SimBridgeSettingItem>
+
+            <SimBridgeSettingItem name="Margin">
+              <input
+                className="text-xl text-center"
+                value={config.printer.margin}
+                type="number"
+                onChange={(event) =>
+                  setConfig((old) => ({
+                    ...old,
+                    printer: {
+                      ...old.printer,
+                      margin: parseFloat(event.target.value),
+                    },
+                  }))
+                }
+              />
+            </SimBridgeSettingItem>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 interface SimBridgeSettingItemProps {
-    name: string,
+  name: string;
 }
 
 const SimBridgeSettingItem: React.FC<SimBridgeSettingItemProps> = ({ name, children }) => {
-    return (
-        <div className='flex flex-row items-center justify-between text-xl text-white py-4'>
-            <p className="m-0 p-0">{name}</p>
+  return (
+    <div className="flex flex-row items-center justify-between text-xl text-white py-4">
+      <p className="m-0 p-0">{name}</p>
 
-            {children}
-        </div>
-    );
+      {children}
+    </div>
+  );
 };
