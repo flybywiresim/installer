@@ -111,12 +111,9 @@ export const PromptModal: FC<PromptModalProps> = ({
     <div className="modal">
       {typeof title === 'string' ? <h1 className="modal-title">{title}</h1> : title}
       {typeof bodyText === 'string' ? (
-        <ReactMarkdown
-          className="markdown-body-modal mt-6"
-          children={bodyText}
-          remarkPlugins={[remarkGfm]}
-          linkTarget={'_blank'}
-        />
+        <ReactMarkdown className="markdown-body-modal mt-6" remarkPlugins={[remarkGfm]} linkTarget={'_blank'}>
+          {bodyText}
+        </ReactMarkdown>
       ) : (
         bodyText
       )}
@@ -178,12 +175,9 @@ export const AlertModal: FC<AlertModalProps> = ({
     <div className="modal">
       {typeof title === 'string' ? <h1 className="modal-title">{title}</h1> : title}
       {typeof bodyText === 'string' ? (
-        <ReactMarkdown
-          className="markdown-body-modal mt-6"
-          children={bodyText}
-          remarkPlugins={[remarkGfm]}
-          linkTarget={'_blank'}
-        />
+        <ReactMarkdown className="markdown-body-modal mt-6" remarkPlugins={[remarkGfm]} linkTarget={'_blank'}>
+          {bodyText}
+        </ReactMarkdown>
       ) : (
         bodyText
       )}
@@ -196,7 +190,7 @@ export const AlertModal: FC<AlertModalProps> = ({
             onChange={() => setCheckMark(!checkMark)}
             className=" size-4 rounded-sm checked:border-transparent checked:bg-blue-600"
           />
-          <span className="ml-2">Don't show me this again</span>
+          <span className="ml-2">Don&apos;t show me this again</span>
         </div>
       ) : (
         <div></div>
@@ -240,10 +234,10 @@ export const ChangelogModal: React.FC = () => {
       </div>
       <div className="mt-4 h-96 overflow-y-scroll">
         {(changelog as ChangelogType).releases.map((release) => (
-          <div className="mb-6">
+          <div key={release.name} className="mb-6">
             <div className="mb-2 text-4xl font-bold">{release.name}</div>
             {release.changes.map((change) => (
-              <div className="mb-4 flex text-2xl">
+              <div key={change.title} className="mb-4 flex text-2xl">
                 <div className="w-7">
                   <Dot className="" size={20} strokeWidth={1} />
                 </div>
@@ -252,7 +246,10 @@ export const ChangelogModal: React.FC = () => {
                     {change.title}
                     {change.categories ? (
                       change.categories.map((category) => (
-                        <div className="ml-2 inline-block w-auto rounded-md border border-cyan bg-navy-light px-1 py-0 text-center leading-tight">
+                        <div
+                          key={category}
+                          className="ml-2 inline-block w-auto rounded-md border border-cyan bg-navy-light px-1 py-0 text-center leading-tight"
+                        >
                           {category}
                         </div>
                       ))
@@ -262,7 +259,9 @@ export const ChangelogModal: React.FC = () => {
                   </div>
                   <div className="mt-1 flex flex-row justify-start">
                     {change.authors ? (
-                      change.authors.map((author, index) => <div>{index == 0 ? 'by ' + author : ', ' + author}</div>)
+                      change.authors.map((author, index) => (
+                        <div key={index}>{index == 0 ? 'by ' + author : ', ' + author}</div>
+                      ))
                     ) : (
                       <></>
                     )}
@@ -285,15 +284,15 @@ interface DoNotAskAgainProps {
 const DoNotAskAgain: FC<DoNotAskAgainProps> = ({ checked, toggleChecked }) => (
   <div className="mt-8 w-auto gap-x-4">
     <CompactYesNoOptionToggle enabled={checked} onToggle={toggleChecked} enabledBgColor="bg-cyan">
-      Don't show this again
+      Don&apos;t show this again
     </CompactYesNoOptionToggle>
   </div>
 );
 
 export const ModalContainer: FC = () => {
-  const onVersionChanged = () => {
-    const { showModal } = useModals();
+  const { modal, showModal } = useModals();
 
+  const onVersionChanged = () => {
     if (packageInfo.version !== settings.get<string>('metaInfo.lastVersion')) {
       settings.set('metaInfo.lastVersion', packageInfo.version);
       showModal(<ChangelogModal />);
@@ -301,11 +300,10 @@ export const ModalContainer: FC = () => {
   };
 
   onVersionChanged();
-  const { modal } = useModals();
 
   return (
     <div
-      className={`fixed inset-0 z-50 bg-opacity-70 transition duration-200 ${modal ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+      className={`fixed inset-0 z-50 transition duration-200 ${modal ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >
       <div className="absolute inset-0 bg-navy-dark opacity-75" />
       <div className="absolute inset-0 flex flex-col items-center justify-center">{modal}</div>

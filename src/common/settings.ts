@@ -71,7 +71,7 @@ export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetSt
     return () => {
       cancel();
     };
-  }, [key]);
+  }, [defaultValue, key]);
 
   const setValue = (newVal: T) => {
     store.set(key, newVal);

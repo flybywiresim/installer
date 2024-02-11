@@ -1,11 +1,11 @@
 import React, { FC, useState } from 'react';
-import GeneralSettings from 'renderer/components/SettingsSection/General';
+import { GeneralSettings } from 'renderer/components/SettingsSection/General';
 import { Redirect, Route } from 'react-router-dom';
 import { AboutSettings } from 'renderer/components/SettingsSection/About';
 import { SideBar, SideBarLink, SideBarTitle } from 'renderer/components/SideBar';
-import CustomizationSettings from './Customization';
-import DownloadSettings from './Download';
-import DeveloperSettings from './Developer';
+import { CustomizationSettings } from './Customization';
+import { DownloadSettings } from './Download';
+import { DeveloperSettings } from './Developer';
 import settings from 'common/settings';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from '../Button';

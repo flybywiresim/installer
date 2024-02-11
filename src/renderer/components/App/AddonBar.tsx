@@ -49,8 +49,8 @@ export const AddonBar: FC = ({ children }) => {
 
     return (
       <>
-        {groups.map((group) => (
-          <div className="flex flex-row gap-x-4">
+        {groups.map((group, index) => (
+          <div key={index} className="flex flex-row gap-x-4">
             {group.map((button, index) => (
               <AddonBarPublisherButton button={button} key={index} />
             ))}
@@ -111,7 +111,7 @@ interface AddonBarItemStatusProps {
   status: InstallStatus;
 }
 
-const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
+const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }: AddonBarItemStatusProps) => {
   switch (status) {
     case InstallStatus.UpToDate:
     case InstallStatus.GitInstall:
@@ -130,6 +130,8 @@ const AddonBarItemStatus: FC<AddonBarItemStatusProps> = memo(({ status }) => {
       return <></>;
   }
 });
+
+AddonBarItemStatus.displayName = 'AddonBarItemStatus';
 
 interface AddonBarPublisherButtonProps {
   button: PublisherButton;

@@ -75,9 +75,10 @@ export const Configure: FC<ConfigureProps> = ({
             <p className="font-manrope text-xl leading-relaxed text-white">
               <ReactMarkdown
                 className="font-manrope text-xl font-light leading-relaxed text-white"
-                children={selectedTrack().description}
                 linkTarget={'_blank'}
-              />
+              >
+                {selectedTrack().description}
+              </ReactMarkdown>
             </p>
           </div>
         )}
@@ -115,7 +116,7 @@ export const Configure: FC<ConfigureProps> = ({
           />
 
           {selectedAddon.configurationAspects.map((aspect) => (
-            <ConfigurationAspectTab aspect={aspect} selected={aspect.key === currentAspectKey} />
+            <ConfigurationAspectTab key={aspect.key} aspect={aspect} selected={aspect.key === currentAspectKey} />
           ))}
         </div>
       )}

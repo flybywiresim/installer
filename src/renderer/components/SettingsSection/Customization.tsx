@@ -43,7 +43,7 @@ const SeasonalEffectsItem = ({ value, setValue }: SettingItemProps<boolean>) => 
   );
 };
 
-const index = (): JSX.Element => {
+export const CustomizationSettings = (): JSX.Element => {
   const [useDarkTheme, setUseDarkTheme] = useSetting<boolean>('mainSettings.useDarkTheme');
   const [seasonalEffects, setSeasonalEffects] = useSetting<boolean>('mainSettings.allowSeasonalEffects');
 
@@ -59,5 +59,3 @@ const index = (): JSX.Element => {
     </div>
   );
 };
-
-export default index;

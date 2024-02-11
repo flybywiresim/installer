@@ -89,7 +89,7 @@ export const SidebarAddon: React.FC<SidebarAddonProps> = ({ addon, isSelected, h
       setStatusText('Not Available');
       setIcon('notAvailable');
     }
-  }, [addonDownloadState]);
+  }, [addon.enabled, addonDownloadState]);
 
   const Icon = () => {
     switch (icon) {

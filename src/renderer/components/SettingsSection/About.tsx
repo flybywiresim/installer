@@ -16,7 +16,7 @@ export const AboutSettings: FC = () => {
 
       setLogoRotation(0);
     }
-  });
+  }, [logoRotation]);
 
   const handleOpenThirdPartyLicenses = () => {
     const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');

@@ -6,7 +6,7 @@ import { SettingsSection } from 'renderer/components/SettingsSection';
 import { DebugSection } from 'renderer/components/DebugSection';
 import { GitVersions } from '@flybywiresim/api-client';
 import { DataCache } from '../../utils/DataCache';
-import InstallerUpdate from 'renderer/components/InstallerUpdate';
+import { InstallerUpdate } from 'renderer/components/InstallerUpdate';
 import { WindowButtons } from 'renderer/components/WindowActionButtons';
 import { Addon, AddonVersion } from 'renderer/utils/InstallerConfiguration';
 import { AddonData } from 'renderer/utils/AddonData';
@@ -97,7 +97,7 @@ const App = () => {
     history.listen((location) => {
       settings.set('cache.main.lastShownSection', location.pathname);
     });
-  }, []);
+  }, [addons, history]);
 
   useEffect(() => {
     const updateCheck = setInterval(
@@ -110,7 +110,7 @@ const App = () => {
     );
 
     return () => clearInterval(updateCheck);
-  }, []);
+  }, [addons]);
 
   const configUrl = settings.get('mainSettings.configDownloadUrl') as string;
 
@@ -167,7 +167,11 @@ const App = () => {
               <div className="z-40 h-full">
                 <NavBar>
                   {configuration.publishers.map((publisher) => (
-                    <NavBarPublisher to={`/addon-section/${publisher.name}`} publisher={publisher} />
+                    <NavBarPublisher
+                      key={publisher.key}
+                      to={`/addon-section/${publisher.name}`}
+                      publisher={publisher}
+                    />
                   ))}
                 </NavBar>
               </div>

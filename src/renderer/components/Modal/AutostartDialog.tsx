@@ -33,7 +33,7 @@ export const AutostartDialog: FC<AutostartDialogProps> = ({
     }, 500);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [addon]);
 
   const handleToggle = async () => {
     const isEnabled = await BackgroundServices.isAutoStartEnabled(addon);
@@ -50,12 +50,9 @@ export const AutostartDialog: FC<AutostartDialogProps> = ({
       title={'Autostart Configuration'}
       bodyText={
         <>
-          <ReactMarkdown
-            className="markdown-body-modal mb-6 mt-2"
-            children={`You can choose to automatically start **${app.prettyName}** when you log into your Windows session.`}
-            remarkPlugins={[remarkGfm]}
-            linkTarget={'_blank'}
-          />
+          <ReactMarkdown className="markdown-body-modal mb-6 mt-2" remarkPlugins={[remarkGfm]} linkTarget={'_blank'}>
+            {`You can choose to automatically start **${app.prettyName}** when you log into your Windows session.`}
+          </ReactMarkdown>
           <YesNoOptionToggle
             enabled={enabled}
             onToggle={handleToggle}

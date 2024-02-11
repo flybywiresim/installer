@@ -30,21 +30,18 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
       <div className="mb-3.5 flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-x-4">
           <h1 className="m-0 p-0 text-4xl font-semibold text-white">{release.name}</h1>
-          {isLatest && (
-            <div className="mt-1 rounded-full bg-cyan bg-opacity-20 px-6 text-2xl font-semibold text-cyan">Latest</div>
-          )}
+          {isLatest && <div className="mt-1 rounded-full bg-cyan/20 px-6 text-2xl font-semibold text-cyan">Latest</div>}
         </div>
         <div className="text-2xl text-white">{dateFormat(new Date(release.publishedAt), dateLayout)}</div>
       </div>
-      <ReactMarkdown
-        className="markdown-body-releasenotes"
-        children={release.body ?? ''}
-        remarkPlugins={[remarkGfm]}
-        linkTarget={'_blank'}
-      />
+      <ReactMarkdown className="markdown-body-releasenotes" remarkPlugins={[remarkGfm]} linkTarget={'_blank'}>
+        {release.body ?? ''}
+      </ReactMarkdown>
     </div>
   );
 });
+
+ReleaseNoteCard.displayName = 'ReleaseNoteCard';
 
 export const ReleaseNotes = ({ addon }: { addon: Addon }): JSX.Element => {
   const { ref, inView } = useInView({
@@ -67,6 +64,7 @@ export const ReleaseNotes = ({ addon }: { addon: Addon }): JSX.Element => {
       <div className="flex flex-col gap-y-7">
         {releaseNotes.map((release, index) => (
           <ReleaseNoteCard
+            key={index}
             isLatest={index === 0}
             ref={releaseNotes.length - 1 === index ? ref : undefined}
             release={release}
@@ -74,7 +72,7 @@ export const ReleaseNotes = ({ addon }: { addon: Addon }): JSX.Element => {
         ))}
       </div>,
     );
-  }, [releaseNotes]);
+  }, [ref, releaseNotes]);
 
   useEffect(() => {
     if (inView) {
@@ -95,21 +93,23 @@ export const ReleaseNotes = ({ addon }: { addon: Addon }): JSX.Element => {
         store.dispatch(addReleases({ key: addon.key, releases: [] }));
       }
     }
-  }, [inView]);
+  }, [addon.key, addon.repoName, addon.repoOwner, inView, releaseNotes.length]);
 
   useEffect(() => {
+    const node = releaseNotesRef.current;
+
     const handleScroll = () => {
-      if (releaseNotesRef.current) {
-        setScrollButtonShown(!!releaseNotesRef.current.scrollTop);
+      if (node) {
+        setScrollButtonShown(!!node.scrollTop);
       }
     };
 
-    if (releaseNotesRef.current) {
-      releaseNotesRef.current.addEventListener('scroll', handleScroll);
+    if (node) {
+      node.addEventListener('scroll', handleScroll);
     }
 
-    return () => releaseNotesRef.current.removeEventListener('scroll', handleScroll);
-  }, [releaseNotesRef.current]);
+    return () => node.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const DummyComponent = () => (
     <div className="flex flex-col gap-y-7">
@@ -130,7 +130,7 @@ export const ReleaseNotes = ({ addon }: { addon: Addon }): JSX.Element => {
       {scrollButtonShown && releaseComponent && (
         <div className="absolute inset-0">
           <div
-            className="absolute bottom-0 right-0 z-30 m-4 cursor-pointer rounded-md bg-cyan bg-opacity-40 p-4 text-white transition duration-200 hover:bg-opacity-100"
+            className="absolute bottom-0 right-0 z-30 m-4 cursor-pointer rounded-md bg-cyan/40 p-4 text-white transition duration-200 hover:bg-cyan/100"
             onClick={handleScrollUp}
           >
             <ArrowUp className="stroke-current" size={20} />

@@ -13,13 +13,6 @@ export const store = configureStore<RootState>({
   reducer: rootReducer,
 });
 
-if (module.hot) {
-  module.hot.accept('./reducer', () => {
-    const nextRootReducer = require('./reducer').default;
-    store.replaceReducer(nextRootReducer);
-  });
-}
-
 export type InstallerStore = {
   downloads: DownloadsState;
   installStatus: Record<string, InstallStatus>;

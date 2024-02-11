@@ -29,6 +29,7 @@ export const CannotInstallDialog: FC<CannotInstallDialogProps> = ({ addon, publi
           <div>
             {disallowedRunningExternalApps.map((app) => (
               <RunningExternalAppEntry
+                key={app.key}
                 addon={addon}
                 publisher={publisher}
                 app={app}
@@ -70,7 +71,7 @@ const RunningExternalAppEntry: FC<RunningExternalAppEntryProps> = ({ addon, publ
 
       return def.key === app.key;
     }
-  }, [addon]);
+  }, [addon.backgroundService, app.key, publisher]);
 
   const handleStop = () => BackgroundServices.kill(addon, publisher);
 

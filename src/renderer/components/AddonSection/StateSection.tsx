@@ -58,7 +58,7 @@ export const StateSection: FC<StateSectionProps> = ({ publisher, addon }) => {
 };
 
 const StateContainer: FC = ({ children }) => (
-  <div className="bottom-0 left-0 flex h-32 w-full flex-row items-center justify-between bg-navy-dark bg-opacity-95 px-6 pb-5 pt-6">
+  <div className="bottom-0 left-0 flex h-32 w-full flex-row items-center justify-between bg-navy-dark/95 px-6 pb-5 pt-6">
     {children}
   </div>
 );

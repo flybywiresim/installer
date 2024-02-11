@@ -108,7 +108,7 @@ export const AddonSection = (): JSX.Element => {
     }
 
     settings.set('cache.main.lastShownAddonKey', selectedAddon.key);
-  }, [selectedAddon]);
+  }, [history, publisherData.addons, publisherName, selectedAddon]);
 
   useEffect(() => {
     const firstAvailableAddon = publisherData.addons.find((addon) => addon.enabled);
@@ -124,9 +124,65 @@ export const AddonSection = (): JSX.Element => {
       publisherData.addons.find((addon) => addon.key === firstAvailableAddon.key);
 
     setSelectedAddon(addonToSelect);
-  }, [publisherName]);
+  }, [history, publisherData.addons, publisherName]);
 
-  const findInstalledTrack = (): AddonTrack => {
+  const installedTrack = (): AddonTrack => {
+    try {
+      return installedTracks[selectedAddon.key] as AddonTrack;
+    } catch (e) {
+      setCurrentlyInstalledTrack(null);
+      return null;
+    }
+  };
+
+  const setCurrentlyInstalledTrack = useCallback(
+    (newInstalledTrack: AddonTrack) => {
+      dispatch(setInstalledTrack({ addonKey: selectedAddon.key, installedTrack: newInstalledTrack }));
+    },
+    [dispatch, selectedAddon.key],
+  );
+
+  const setCurrentlySelectedTrack = useCallback(
+    (newSelectedTrack: AddonTrack) => {
+      dispatch(setSelectedTrack({ addonKey: selectedAddon.key, track: newSelectedTrack }));
+    },
+    [dispatch, selectedAddon.key],
+  );
+
+  const selectedTrack = useCallback((): AddonTrack => {
+    try {
+      return selectedTracks[selectedAddon.key] as AddonTrack;
+    } catch (e) {
+      setCurrentlySelectedTrack(null);
+      return null;
+    }
+  }, [selectedAddon.key, selectedTracks, setCurrentlySelectedTrack]);
+
+  const selectAndSetTrack = useCallback(
+    (key: string) => {
+      const newTrack = selectedAddon.tracks.find((track) => track.key === key);
+      setCurrentlySelectedTrack(newTrack);
+    },
+    [selectedAddon.tracks, setCurrentlySelectedTrack],
+  );
+
+  const getCurrentInstallStatus = (): InstallState => {
+    try {
+      return installStates[selectedAddon.key];
+    } catch (e) {
+      setCurrentInstallStatus({ status: InstallStatus.Unknown });
+      return { status: InstallStatus.Unknown };
+    }
+  };
+
+  const setCurrentInstallStatus = useCallback(
+    (new_state: InstallState) => {
+      dispatch(setInstallStatus({ addonKey: selectedAddon.key, installState: new_state }));
+    },
+    [dispatch, selectedAddon.key],
+  );
+
+  const findInstalledTrack = useCallback((): AddonTrack => {
     if (!Directories.isFragmenterInstall(selectedAddon)) {
       console.log('Not installed');
       if (selectedTrack()) {
@@ -167,46 +223,7 @@ export const AddonSection = (): JSX.Element => {
         return selectedAddon.tracks[0];
       }
     }
-  };
-
-  const installedTrack = (): AddonTrack => {
-    try {
-      return installedTracks[selectedAddon.key] as AddonTrack;
-    } catch (e) {
-      setCurrentlyInstalledTrack(null);
-      return null;
-    }
-  };
-
-  const setCurrentlyInstalledTrack = (newInstalledTrack: AddonTrack) => {
-    dispatch(setInstalledTrack({ addonKey: selectedAddon.key, installedTrack: newInstalledTrack }));
-  };
-
-  const selectedTrack = (): AddonTrack => {
-    try {
-      return selectedTracks[selectedAddon.key] as AddonTrack;
-    } catch (e) {
-      setCurrentlySelectedTrack(null);
-      return null;
-    }
-  };
-
-  const setCurrentlySelectedTrack = (newSelectedTrack: AddonTrack) => {
-    dispatch(setSelectedTrack({ addonKey: selectedAddon.key, track: newSelectedTrack }));
-  };
-
-  const getCurrentInstallStatus = (): InstallState => {
-    try {
-      return installStates[selectedAddon.key];
-    } catch (e) {
-      setCurrentInstallStatus({ status: InstallStatus.Unknown });
-      return { status: InstallStatus.Unknown };
-    }
-  };
-
-  const setCurrentInstallStatus = (new_state: InstallState) => {
-    dispatch(setInstallStatus({ addonKey: selectedAddon.key, installState: new_state }));
-  };
+  }, [selectAndSetTrack, selectedAddon, selectedTrack, setCurrentlyInstalledTrack, setCurrentlySelectedTrack]);
 
   const download: DownloadItem = useSelector((state: InstallerStore) =>
     state.downloads.find((download) => download.id === selectedAddon.key),
@@ -248,14 +265,14 @@ export const AddonSection = (): JSX.Element => {
     }, 500);
 
     return () => clearInterval(checkApplicationInterval);
-  }, [selectedAddon]);
+  }, [dispatch, publisherData, selectedAddon]);
 
   useEffect(() => {
     findInstalledTrack();
     if (!isInstalling) {
       InstallManager.determineAddonInstallState(selectedAddon).then(setCurrentInstallStatus);
     }
-  }, [selectedAddon, selectedTrack(), installedTrack()]);
+  }, [findInstalledTrack, isInstalling, selectedAddon, setCurrentInstallStatus]);
 
   useEffect(() => {
     if (download && isDownloading) {
@@ -263,7 +280,7 @@ export const AddonSection = (): JSX.Element => {
     } else {
       ipcRenderer.send('set-window-progress-bar', -1);
     }
-  }, [download]);
+  }, [download, isDownloading]);
 
   const [addonDiscovered] = useSetting<boolean>('cache.main.discoveredAddons.' + hiddenAddon?.key);
 
@@ -271,14 +288,9 @@ export const AddonSection = (): JSX.Element => {
     if (addonDiscovered) {
       setSelectedAddon(hiddenAddon);
     }
-  }, [addonDiscovered]);
+  }, [addonDiscovered, hiddenAddon]);
 
   const { showModal, showModalAsync } = useModals();
-
-  const selectAndSetTrack = (key: string) => {
-    const newTrack = selectedAddon.tracks.find((track) => track.key === key);
-    setCurrentlySelectedTrack(newTrack);
-  };
 
   const handleTrackSelection = (track: AddonTrack) => {
     if (!isInstalling) {
@@ -312,7 +324,7 @@ export const AddonSection = (): JSX.Element => {
     if (isInstalling && !isFinishingDependencyInstall) {
       InstallManager.cancelDownload(selectedAddon);
     }
-  }, [selectedAddon, isInstalling]);
+  }, [isInstalling, isFinishingDependencyInstall, selectedAddon]);
 
   const UninstallButton = (): JSX.Element => {
     switch (status) {
@@ -384,7 +396,7 @@ export const AddonSection = (): JSX.Element => {
                   }
 
                   return (
-                    <div className={classes}>
+                    <div key={category.key} className={classes}>
                       <h4 className="font-manrope font-medium text-quasi-white">{category.title}</h4>
 
                       <div className="flex flex-col gap-y-4">
@@ -539,11 +551,9 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
 
       <h2 className="text-white">{addon.aircraftName}</h2>
     </div>
-    <ReactMarkdown
-      className="font-manrope text-xl font-light leading-relaxed text-white"
-      children={addon.description}
-      linkTarget={'_blank'}
-    />
+    <ReactMarkdown className="font-manrope text-xl font-light leading-relaxed text-white" linkTarget={'_blank'}>
+      {addon.description}
+    </ReactMarkdown>
 
     {addon.techSpecs && addon.techSpecs.length > 0 && (
       <>
@@ -551,7 +561,7 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
 
         <div className="flex flex-row gap-x-16">
           {addon.techSpecs.map((spec) => (
-            <span className="flex flex-col items-start">
+            <span key={spec.name} className="flex flex-col items-start">
               <span className="mb-1 text-2xl text-quasi-white">{spec.name}</span>
               <span className="font-manrope text-4xl font-semibold text-cyan">{spec.value}</span>
             </span>

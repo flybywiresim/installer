@@ -30,9 +30,10 @@ export const ErrorModal = (): JSX.Element => {
     if (linuxError) {
       return (
         <>
-          <span className="w-3/5 text-center text-2xl">Seems like you're using Linux</span>
+          <span className="w-3/5 text-center text-2xl">Seems like you&apos;re using Linux</span>
           <span className="w-3/5 text-center text-2xl">
-            We're unable to autodetect your install currently. Please set the correct location before we can continue.
+            We&apos;re unable to autodetect your install currently. Please set the correct location before we can
+            continue.
           </span>
 
           <Button type={ButtonType.Neutral} onClick={handleSelectPath}>
@@ -49,7 +50,7 @@ export const ErrorModal = (): JSX.Element => {
             {Directories.installLocation()}
           </pre>
           <span className="w-3/5 text-center text-2xl">
-            but we couldn't find it there. Please set the correct location before we can continue.
+            but we couldn&apos;t find it there. Please set the correct location before we can continue.
           </span>
 
           <Button type={ButtonType.Neutral} onClick={handleSelectPath}>

@@ -119,7 +119,7 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
   );
 };
 
-const index = (): JSX.Element => {
+export const DownloadSettings = (): JSX.Element => {
   const [communityPath, setCommunityPath] = useSetting<string>('mainSettings.msfsCommunityPath');
   const [installPath, setInstallPath] = useSetting<string>('mainSettings.installPath');
   const [tempLocation, setTempLocation] = useSetting<string>('mainSettings.tempLocation');
@@ -145,5 +145,3 @@ const index = (): JSX.Element => {
     </div>
   );
 };
-
-export default index;

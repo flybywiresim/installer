@@ -31,11 +31,9 @@ export const ConfigurationAspectDisplay: FC<ConfigurationAspectDisplayProps> = (
         <div className="mt-10">
           <h2 className="font-bold text-white">Description</h2>
           <p className="font-manrope text-xl leading-relaxed text-white">
-            <ReactMarkdown
-              className="font-manrope text-xl font-light leading-relaxed text-white"
-              children={chosen.description}
-              linkTarget={'_blank'}
-            />
+            <ReactMarkdown className="font-manrope text-xl font-light leading-relaxed text-white" linkTarget={'_blank'}>
+              {chosen.description}
+            </ReactMarkdown>
           </p>
         </div>
       )}

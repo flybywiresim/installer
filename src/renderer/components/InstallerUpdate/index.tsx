@@ -11,7 +11,7 @@ enum UpdateState {
   RestartToUpdate,
 }
 
-const index = (): JSX.Element => {
+export const InstallerUpdate = (): JSX.Element => {
   const [updateState, setUpdateState] = useState(UpdateState.Standby);
 
   const updateNeeded = updateState !== UpdateState.Standby;
@@ -82,5 +82,3 @@ const index = (): JSX.Element => {
     </div>
   );
 };
-
-export default index;
