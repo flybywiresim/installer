@@ -35,7 +35,7 @@ const index = (): JSX.Element => {
                     <SettingsItem name="Configuration Download URL">
                         <div className='flex flex-row items-center justify-between text-white py-4'>
                             <input
-                                className={`text-right ${configDownloadUrlValid ? 'text-green-500' : 'text-red-500'}`}
+                                className={` text-xl text-right ${configDownloadUrlValid ? 'text-green-500' : 'text-red-500'}`}
                                 value={configDownloadUrl}
                                 type="url"
                                 onChange={(event) => setConfigDownloadUrl(event.target.value)}
