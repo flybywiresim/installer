@@ -66,7 +66,7 @@ const LongDateFormatItem = ({ value, setValue }: SettingItemProps<boolean>) => {
   );
 };
 
-const index = (): JSX.Element => {
+export const GeneralSettings = (): JSX.Element => {
   const [autoStart, setAutoStart] = useSetting<boolean>('mainSettings.autoStartApp');
   const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
   const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
@@ -84,5 +84,3 @@ const index = (): JSX.Element => {
     </div>
   );
 };
-
-export default index;

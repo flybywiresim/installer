@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSetting } from 'common/settings';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
@@ -8,11 +8,11 @@ const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   </div>
 );
 
-const index = (): JSX.Element => {
+export const DeveloperSettings = (): JSX.Element => {
   const [configDownloadUrl, setConfigDownloadUrl] = useSetting<string>('mainSettings.configDownloadUrl');
   const [configDownloadUrlValid, setConfigDownloadUrlValid] = useState<boolean>(false);
 
-  const validateUrl = () => {
+  const validateUrl = useCallback(() => {
     try {
       fetch(configDownloadUrl).then((response) => {
         setConfigDownloadUrlValid(response.status === 200);
@@ -20,11 +20,11 @@ const index = (): JSX.Element => {
     } catch (e) {
       setConfigDownloadUrlValid(false);
     }
-  };
+  }, [configDownloadUrl]);
 
   useEffect(() => {
     validateUrl();
-  }, []);
+  }, [validateUrl]);
 
   return (
     <div>
@@ -48,5 +48,3 @@ const index = (): JSX.Element => {
     </div>
   );
 };
-
-export default index;
