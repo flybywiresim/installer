@@ -34,7 +34,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
             <div className={`w-1 h-12 rounded-r-xl transition-all duration-200 transform ${isSelected ? 'scale-y-100' : 'scale-y-50'}`}/>
             <div className="flex flex-col px-3 py-2.5">
                 <span className="text-xl text-current">{track.name}</span>
-                <span className="text-3xl font-manrope font-medium text-current mt-0.5">{latestVersionName}</span>
+                <span className="text-3xl font-manrope font-medium text-current tracking-wider mt-0.5">{latestVersionName}</span>
             </div>
             {isInstalled && (
                 <Check className={`absolute right-4 text-cyan stroke-current`} strokeWidth={3}/>

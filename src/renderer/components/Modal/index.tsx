@@ -192,15 +192,7 @@ export const AlertModal: FC<AlertModalProps> = ({
                 bodyText
             )}
 
-            {dontShowAgainSettingName ? <div className="w-auto space-x-4 mt-8">
-                <input
-                    type="checkbox"
-                    checked={checkMark}
-                    onChange={() => setCheckMark(!checkMark)}
-                    className=" w-4 h-4 rounded-sm checked:bg-blue-600 checked:border-transparent"
-                />
-                <span className="ml-2">Don't show me this again</span>
-            </div> : <div></div>}
+            {dontShowAgainSettingName && <DoNotAskAgain checked={checkMark} toggleChecked={() => setCheckMark((old) => !old)} />}
 
             <div className="flex flex-row mt-8 gap-x-4">
                 <Button className="flex-grow" type={acknowledgeColor} onClick={handleAcknowledge}>
@@ -244,7 +236,7 @@ export const ChangelogModal: React.FC = () => {
             <div className="mt-4 h-96 overflow-y-scroll">
                 {(changelog as ChangelogType).releases.map((release) => <div className="mb-6">
                     <div className="text-4xl font-bold mb-2">{release.name}</div>
-                    {release.changes.map((change) => <div className="mb-4 flex">
+                    {release.changes.map((change) => <div className="mb-4 flex text-2xl">
                         <div className="w-7">
                             <Dot className="" size={20} strokeWidth={1}/>
                         </div>

@@ -30,15 +30,13 @@ const ReleaseNoteCard = forwardRef<HTMLDivElement, ReleaseNoteCardProps>(({ rele
     return (
         <div ref={ref} className="border-2 border-navy-light p-7 rounded-lg">
             <div className="flex flex-row items-center justify-between mb-3.5">
-                <div className="flex flex-row items-center  gap-x-4">
-                    <h1 className="text-4xl text-white font-semibold mb-0">{release.name}</h1>
+                <div className="flex flex-row items-center gap-x-4">
+                    <h1 className="text-4xl text-white font-semibold m-0 p-0">{release.name}</h1>
                     {isLatest && (
-                        <div className="text-cyan bg-cyan bg-opacity-20 font-semibold rounded-full px-6">
-                        Latest
-                        </div>
+                        <div className="text-2xl text-cyan mt-1 bg-cyan bg-opacity-20 font-semibold rounded-full px-6">Latest</div>
                     )}
                 </div>
-                <div className="text-white">
+                <div className="text-2xl text-white">
                     {dateFormat(new Date(release.publishedAt), dateLayout)}
                 </div>
             </div>
@@ -147,7 +145,7 @@ export const ReleaseNotes = ({ addon }: {addon: Addon}): JSX.Element => {
 
                     <h2 className="text-white">Stable Version</h2>
                 </div>
-                { releaseComponent ?? <DummyComponent/> }
+                {releaseComponent ?? <DummyComponent />}
             </div>
         </div>
     );

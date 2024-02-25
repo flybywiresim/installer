@@ -96,7 +96,7 @@ export const ErrorDialog: FC<ErrorDialogProps> = ({ error, onAcknowledge }) => {
                 <div className="flex flex-col gap-y-5">
                     <div className="flex flex-col">
                         {errorVisualisation}
-                        <pre className="h-96 bg-gray-800 p-2.5 rounded-md">{error.stack}</pre>
+                        <pre className="h-96 text-2xl bg-gray-800 p-2.5 rounded-md overflow-scroll">{error.stack}</pre>
                     </div>
 
                     <div className="flex flex-col">

@@ -16,9 +16,14 @@ interface SettingItemProps<T> {
     setValue: (value: T) => void;
 }
 
-const MsfsCommunityPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => {
+interface PathSettingItemProps extends SettingItemProps<string> {
+    name: string,
+    callback: () => Promise<string>;
+}
+
+const PathSettingItem: React.FC<PathSettingItemProps> = ({ value, setValue, name, callback }) => {
     const handleClick = async () => {
-        const path = await setupMsfsCommunityPath();
+        const path = await callback();
 
         if (path) {
             setValue(path);
@@ -26,43 +31,26 @@ const MsfsCommunityPathSettingItem = ({ value, setValue }: SettingItemProps<stri
     };
 
     return (
-        <SettingsItem name="MSFS Community Directory">
-            <div className="text-white hover:text-gray-400 cursor-pointer underline transition duration-200" onClick={handleClick}>{value}</div>
+        <SettingsItem name={name}>
+            <div className="text-xl text-white hover:text-gray-400 cursor-pointer underline transition duration-200" onClick={handleClick}>{value}</div>
         </SettingsItem>
     );
 };
 
-const InstallPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => {
-    const handleClick = async () => {
-        const path = await setupInstallPath();
-
-        if (path) {
-            setValue(path);
-        }
-    };
-
-    return (
-        <SettingsItem name="Install Directory">
-            <div className="text-white hover:text-gray-400 cursor-pointer underline transition duration-200" onClick={handleClick}>{value}</div>
-        </SettingsItem>
+const MsfsCommunityPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element =>
+    (
+        <PathSettingItem value={value} setValue={setValue} name="MSFS Community Directory" callback={setupMsfsCommunityPath} />
     );
-};
 
-const TempLocationSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => {
-    const handleClick = async () => {
-        const path = await setupTempLocation();
-
-        if (path) {
-            setValue(path);
-        }
-    };
-
-    return (
-        <SettingsItem name="Location for temporary folders">
-            <div className="text-white hover:text-gray-400 cursor-pointer underline transition duration-200" onClick={handleClick}>{value}</div>
-        </SettingsItem>
+const InstallPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element =>
+    (
+        <PathSettingItem value={value} setValue={setValue} name="Install Directory" callback={setupInstallPath}/>
     );
-};
+
+const TempLocationSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element =>
+    (
+        <PathSettingItem value={value} setValue={setValue} name="Location for temporary folders" callback={setupTempLocation}/>
+    );
 
 const SeparateTempLocationSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     const handleClick = () => {

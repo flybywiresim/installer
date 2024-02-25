@@ -119,7 +119,7 @@ const App = () => {
             showDevURL = configUrl;
         }
         return (configUrl !== productionURL) && (
-            <div className="flex gap-x-4 ml-32 my-auto text-gray-400">
+            <div className="flex gap-x-4 ml-32 my-auto text-2xl text-gray-400">
                 <pre className="text-utility-amber">Developer Configuration Used: </pre>
                 <pre className="text-quasi-white">{showDevURL}</pre>
             </div>
@@ -140,7 +140,7 @@ const App = () => {
                                 <Logo />
 
                                 {(process.env.NODE_ENV === 'development') && (
-                                    <div className="flex gap-x-4 ml-32 my-auto text-gray-400">
+                                    <div className="flex gap-x-4 ml-32 my-auto text-2xl text-gray-400">
                                         <pre>{packageInfo.version}</pre>
                                         <pre className="text-gray-500">|</pre>
                                         <pre className="text-utility-amber">Development mode</pre>
