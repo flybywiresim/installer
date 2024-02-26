@@ -1,5 +1,5 @@
 import Store, { Schema } from 'electron-store';
-import * as fs from 'fs-extra';
+import * as fs from 'fs';
 import walk from 'walkdir';
 import * as path from 'path';
 import * as os from 'os';

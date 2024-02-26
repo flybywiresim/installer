@@ -1,6 +1,6 @@
 import path from 'path';
 import { Addon } from 'renderer/utils/InstallerConfiguration';
-import fs from 'fs-extra';
+import fs from 'fs';
 import settings from 'common/settings';
 
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
@@ -100,7 +100,8 @@ export class Directories {
 
         console.log('[CLEANUP] Removing', fullPath);
         try {
-          fs.removeSync(fullPath);
+          // TODO see if this is equivalent (vite)
+          fs.rmSync(fullPath);
           console.log('[CLEANUP] Removed', fullPath);
         } catch (e) {
           console.error('[CLEANUP] Could not remove', fullPath, e);
@@ -119,7 +120,8 @@ export class Directories {
 
       if (fs.existsSync(altDir)) {
         console.log('Removing alternative', altDir);
-        fs.removeSync(altDir);
+        // TODO see if this is equivalent (vite)
+        fs.rmSync(altDir);
       }
     });
   }
@@ -129,7 +131,8 @@ export class Directories {
 
     if (fs.existsSync(dir)) {
       console.log('Removing', dir);
-      fs.removeSync(dir);
+      // TODO see if this is equivalent (vite)
+      fs.rmSync(dir);
     }
   }
 

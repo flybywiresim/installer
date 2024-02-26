@@ -11,7 +11,7 @@ import {
   updateDownloadProgress,
 } from 'renderer/redux/features/downloads';
 import { Directories } from 'renderer/utils/Directories';
-import fs from 'fs-extra';
+import fs from 'fs';
 import { ApplicationStatus, InstallStatus } from 'renderer/components/AddonSection/Enums';
 import {
   FragmenterContextEvents,

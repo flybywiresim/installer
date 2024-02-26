@@ -6,7 +6,7 @@ import { ExternalApps } from 'renderer/utils/ExternalApps';
 import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
 import { shell } from '@electron/remote';
-import { promises } from 'fs-extra';
+import { promises } from 'fs';
 
 export const STARTUP_FOLDER_PATH = 'Microsoft\\Windows\\Start Menu\\Programs\\Startup\\';
 

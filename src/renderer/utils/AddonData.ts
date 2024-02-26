@@ -1,7 +1,7 @@
 import { Addon, AddonTrack, GithubBranchReleaseModel } from 'renderer/utils/InstallerConfiguration';
 import { GitVersions } from '@flybywiresim/api-client';
 import { Directories } from './Directories';
-import fs from 'fs-extra';
+import fs from 'fs';
 import { getCurrentInstall, FragmenterUpdateChecker } from '@flybywiresim/fragmenter';
 import settings from 'common/settings';
 import { store } from 'renderer/redux/store';

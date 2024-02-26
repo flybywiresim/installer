@@ -1,6 +1,5 @@
 import { app, BrowserWindow, Menu, globalShortcut, shell, ipcMain } from 'electron';
 import { NsisUpdater } from 'electron-updater';
-import * as path from 'path';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
 import settings, { persistWindowSettings } from 'common/settings';
@@ -8,8 +7,11 @@ import channels from 'common/channels';
 import * as remote from '@electron/remote/main';
 import { InstallManager } from 'main/InstallManager';
 import { SentryClient } from 'main/SentryClient';
+import Store from 'electron-store';
 
 function initializeApp() {
+  Store.initRenderer();
+
   function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -115,11 +117,11 @@ function initializeApp() {
     mainWindow.center();
 
     // and load the index.html of the app.
-    if (serve) {
-      mainWindow.loadURL('http://localhost:8080/index.html').then();
-    } else {
-      mainWindow.loadFile(path.join(__dirname, '../renderer/index.html')).then();
+    if (process.env.NODE_ENV === 'development') {
+      mainWindow.webContents.openDevTools();
     }
+
+    mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL).then();
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
       shell.openExternal(url).then();
@@ -207,8 +209,6 @@ function initializeApp() {
   let mainWindow: BrowserWindow;
 
   Menu.setApplicationMenu(null);
-
-  const serve = process.argv.slice(1).some((arg) => arg === '--serve');
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.

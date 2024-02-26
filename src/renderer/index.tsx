@@ -48,6 +48,8 @@ import 'simplebar-react/dist/simplebar.min.css';
 import './index.scss';
 import { Button, ButtonType } from 'renderer/components/Button';
 
+console.log('a');
+
 // Setup Sentry
 Sentry.init({
   release: packageJson.version,
