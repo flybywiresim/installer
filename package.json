@@ -147,6 +147,7 @@
     "simplebar-react": "^3.2.4",
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
+    "tailwind-merge": "^2.2.1",
     "walkdir": "^0.4.1",
     "winreg": "^1.2.4",
     "ws": "^8.8.0"

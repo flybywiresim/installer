@@ -5,6 +5,7 @@ import { Check } from 'tabler-icons-react';
 import { Addon, AddonTrack } from 'renderer/utils/InstallerConfiguration';
 
 import '../index.css';
+import { twMerge } from 'tailwind-merge';
 
 export const Tracks: React.FC = ({ children }) => (
   <div className="flex flex-row items-stretch justify-start gap-3">{children}</div>
@@ -26,7 +27,10 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
 
   return (
     <div
-      className={`relative flex w-60 cursor-pointer flex-row items-center rounded-sm-md border-2 border-transparent bg-navy-dark text-white transition-all duration-200 hover:border-navy-lightest hover:text-gray-300 ${isSelected && 'border-2 border-cyan text-cyan'}`}
+      className={twMerge(
+        `relative flex w-60 cursor-pointer flex-row items-center rounded-sm-md border-2 border-transparent bg-navy-dark text-white transition-all duration-200 hover:border-navy-lightest hover:text-gray-300`,
+        isSelected && 'border-2 border-cyan text-cyan',
+      )}
       onClick={() => handleSelected(track)}
     >
       <div
