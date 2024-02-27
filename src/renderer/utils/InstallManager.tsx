@@ -655,8 +655,7 @@ export class InstallManager {
             channels.installManager.uninstall,
             installDir,
             [
-                Directories.inPackagesMicrosoftStore(addon.targetDirectory),
-                Directories.inPackagesSteam(addon.targetDirectory),
+                Directories.inPackages(addon.targetDirectory),
             ],
         );
 

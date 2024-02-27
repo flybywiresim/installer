@@ -1,13 +1,14 @@
-import { app, BrowserWindow, Menu, globalShortcut, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut, shell, ipcMain, dialog } from 'electron';
 import { NsisUpdater } from "electron-updater";
 import * as path from 'path';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
-import settings, { persistWindowSettings } from "common/settings";
+import settings, { defaultCommunityDir, msStoreBasePath, persistWindowSettings, steamBasePath } from "common/settings";
 import channels from "common/channels";
 import * as remote from "@electron/remote/main";
 import { InstallManager } from "main/InstallManager";
 import { SentryClient } from "main/SentryClient";
+import fs from 'fs-extra';
 
 function initializeApp() {
     function createWindow() {
@@ -85,6 +86,61 @@ function initializeApp() {
         ipcMain.on('request-startup-at-login-changed', (_, value: boolean) => {
             app.setLoginItemSettings({
                 openAtLogin: value,
+            });
+        });
+
+        ipcMain.on(channels.openPath, (_, value: string) => {
+            shell.openPath(value).then();
+        });
+
+        ipcMain.on(channels.msfsBasePathSelectionDialog, () => {
+            const availablePaths: string[] = [];
+            const availablePathIndex: string[] = [];
+            if (fs.existsSync(msStoreBasePath)) {
+                availablePaths.push('Microsoft Store Edition');
+                availablePathIndex.push('MS Store');
+            }
+            if (fs.existsSync(steamBasePath)) {
+                availablePaths.push('Steam Edition');
+                availablePathIndex.push('Steam');
+            }
+            availablePaths.push('Custom Directory');
+            availablePathIndex.push('Custom');
+            dialog.showMessageBox({
+                title: "FlyByWire Installer",
+                message: 'We couldn\'t determine the correct MSFS base path. Would you please help us? \n \n It is usually located somewhere here: \n "%LOCALAPPDATA%\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache" \n \n or here: \n "%APPDATA%\\Microsoft Flight Simulator\\"',
+                type: 'warning',
+                buttons: availablePaths,
+            }).then((promise) => {
+                const selection = availablePathIndex[promise.response];
+                const setNewPath = (path: string) => {
+                    settings.set('mainSettings.msfsBasePath', path);
+                    settings.set('mainSettings.msfsCommunityPath', defaultCommunityDir(path));
+                    settings.set('mainSettings.installPath', defaultCommunityDir(path));
+                    dialog.showMessageBox({
+                        title: "FlyByWire Installer",
+                        message: 'We had to reset your community directory. If you are using a custom directory, you might want to change it again.',
+                        type: 'warning',
+                    });
+                    mainWindow.reload();
+                };
+                switch (selection) {
+                    case 'MS Store':
+                        setNewPath(msStoreBasePath);
+                        break;
+                    case 'Steam':
+                        setNewPath(steamBasePath);
+                        break;
+                    case 'Custom':
+                        dialog.showOpenDialog({
+                            title: 'Select your MSFS community directory',
+                            properties: ['openDirectory'],
+                        }).then((path) => {
+                            if (path.filePaths[0]) {
+                                setNewPath(path.filePaths[0]);
+                            }
+                        });
+                }
             });
         });
 

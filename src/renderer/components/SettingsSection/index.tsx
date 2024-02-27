@@ -10,6 +10,8 @@ import settings from 'common/settings';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from '../Button';
 import { PromptModal, useModals } from "renderer/components/Modal";
+import { ipcRenderer } from 'electron';
+import channels from 'common/channels';
 
 interface InstallButtonProps {
     type?: ButtonType,
@@ -48,6 +50,9 @@ export const SettingsSection = (): JSX.Element => {
 
                     // Workaround to flush the defaults
                     settings.set('metaInfo.lastVersion', packageInfo.version);
+                    if (settings.get('mainSettings.msfsBasePath') === 'C:\\' || settings.get('mainSettings.msfsBasePath') === 'linux') {
+                        ipcRenderer.send(channels.msfsBasePathSelectionDialog);
+                    }
                 }}/>,
         );
     };

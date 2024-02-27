@@ -21,4 +21,6 @@ export default {
         requestSessionID: 'sentry/requestSessionID',
         provideSessionID: 'sentry/provideSessionID',
     },
+    openPath: 'openPath',
+    msfsBasePathSelectionDialog: 'msfsBasePathSelectionDialog',
 };

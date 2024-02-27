@@ -85,6 +85,12 @@ const App = () => {
     );
 
     useEffect(() => {
+        if (settings.get('mainSettings.msfsBasePath') === 'C:\\' || settings.get('mainSettings.msfsBasePath') === 'linux') {
+            ipcRenderer.send(channels.msfsBasePathSelectionDialog);
+        }
+    }, []);
+
+    useEffect(() => {
         addons.forEach(AddonData.configureInitialAddonState);
         addons.forEach(fetchLatestVersionNames);
 

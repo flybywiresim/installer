@@ -10,9 +10,6 @@ const TEMP_DIRECTORY_PREFIXES_FOR_CLEANUP = [
     TEMP_DIRECTORY_PREFIX,
 ];
 
-const MSFS_APPDATA_PATH = 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState\\packages\\';
-const MSFS_STEAM_PATH = 'Microsoft Flight Simulator\\Packages';
-
 export class Directories {
     private static sanitize(suffix: string): string {
         return path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, '');
@@ -60,16 +57,12 @@ export class Directories {
         return path.join(settings.get('mainSettings.liveriesPath') as string, this.sanitize(targetDir));
     }
 
-    static inPackagesMicrosoftStore(targetDir: string): string {
-        return path.join(process.env.LOCALAPPDATA, MSFS_APPDATA_PATH, this.sanitize(targetDir));
-    }
-
-    static inPackagesSteam(targetDir: string): string {
-        return path.join(process.env.APPDATA, MSFS_STEAM_PATH, this.sanitize(targetDir));
+    static inPackages(targetDir: string): string {
+        return path.join(settings.get('mainSettings.msfsBasePath') as string, 'packages', this.sanitize(targetDir)).replace('LocalCache', 'LocalState');
     }
 
     static inPackageCache(addon: Addon, targetDir: string): string {
-        const baseDir = this.inPackagesSteam(this.sanitize(addon.targetDirectory));
+        const baseDir = this.inPackages(this.sanitize(addon.targetDirectory));
 
         return path.join(baseDir, this.sanitize(targetDir));
     }

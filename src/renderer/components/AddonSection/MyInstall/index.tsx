@@ -6,10 +6,11 @@ import {
     NamedDirectoryDefinition,
 } from "renderer/utils/InstallerConfiguration";
 import { BoxArrowRight, Folder } from "react-bootstrap-icons";
-import { shell } from "electron";
+import { ipcRenderer, shell } from "electron";
 import { Directories } from "renderer/utils/Directories";
 import { useAppSelector } from "renderer/redux/store";
 import { InstallStatusCategories } from "renderer/components/AddonSection/Enums";
+import channels from "common/channels";
 
 export interface MyInstallProps {
     addon: Addon,
@@ -55,7 +56,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
                 break;
         }
 
-        shell.openPath(fullPath).then();
+        ipcRenderer.send(channels.openPath, fullPath);
     };
 
     const directoriesDisabled = !InstallStatusCategories.installed.includes(installStates[addon.key]?.status);
