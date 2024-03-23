@@ -94,6 +94,7 @@ interface Settings {
         allowSeasonalEffects: boolean,
         msfsPackagePath: string,
         configDownloadUrl: string,
+        useAutoUpdate: boolean,
     },
     cache: {
         main: {
@@ -203,6 +204,10 @@ const schema: Schema<Settings> = {
             configDownloadUrl: {
                 type: "string",
                 default: packageInfo.configUrls.production,
+            },
+            useAutoUpdate: {
+                type: "boolean",
+                default: false,
             },
         },
     },

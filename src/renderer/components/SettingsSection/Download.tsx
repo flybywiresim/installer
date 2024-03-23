@@ -104,6 +104,23 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     );
 };
 
+const AutoUpdateSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
+    const handleClick = () => {
+        const newState = !value;
+        setValue(newState);
+        settings.set('mainSettings.useAutoUpdate', newState);
+    };
+
+    return (
+        <SettingsItem name="Auto Update">
+            <Toggle
+                value={value}
+                onToggle={handleClick}
+            />
+        </SettingsItem>
+    );
+};
+
 const index = (): JSX.Element => {
     const [communityPath, setCommunityPath] = useSetting<string>('mainSettings.msfsCommunityPath');
     const [installPath, setInstallPath] = useSetting<string>('mainSettings.installPath');
@@ -111,6 +128,7 @@ const index = (): JSX.Element => {
     const [separateTempLocation, setSeparateTempLocation] = useSetting<boolean>('mainSettings.separateTempLocation');
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
     const [useCdnCache, setUseCdnCache] = useSetting<boolean>('mainSettings.useCdnCache');
+    const [useAutoUpdate, setUseAutoUpdate] = useSetting<boolean>('mainSettings.useAutoUpdate');
 
     return (
         <div>
@@ -125,6 +143,7 @@ const index = (): JSX.Element => {
                     }
                     <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />
                     <UseCdnSettingItem value={useCdnCache} setValue={setUseCdnCache} />
+                    <AutoUpdateSettingItem value={useAutoUpdate} setValue={setUseAutoUpdate} />
                 </div>
             </div>
         </div>
