@@ -1,11 +1,8 @@
 'use strict';
 
-const reactComponentsSafeList = require('@flybywiresim/react-components/build/usedCSSClasses.json');
-
 module.exports = {
     purge: {
         mode: 'jit',
-        options: { safelist: [...reactComponentsSafeList] },
         content: [
             './src/**/*.html',
             './src/**/*.jsx',
