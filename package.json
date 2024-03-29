@@ -145,6 +145,7 @@
     "remark-gfm": "^2.0.0",
     "semver": "7.3.5",
     "simplebar-react": "^3.2.4",
+    "source-map": "^0.7.4",
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
     "tailwind-merge": "^2.2.1",
