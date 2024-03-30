@@ -8,6 +8,7 @@ import * as remote from '@electron/remote/main';
 import { InstallManager } from 'main/InstallManager';
 import { SentryClient } from 'main/SentryClient';
 import Store from 'electron-store';
+import path from 'path';
 
 function initializeApp() {
   Store.initRenderer();
@@ -116,12 +117,15 @@ function initializeApp() {
 
     mainWindow.center();
 
-    // and load the index.html of the app.
     if (process.env.NODE_ENV === 'development') {
       mainWindow.webContents.openDevTools();
     }
 
-    mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL).then();
+    if (!app.isPackaged) {
+      mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL).then();
+    } else {
+      mainWindow.loadFile(path.join(__dirname, '../renderer/index.html')).then();
+    }
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
       shell.openExternal(url).then();

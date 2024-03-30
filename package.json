@@ -10,20 +10,9 @@
   "main": "out/main/index.js",
   "scripts": {
     "compile:base:licenses": "node scripts/licenses.js",
-    "compile:base:main": "npm run compile:base:licenses && webpack --config webpack.main.config.js",
-    "compile:base:renderer": "webpack --config webpack.renderer.config.js",
-    "compile:base": "npm run compile:base:main && npm run compile:base:renderer",
-    "compile:prod:main": "npm run compile:base:main -- --mode=production",
-    "compile:prod:renderer": "npm run compile:base:renderer -- --mode=production",
-    "compile:prod": "npm run compile:prod:main && npm run compile:prod:renderer",
-    "compile:dev:main": "npm run compile:base:main -- --mode=development",
-    "compile:dev:renderer": "npm run compile:base:renderer -- --mode=development",
-    "compile:dev": "npm run compile:dev:main && npm run compile:dev:renderer",
-    "compile:watch:main": "webpack serve --config webpack.main.config.js --mode=development",
-    "compile:watch:renderer": "webpack serve --config webpack.renderer.config.js --mode=development",
-    "start": "npm run compile:prod && electron webpack/main/main.js",
-    "dev": "npm run compile:dev:main && concurrently --kill-others -n renderer,electron \"npm:compile:watch:renderer\" \"electron webpack/main/main.js --serve\"",
-    "package": "npm run compile:prod && electron-builder --win --publish=never",
+    "start": "electron-vite",
+    "build": "electron-vite build",
+    "package": "npm run build && electron-builder --win --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
@@ -43,7 +32,7 @@
       "target": "nsis",
       "icon": "src/main/icons/icon.ico",
       "files": [
-        "webpack/**/*"
+        "out/**/*"
       ]
     }
   },
