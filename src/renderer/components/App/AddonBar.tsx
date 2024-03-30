@@ -6,7 +6,7 @@ import { ArrowRepeat, Check2, CloudArrowDownFill, Icon } from 'react-bootstrap-i
 import { useHistory, useParams } from 'react-router-dom';
 import { useAppSelector } from 'renderer/redux/store';
 import { AircraftSectionURLParams } from '../AddonSection';
-import { useIsDarkTheme } from 'common/settings';
+import { useIsDarkTheme } from 'renderer/rendererSettings';
 import { Button } from 'renderer/components/Button';
 import { ChevronRight } from 'tabler-icons-react';
 import { InstallStatus } from 'renderer/components/AddonSection/Enums';

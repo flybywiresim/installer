@@ -2,7 +2,7 @@ import { app, BrowserWindow, Menu, globalShortcut, shell, ipcMain } from 'electr
 import { NsisUpdater } from 'electron-updater';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
-import settings, { persistWindowSettings } from 'common/settings';
+import settings, { persistWindowSettings } from './mainSettings';
 import channels from 'common/channels';
 import * as remote from '@electron/remote/main';
 import { InstallManager } from 'main/InstallManager';

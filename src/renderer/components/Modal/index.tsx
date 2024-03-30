@@ -1,4 +1,4 @@
-import settings, { useSetting } from 'common/settings';
+import settings, { useSetting } from 'renderer/rendererSettings';
 import React, { createContext, FC, useContext, useState } from 'react';
 import { Dot, X } from 'react-bootstrap-icons';
 import ReactMarkdown from 'react-markdown';

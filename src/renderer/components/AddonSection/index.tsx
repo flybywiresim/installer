@@ -8,7 +8,7 @@ import { Addon, AddonCategoryDefinition, AddonTrack } from 'renderer/utils/Insta
 import { Directories } from 'renderer/utils/Directories';
 import { NavLink, Redirect, Route, useHistory, useParams } from 'react-router-dom';
 import { Gear, InfoCircle, JournalText, Sliders } from 'react-bootstrap-icons';
-import settings, { useSetting } from 'common/settings';
+import settings, { useSetting } from 'renderer/rendererSettings';
 import { ipcRenderer } from 'electron';
 import { AddonBar, AddonBarItem } from '../App/AddonBar';
 import { NoAvailableAddonsSection } from '../NoAvailableAddonsSection';

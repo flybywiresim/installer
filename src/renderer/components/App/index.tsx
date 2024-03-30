@@ -15,7 +15,7 @@ import { NavBar, NavBarPublisher } from 'renderer/components/App/NavBar';
 import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { store, useAppSelector } from 'renderer/redux/store';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
-import settings from 'common/settings';
+import settings from 'renderer/rendererSettings';
 import './index.css';
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';

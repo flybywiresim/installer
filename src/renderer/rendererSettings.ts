@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as packageInfo from '../../package.json';
+import { Directories } from 'renderer/utils/Directories';
 
 const defaultCommunityDir = (): string => {
   if (os.platform().toString() === 'linux') {
@@ -14,9 +15,9 @@ const defaultCommunityDir = (): string => {
   // Ensure proper functionality in main- and renderer-process
   let msfsConfigPath = null;
 
-  const steamPath = path.join(process.env.APPDATA, '\\Microsoft Flight Simulator\\UserCfg.opt');
+  const steamPath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\UserCfg.opt');
   const storePath = path.join(
-    process.env.LOCALAPPDATA,
+    Directories.localAppData(),
     '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\UserCfg.opt',
   );
 
@@ -25,7 +26,7 @@ const defaultCommunityDir = (): string => {
   } else if (fs.existsSync(storePath)) {
     msfsConfigPath = storePath;
   } else {
-    walk(process.env.LOCALAPPDATA, (path) => {
+    walk(Directories.localAppData(), (path) => {
       if (path.includes('Flight') && path.includes('UserCfg.opt')) {
         msfsConfigPath = path;
       }
@@ -48,14 +49,6 @@ const defaultCommunityDir = (): string => {
     console.error(e);
     return 'C:\\';
   }
-};
-
-export const persistWindowSettings = (window: Electron.BrowserWindow): void => {
-  store.set('cache.main.maximized', window.isMaximized());
-
-  const winSize = window.getSize();
-  store.set('cache.main.lastWindowX', winSize[0]);
-  store.set('cache.main.lastWindowY', winSize[1]);
 };
 
 export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetStateAction<T>>] => {
@@ -84,7 +77,7 @@ export const useIsDarkTheme = (): boolean => {
   return true;
 };
 
-interface Settings {
+interface RendererSettings {
   mainSettings: {
     autoStartApp: boolean;
     disableExperimentalWarning: boolean;
@@ -100,9 +93,6 @@ interface Settings {
   };
   cache: {
     main: {
-      lastWindowX: number;
-      lastWindowY: number;
-      maximized: boolean;
       lastShownSection: string;
       lastShownAddonKey: string;
     };
@@ -113,7 +103,7 @@ interface Settings {
   };
 }
 
-const schema: Schema<Settings> = {
+const schema: Schema<RendererSettings> = {
   mainSettings: {
     type: 'object',
     // Empty defaults are required when using type: "object" (https://github.com/sindresorhus/conf/issues/85#issuecomment-531651424)
@@ -217,16 +207,6 @@ const schema: Schema<Settings> = {
         type: 'object',
         default: {},
         properties: {
-          lastWindowX: {
-            type: 'integer',
-          },
-          lastWindowY: {
-            type: 'integer',
-          },
-          maximized: {
-            type: 'boolean',
-            default: false,
-          },
           lastShownSection: {
             type: 'string',
             default: '',

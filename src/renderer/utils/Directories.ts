@@ -1,7 +1,8 @@
 import path from 'path';
 import { Addon } from 'renderer/utils/InstallerConfiguration';
 import fs from 'fs';
-import settings from 'common/settings';
+import settings from 'renderer/rendererSettings';
+import { app } from '@electron/remote';
 
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
@@ -13,6 +14,14 @@ const MSFS_STEAM_PATH = 'Microsoft Flight Simulator\\Packages';
 export class Directories {
   private static sanitize(suffix: string): string {
     return path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, '');
+  }
+
+  static appData(): string {
+    return app.getPath('appData');
+  }
+
+  static localAppData(): string {
+    return path.join(app.getPath('appData'), '..', 'Local');
   }
 
   static communityLocation(): string {
@@ -60,11 +69,11 @@ export class Directories {
   }
 
   static inPackagesMicrosoftStore(targetDir: string): string {
-    return path.join(process.env.LOCALAPPDATA, MSFS_APPDATA_PATH, this.sanitize(targetDir));
+    return path.join(Directories.localAppData(), MSFS_APPDATA_PATH, this.sanitize(targetDir));
   }
 
   static inPackagesSteam(targetDir: string): string {
-    return path.join(process.env.APPDATA, MSFS_STEAM_PATH, this.sanitize(targetDir));
+    return path.join(Directories.localAppData(), MSFS_STEAM_PATH, this.sanitize(targetDir));
   }
 
   static inPackageCache(addon: Addon, targetDir: string): string {

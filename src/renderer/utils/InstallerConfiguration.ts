@@ -1,5 +1,5 @@
 import { defaultConfiguration } from 'renderer/data';
-import settings from 'common/settings';
+import settings from 'renderer/rendererSettings';
 
 export interface ExternalLink {
   url: string;

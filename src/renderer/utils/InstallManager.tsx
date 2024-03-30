@@ -20,7 +20,7 @@ import {
   FragmenterOperation,
   FragmenterUpdateChecker,
 } from '@flybywiresim/fragmenter';
-import settings from 'common/settings';
+import settings from 'renderer/rendererSettings';
 import { store } from 'renderer/redux/store';
 import { InstallState, setInstallStatus } from 'renderer/redux/features/installStatus';
 import { setSelectedTrack } from 'renderer/redux/features/selectedTrack';

@@ -49,7 +49,7 @@ export class BackgroundServices {
 
     let folderEntries;
     try {
-      folderEntries = await promises.readdir(path.join(process.env.APPDATA, STARTUP_FOLDER_PATH), {
+      folderEntries = await promises.readdir(path.join(Directories.appData(), STARTUP_FOLDER_PATH), {
         withFileTypes: true,
       });
     } catch (e) {
@@ -88,7 +88,7 @@ export class BackgroundServices {
     );
     const commandLineArgs = backgroundService.commandLineArgs ? ` ${backgroundService.commandLineArgs.join(' ')}` : '';
 
-    const shortcutDir = path.join(process.env.APPDATA, STARTUP_FOLDER_PATH);
+    const shortcutDir = path.join(Directories.appData(), STARTUP_FOLDER_PATH);
     const shortcutPath = path.join(shortcutDir, `${backgroundService.executableFileBasename}.lnk`);
 
     if (enabled) {
