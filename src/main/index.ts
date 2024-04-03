@@ -217,7 +217,7 @@ function initializeApp() {
     //Register keybinds
     mainWindow.webContents.on('before-input-event', (event, input) => {
       // Check if the input event is for window reloading 
-      if (input.type === 'keyUp' && (input.key === 'R' || input.key === 'F5') && (input.control || input.meta)) {
+      if (input.type === 'keyUp' && (input.key.toLowerCase() === 'r' || input.key === 'F5') && (input.control || input.meta)) {
         mainWindow.isFocused() && mainWindow.reload()
       }
 
