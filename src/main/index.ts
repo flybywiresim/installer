@@ -221,7 +221,7 @@ function initializeApp() {
         input.type === 'keyUp' &&
         (input.key.toLowerCase() === 'r' || input.key === 'F5') &&
         (input.control || input.meta)
-      ) {    
+    ) {    
         mainWindow.isFocused() && mainWindow.reload();
       }
 
