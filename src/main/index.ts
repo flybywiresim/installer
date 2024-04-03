@@ -212,18 +212,18 @@ function initializeApp() {
       installExtension(REDUX_DEVTOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.log('An error occurred: ', err));
-    };
+    }
 
     //Register keybinds
     mainWindow.webContents.on('before-input-event', (event, input) => {
-      // Check if the input event is for window reloading 
+      // Check if the input event is for window reloading
       if (input.type === 'keyUp' && (input.key.toLowerCase() === 'r' || input.key === 'F5') && (input.control || input.meta)) {
-        mainWindow.isFocused() && mainWindow.reload()
+        mainWindow.isFocused() && mainWindow.reload();
       }
 
-      // Check if the input even is for dev tools 
+      // Check if the input even is for dev tools
       if (input.type === 'keyUp' && input.key === 'F12' && (input.control || input.meta)) {
-        mainWindow.isFocused() && mainWindow.webContents.toggleDevTools()
+        mainWindow.isFocused() && mainWindow.webContents.toggleDevTools();
       }
     });
   });
