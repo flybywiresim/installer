@@ -3,11 +3,7 @@ import path from 'path';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import renderer from 'vite-plugin-electron-renderer';
 
-// import commonjsExternals from 'vite-plugin-commonjs-externals';
-
-// const externals = ['path', 'electron/*'];
-
-const a = {
+const baseOptions = {
   resolve: {
     alias: {
       // TODO not need this (vite)
@@ -21,18 +17,18 @@ const a = {
 
 export default defineConfig({
   preload: {
-    ...a,
+    ...baseOptions,
     build: {
       lib: {
-        entry: 'out/main/index.js',
+        entry: 'out/preload/index.js',
       },
     },
   },
   main: {
-    ...a,
+    ...baseOptions,
   },
   renderer: {
-    ...a,
+    ...baseOptions,
     plugins: [ViteYaml(), renderer()],
   },
 });
