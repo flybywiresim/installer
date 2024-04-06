@@ -16,14 +16,6 @@ const baseOptions = {
 };
 
 export default defineConfig({
-  preload: {
-    ...baseOptions,
-    build: {
-      lib: {
-        entry: 'out/preload/index.js',
-      },
-    },
-  },
   main: {
     ...baseOptions,
   },
