@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.4.1
+    changes:
+      - title: Shortcut keys no longer override other applications shortcuts
+        categories: [UI]
+        authors: [alepouna]
   - name: 3.4.0
     changes:
       - title: Add a button to the error dialog to copy error messages to clipboard
