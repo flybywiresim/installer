@@ -109,8 +109,7 @@ export class Directories {
 
         console.log('[CLEANUP] Removing', fullPath);
         try {
-          // TODO see if this is equivalent (vite)
-          fs.rmSync(fullPath);
+          fs.rmSync(fullPath, { recursive: true });
           console.log('[CLEANUP] Removed', fullPath);
         } catch (e) {
           console.error('[CLEANUP] Could not remove', fullPath, e);
@@ -129,20 +128,9 @@ export class Directories {
 
       if (fs.existsSync(altDir)) {
         console.log('Removing alternative', altDir);
-        // TODO see if this is equivalent (vite)
-        fs.rmSync(altDir);
+        fs.rmSync(altDir, { recursive: true });
       }
     });
-  }
-
-  static removeTargetForAddon(addon: Addon): void {
-    const dir = Directories.inInstallLocation(addon.targetDirectory);
-
-    if (fs.existsSync(dir)) {
-      console.log('Removing', dir);
-      // TODO see if this is equivalent (vite)
-      fs.rmSync(dir);
-    }
   }
 
   static isFragmenterInstall(target: string | Addon): boolean {
