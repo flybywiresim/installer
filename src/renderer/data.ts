@@ -568,7 +568,7 @@ export const defaultConfiguration: Configuration = {
               },
               description:
                 'Stable version of the FSLTL Traffic Injector for use on stable versions of MSFS.\n\n' +
-              'Follow the user guide at https://www.fslivetrafficliveries.com/user-guide/ before use.',
+                'Follow the user guide at https://www.fslivetrafficliveries.com/user-guide/ before use.',
             },
             {
               name: 'Experimental',
@@ -580,9 +580,10 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'CDN',
               },
-              description: 'Experimental Release that includes features that are not yet ready for stable release.\n\n' +
-              'You can provide feedback on these new features in the FSLTL Discord.\n\n' +
-              'No support is offered for issues with this release, new FSLTL users should use stable.'
+              description:
+                'Experimental Release that includes features that are not yet ready for stable release.\n\n' +
+                'You can provide feedback on these new features in the FSLTL Discord.\n\n' +
+                'No support is offered for issues with this release, new FSLTL users should use stable.'
             },
           ],
           backgroundService: {
