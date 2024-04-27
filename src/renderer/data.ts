@@ -155,77 +155,80 @@ export const defaultConfiguration: Configuration = {
             {
               title: 'Horizon Simulations A321neo',
               // packageVersion: '<0.4.0', see https://discord.com/channels/738864299392630914/785976111875751956/1055617417189011546
-              description: 
+              description:
                 'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
             },
             {
               title: 'LVFR A321neo FBW A32NX Compatibility Mod',
-              description: 
+              description:
                 'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and to break the A32NX.',
             },
             {
               title: 'LVFR A321neo Extreme',
-              description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.",
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
             },
             {
               title: 'lvfr-airbus-a319-fbw-standalone',
               packageVersion: '<0.6.1',
-              description: "It is recommended to upgrade to the latest version (0.6.1 or later) or to remove this add-on before installing and using the A32NX. The older versions of this add-on are known to override A32NX components and to break the A32NX.",
+              description:
+                'It is recommended to upgrade to the latest version (0.6.1 or later) or to remove this add-on before installing and using the A32NX. The older versions of this add-on are known to override A32NX components and to break the A32NX.',
             },
             {
               title: 'lvfr-airbus-a319-ceo-fbw-compatibility',
-              // creator: "FlyByWire Simulations, karuchie",
+              // creator: 'FlyByWire Simulations, karuchie',
               // packageVersion: '<0.6.1',
-              description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.",
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
             },
             {
               title: '[MOD] Mugz FBW A32NX Dev',
-              description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
+              description: 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
             },
             {
               title: '[MOD] Mugz FBW A32NX Stable',
-              description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
+              description: 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
             },
             {
               title: 'Toolbar Pushback',
-              creator: "AmbitiousPilots",
-              description: "This add-on sometimes causes performance issues and also sometimes prevents the A32NX from taxiing. Consider removing it if you experience these issues.",
+              creator: 'AmbitiousPilots',
+              description: 'This add-on sometimes causes performance issues and also sometimes prevents the A32NX from taxiing. Consider removing it if you experience these issues.',
             },
             {
               title: 'Asobo_A320_A (A32NX Converted)',
-              creator: "UnitDeath",
-              description: "It is required to remove this livery before installing and using the A32NX as it breaks the A32NX",
+              creator: 'UnitDeath',
+              description: 'It is required to remove this livery before installing and using the A32NX as it breaks the A32NX',
             },
             {
               title: 'xeffect-320',
-              creator: "swingbird",
+              creator: 'swingbird',
               // packageVersion: '<0.1.2', (the mod does provide accurate version info in manifest.json)
-              description: "It is recommended to remove this add-on before installing and using the A32NX. It is known known to override A32NX files and to break the A32NX.",
+              description: 'It is recommended to remove this add-on before installing and using the A32NX. It is known known to override A32NX files and to break the A32NX.',
             },
             {
-              title: "z-Newlight-settinglight-FBW-A320NX-dev",
-              creator: "Nicottine",
-              description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
+              title: 'z-Newlight-settinglight-FBW-A320NX-dev',
+              creator: 'Nicottine',
+              description: 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
             },
             {
-              title: "z-Newlight-settinglight-FBW-A320NX-stable",
-              creator: "Nicottine",
-              description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
+              title: 'z-Newlight-settinglight-FBW-A320NX-stable',
+              creator: 'Nicottine',
+              description: 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
             },
             {
-              title: "z-Newlight-settinglight-FBW-A320NX-EXP",
-              creator: "Nicottine",
-              description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.",
+              title: 'z-Newlight-settinglight-FBW-A320NX-EXP',
+              creator: 'Nicottine',
+              description: 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
             },
             {
-              title: "FBW A32NX Weather Radar Mod",
-              creator: "",
-              description: "It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and may render the A32NX unusable."
+              title: 'FBW A32NX Weather Radar Mod',
+              creator: '',
+              description: 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and may render the A32NX unusable.'
             },
             {
-              title: "China Eastern",
-              creator: "JasonC68",
-              description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX."
+              title: 'China Eastern',
+              creator: 'JasonC68',
+              description: 'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.'
             }
           ],
           myInstallPage: {
