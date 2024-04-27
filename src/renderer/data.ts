@@ -56,13 +56,13 @@ export const defaultConfiguration: Configuration = {
           category: '@aircraft',
           aircraftName: 'A320-251N',
           titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/dark.svg',
-          titleImageUrlSelected: 
+          titleImageUrlSelected:
             'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/light.svg',
           enabled: true,
           // TODO: Change this
           backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-a32nx/1.png'],
           shortDescription: 'Airbus A320neo Series',
-          description: 
+          description:
             'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
             'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +
             'aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines ' +
@@ -90,7 +90,7 @@ export const defaultConfiguration: Configuration = {
                 // move bunnycdn users to cloudflare
                 'https://cdn.flybywiresim.com/addons/a32nx/stable',
               ],
-              description: 
+              description:
                 'Stable is our variant that has the least bugs and best performance. ' +
                 'This version will not always be up to date but we guarantee its compatibility ' +
                 'with each major patch from MSFS.',
@@ -116,7 +116,7 @@ export const defaultConfiguration: Configuration = {
                 'https://cdn.flybywiresim.com/addons/a32nx/experimental',
                 'https://github.com/flybywiresim/a32nx/releases/download/assets/experimental/',
               ],
-              description: 
+              description:
                 'Development will have the latest features that will end up in the next stable. ' +
                 "Bugs are to be expected. It updates whenever something is added to the 'master' " +
                 'branch on Github. Please visit our discord for support.',
@@ -131,7 +131,7 @@ export const defaultConfiguration: Configuration = {
             {
               addon: '@flybywiresim/simbridge',
               optional: true,
-              modalText: 
+              modalText:
                 'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
             },
           ],
@@ -143,23 +143,25 @@ export const defaultConfiguration: Configuration = {
             {
               title: 'FlightFlow | IMPROVED TEXTURES MOD',
               creator: 'FlightFlow',
-              description: 
-                "It is recommended to remove this add-on/mod before installing and using the A32NX. This add-on/mod is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.",
+              description:
+                'It is recommended to remove this add-on/mod before installing and using the A32NX. This add-on/mod is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
             },
             {
               title: 'Horizon Simulations A319ceo',
               packageVersion: '<0.6.1',
               description:
-               "It is recommended to upgrade to the latest version (0.6.1 or later) or to remove this add-on before installing and using the A32NX. The older versions of this add-on are known to override A32NX components and to break the A32NX.",
+                'It is recommended to upgrade to the latest version (0.6.1 or later) or to remove this add-on before installing and using the A32NX. The older versions of this add-on are known to override A32NX components and to break the A32NX.',
             },
             {
               title: 'Horizon Simulations A321neo',
               // packageVersion: '<0.4.0', see https://discord.com/channels/738864299392630914/785976111875751956/1055617417189011546
-              description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.",
+              description: 
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
             },
             {
               title: 'LVFR A321neo FBW A32NX Compatibility Mod',
-              description: "It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and to break the A32NX.",
+              description: 
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and to break the A32NX.',
             },
             {
               title: 'LVFR A321neo Extreme',
