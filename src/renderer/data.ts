@@ -232,14 +232,14 @@ export const defaultConfiguration: Configuration = {
               title: 'FBW A32NX Weather Radar Mod',
               creator: '',
               description:
-                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and may render the A32NX unusable.'
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and may render the A32NX unusable.',
             },
             {
               title: 'China Eastern',
               creator: 'JasonC68',
               description:
-                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.'
-            }
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
           ],
           myInstallPage: {
             links: [
@@ -268,9 +268,12 @@ export const defaultConfiguration: Configuration = {
           category: '@aircraft',
           aircraftName: 'A380-842',
           titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
-          titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/light.svg',
+          titleImageUrlSelected:
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/light.svg',
           enabled: false,
-          backgroundImageUrls: ['https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'],
+          backgroundImageUrls: [
+            'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'
+          ],
           shortDescription: 'Airbus A380-800',
           description: '',
           targetDirectory: 'A380',
@@ -286,15 +289,17 @@ export const defaultConfiguration: Configuration = {
           overrideAddonWhileHidden: 'A380X',
           backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-kfbw/0.png'],
           titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/dark.svg',
-          titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/light.svg',
+          titleImageUrlSelected:
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/light.svg',
           shortDescription: 'FlyByWire Headquarters',
-          description: 'Welcome to KFBW! \n\n' +
-              'This is a showcase of the A380 project. Spawn at KFBW or fly there! The nearest airport is KTNP (Twenty-Nine Palms, California, USA). ' +
-              'There is an ILS without waypoints to Runway 10. Freq: 108.9 CRS: 100  \n' +
-              'The airport is designed to be used by our developers for flight testing of the A380 and also designed to match the real-world A380 testing airport in Hamburg, Germany (EDHI).  \n' +
-              'The location allows for quick test flights to LAX, which is also serviced by the A380.  \n' +
-              'Use the developer or drone camera to explore! \n\n' +
-              'Happy holidays and enjoy! -FBW Team',
+          description:
+            'Welcome to KFBW! \n\n' +
+            'This is a showcase of the A380 project. Spawn at KFBW or fly there! The nearest airport is KTNP (Twenty-Nine Palms, California, USA). ' +
+            'There is an ILS without waypoints to Runway 10. Freq: 108.9 CRS: 100  \n' +
+            'The airport is designed to be used by our developers for flight testing of the A380 and also designed to match the real-world A380 testing airport in Hamburg, Germany (EDHI).  \n' +
+            'The location allows for quick test flights to LAX, which is also serviced by the A380.  \n' +
+            'Use the developer or drone camera to explore! \n\n' +
+            'Happy holidays and enjoy! -FBW Team',
           targetDirectory: 'flybywire-airport-kfbw-flybywire-field',
           tracks: [
             {
