@@ -583,7 +583,7 @@ export const defaultConfiguration: Configuration = {
               description:
                 'Experimental Release that includes features that are not yet ready for stable release.\n\n' +
                 'You can provide feedback on these new features in the FSLTL Discord.\n\n' +
-                'No support is offered for issues with this release, new FSLTL users should use stable.'
+                'No support is offered for issues with this release, new FSLTL users should use stable.',
             },
           ],
           backgroundService: {
