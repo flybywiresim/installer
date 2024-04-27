@@ -327,7 +327,7 @@ export const defaultConfiguration: Configuration = {
             'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
           enabled: true,
           backgroundImageUrls: [
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-simbridge/0.png'
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-simbridge/0.png',
           ],
           backgroundImageShadow: false,
           shortDescription: 'Airbus A380-800',
@@ -420,7 +420,7 @@ export const defaultConfiguration: Configuration = {
             'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/light.svg',
           enabled: true,
           backgroundImageUrls: [
-            'https://raw.githubusercontent.com/saltysimulations/branding/main/png/salty_banner.png'
+            'https://raw.githubusercontent.com/saltysimulations/branding/main/png/salty_banner.png',
           ],
           shortDescription: 'Boeing 747-8I',
           description:
@@ -440,7 +440,7 @@ export const defaultConfiguration: Configuration = {
               name: 'Stable',
               key: '74S-stable',
               url: 'https://github.com/saltysimulations/salty-747/releases/download/vinstaller-stable/',
-              description: 
+              description:
                 'Stable is our variant that has the least bugs and best performance. ' +
                 'This version will not always be up to date but we guarantee its compatibility ' +
                 'with each major patch from MSFS.',
@@ -507,14 +507,18 @@ export const defaultConfiguration: Configuration = {
           key: 'traffic-base-models',
           name: 'FSLTL Traffic',
           aircraftName: 'FSLTL Traffic',
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/dark.svg',
-          titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/light.svg',
+          titleImageUrl:
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/dark.svg',
+          titleImageUrlSelected:
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/light.svg',
           enabled: true,
-          backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fsltl/traffic/0.png'],
+          backgroundImageUrls: [
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fsltl/traffic/0.png'
+          ],
           shortDescription: 'FSLTL Traffic Base Models',
           description:
-            'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS.\n\n'+
-            'Utilising native glTF models and MSFS independent online IFR/VFR traffic injection system with stock ATC interaction based on Flightradar24.\n\n'+
+            'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS.\n\n' +
+            'Utilising native glTF models and MSFS independent online IFR/VFR traffic injection system with stock ATC interaction based on Flightradar24.\n\n' +
             'This is the base model / livery pack required for FSLTL Injector, MSFS default live traffic or VATSIM use.',
           targetDirectory: 'fsltl-traffic-base',
           alternativeNames: [],
@@ -527,9 +531,10 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'CDN',
               },
-              description: 'Stable release of the aircraft models, liveries and VMR file.\n\n'+
-              'This packages is required to see matched models / liveries if you are using FSLTL Injector, MSFS default live traffic or VATSIM.\n\n'+
-              'A vmr file is provided in the package for VATSIM client use.',
+              description:
+                'Stable release of the aircraft models, liveries and VMR file.\n\n' +
+                'This packages is required to see matched models / liveries if you are using FSLTL Injector, MSFS default live traffic or VATSIM.\n\n' +
+                'A vmr file is provided in the package for VATSIM client use.',
             },
           ],
           disallowedRunningExternalApps: ['@/msfs'],
