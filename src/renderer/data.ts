@@ -52,7 +52,7 @@ export const defaultConfiguration: Configuration = {
           key: 'A32NX',
           name: 'A32NX',
           repoOwner: 'flybywiresim',
-          repoName: 'a32nx',
+          repoName: 'aircraft',
           category: '@aircraft',
           aircraftName: 'A320-251N',
           titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/dark.svg',
@@ -104,12 +104,17 @@ export const defaultConfiguration: Configuration = {
               key: 'a32nx-dev',
               url: 'https://flybywirecdn.com/addons/a32nx/master',
               alternativeUrls: [
-                'external/a32nx/master',
                 // move old experimental users over to dev
                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw-cap',
                 'https://cdn.flybywiresim.com/addons/a32nx/cfbw',
+                'external/a32nx/master',
                 // move bunnycdn users to cloudflare
                 'https://cdn.flybywiresim.com/addons/a32nx/master',
+                // move exp users to dev
+                'https://flybywirecdn.com/addons/a32nx/experimental',
+                'external/a32nx/experimental',
+                'https://cdn.flybywiresim.com/addons/a32nx/experimental',
+                'https://github.com/flybywiresim/a32nx/releases/download/assets/experimental/',
               ],
               description:
                 'Development will have the latest features that will end up in the next stable. ' +
@@ -119,33 +124,6 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'githubBranch',
                 branch: 'master',
-              },
-            },
-            {
-              name: 'Experimental',
-              key: 'experimental',
-              url: 'https://flybywirecdn.com/addons/a32nx/experimental',
-              alternativeUrls: [
-                'external/a32nx/experimental',
-                'https://cdn.flybywiresim.com/addons/a32nx/experimental',
-                'https://github.com/flybywiresim/a32nx/releases/download/assets/experimental/',
-              ],
-              description:
-                'This version is similar to the Development version, ' +
-                'but contains features that we wish to test publicly as we perfect them. ' +
-                'The build is in practice stable most of the time, but you may encounter flight-breaking bugs, ' +
-                'performance loss, crashes or other issues as the features present in this version are not completely finished. ' +
-                'Not advised for flying on online networks.',
-              isExperimental: true,
-              warningContent:
-                'The experimental version contains custom systems that more closely matches ' +
-                'real-life behaviour of an A320neo. Those are in development and bugs are to be expected.\n\n' +
-                'To understand what you are getting into and the potential issues you might experience, ' +
-                'please read [this guide](https://docs.flybywiresim.com/fbw-a32nx/support/exp/).\n\n' +
-                '**Please be aware that no support will be offered via Discord support channels.**',
-              releaseModel: {
-                type: 'githubBranch',
-                branch: 'experimental',
               },
             },
           ],
@@ -162,6 +140,12 @@ export const defaultConfiguration: Configuration = {
             // creator: the exact creator as it appears in the manifest.json
             // packageVersion syntax follows: https://www.npmjs.com/package/semver
             // description: a short description of why the addon is incompatible
+            {
+              title: 'FlightFlow | IMPROVED TEXTURES MOD',
+              creator: 'FlightFlow',
+              description:
+                'It is recommended to remove this add-on/mod before installing and using the A32NX. This add-on/mod is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
             {
               title: 'Horizon Simulations A319ceo',
               packageVersion: '<0.6.1',
@@ -191,6 +175,13 @@ export const defaultConfiguration: Configuration = {
                 'It is recommended to upgrade to the latest version (0.6.1 or later) or to remove this add-on before installing and using the A32NX. The older versions of this add-on are known to override A32NX components and to break the A32NX.',
             },
             {
+              title: 'lvfr-airbus-a319-ceo-fbw-compatibility',
+              // creator: 'FlyByWire Simulations, karuchie',
+              // packageVersion: '<0.6.1',
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
+            {
               title: '[MOD] Mugz FBW A32NX Dev',
               description:
                 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
@@ -211,6 +202,43 @@ export const defaultConfiguration: Configuration = {
               creator: 'UnitDeath',
               description:
                 'It is required to remove this livery before installing and using the A32NX as it breaks the A32NX',
+            },
+            {
+              title: 'xeffect-320',
+              creator: 'swingbird',
+              // packageVersion: '<0.1.2', (the mod does provide accurate version info in manifest.json)
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. It is known known to override A32NX files and to break the A32NX.',
+            },
+            {
+              title: 'z-Newlight-settinglight-FBW-A320NX-dev',
+              creator: 'Nicottine',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: 'z-Newlight-settinglight-FBW-A320NX-stable',
+              creator: 'Nicottine',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: 'z-Newlight-settinglight-FBW-A320NX-EXP',
+              creator: 'Nicottine',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: 'FBW A32NX Weather Radar Mod',
+              creator: '',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and may render the A32NX unusable.',
+            },
+            {
+              title: 'China Eastern',
+              creator: 'JasonC68',
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
             },
           ],
           myInstallPage: {
@@ -236,9 +264,9 @@ export const defaultConfiguration: Configuration = {
           name: 'A380X',
           key: 'A380X',
           repoOwner: 'flybywiresim',
-          repoName: 'a380x',
+          repoName: 'aircraft',
           category: '@aircraft',
-          aircraftName: 'A380-841',
+          aircraftName: 'A380-842',
           titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
           titleImageUrlSelected:
             'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/light.svg',
@@ -489,12 +517,14 @@ export const defaultConfiguration: Configuration = {
           ],
           shortDescription: 'FSLTL Traffic Base Models',
           description:
-            'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS. Utilising native glTF models and MSFS independent online IFR/VFR traffic injection system with stock ATC interaction based on Flightradar24.\n',
+            'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS.\n\n' +
+            'Utilising native glTF models and MSFS independent online IFR/VFR traffic injection system with stock ATC interaction based on Flightradar24.\n\n' +
+            'This is the base model / livery pack required for FSLTL Injector, MSFS default live traffic or VATSIM use.',
           targetDirectory: 'fsltl-traffic-base',
           alternativeNames: [],
           tracks: [
             {
-              name: 'Release',
+              name: 'Stable',
               key: 'release',
               url: 'https://github.com/FSLiveTrafficLiveries/base/releases/latest/download/',
               isExperimental: false,
@@ -502,7 +532,9 @@ export const defaultConfiguration: Configuration = {
                 type: 'CDN',
               },
               description:
-                'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS. Utilising native glTF models and MSFS independent online IFR/VFR traffic injection system with stock ATC interaction based on Flightradar24.\n',
+                'Stable release of the aircraft models, liveries and VMR file.\n\n' +
+                'This packages is required to see matched models / liveries if you are using FSLTL Injector, MSFS default live traffic or VATSIM.\n\n' +
+                'A vmr file is provided in the package for VATSIM client use.',
             },
           ],
           disallowedRunningExternalApps: ['@/msfs'],
@@ -520,19 +552,38 @@ export const defaultConfiguration: Configuration = {
           ],
           shortDescription: 'FSLTL Traffic Injector Software',
           description:
-            'FSLTL Live Traffic Injector - giving you a more immersive experience at airports globally!\n\n* Live IFR and VFR traffic based on Flightradar24\n* Parked aircraft based on historic real data for immersive full airports\n* Ability to have any combination of IFR, VFR and parked aircraft',
+            'FSLTL Live Traffic Injector - giving you a more immersive experience at airports globally!\n\n' +
+            '- Live IFR and VFR traffic based on Flightradar24\n\n' +
+            '- Parked aircraft based on historic real data for immersive full airports\n\n' +
+            '- Ability to have any combination of IFR, VFR and parked aircraft',
           targetDirectory: 'fsltl-traffic-injector',
           tracks: [
             {
-              name: 'Release',
+              name: 'Stable',
               key: 'release',
-              url: 'https://packages.fslivetrafficliveries.com/injector/',
+              url: 'https://github.com/FSLiveTrafficLiveries/FSLTL_Injector_Releases/releases/latest/download/',
               isExperimental: false,
               releaseModel: {
                 type: 'CDN',
               },
               description:
-                'FSLTL Live Traffic Injector - giving you a more immersive experience at airports globally!\n\n* Live IFR and VFR traffic based on Flightradar24\n* Parked aircraft based on historic real data for immersive full airports\n* Ability to have any combination of IFR, VFR and parked aircraft',
+                'Stable version of the FSLTL Traffic Injector for use on stable versions of MSFS.\n\n' +
+                'Follow the user guide at https://www.fslivetrafficliveries.com/user-guide/ before use.',
+            },
+            {
+              name: 'Experimental',
+              key: 'development',
+              url: 'https://github.com/FSLiveTrafficLiveries/FSLTL_Injector_Releases/releases/download/beta/',
+              isExperimental: true,
+              warningContent:
+                'No support is offered for this release, it is a preview of features that may be included in future releases.',
+              releaseModel: {
+                type: 'CDN',
+              },
+              description:
+                'Experimental Release that includes features that are not yet ready for stable release.\n\n' +
+                'You can provide feedback on these new features in the FSLTL Discord.\n\n' +
+                'No support is offered for issues with this release, new FSLTL users should use stable.',
             },
           ],
           backgroundService: {
@@ -555,57 +606,15 @@ export const defaultConfiguration: Configuration = {
           url: 'https://discord.gg/suMR56wCrn',
           inline: true,
         },
-      ],
-    },
-    {
-      name: 'Synaptic Simulations',
-      key: 'synaptic',
-      logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/synaptic/0.png',
-      defs: [
         {
-          kind: 'addonCategory',
-          key: 'aircraft',
-          title: 'Aircraft',
-        },
-      ],
-      addons: [
-        {
-          name: 'A22X',
-          repoOwner: 'Synaptic-Simulations',
-          repoName: 'a22x',
-          category: '@aircraft',
-          aircraftName: 'A220-300',
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/synaptic-a22x/dark.svg',
-          titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/synaptic-a22x/light.svg',
-          key: 'A22X',
-          enabled: false,
-          backgroundImageUrls: [
-            'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png',
-          ],
-          shortDescription: 'Airbus A220-300 (CSeries 300)',
-          description: '',
-          targetDirectory: 'A22X',
-          alternativeNames: [],
-          tracks: [],
-        },
-      ],
-      buttons: [
-        {
-          text: 'Website',
+          text: 'User Guide',
           action: 'openBrowser',
-          url: 'https://www.synapticsim.com/',
+          url: 'https://www.fslivetrafficliveries.com/user-guide/',
         },
         {
-          text: 'Discord',
+          text: 'Support FAQ',
           action: 'openBrowser',
-          url: 'https://discord.gg/acQkSvrePG',
-        },
-        {
-          text: 'Twitter',
-          action: 'openBrowser',
-          url: 'https://twitter.com/synapticsim',
-          inline: true,
+          url: 'https://www.fslivetrafficliveries.com/support-faq/',
         },
       ],
     },
