@@ -272,7 +272,7 @@ export const defaultConfiguration: Configuration = {
             'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/light.svg',
           enabled: false,
           backgroundImageUrls: [
-            'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png'
+            'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png',
           ],
           shortDescription: 'Airbus A380-800',
           description: '',
@@ -310,7 +310,8 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'CDN',
               },
-              description: 'FlyByWire Headquarters is transformed into a winter wonderland - complete with a plethora of festive decorations in addition to the standard progress showcase.',
+              description:
+                'FlyByWire Headquarters is transformed into a winter wonderland - complete with a plethora of festive decorations in addition to the standard progress showcase.',
             },
           ],
         },
@@ -322,15 +323,19 @@ export const defaultConfiguration: Configuration = {
           repoName: 'simbridge',
           aircraftName: 'FBW SimBridge',
           titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
-          titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
+          titleImageUrlSelected:
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
           enabled: true,
-          backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-simbridge/0.png'],
+          backgroundImageUrls: [
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-simbridge/0.png'
+          ],
           backgroundImageShadow: false,
           shortDescription: 'Airbus A380-800',
-          description: 'SimBridge is an external application which allows FBW aircraft to communicate with components located outside the simulator. SimBridge will be used for a number of features requiring external data (such as TAWS terrain display), as well as for functionality providing remote access to aircraft systems or data.',
+          description:
+            'SimBridge is an external application which allows FBW aircraft to communicate with components located outside the simulator. SimBridge will be used for a number of features requiring external data (such as TAWS terrain display), as well as for functionality providing remote access to aircraft systems or data.',
           targetDirectory: 'flybywire-externaltools-simbridge',
           tracks: [
-          {
+            {
               name: 'Release',
               key: 'release',
               releaseModel: {
@@ -338,7 +343,8 @@ export const defaultConfiguration: Configuration = {
               },
               url: 'https://cdn.flybywiresim.com/addons/simbridge/release/',
               isExperimental: false,
-              description: 'SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.',
+              description:
+                'SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.',
             },
           ],
           disallowedRunningExternalApps: ['@/simbridge-app'],
@@ -410,9 +416,12 @@ export const defaultConfiguration: Configuration = {
           category: '@aircraft',
           aircraftName: 'B747-8I',
           titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/dark.svg',
-          titleImageUrlSelected: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/light.svg',
+          titleImageUrlSelected:
+            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/light.svg',
           enabled: true,
-          backgroundImageUrls: ['https://raw.githubusercontent.com/saltysimulations/branding/main/png/salty_banner.png'],
+          backgroundImageUrls: [
+            'https://raw.githubusercontent.com/saltysimulations/branding/main/png/salty_banner.png'
+          ],
           shortDescription: 'Boeing 747-8I',
           description:
             'The Boeing 747-8 is the largest variant of the 747. ' +
@@ -431,7 +440,8 @@ export const defaultConfiguration: Configuration = {
               name: 'Stable',
               key: '74S-stable',
               url: 'https://github.com/saltysimulations/salty-747/releases/download/vinstaller-stable/',
-              description: 'Stable is our variant that has the least bugs and best performance. ' +
+              description: 
+                'Stable is our variant that has the least bugs and best performance. ' +
                 'This version will not always be up to date but we guarantee its compatibility ' +
                 'with each major patch from MSFS.',
               isExperimental: false,
