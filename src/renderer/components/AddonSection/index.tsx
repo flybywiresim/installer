@@ -126,14 +126,7 @@ export const AddonSection = (): JSX.Element => {
     setSelectedAddon(addonToSelect);
   }, [history, publisherData.addons, publisherName]);
 
-  const installedTrack = (): AddonTrack => {
-    try {
-      return installedTracks[selectedAddon.key] as AddonTrack;
-    } catch (e) {
-      setCurrentlyInstalledTrack(null);
-      return null;
-    }
-  };
+  const installedTrack = (installedTracks[selectedAddon.key] as AddonTrack) ?? null;
 
   const setCurrentlyInstalledTrack = useCallback(
     (newInstalledTrack: AddonTrack) => {
@@ -149,14 +142,7 @@ export const AddonSection = (): JSX.Element => {
     [dispatch, selectedAddon.key],
   );
 
-  const selectedTrack = useCallback((): AddonTrack => {
-    try {
-      return selectedTracks[selectedAddon.key] as AddonTrack;
-    } catch (e) {
-      setCurrentlySelectedTrack(null);
-      return null;
-    }
-  }, [selectedAddon.key, selectedTracks, setCurrentlySelectedTrack]);
+  const selectedTrack = (selectedTracks[selectedAddon.key] as AddonTrack) ?? null;
 
   const selectAndSetTrack = useCallback(
     (key: string) => {
@@ -185,9 +171,9 @@ export const AddonSection = (): JSX.Element => {
   const findInstalledTrack = useCallback((): AddonTrack => {
     if (!Directories.isFragmenterInstall(selectedAddon)) {
       console.log('Not installed');
-      if (selectedTrack()) {
-        selectAndSetTrack(selectedTrack().key);
-        return selectedTrack();
+      if (selectedTrack) {
+        selectAndSetTrack(selectedTrack.key);
+        return selectedTrack;
       } else {
         setCurrentlySelectedTrack(selectedAddon.tracks[0]);
         return selectedAddon.tracks[0];
@@ -205,9 +191,9 @@ export const AddonSection = (): JSX.Element => {
 
       console.log('Currently installed', track);
       setCurrentlyInstalledTrack(track);
-      if (selectedTrack()) {
-        selectAndSetTrack(selectedTrack().key);
-        return selectedTrack();
+      if (selectedTrack) {
+        selectAndSetTrack(selectedTrack.key);
+        return selectedTrack;
       } else {
         setCurrentlySelectedTrack(track);
         return track;
@@ -215,9 +201,9 @@ export const AddonSection = (): JSX.Element => {
     } catch (e) {
       console.error(e);
       console.log('Not installed');
-      if (selectedTrack()) {
-        selectAndSetTrack(selectedTrack().key);
-        return selectedTrack();
+      if (selectedTrack) {
+        selectAndSetTrack(selectedTrack.key);
+        return selectedTrack;
       } else {
         setCurrentlySelectedTrack(selectedAddon.tracks[0]);
         return selectedAddon.tracks[0];
