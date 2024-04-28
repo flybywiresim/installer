@@ -1,7 +1,7 @@
 import React from 'react';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useIsDarkTheme } from 'common/settings';
+import { useIsDarkTheme } from 'renderer/rendererSettings';
 import { Publisher } from 'renderer/utils/InstallerConfiguration';
 import { useAppSelector } from 'renderer/redux/store';
 import { Gear, Wrench } from 'react-bootstrap-icons';

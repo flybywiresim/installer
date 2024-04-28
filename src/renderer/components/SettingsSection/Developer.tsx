@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { useSetting } from 'common/settings';
+import { useSetting } from 'renderer/rendererSettings';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">

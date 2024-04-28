@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useIsDarkTheme } from 'common/settings';
+import { useIsDarkTheme } from 'renderer/rendererSettings';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 
 export interface SideBarProps {

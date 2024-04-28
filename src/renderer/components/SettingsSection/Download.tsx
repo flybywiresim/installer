@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { setupMsfsCommunityPath, setupInstallPath, setupTempLocation } from 'renderer/actions/install-path.utils';
-import settings, { useSetting } from 'common/settings';
+import settings, { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from '../Toggle';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (

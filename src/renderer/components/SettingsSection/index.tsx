@@ -6,7 +6,7 @@ import { SideBar, SideBarLink, SideBarTitle } from 'renderer/components/SideBar'
 import { CustomizationSettings } from './Customization';
 import { DownloadSettings } from './Download';
 import { DeveloperSettings } from './Developer';
-import settings from 'common/settings';
+import settings from 'renderer/rendererSettings';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from '../Button';
 import { PromptModal, useModals } from 'renderer/components/Modal';

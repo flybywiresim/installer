@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { UpdateInfo } from '@flybywiresim/fragmenter';
+import type { UpdateInfo } from '@flybywiresim/fragmenter';
 import { PromptModal } from 'renderer/components/Modal/index';
 import { Download, Hdd, HddFill } from 'react-bootstrap-icons';
 import { ButtonType } from 'renderer/components/Button';

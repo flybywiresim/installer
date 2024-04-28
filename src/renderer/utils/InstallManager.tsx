@@ -11,7 +11,7 @@ import {
   updateDownloadProgress,
 } from 'renderer/redux/features/downloads';
 import { Directories } from 'renderer/utils/Directories';
-import fs from 'fs-extra';
+import fs from 'fs';
 import { ApplicationStatus, InstallStatus } from 'renderer/components/AddonSection/Enums';
 import {
   FragmenterContextEvents,
@@ -20,7 +20,7 @@ import {
   FragmenterOperation,
   FragmenterUpdateChecker,
 } from '@flybywiresim/fragmenter';
-import settings from 'common/settings';
+import settings from 'renderer/rendererSettings';
 import { store } from 'renderer/redux/store';
 import { InstallState, setInstallStatus } from 'renderer/redux/features/installStatus';
 import { setSelectedTrack } from 'renderer/redux/features/selectedTrack';

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import settings, { useSetting } from 'common/settings';
+import settings, { useSetting } from 'renderer/rendererSettings';
 import { ipcRenderer } from 'electron';
 import { Toggle } from '../Toggle';
 

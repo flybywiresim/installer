@@ -1,6 +1,6 @@
 import { Directories } from 'renderer/utils/Directories';
 import { Addon, AddonIncompatibleAddon } from 'renderer/utils/InstallerConfiguration';
-import fs from 'fs-extra';
+import fs from 'fs';
 import path from 'path';
 import semverSatisfies from 'semver/functions/satisfies';
 

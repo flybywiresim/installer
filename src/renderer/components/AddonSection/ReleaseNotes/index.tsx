@@ -8,7 +8,7 @@ import { useInView } from 'react-intersection-observer';
 import { ReleaseData } from 'renderer/redux/types';
 import { GitVersions } from '@flybywiresim/api-client';
 import { addReleases } from 'renderer/redux/features/releaseNotes';
-import { useSetting } from 'common/settings';
+import { useSetting } from 'renderer/rendererSettings';
 import dateFormat from 'dateformat';
 import { ArrowUp } from 'react-bootstrap-icons';
 

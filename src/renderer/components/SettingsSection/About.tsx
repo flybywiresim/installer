@@ -72,7 +72,7 @@ export const AboutSettings: FC = () => {
           <SentrySessionCard />
         </div>
 
-        <a className="mt-4 text-gray-500 hover:text-gray-600" onClick={handleOpenThirdPartyLicenses}>
+        <a className="mt-4 text-xl text-gray-500 hover:text-gray-600" onClick={handleOpenThirdPartyLicenses}>
           Third party licenses
         </a>
       </div>
