@@ -40,15 +40,13 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: install dependencies
+      - name: Install dependencies
         run: npm ci
       - name: Install system requirements
         run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 && sudo apt-get install -y wine32 wine64
-      - name: lint
-        run: npm run lint
-      - name: build
+      - name: Build Installer
         run: npm run package
-      - name: upload PR artifact
+      - name: Upload PR artifact
         uses: actions/upload-artifact@v3
         with:
           name: FlyByWire_Installer_Setup
