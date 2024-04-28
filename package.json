@@ -9,9 +9,9 @@
   },
   "main": "out/main/index.js",
   "scripts": {
-    "compile:base:licenses": "node scripts/licenses.js",
+    "generate-licenses": "node scripts/licenses.js",
     "start": "electron-vite",
-    "build": "electron-vite build",
+    "build": "npm run generate-licenses && electron-vite build",
     "package": "npm run build && electron-builder --win --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
