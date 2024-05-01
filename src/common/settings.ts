@@ -96,7 +96,8 @@ interface Settings {
     useDarkTheme: boolean;
     allowSeasonalEffects: boolean;
     msfsPackagePath: string;
-    configDownloadUrl: string;
+    configDownloadUrl: string,
+    useAutoUpdate: boolean;
   };
   cache: {
     main: {

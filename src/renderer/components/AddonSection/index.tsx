@@ -290,6 +290,13 @@ export const AddonSection = (): JSX.Element => {
     }
   }, [addonDiscovered, hiddenAddon]);
 
+  useEffect(() => {
+    const autoUpdateEnabled = settings.get("mainSettings.useAutoUpdate");
+    if (autoUpdateEnabled && status === InstallStatus.NeedsUpdate) {
+        handleInstall();
+    }
+  }, [status]);
+
   const { showModal, showModalAsync } = useModals();
 
   const handleTrackSelection = (track: AddonTrack) => {
