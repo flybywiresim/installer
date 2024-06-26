@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import settings, { useSetting } from 'renderer/rendererSettings';
 import { ipcRenderer } from 'electron';
 import { Toggle } from '../Toggle';
+import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
+import { Button } from '../Button';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -66,10 +68,48 @@ const LongDateFormatItem = ({ value, setValue }: SettingItemProps<boolean>) => {
   );
 };
 
+const QaInstallerItem = ({ value, setValue }: SettingItemProps<boolean>) => {
+  const handleClick = (value: boolean) => {
+    settings.set('mainSettings.qaInstaller', value);
+    setValue(value);
+  };
+
+  return (
+    <SettingsItem name="Enable QA Installer">
+      <Toggle value={value} onToggle={handleClick} />
+    </SettingsItem>
+  );
+};
+
+const GitHubTokenItem = ({ value, setValue }: SettingItemProps<string>) => {
+  const gitHub = useGitHub();
+
+  const handleText = (value: string) => {
+    settings.set('mainSettings.gitHubToken', value);
+    setValue(value);
+  };
+
+  return (
+    <SettingsItem name="GitHub Authentication Token">
+      <div className="flex flex-row space-x-6">
+        <input type="password" value={value} onChange={(event) => handleText(event.currentTarget.value)} />
+        <Button className="text-[1.5rem]" onClick={gitHub.auth}>
+          Auth
+        </Button>
+        <Button className="text-[1.5rem]" onClick={gitHub.test}>
+          Test
+        </Button>
+      </div>
+    </SettingsItem>
+  );
+};
+
 export const GeneralSettings = (): JSX.Element => {
   const [autoStart, setAutoStart] = useSetting<boolean>('mainSettings.autoStartApp');
   const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
   const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
+  const [useQaInstaller, setUseQaInstaller] = useSetting<boolean>('mainSettings.qaInstaller');
+  const [gitHubToken, setGitHubToken] = useSetting<string>('mainSettings.gitHubToken');
 
   return (
     <div>
@@ -79,6 +119,8 @@ export const GeneralSettings = (): JSX.Element => {
           <AutoStartSettingItem value={autoStart} setValue={setAutoStart} />
           <DateLayoutItem value={dateLayout} setValue={setDateLayout} />
           <LongDateFormatItem value={useLongDate} setValue={setUseLongDate} />
+          <QaInstallerItem value={useQaInstaller} setValue={setUseQaInstaller} />
+          <GitHubTokenItem value={gitHubToken} setValue={setGitHubToken} />
         </div>
       </div>
     </div>

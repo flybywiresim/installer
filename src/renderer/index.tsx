@@ -20,6 +20,7 @@ import packageJson from '../../package.json';
 import 'simplebar-react/dist/simplebar.min.css';
 import './index.scss';
 import { Button, ButtonType } from 'renderer/components/Button';
+import { GitHubProvider } from 'renderer/components/AddonSection/GitHub/GitHubContext';
 
 // Setup Sentry
 Sentry.init({
@@ -79,7 +80,9 @@ InstallerConfiguration.obtain()
       <Provider store={store}>
         <MemoryRouter>
           <ModalProvider>
-            <App />
+            <GitHubProvider>
+              <App />
+            </GitHubProvider>
           </ModalProvider>
         </MemoryRouter>
       </Provider>,

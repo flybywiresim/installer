@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Addon, AddonTrack, ConfigurationAspect } from 'renderer/utils/InstallerConfiguration';
@@ -6,6 +6,10 @@ import { Track, Tracks } from './TrackSelector';
 import { ConfigurationAspectDisplay } from 'renderer/components/AddonSection/Configure/ConfigurationAspectDisplay';
 
 import './index.css';
+import { QaDropdown } from 'renderer/components/AddonSection/QaInstaller/QaDropdown';
+import { useSetting } from 'renderer/rendererSettings';
+import { useLocation } from 'react-router-dom';
+import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
 
 export interface ConfigureProps {
   routeAspectKey: string;
@@ -22,8 +26,18 @@ export const Configure: FC<ConfigureProps> = ({
   installedTrack,
   onTrackSelection,
 }) => {
+  const gitHub = useGitHub();
+  const [prs, setPrs] = useState([]);
+  const location = useLocation();
+  const [useQaIntaller] = useSetting<boolean>('mainSettings.qaInstaller');
+  const [selectedPr, setSelectedPr] = useSetting<number>('mainSettings.qaPrNumber');
   const history = useHistory();
   const { aspectKey: currentAspectKey } = useParams<{ aspectKey: string }>();
+
+  useEffect(() => {
+    gitHub.fetchPrs().then((data) => setPrs(data));
+    console.log('got PRS');
+  }, [gitHub]);
 
   let page;
   if (routeAspectKey === 'release-track') {
@@ -69,6 +83,9 @@ export const Configure: FC<ConfigureProps> = ({
             )}
           </div>
         </div>
+        {useQaIntaller && location.pathname.includes('FlyByWire Simulations') && (
+          <QaDropdown selectedPr={selectedPr} setSelectedPr={setSelectedPr} prs={prs} />
+        )}
         {selectedTrack && selectedTrack.description && (
           <div className="mt-10">
             <h2 className="font-bold text-white">Description</h2>
