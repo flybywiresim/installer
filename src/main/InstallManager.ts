@@ -220,8 +220,6 @@ export class InstallManager {
                 }
               });
 
-              resp.data.pipe(fileWriter);
-
               let error: null | Error = null;
 
               fileWriter.on('error', (err) => {
@@ -234,6 +232,20 @@ export class InstallManager {
                   resolve(true);
                 }
               });
+              fileWriter.on('finish', () => {
+                fileWriter.close();
+                if (!error) {
+                  resolve(true);
+                }
+              });
+              fileWriter.on('unpipe', () => {
+                fileWriter.close();
+                if (!error) {
+                  resolve(true);
+                }
+              });
+
+              resp.data.pipe(fileWriter);
             });
           });
         }
