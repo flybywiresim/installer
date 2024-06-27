@@ -10,6 +10,8 @@ import { QaDropdown } from 'renderer/components/AddonSection/QaInstaller/QaDropd
 import { useSetting } from 'renderer/rendererSettings';
 import { useLocation } from 'react-router-dom';
 import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
+import { ipcRenderer } from 'electron';
+import channels from 'common/channels';
 
 export interface ConfigureProps {
   routeAspectKey: string;

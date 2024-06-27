@@ -14,6 +14,7 @@ export default {
   installManager: {
     fragmenterEvent: 'installManager/fragmenterEvent',
     installFromUrl: 'installManager/installFromUrl',
+    directInstallFromUrl: 'installManager/directInstallFromUrl',
     cancelInstall: 'installManager/cancelInstall',
     uninstall: 'installManager/uninstall',
   },

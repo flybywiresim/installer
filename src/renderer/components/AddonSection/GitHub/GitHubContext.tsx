@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import axios from 'axios';
 import React, { FC, createContext, useContext, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
 
@@ -83,16 +84,15 @@ export const GitHubProvider: FC = ({ children }) => {
 
     console.log(artifact.archive_download_url);
 
-    const artifactURL = await client.rest.actions.downloadArtifact({
-      owner: 'flybywiresim',
-      repo: 'aircraft',
-      artifact_id: artifact.id,
-      archive_format: 'zip',
-    });
+    // const artifactURL = await client.rest.actions.downloadArtifact({
+    //   owner: 'flybywiresim',
+    //   repo: 'aircraft',
+    //   artifact_id: artifact.id,
+    //   archive_format: 'zip',
+    // });
+    // console.log(artifactURL);
 
-    console.log(artifactURL);
-
-    return artifactURL;
+    return artifact.archive_download_url;
   };
 
   return (
