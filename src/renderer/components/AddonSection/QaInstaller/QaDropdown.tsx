@@ -4,7 +4,6 @@ import { Button } from 'renderer/components/Button';
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
 import { Directories } from 'renderer/utils/Directories';
-import path from 'path';
 import { useSetting } from 'renderer/rendererSettings';
 
 interface QaDropdownProps {
@@ -38,7 +37,7 @@ export const QaDropdown: FC<QaDropdownProps> = ({ selectedPr, setSelectedPr, prs
               channels.installManager.directInstallFromUrl,
               0,
               await gitHub.getPrArtifactUrl(selectedPr),
-              Directories.installLocation(),
+              Directories.temp(),
               Directories.installLocation(),
               gitHubToken,
               usernameSet,

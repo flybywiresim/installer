@@ -13,6 +13,7 @@ import { promisify } from 'util';
 import path from 'path';
 import axios from 'axios';
 import { createWriteStream } from 'fs-extra';
+import { extract } from 'zip-lib';
 
 let lastProgressSent = 0;
 
@@ -125,7 +126,13 @@ export class InstallManager {
 
     // Initializes Axios, executes at the bottom
     console.log(tempDir);
-    const fileWriter = createWriteStream(path.join(tempDir, 'lefile.zip'));
+
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir);
+    }
+    const tempFile = path.join(tempDir, 'temp.zip');
+
+    const fileWriter = createWriteStream(tempFile);
 
     const req = axios.create();
 
@@ -160,6 +167,7 @@ export class InstallManager {
             return new Promise((resolve, reject) => {
               const length = resp.headers['content-length'];
               let lastProgressSent = performance.now();
+              let lastOutput = 0;
 
               // console.log(length);
 
@@ -190,7 +198,12 @@ export class InstallManager {
 
                   lastProgressSent = currentTime;
 
-                  // console.log((downloadProgress / length) * 100);
+                  const output = Math.round((downloadProgress / length) * 100);
+
+                  if (lastOutput < output) {
+                    console.log(`Progress: ${output}%`);
+                    lastOutput = output;
+                  }
                 }
               });
 
@@ -285,6 +298,17 @@ export class InstallManager {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       });
+
+      const destFile = path.join(destDir, 'flybywire-aircraft-a320-neo');
+
+      // Do install
+      fs.rmdirSync(destFile);
+
+      await extract(tempFile, destFile);
+
+      fs.rmSync(tempFile);
+
+      console.log('Done!');
 
       ret = true;
     } catch (e) {

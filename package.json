@@ -147,7 +147,8 @@
     "tailwind-merge": "^2.2.1",
     "walkdir": "^0.4.1",
     "winreg": "^1.2.4",
-    "ws": "^8.8.0"
+    "ws": "^8.8.0",
+    "zip-lib": "^1.0.4"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
