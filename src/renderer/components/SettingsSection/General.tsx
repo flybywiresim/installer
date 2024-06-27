@@ -81,6 +81,21 @@ const QaInstallerItem = ({ value, setValue }: SettingItemProps<boolean>) => {
   );
 };
 
+const GitHubUsernameItem = ({ value, setValue }: SettingItemProps<string>) => {
+  const handleText = (value: string) => {
+    settings.set('mainSettings.gitHubUsername', value);
+    setValue(value);
+  };
+
+  return (
+    <SettingsItem name="GitHub Username">
+      <div className="flex flex-row space-x-6">
+        <input type="text" value={value} onChange={(event) => handleText(event.currentTarget.value)} />
+      </div>
+    </SettingsItem>
+  );
+};
+
 const GitHubTokenItem = ({ value, setValue }: SettingItemProps<string>) => {
   const gitHub = useGitHub();
 
@@ -96,9 +111,6 @@ const GitHubTokenItem = ({ value, setValue }: SettingItemProps<string>) => {
         <Button className="text-[1.5rem]" onClick={gitHub.auth}>
           Auth
         </Button>
-        <Button className="text-[1.5rem]" onClick={gitHub.test}>
-          Test
-        </Button>
       </div>
     </SettingsItem>
   );
@@ -110,6 +122,7 @@ export const GeneralSettings = (): JSX.Element => {
   const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
   const [useQaInstaller, setUseQaInstaller] = useSetting<boolean>('mainSettings.qaInstaller');
   const [gitHubToken, setGitHubToken] = useSetting<string>('mainSettings.gitHubToken');
+  const [usernameSet, setUsernameSet] = useSetting<string>('mainSettings.gitHubUsername');
 
   return (
     <div>
@@ -120,6 +133,7 @@ export const GeneralSettings = (): JSX.Element => {
           <DateLayoutItem value={dateLayout} setValue={setDateLayout} />
           <LongDateFormatItem value={useLongDate} setValue={setUseLongDate} />
           <QaInstallerItem value={useQaInstaller} setValue={setUseQaInstaller} />
+          <GitHubUsernameItem value={usernameSet} setValue={setUsernameSet} />
           <GitHubTokenItem value={gitHubToken} setValue={setGitHubToken} />
         </div>
       </div>

@@ -16,6 +16,7 @@ interface QaDropdownProps {
 export const QaDropdown: FC<QaDropdownProps> = ({ selectedPr, setSelectedPr, prs }) => {
   const gitHub = useGitHub();
   const [gitHubToken] = useSetting('mainSettings.gitHubToken');
+  const [usernameSet] = useSetting('mainSettings.gitHubUsername');
 
   useEffect(() => {
     if (selectedPr !== 0) {
@@ -30,35 +31,36 @@ export const QaDropdown: FC<QaDropdownProps> = ({ selectedPr, setSelectedPr, prs
   return (
     <div className="mt-10 flex flex-row justify-between">
       <h5 className="font-bold text-white">QA Selector</h5>
-      <div>
+      <div className="flex flex-row space-x-2">
         <Button
           onClick={async () => {
             await ipcRenderer.invoke(
               channels.installManager.directInstallFromUrl,
               0,
               await gitHub.getPrArtifactUrl(selectedPr),
-              path.join(Directories.installLocation(), 'lefile.zip'),
-              path.join(Directories.installLocation(), 'lefile2.zip'),
+              Directories.installLocation(),
+              Directories.installLocation(),
               gitHubToken,
+              usernameSet,
             );
           }}
         >
           Nuke
         </Button>
+        <select
+          value={selectedPr}
+          onChange={(event) => handleSelect(event.currentTarget.value)}
+          name="Date Layout"
+          className="w-60 cursor-pointer rounded-md border-2 border-navy bg-navy-light px-3.5 py-2.5 text-xl text-white outline-none"
+        >
+          <option value={0}>Disable PRs</option>
+          {prs.map((item) => (
+            <option value={item.number}>
+              {item.number}: {item.title}
+            </option>
+          ))}
+        </select>
       </div>
-      <select
-        value={selectedPr}
-        onChange={(event) => handleSelect(event.currentTarget.value)}
-        name="Date Layout"
-        className="w-60 cursor-pointer rounded-md border-2 border-navy bg-navy-light px-3.5 py-2.5 text-xl text-white outline-none"
-      >
-        <option value={0}>Disable PRs</option>
-        {prs.map((item) => (
-          <option value={item.number}>
-            {item.number}: {item.title}
-          </option>
-        ))}
-      </select>
     </div>
   );
 };

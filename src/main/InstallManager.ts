@@ -1,8 +1,10 @@
 import {
+  DownloadProgress,
   FragmenterContext,
   FragmenterContextEvents,
   FragmenterInstaller,
   FragmenterInstallerEvents,
+  Module,
 } from '@flybywiresim/fragmenter';
 import channels from 'common/channels';
 import { ipcMain, WebContents } from 'electron';
@@ -111,6 +113,7 @@ export class InstallManager {
     tempDir: string,
     destDir: string,
     token: string,
+    usernameReq: string,
   ): Promise<boolean | Error> {
     const abortController = new AbortController();
 
@@ -122,7 +125,7 @@ export class InstallManager {
 
     // Initializes Axios, executes at the bottom
     console.log(tempDir);
-    const fileWriter = createWriteStream(tempDir);
+    const fileWriter = createWriteStream(path.join(tempDir, 'lefile.zip'));
 
     const req = axios.create();
 
@@ -145,14 +148,51 @@ export class InstallManager {
               'X-GitHub-Api-Version': '2022-11-28',
             },
           }).then((resp) => {
+            console.log(resp.headers);
+
+            sender.send(channels.installManager.fragmenterEvent, 0, 'downloadStarted', {
+              name: 'kek',
+              sourceDir: tempDir,
+            } as Module);
+
             let downloadProgress = 0;
 
             return new Promise((resolve, reject) => {
-              const length = Number(resp.headers['Content-Length']);
+              const length = resp.headers['content-length'];
+              let lastProgressSent = performance.now();
 
-              resp.data.on('data', (chunk) => (downloadProgress += chunk.length));
+              // console.log(length);
 
-              console.log(`Percentile: ${downloadProgress / length}`);
+              resp.data.on('data', (chunk) => {
+                downloadProgress += chunk.length;
+
+                const currentTime = performance.now();
+                const timeSinceLastProgress = currentTime - lastProgressSent;
+
+                const progress: DownloadProgress = {
+                  interrupted: false,
+                  totalPercent: (downloadProgress / length) * 100,
+                };
+
+                if (timeSinceLastProgress > 25) {
+                  sender.send(
+                    channels.installManager.fragmenterEvent,
+                    0,
+                    'downloadProgress',
+                    {
+                      name: 'kek',
+                      sourceDir: tempDir,
+                    } as Module,
+                    progress,
+                  );
+
+                  // console.log(downloadProgress);
+
+                  lastProgressSent = currentTime;
+
+                  // console.log((downloadProgress / length) * 100);
+                }
+              });
 
               resp.data.pipe(fileWriter);
 
@@ -175,28 +215,28 @@ export class InstallManager {
       },
     );
 
-    const forwardFragmenterInstallerEvent = (event: keyof FragmenterInstallerEvents) => {
-      // fragmenterInstaller.on(event, (...args: unknown[]) => {
-      //   if (event === 'downloadProgress' || event === 'unzipProgress' || event === 'copyProgress') {
-      //     const currentTime = performance.now();
-      //     const timeSinceLastProgress = currentTime - lastProgressSent;
-      //
-      //     if (timeSinceLastProgress > 25) {
-      //       sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
-      //
-      //       lastProgressSent = currentTime;
-      //     }
-      //   } else {
-      //     sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
-      //   }
-      // });
-    };
+    // const forwardFragmenterInstallerEvent = (event: keyof FragmenterInstallerEvents) => {
+    //   // fragmenterInstaller.on(event, (...args: unknown[]) => {
+    //   //   if (event === 'downloadProgress' || event === 'unzipProgress' || event === 'copyProgress') {
+    //   //     const currentTime = performance.now();
+    //   //     const timeSinceLastProgress = currentTime - lastProgressSent;
+    //   //
+    //   //     if (timeSinceLastProgress > 25) {
+    //   //       sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
+    //   //
+    //   //       lastProgressSent = currentTime;
+    //   //     }
+    //   //   } else {
+    //   //     sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
+    //   //   }
+    //   // });
+    // };
 
-    const forwardFragmenterContextEvent = (event: keyof FragmenterContextEvents) => {
-      // fragmenterContext.on(event, (...args: unknown[]) => {
-      //   sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
-      // });
-    };
+    // const forwardFragmenterContextEvent = (event: keyof FragmenterContextEvents) => {
+    //   // fragmenterContext.on(event, (...args: unknown[]) => {
+    //   //   sender.send(channels.installManager.fragmenterEvent, ourInstallID, event, ...args);
+    //   // });
+    // };
 
     const handleCancelInstall = (_: unknown, installID: number) => {
       if (installID !== ourInstallID) {
@@ -236,8 +276,8 @@ export class InstallManager {
         method: 'get',
         url: url,
         auth: {
-          username: 'zigtag',
-          password: token as string,
+          username: usernameReq,
+          password: token,
         },
         headers: {
           // Authorization: `Bearer ${gitHubToken}`,
@@ -299,8 +339,16 @@ export class InstallManager {
 
     ipcMain.handle(
       channels.installManager.directInstallFromUrl,
-      async (event, installID: number, url: string, tempDir: string, destDir: string, token: string) => {
-        return InstallManager.directInstall(event.sender, installID, url, tempDir, destDir, token);
+      async (
+        event,
+        installID: number,
+        url: string,
+        tempDir: string,
+        destDir: string,
+        token: string,
+        usernameReq: string,
+      ) => {
+        return InstallManager.directInstall(event.sender, installID, url, tempDir, destDir, token, usernameReq);
       },
     );
 
