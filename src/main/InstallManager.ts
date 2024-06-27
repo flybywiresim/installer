@@ -180,7 +180,6 @@ export class InstallManager {
               let lastOutput = 0;
 
               // console.log(length);
-
               resp.data.on('data', (chunk) => {
                 downloadProgress += chunk.length;
 
@@ -307,17 +306,21 @@ export class InstallManager {
           password: token,
         },
         headers: {
-          // Authorization: `Bearer ${gitHubToken}`,
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2022-11-28',
         },
       });
 
+      console.log('Done downloading, prepping for install.');
+
+      // Prep
       const destFile = path.join(destDir, 'flybywire-aircraft-a320-neo');
 
-      // Do install
-      fs.rmdirSync(destFile);
+      if (!fs.existsSync(tempD)) {
+        fs.rmdirSync(destFile);
+      }
 
+      // Do install
       console.log('Extracting.');
 
       await extract(tempFile, destFile);
