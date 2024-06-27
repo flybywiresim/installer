@@ -18,6 +18,14 @@ import { extract } from 'zip-lib';
 let lastProgressSent = 0;
 
 export class InstallManager {
+  static async nuke(sender: WebContents, tempDir: string, destDir: string): Promise<boolean | Error> {
+    const tempFile = path.join(tempDir, 'temp.zip');
+    const destFile = path.join(destDir, 'flybywire-aircraft-a320-neo');
+
+    fs.rmSync(tempFile);
+    fs.rmdirSync(destFile);
+  }
+
   static async install(
     sender: WebContents,
     ourInstallID: number,
@@ -127,10 +135,12 @@ export class InstallManager {
     // Initializes Axios, executes at the bottom
     console.log(tempDir);
 
-    if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir);
+    const tempD = tempDir;
+
+    if (!fs.existsSync(tempD)) {
+      fs.mkdirSync(tempD);
     }
-    const tempFile = path.join(tempDir, 'temp.zip');
+    const tempFile = path.join(tempD, 'temp.zip');
 
     const fileWriter = createWriteStream(tempFile);
 
@@ -155,12 +165,12 @@ export class InstallManager {
               'X-GitHub-Api-Version': '2022-11-28',
             },
           }).then((resp) => {
-            console.log(resp.headers);
+            // console.log(resp.headers);
 
-            sender.send(channels.installManager.fragmenterEvent, 0, 'downloadStarted', {
-              name: 'kek',
-              sourceDir: tempDir,
-            } as Module);
+            // sender.send(channels.installManager.fragmenterEvent, 0, 'downloadStarted', {
+            //   name: 'kek',
+            //   sourceDir: tempD,
+            // } as Module);
 
             let downloadProgress = 0;
 
@@ -177,28 +187,32 @@ export class InstallManager {
                 const currentTime = performance.now();
                 const timeSinceLastProgress = currentTime - lastProgressSent;
 
-                const progress: DownloadProgress = {
-                  interrupted: false,
-                  totalPercent: (downloadProgress / length) * 100,
-                };
+                // const progress: DownloadProgress = {
+                //   interrupted: false,
+                //   totalPercent: (downloadProgress / length) * 100,
+                // };
+
+                if (downloadProgress === length) {
+                  console.log('Download done internally');
+                }
 
                 if (timeSinceLastProgress > 25) {
-                  sender.send(
-                    channels.installManager.fragmenterEvent,
-                    0,
-                    'downloadProgress',
-                    {
-                      name: 'kek',
-                      sourceDir: tempDir,
-                    } as Module,
-                    progress,
-                  );
+                  // sender.send(
+                  //   channels.installManager.fragmenterEvent,
+                  //   0,
+                  //   'downloadProgress',
+                  //   {
+                  //     name: 'kek',
+                  //     sourceDir: tempD,
+                  //   } as Module,
+                  //   progress,
+                  // );
 
                   // console.log(downloadProgress);
 
                   lastProgressSent = currentTime;
 
-                  const output = Math.round((downloadProgress / length) * 100);
+                  const output = Math.floor((downloadProgress / length) * 1000) / 10;
 
                   if (lastOutput < output) {
                     console.log(`Progress: ${output}%`);
@@ -304,9 +318,15 @@ export class InstallManager {
       // Do install
       fs.rmdirSync(destFile);
 
+      console.log('Extracting.');
+
       await extract(tempFile, destFile);
 
       fs.rmSync(tempFile);
+
+      if (tempD !== destDir) {
+        fs.rmdirSync(tempD);
+      }
 
       console.log('Done!');
 
@@ -354,6 +374,10 @@ export class InstallManager {
   }
 
   static setupIpcListeners(): void {
+    ipcMain.handle(channels.installManager.nuclearBomb, async (event, tempDir: string, destDir: string) => {
+      return InstallManager.nuke(event.sender, tempDir, destDir);
+    });
+
     ipcMain.handle(
       channels.installManager.installFromUrl,
       async (event, installID: number, url: string, tempDir: string, destDir: string) => {

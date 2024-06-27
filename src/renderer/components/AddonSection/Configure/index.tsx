@@ -10,8 +10,6 @@ import { QaDropdown } from 'renderer/components/AddonSection/QaInstaller/QaDropd
 import { useSetting } from 'renderer/rendererSettings';
 import { useLocation } from 'react-router-dom';
 import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
-import { ipcRenderer } from 'electron';
-import channels from 'common/channels';
 
 export interface ConfigureProps {
   routeAspectKey: string;
@@ -29,17 +27,11 @@ export const Configure: FC<ConfigureProps> = ({
   onTrackSelection,
 }) => {
   const gitHub = useGitHub();
-  const [prs, setPrs] = useState([]);
   const location = useLocation();
   const [useQaIntaller] = useSetting<boolean>('mainSettings.qaInstaller');
   const [selectedPr, setSelectedPr] = useSetting<number>('mainSettings.qaPrNumber');
   const history = useHistory();
   const { aspectKey: currentAspectKey } = useParams<{ aspectKey: string }>();
-
-  useEffect(() => {
-    gitHub.fetchPrs().then((data) => setPrs(data));
-    console.log('got PRS');
-  }, [gitHub]);
 
   let page;
   if (routeAspectKey === 'release-track') {
@@ -86,7 +78,7 @@ export const Configure: FC<ConfigureProps> = ({
           </div>
         </div>
         {useQaIntaller && location.pathname.includes('FlyByWire Simulations') && (
-          <QaDropdown selectedPr={selectedPr} setSelectedPr={setSelectedPr} prs={prs} />
+          <QaDropdown selectedPr={selectedPr} setSelectedPr={setSelectedPr} prs={gitHub.prs} />
         )}
         {selectedTrack && selectedTrack.description && (
           <div className="mt-10">

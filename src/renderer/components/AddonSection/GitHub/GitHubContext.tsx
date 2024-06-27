@@ -8,6 +8,7 @@ interface GitHubContextInterface {
   auth: () => void;
   fetchPrs: () => Promise<any>;
   getPrArtifactUrl: (prId: number) => Promise<any>;
+  prs: any[];
 }
 
 const GitHubContext = createContext<GitHubContextInterface>(undefined);
@@ -16,6 +17,7 @@ export const useGitHub = (): GitHubContextInterface => useContext(GitHubContext)
 
 export const GitHubProvider: FC = ({ children }) => {
   const [gitHubToken] = useSetting('mainSettings.gitHubToken');
+  const [prs, setPrs] = useState([]);
 
   const [client, setClient] = useState(
     gitHubToken
@@ -42,7 +44,7 @@ export const GitHubProvider: FC = ({ children }) => {
 
     console.log(resp.data);
 
-    return resp.data;
+    setPrs(resp.data);
   };
 
   const getPrArtifactUrl = async (prId: number) => {
@@ -96,6 +98,8 @@ export const GitHubProvider: FC = ({ children }) => {
   };
 
   return (
-    <GitHubContext.Provider value={{ client, auth, fetchPrs, getPrArtifactUrl }}>{children}</GitHubContext.Provider>
+    <GitHubContext.Provider value={{ client, auth, fetchPrs, getPrArtifactUrl, prs }}>
+      {children}
+    </GitHubContext.Provider>
   );
 };

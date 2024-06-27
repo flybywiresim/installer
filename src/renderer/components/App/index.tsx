@@ -22,6 +22,7 @@ import channels from 'common/channels';
 import { ModalContainer } from '../Modal';
 import { PublisherSection } from 'renderer/components/PublisherSection';
 import * as packageInfo from '../../../../package.json';
+import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
 
 const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
 
@@ -75,6 +76,11 @@ export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
 const App = () => {
   const history = useHistory();
   const location = useLocation();
+  const gitHub = useGitHub();
+
+  useEffect(() => {
+    gitHub.fetchPrs().then(() => console.log('got PRS'));
+  }, [gitHub.client]);
 
   const configuration = useAppSelector((state) => state.configuration);
 

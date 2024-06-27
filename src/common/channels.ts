@@ -15,6 +15,7 @@ export default {
     fragmenterEvent: 'installManager/fragmenterEvent',
     installFromUrl: 'installManager/installFromUrl',
     directInstallFromUrl: 'installManager/directInstallFromUrl',
+    nuclearBomb: 'installManager/nuclearBomb',
     cancelInstall: 'installManager/cancelInstall',
     uninstall: 'installManager/uninstall',
   },

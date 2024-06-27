@@ -9,7 +9,7 @@ import { useSetting } from 'renderer/rendererSettings';
 interface QaDropdownProps {
   selectedPr: number;
   setSelectedPr: (value: string) => void;
-  prs: any;
+  prs: any[];
 }
 
 export const QaDropdown: FC<QaDropdownProps> = ({ selectedPr, setSelectedPr, prs }) => {
@@ -33,15 +33,23 @@ export const QaDropdown: FC<QaDropdownProps> = ({ selectedPr, setSelectedPr, prs
       <div className="flex flex-row space-x-2">
         <Button
           onClick={async () => {
-            await ipcRenderer.invoke(
-              channels.installManager.directInstallFromUrl,
-              0,
-              await gitHub.getPrArtifactUrl(selectedPr),
-              Directories.temp(),
-              Directories.installLocation(),
-              gitHubToken,
-              usernameSet,
-            );
+            if (selectedPr === 0) {
+              await ipcRenderer.invoke(
+                channels.installManager.nuclearBomb,
+                Directories.temp(),
+                Directories.installLocation(),
+              );
+            } else {
+              await ipcRenderer.invoke(
+                channels.installManager.directInstallFromUrl,
+                0,
+                await gitHub.getPrArtifactUrl(selectedPr),
+                Directories.temp(),
+                Directories.installLocation(),
+                gitHubToken,
+                usernameSet,
+              );
+            }
           }}
         >
           Nuke
