@@ -1,10 +1,17 @@
-import React, { FC, useEffect, useState } from 'react';
-import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
-import { Button } from 'renderer/components/Button';
-import { ipcRenderer } from 'electron';
-import channels from 'common/channels';
-import { Directories } from 'renderer/utils/Directories';
-import { useSetting } from 'renderer/rendererSettings';
+import React, { FC, useEffect } from 'react';
+import { AddonTrack } from 'renderer/utils/InstallerConfiguration';
+
+export const QaTrack: AddonTrack = {
+  name: 'QA',
+  key: 'qa',
+  url: '',
+  description: 'Used for QA builds',
+  releaseModel: {
+    type: 'githubRelease',
+  },
+  isExperimental: true,
+  warningContent: 'This is a PR build, there are no guarantees anything will work period.',
+};
 
 interface QaDropdownProps {
   selectedPr: number;
@@ -13,10 +20,6 @@ interface QaDropdownProps {
 }
 
 export const QaDropdown: FC<QaDropdownProps> = ({ selectedPr, setSelectedPr, prs }) => {
-  const gitHub = useGitHub();
-  const [gitHubToken] = useSetting('mainSettings.gitHubToken');
-  const [usernameSet] = useSetting('mainSettings.gitHubUsername');
-
   useEffect(() => {
     if (selectedPr !== 0) {
       // gitHub.getPrArtifactUrl(selectedPr);
@@ -31,29 +34,6 @@ export const QaDropdown: FC<QaDropdownProps> = ({ selectedPr, setSelectedPr, prs
     <div className="mt-10 flex flex-row justify-between">
       <h5 className="font-bold text-white">QA Selector</h5>
       <div className="flex flex-row space-x-2">
-        <Button
-          onClick={async () => {
-            if (selectedPr === 0) {
-              await ipcRenderer.invoke(
-                channels.installManager.nuclearBomb,
-                Directories.temp(),
-                Directories.installLocation(),
-              );
-            } else {
-              await ipcRenderer.invoke(
-                channels.installManager.directInstallFromUrl,
-                0,
-                await gitHub.getPrArtifactUrl(selectedPr),
-                Directories.temp(),
-                Directories.installLocation(),
-                gitHubToken,
-                usernameSet,
-              );
-            }
-          }}
-        >
-          Nuke
-        </Button>
         <select
           value={selectedPr}
           onChange={(event) => handleSelect(event.currentTarget.value)}

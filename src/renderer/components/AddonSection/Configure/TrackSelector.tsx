@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { InstallerStore } from 'renderer/redux/store';
 import { Check } from 'tabler-icons-react';
@@ -6,6 +6,8 @@ import { Addon, AddonTrack } from 'renderer/utils/InstallerConfiguration';
 
 import '../index.css';
 import { twMerge } from 'tailwind-merge';
+import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
+import { useSetting } from 'renderer/rendererSettings';
 
 export const Tracks: React.FC = ({ children }) => (
   <div className="flex flex-row items-stretch justify-start gap-3">{children}</div>
@@ -21,9 +23,17 @@ type TrackProps = {
 };
 
 export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSelected, addon, track }) => {
+  const gitHub = useGitHub();
+  const [selectedPr] = useSetting<number>('mainSettings.qaPrNumber');
+  const [prCommitSha, setPrCommitSha] = useState<string>('');
+
   const latestVersionName = useSelector<InstallerStore, string>(
     (state) => state.latestVersionNames[addon.key]?.[track.key]?.name ?? '<unknown>',
   );
+
+  useEffect(() => {
+    gitHub.getPrCommitSha(selectedPr, addon).then((resp) => setPrCommitSha(resp));
+  }, [selectedPr]);
 
   return (
     <div
@@ -39,7 +49,7 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
       <div className="flex flex-col px-3 py-2.5">
         <span className="text-xl text-current">{track.name}</span>
         <span className="mt-0.5 font-manrope text-3xl font-medium tracking-wider text-current">
-          {latestVersionName}
+          {track.key === 'qa' ? `${selectedPr}:${prCommitSha.slice(0, 7)}` : latestVersionName}
         </span>
       </div>
       {isInstalled && <Check className={`absolute right-4 stroke-current text-cyan`} strokeWidth={3} />}

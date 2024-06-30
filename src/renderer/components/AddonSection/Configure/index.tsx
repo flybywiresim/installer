@@ -6,7 +6,7 @@ import { Track, Tracks } from './TrackSelector';
 import { ConfigurationAspectDisplay } from 'renderer/components/AddonSection/Configure/ConfigurationAspectDisplay';
 
 import './index.css';
-import { QaDropdown } from 'renderer/components/AddonSection/QaInstaller/QaDropdown';
+import { QaDropdown, QaTrack } from 'renderer/components/AddonSection/QaInstaller/QaDropdown';
 import { useSetting } from 'renderer/rendererSettings';
 import { useLocation } from 'react-router-dom';
 import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
@@ -70,6 +70,16 @@ export const Configure: FC<ConfigureProps> = ({
                     handleSelected={() => onTrackSelection(track)}
                   />
                 ))}
+              {useQaIntaller && !!selectedAddon.repoOwner && (
+                <Track
+                  addon={selectedAddon}
+                  key={'qa'}
+                  track={QaTrack}
+                  isSelected={selectedTrack === QaTrack}
+                  isInstalled={installedTrack === QaTrack}
+                  handleSelected={() => onTrackSelection(QaTrack)}
+                />
+              )}
             </Tracks>
 
             {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
@@ -77,7 +87,7 @@ export const Configure: FC<ConfigureProps> = ({
             )}
           </div>
         </div>
-        {useQaIntaller && location.pathname.includes('FlyByWire Simulations') && (
+        {useQaIntaller && selectedTrack?.key === 'qa' && (
           <QaDropdown selectedPr={selectedPr} setSelectedPr={setSelectedPr} prs={gitHub.prs} />
         )}
         {selectedTrack && selectedTrack.description && (

@@ -41,6 +41,7 @@ import { ErrorDialog } from 'renderer/components/Modal/ErrorDialog';
 import { InstallSizeDialog } from 'renderer/components/Modal/InstallSizeDialog';
 import { IncompatibleAddOnsCheck } from 'renderer/utils/IncompatibleAddOnsCheck';
 import { FreeDiskSpace, FreeDiskSpaceStatus } from 'renderer/utils/FreeDiskSpace';
+import { GitHubContextInterface } from 'renderer/components/AddonSection/GitHub/GitHubContext';
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<
   (FragmenterInstallerEvents & FragmenterContextEvents)[K]
@@ -74,7 +75,7 @@ export class InstallManager {
     }
   }
 
-  static async determineAddonInstallState(addon: Addon): Promise<InstallState> {
+  static async determineAddonInstallState(addon: Addon, gitHub?: GitHubContextInterface): Promise<InstallState> {
     const addonSelectedTrack = this.getAddonSelectedTrack(addon);
     const addonInstalledTrack = this.getAddonInstalledTrack(addon);
 
@@ -96,6 +97,23 @@ export class InstallManager {
     }
 
     try {
+      if (addonSelectedTrack.key === 'qa') {
+        const prCommitSha = await gitHub.getPrCommitSha(settings.get('mainSettings.qaPrNumber'), addon);
+        const buildPath = path.join(installDir, `${addon.key}_build_info.json`);
+        const buildFile = fs.readFileSync(buildPath);
+
+        console.log(prCommitSha);
+        console.log(buildFile.toString());
+
+        if (buildFile.includes(prCommitSha)) {
+          return { status: InstallStatus.UpToDate };
+        } else if (fs.existsSync(buildPath)) {
+          return { status: InstallStatus.NeedsUpdate };
+        } else {
+          return { status: InstallStatus.NotInstalled };
+        }
+      }
+
       const updateInfo = await new FragmenterUpdateChecker().needsUpdate(addonSelectedTrack.url, installDir, {
         forceCacheBust: true,
       });
@@ -119,11 +137,11 @@ export class InstallManager {
     }
   }
 
-  static async getAddonInstallState(addon: Addon): Promise<InstallState> {
+  static async getAddonInstallState(addon: Addon, gitHub?: GitHubContextInterface): Promise<InstallState> {
     try {
       return store.getState().installStatus[addon.key] as InstallState;
     } catch (e) {
-      const state = await this.determineAddonInstallState(addon);
+      const state = await this.determineAddonInstallState(addon, gitHub);
       this.setCurrentInstallState(addon, state);
       return state;
     }
@@ -164,6 +182,7 @@ export class InstallManager {
     publisher: Publisher,
     showModal: (modal: JSX.Element) => Promise<boolean>,
     dependencyOf?: Addon,
+    gitHub?: GitHubContextInterface,
   ): Promise<InstallResult> {
     this.setCurrentInstallState(addon, { status: InstallStatus.DownloadPending });
 
@@ -178,7 +197,7 @@ export class InstallManager {
     const startResetStateTimer = (timeout = 3_000) => {
       setTimeout(async () => {
         store.dispatch(deleteDownload({ id: addon.key }));
-        this.setCurrentInstallState(addon, await this.determineAddonInstallState(addon));
+        this.setCurrentInstallState(addon, await this.determineAddonInstallState(addon, gitHub));
       }, timeout);
     };
 
@@ -188,6 +207,298 @@ export class InstallManager {
 
     const track = this.getAddonSelectedTrack(addon);
 
+    if (track.key === 'qa') {
+      return this.installAddonQa(
+        addon,
+        publisher,
+        showModal,
+        track,
+        setErrorState,
+        setCancelledState,
+        startResetStateTimer,
+        removeDownloadState,
+        dependencyOf,
+        gitHub,
+      );
+    }
+
+    return this.installAddonFragmenter(
+      addon,
+      publisher,
+      showModal,
+      track,
+      setErrorState,
+      setCancelledState,
+      startResetStateTimer,
+      removeDownloadState,
+      dependencyOf,
+    );
+  }
+
+  static async installAddonQa(
+    addon: Addon,
+    publisher: Publisher,
+    showModal: (modal: JSX.Element) => Promise<boolean>,
+    track: AddonTrack,
+    setErrorState: () => void,
+    setCancelledState: () => void,
+    startResetStateTimer: () => void,
+    removeDownloadState: () => void,
+    dependencyOf?: Addon,
+    gitHub?: GitHubContextInterface,
+  ): Promise<InstallResult> {
+    // const destDir = Directories.inInstallLocation(addon.targetDirectory);
+    const tempDir = Directories.temp();
+
+    const ourInstallID = 0;
+
+    let lastPercent = 0;
+
+    // Might be able to consolodate into one function for both 'installers'
+    const handleForwardedFragmenterEvent = (
+      _: unknown,
+      installID: number,
+      event: keyof FragmenterInstallerEvents | keyof FragmenterContextEvents,
+      ...args: unknown[]
+    ) => {
+      if (installID !== ourInstallID) {
+        return;
+      }
+
+      switch (event) {
+        case 'downloadStarted': {
+          const [module] = args as FragmenterEventArguments<typeof event>;
+
+          console.log('Downloading started for module', module.name);
+
+          this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+
+          store.dispatch(
+            updateDownloadProgress({
+              id: addon.key,
+              module: module.name,
+              progress: {
+                interrupted: false,
+                totalPercent: 0,
+                splitPartPercent: 0,
+                splitPartIndex: 0,
+                splitPartCount: 0,
+              },
+            }),
+          );
+
+          break;
+        }
+        case 'phaseChange': {
+          const [phase] = args as FragmenterEventArguments<typeof event>;
+
+          if (phase.op === FragmenterOperation.InstallFinish) {
+            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
+            return;
+          }
+
+          if ('moduleIndex' in phase) {
+            store.dispatch(
+              setDownloadModuleIndex({
+                id: addon.key,
+                moduleIndex: phase.moduleIndex,
+              }),
+            );
+          }
+          break;
+        }
+        case 'downloadProgress': {
+          const [module, progress] = args as FragmenterEventArguments<typeof event>;
+
+          if (lastPercent !== progress.percent) {
+            lastPercent = progress.percent;
+            store.dispatch(
+              updateDownloadProgress({
+                id: addon.key,
+                module: module.name,
+                progress: {
+                  interrupted: false,
+                  totalPercent: progress.percent,
+                  splitPartPercent: progress.partPercent,
+                  splitPartIndex: progress.partIndex,
+                  splitPartCount: progress.numParts,
+                },
+              }),
+            );
+          }
+          break;
+        }
+        case 'downloadInterrupted': {
+          store.dispatch(setDownloadInterrupted({ id: addon.key }));
+
+          break;
+        }
+        case 'unzipStarted': {
+          const [module] = args as FragmenterEventArguments<typeof event>;
+
+          console.log('Started unzipping module', module.name);
+          this.setCurrentInstallState(addon, { status: InstallStatus.Decompressing, percent: 0 });
+
+          if (dependencyOf) {
+            this.setCurrentInstallState(dependencyOf, {
+              status: InstallStatus.InstallingDependencyEnding,
+              dependencyAddonKey: addon.key,
+              dependencyPublisherKey: publisher.key,
+              percent: 0,
+            });
+          }
+          break;
+        }
+        case 'unzipProgress': {
+          const [, progress] = args as FragmenterEventArguments<typeof event>;
+
+          const percent = Math.round(((progress.entryIndex + 1) / progress.entryCount) * 100);
+
+          this.setCurrentInstallState(addon, {
+            status: InstallStatus.Decompressing,
+            percent,
+            entry: progress.entryName,
+          });
+
+          if (dependencyOf) {
+            this.setCurrentInstallState(dependencyOf, {
+              status: InstallStatus.InstallingDependencyEnding,
+              dependencyAddonKey: addon.key,
+              dependencyPublisherKey: publisher.key,
+              percent,
+            });
+          }
+          break;
+        }
+        case 'copyStarted': {
+          const [module] = args as FragmenterEventArguments<typeof event>;
+
+          console.log('Started moving over module', module.name);
+
+          if (module.name === 'full') {
+            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadEnding });
+          }
+
+          break;
+        }
+        case 'retryScheduled': {
+          const [module, retryCount, waitSeconds] = args as FragmenterEventArguments<typeof event>;
+
+          console.log('Scheduling a retry for module', module.name);
+          console.log('Retry count', retryCount);
+          console.log('Waiting for', waitSeconds, 'seconds');
+
+          store.dispatch(clearDownloadInterrupted({ id: addon.key }));
+
+          this.setCurrentInstallState(addon, { status: InstallStatus.DownloadRetry });
+          break;
+        }
+        case 'retryStarted': {
+          const [module, retryCount] = args as FragmenterEventArguments<typeof event>;
+
+          console.log('Starting a retry for module', module.name);
+          console.log('Retry count', retryCount);
+
+          this.setCurrentInstallState(addon, { status: InstallStatus.Downloading });
+          break;
+        }
+        case 'cancelled': {
+          this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
+          break;
+        }
+        case 'error': {
+          const [error] = args as FragmenterEventArguments<typeof event>;
+
+          console.error('Error from Fragmenter:', error);
+          Sentry.captureException(error);
+        }
+      }
+    };
+
+    ipcRenderer.on(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
+
+    // Initialize abort controller for downloads
+    const abortControllerID = this.lowestAvailableAbortControllerID();
+
+    this.abortControllers[abortControllerID] = new AbortController();
+    const signal = this.abortControllers[abortControllerID].signal;
+
+    store.dispatch(
+      registerNewDownload({
+        id: addon.key,
+        module: '',
+        moduleCount: 1,
+        abortControllerID,
+      }),
+    );
+
+    try {
+      this.abortControllers[abortControllerID].signal.addEventListener('abort', () => {
+        ipcRenderer.send(channels.installManager.cancelInstall, ourInstallID);
+      });
+
+      const prNumber = settings.get('mainSettings.qaPrNumber');
+
+      const installResult = await ipcRenderer.invoke(
+        channels.installManager.directInstallFromUrl,
+        ourInstallID,
+        await gitHub.getPrArtifactUrl(prNumber, addon),
+        tempDir,
+        Directories.installLocation(),
+        settings.get('mainSettings.gitHubToken'),
+        settings.get('mainSettings.gitHubUsername'),
+        prNumber,
+      );
+
+      if (typeof installResult === 'object') {
+        throw installResult;
+      }
+
+      ipcRenderer.removeListener(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
+
+      this.notifyDownload(addon, true);
+
+      // Flash completion text
+      this.setCurrentInstallState(addon, { status: InstallStatus.DownloadDone });
+      this.setCurrentlyInstalledTrack(addon, track);
+
+      return InstallResult.Success;
+    } catch (e) {
+      if (signal.aborted) {
+        console.warn('Download was cancelled');
+
+        setCancelledState();
+        startResetStateTimer();
+
+        return InstallResult.Cancelled;
+      } else {
+        console.error('Download failed, see exception below');
+        console.error(e);
+
+        setErrorState();
+
+        await showModal(<ErrorDialog error={e} />);
+
+        startResetStateTimer();
+
+        await showModal(<ErrorDialog error={e} />);
+
+        return InstallResult.Failure;
+      }
+    }
+  }
+
+  static async installAddonFragmenter(
+    addon: Addon,
+    publisher: Publisher,
+    showModal: (modal: JSX.Element) => Promise<boolean>,
+    track: AddonTrack,
+    setErrorState: () => void,
+    setCancelledState: () => void,
+    startResetStateTimer: () => void,
+    removeDownloadState: () => void,
+    dependencyOf?: Addon,
+  ): Promise<InstallResult> {
     const disallowedRunningExternalApps = ExternalApps.forAddon(addon, publisher);
 
     const runningExternalApps = disallowedRunningExternalApps.filter(

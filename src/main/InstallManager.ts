@@ -1,8 +1,10 @@
 import {
+  DownloadProgress,
   FragmenterContext,
   FragmenterContextEvents,
   FragmenterInstaller,
   FragmenterInstallerEvents,
+  Module,
 } from '@flybywiresim/fragmenter';
 import channels from 'common/channels';
 import { ipcMain, WebContents } from 'electron';
@@ -11,7 +13,7 @@ import { promisify } from 'util';
 import path from 'path';
 import axios from 'axios';
 import { createWriteStream } from 'fs-extra';
-import { extract } from 'zip-lib';
+import { IEntryEvent, extract } from 'zip-lib';
 
 let lastProgressSent = 0;
 
@@ -121,6 +123,7 @@ export class InstallManager {
     destDir: string,
     token: string,
     usernameReq: string,
+    prNum: number,
   ): Promise<boolean | Error> {
     const abortController = new AbortController();
 
@@ -134,6 +137,11 @@ export class InstallManager {
     console.log(tempDir);
 
     const tempD = tempDir;
+
+    const qaModule: Module = {
+      name: `QA #${prNum}`,
+      sourceDir: destDir,
+    };
 
     if (!fs.existsSync(tempD)) {
       fs.mkdirSync(tempD);
@@ -218,17 +226,14 @@ export class InstallManager {
         },
       });
 
-      // console.log(resp.headers);
-      // sender.send(channels.installManager.fragmenterEvent, 0, 'downloadStarted', {
-      //   name: 'kek',
-      //   sourceDir: tempD,
-      // } as Module);
+      console.log(resp.headers);
+      sender.send(channels.installManager.fragmenterEvent, 0, 'downloadStarted', qaModule);
       let downloadProgress = 0;
 
       await new Promise((resolve, reject) => {
         const length = resp.headers['content-length'];
         let lastProgressSent = performance.now();
-        let lastOutput = 0;
+        // let lastOutput = 0;
 
         // console.log(length);
         resp.data.on('data', (chunk: Buffer) => {
@@ -236,35 +241,26 @@ export class InstallManager {
 
           const currentTime = performance.now();
           const timeSinceLastProgress = currentTime - lastProgressSent;
+          const output = Math.floor((downloadProgress / length) * 100);
 
-          // const progress: DownloadProgress = {
-          //   interrupted: false,
-          //   totalPercent: (downloadProgress / length) * 100,
-          // };
-          if (downloadProgress === length) {
-            console.log('Download done internally');
-          }
+          const progress: DownloadProgress = {
+            loaded: downloadProgress,
+            total: length,
+            percent: output,
+          };
+          // if (downloadProgress === length) {
+          //   console.log('Download done internally');
+          // }
 
           if (timeSinceLastProgress > 25) {
-            // sender.send(
-            //   channels.installManager.fragmenterEvent,
-            //   0,
-            //   'downloadProgress',
-            //   {
-            //     name: 'kek',
-            //     sourceDir: tempD,
-            //   } as Module,
-            //   progress,
-            // );
+            sender.send(channels.installManager.fragmenterEvent, 0, 'downloadProgress', qaModule, progress);
             // console.log(downloadProgress);
             lastProgressSent = currentTime;
 
-            const output = Math.floor((downloadProgress / length) * 1000) / 10;
-
-            if (lastOutput < output) {
-              console.log(`Progress: ${output}%`);
-              lastOutput = output;
-            }
+            // if (lastOutput < output) {
+            //   // console.log(`Progress: ${output}%`);
+            //   lastOutput = output;
+            // }
           }
         });
 
@@ -280,24 +276,49 @@ export class InstallManager {
         resp.data.pipe(fileWriter);
       });
 
+      sender.send(channels.installManager.fragmenterEvent, 0, 'downloadFinished', qaModule);
+
       console.log('Done downloading, prepping for install.');
 
       // Prep
       const destFile = path.join(destDir, 'flybywire-aircraft-a320-neo');
 
-      if (!fs.existsSync(tempD)) {
-        fs.rmdirSync(destFile);
+      if (!fs.existsSync(destFile)) {
+        fs.rmSync(destFile, { recursive: true, force: true });
       }
 
       // Do install
       console.log('Extracting.');
 
-      await extract(tempFile, destFile);
+      sender.send(channels.installManager.fragmenterEvent, ourInstallID, 'unzipStarted', qaModule);
 
-      fs.rmSync(tempFile);
+      let entryIndex = 0;
+
+      let timeSinceLastProgress = performance.now();
+
+      await extract(tempFile, destFile, {
+        onEntry: ({ entryName, entryCount }: IEntryEvent) => {
+          entryIndex++;
+
+          const currentTime = performance.now();
+          timeSinceLastProgress = currentTime - lastProgressSent;
+
+          if (timeSinceLastProgress > 25) {
+            sender.send(channels.installManager.fragmenterEvent, 0, 'unzipProgress', qaModule, {
+              entryIndex,
+              entryName,
+              entryCount,
+            });
+          }
+        },
+      });
+
+      sender.send(channels.installManager.fragmenterEvent, ourInstallID, 'unzipFinished', qaModule);
 
       if (tempD !== destDir) {
-        fs.rmdirSync(tempD);
+        fs.rmSync(tempD, { recursive: true, force: true });
+      } else {
+        fs.rmSync(tempFile);
       }
 
       console.log('Done!');
@@ -367,8 +388,9 @@ export class InstallManager {
         destDir: string,
         token: string,
         usernameReq: string,
+        prNum: number,
       ) => {
-        return InstallManager.directInstall(event.sender, installID, url, tempDir, destDir, token, usernameReq);
+        return InstallManager.directInstall(event.sender, installID, url, tempDir, destDir, token, usernameReq, prNum);
       },
     );
 

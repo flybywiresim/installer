@@ -28,6 +28,8 @@ import { InstallManager } from 'renderer/utils/InstallManager';
 import { StateSection } from 'renderer/components/AddonSection/StateSection';
 import { ExternalApps } from 'renderer/utils/ExternalApps';
 import { MyInstall } from 'renderer/components/AddonSection/MyInstall';
+import { useGitHub } from 'renderer/components/AddonSection/GitHub/GitHubContext';
+import { QaTrack } from 'renderer/components/AddonSection/QaInstaller/QaDropdown';
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController());
@@ -73,6 +75,7 @@ export interface AircraftSectionURLParams {
 export const AddonSection = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const gitHub = useGitHub();
 
   const { publisherName } = useParams<AircraftSectionURLParams>();
   const publisherData = useAppSelector((state) =>
@@ -146,8 +149,12 @@ export const AddonSection = (): JSX.Element => {
 
   const selectAndSetTrack = useCallback(
     (key: string) => {
-      const newTrack = selectedAddon.tracks.find((track) => track.key === key);
-      setCurrentlySelectedTrack(newTrack);
+      if (key === 'qa') {
+        setCurrentlySelectedTrack(QaTrack);
+      } else {
+        const newTrack = selectedAddon.tracks.find((track) => track.key === key);
+        setCurrentlySelectedTrack(newTrack);
+      }
     },
     [selectedAddon.tracks, setCurrentlySelectedTrack],
   );
@@ -256,7 +263,7 @@ export const AddonSection = (): JSX.Element => {
   useEffect(() => {
     findInstalledTrack();
     if (!isInstalling) {
-      InstallManager.determineAddonInstallState(selectedAddon).then(setCurrentInstallStatus);
+      InstallManager.determineAddonInstallState(selectedAddon, gitHub).then(setCurrentInstallStatus);
     }
   }, [findInstalledTrack, isInstalling, selectedAddon, setCurrentInstallStatus]);
 
@@ -300,7 +307,7 @@ export const AddonSection = (): JSX.Element => {
 
   const handleInstall = async () => {
     if (settings.has('mainSettings.installPath')) {
-      await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
+      await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync, null, gitHub);
     } else {
       await setupInstallPath();
     }

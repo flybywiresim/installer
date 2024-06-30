@@ -79,7 +79,9 @@ const App = () => {
   const gitHub = useGitHub();
 
   useEffect(() => {
-    gitHub.fetchPrs().then(() => console.log('got PRS'));
+    if (settings.get('mainSettings.qaInstaller')) {
+      gitHub.fetchPrs().then(() => console.log('got PRS'));
+    }
   }, [gitHub.client]);
 
   const configuration = useAppSelector((state) => state.configuration);

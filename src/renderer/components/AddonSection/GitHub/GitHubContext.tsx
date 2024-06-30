@@ -1,13 +1,14 @@
 import { Octokit } from '@octokit/rest';
-import axios from 'axios';
 import React, { FC, createContext, useContext, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
+import { Addon } from 'renderer/utils/InstallerConfiguration';
 
-interface GitHubContextInterface {
+export interface GitHubContextInterface {
   client: Octokit | null;
   auth: () => void;
   fetchPrs: () => Promise<any>;
-  getPrArtifactUrl: (prId: number) => Promise<any>;
+  getPrCommitSha: (prId: number, addon: Addon) => Promise<any>;
+  getPrArtifactUrl: (prId: number, addon: Addon) => Promise<any>;
   prs: any[];
 }
 
@@ -47,10 +48,20 @@ export const GitHubProvider: FC = ({ children }) => {
     setPrs(resp.data);
   };
 
-  const getPrArtifactUrl = async (prId: number) => {
+  const getPrCommitSha = async (prId: number, addon: Addon) => {
     const prInfo = await client.rest.pulls.get({
-      owner: 'flybywiresim',
-      repo: 'aircraft',
+      owner: addon.repoOwner,
+      repo: addon.repoName,
+      pull_number: prId,
+    });
+
+    return prInfo.data.head.sha;
+  };
+
+  const getPrArtifactUrl = async (prId: number, addon: Addon) => {
+    const prInfo = await client.rest.pulls.get({
+      owner: addon.repoOwner,
+      repo: addon.repoName,
       pull_number: prId,
     });
 
@@ -63,8 +74,8 @@ export const GitHubProvider: FC = ({ children }) => {
     // });
 
     const checkList = await client.rest.checks.listForRef({
-      owner: prInfo.data.base.repo.owner.login,
-      repo: prInfo.data.base.repo.name,
+      owner: addon.repoOwner,
+      repo: addon.repoName,
       ref: prInfo.data.head.sha,
     });
 
@@ -75,8 +86,8 @@ export const GitHubProvider: FC = ({ children }) => {
     const runId = check.html_url.slice(54, 64);
 
     const artifactList = await client.rest.actions.listWorkflowRunArtifacts({
-      owner: 'flybywiresim',
-      repo: 'aircraft',
+      owner: addon.repoOwner,
+      repo: addon.repoName,
       run_id: Number(runId),
     });
 
@@ -98,7 +109,7 @@ export const GitHubProvider: FC = ({ children }) => {
   };
 
   return (
-    <GitHubContext.Provider value={{ client, auth, fetchPrs, getPrArtifactUrl, prs }}>
+    <GitHubContext.Provider value={{ client, auth, fetchPrs, getPrCommitSha, getPrArtifactUrl, prs }}>
       {children}
     </GitHubContext.Provider>
   );
