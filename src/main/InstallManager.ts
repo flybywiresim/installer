@@ -315,11 +315,13 @@ export class InstallManager {
 
       sender.send(channels.installManager.fragmenterEvent, ourInstallID, 'unzipFinished', qaModule);
 
-      if (tempD !== destDir) {
-        fs.rmSync(tempD, { recursive: true, force: true });
-      } else {
-        fs.rmSync(tempFile);
-      }
+      fs.rmSync(tempFile);
+
+      // Startup cleanup can handle this
+      // if (tempD !== destDir) {
+      //   fs.rmSync(tempD, { recursive: true, force: true });
+      // } else {
+      // }
 
       console.log('Done!');
 
