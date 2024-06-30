@@ -99,15 +99,17 @@ export class InstallManager {
     try {
       if (addonSelectedTrack.key === 'qa') {
         const prCommitSha = await gitHub.getPrCommitSha(settings.get('mainSettings.qaPrNumber'), addon);
-        const buildPath = path.join(installDir, `${addon.key}_build_info.json`);
-        const buildFile = fs.readFileSync(buildPath);
+        const buildPath = path.join(installDir, `.PRINFO`);
 
         console.log(prCommitSha);
-        console.log(buildFile.toString());
 
-        if (buildFile.includes(prCommitSha)) {
-          return { status: InstallStatus.UpToDate };
-        } else if (fs.existsSync(buildPath)) {
+        if (fs.existsSync(buildPath)) {
+          const buildFile = fs.readFileSync(buildPath);
+          console.log(buildFile.toString());
+
+          if (buildFile.includes(prCommitSha)) {
+            return { status: InstallStatus.UpToDate };
+          }
           return { status: InstallStatus.NeedsUpdate };
         } else {
           return { status: InstallStatus.NotInstalled };
@@ -247,7 +249,7 @@ export class InstallManager {
     dependencyOf?: Addon,
     gitHub?: GitHubContextInterface,
   ): Promise<InstallResult> {
-    // const destDir = Directories.inInstallLocation(addon.targetDirectory);
+    const destDir = Directories.inInstallLocation(addon.targetDirectory);
     const tempDir = Directories.temp();
 
     const ourInstallID = 0;
@@ -455,6 +457,16 @@ export class InstallManager {
       }
 
       ipcRenderer.removeListener(channels.installManager.fragmenterEvent, handleForwardedFragmenterEvent);
+
+      const prSha = await gitHub.getPrCommitSha(prNumber, addon);
+
+      const prInfoFile = path.join(destDir, '.PRINFO');
+
+      if (fs.existsSync(prInfoFile)) {
+        fs.rmSync(prInfoFile);
+      }
+
+      fs.writeFileSync(prInfoFile, prSha);
 
       this.notifyDownload(addon, true);
 
