@@ -1,10 +1,8 @@
 import {
-  DownloadProgress,
   FragmenterContext,
   FragmenterContextEvents,
   FragmenterInstaller,
   FragmenterInstallerEvents,
-  Module,
 } from '@flybywiresim/fragmenter';
 import channels from 'common/channels';
 import { ipcMain, WebContents } from 'electron';
@@ -148,110 +146,7 @@ export class InstallManager {
 
     req.defaults.maxRedirects = 0;
 
-    req.interceptors.response.use(
-      (resp) => resp,
-      (error) => {
-        console.log(error);
-
-        if (error.response.status && [301, 302].includes(error.response.status)) {
-          const redirect = error.response.headers.location;
-
-          axios({
-            method: 'get',
-            url: redirect,
-            responseType: 'stream',
-            headers: {
-              Accept: 'application/vnd.github+json',
-              'X-GitHub-Api-Version': '2022-11-28',
-            },
-          }).then((resp) => {
-            // console.log(resp.headers);
-
-            // sender.send(channels.installManager.fragmenterEvent, 0, 'downloadStarted', {
-            //   name: 'kek',
-            //   sourceDir: tempD,
-            // } as Module);
-
-            let downloadProgress = 0;
-
-            return new Promise((resolve, reject) => {
-              const length = resp.headers['content-length'];
-              let lastProgressSent = performance.now();
-              let lastOutput = 0;
-
-              // console.log(length);
-              resp.data.on('data', (chunk) => {
-                downloadProgress += chunk.length;
-
-                const currentTime = performance.now();
-                const timeSinceLastProgress = currentTime - lastProgressSent;
-
-                // const progress: DownloadProgress = {
-                //   interrupted: false,
-                //   totalPercent: (downloadProgress / length) * 100,
-                // };
-
-                if (downloadProgress === length) {
-                  console.log('Download done internally');
-                }
-
-                if (timeSinceLastProgress > 25) {
-                  // sender.send(
-                  //   channels.installManager.fragmenterEvent,
-                  //   0,
-                  //   'downloadProgress',
-                  //   {
-                  //     name: 'kek',
-                  //     sourceDir: tempD,
-                  //   } as Module,
-                  //   progress,
-                  // );
-
-                  // console.log(downloadProgress);
-
-                  lastProgressSent = currentTime;
-
-                  const output = Math.floor((downloadProgress / length) * 1000) / 10;
-
-                  if (lastOutput < output) {
-                    console.log(`Progress: ${output}%`);
-                    lastOutput = output;
-                  }
-                }
-              });
-
-              let error: null | Error = null;
-
-              fileWriter.on('error', (err) => {
-                error = err;
-                fileWriter.close();
-                reject(err);
-              });
-              fileWriter.on('close', () => {
-                if (!error) {
-                  resolve(true);
-                }
-              });
-              fileWriter.on('finish', () => {
-                fileWriter.close();
-                if (!error) {
-                  resolve(true);
-                }
-              });
-              fileWriter.on('unpipe', () => {
-                fileWriter.close();
-                if (!error) {
-                  resolve(true);
-                }
-              });
-
-              resp.data.pipe(fileWriter);
-            });
-          });
-        }
-        return Promise.reject(error);
-      },
-    );
+    console.log('');
 
     // const forwardFragmenterInstallerEvent = (event: keyof FragmenterInstallerEvents) => {
     //   // fragmenterInstaller.on(event, (...args: unknown[]) => {
@@ -310,17 +205,79 @@ export class InstallManager {
     let ret = false;
 
     try {
-      await req.request({
-        method: 'get',
-        url: url,
-        auth: {
-          username: usernameReq,
-          password: token,
-        },
+      // const redirectUrl = await InstallManager.getArtifactRedirectUrl(url, usernameReq, token);
+
+      // console.log(`got url: ${redirectUrl}`);
+
+      const resp = await axios.get(url, {
+        responseType: 'stream',
+        auth: { username: usernameReq, password: token },
         headers: {
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2022-11-28',
         },
+      });
+
+      // console.log(resp.headers);
+      // sender.send(channels.installManager.fragmenterEvent, 0, 'downloadStarted', {
+      //   name: 'kek',
+      //   sourceDir: tempD,
+      // } as Module);
+      let downloadProgress = 0;
+
+      await new Promise((resolve, reject) => {
+        const length = resp.headers['content-length'];
+        let lastProgressSent = performance.now();
+        let lastOutput = 0;
+
+        // console.log(length);
+        resp.data.on('data', (chunk: Buffer) => {
+          downloadProgress += chunk.length;
+
+          const currentTime = performance.now();
+          const timeSinceLastProgress = currentTime - lastProgressSent;
+
+          // const progress: DownloadProgress = {
+          //   interrupted: false,
+          //   totalPercent: (downloadProgress / length) * 100,
+          // };
+          if (downloadProgress === length) {
+            console.log('Download done internally');
+          }
+
+          if (timeSinceLastProgress > 25) {
+            // sender.send(
+            //   channels.installManager.fragmenterEvent,
+            //   0,
+            //   'downloadProgress',
+            //   {
+            //     name: 'kek',
+            //     sourceDir: tempD,
+            //   } as Module,
+            //   progress,
+            // );
+            // console.log(downloadProgress);
+            lastProgressSent = currentTime;
+
+            const output = Math.floor((downloadProgress / length) * 1000) / 10;
+
+            if (lastOutput < output) {
+              console.log(`Progress: ${output}%`);
+              lastOutput = output;
+            }
+          }
+        });
+
+        resp.data.on('close', () => {
+          fileWriter.close();
+          resolve(true);
+        });
+        resp.data.on('error', (err: unknown) => {
+          fileWriter.close();
+          reject(err);
+        });
+
+        resp.data.pipe(fileWriter);
       });
 
       console.log('Done downloading, prepping for install.');
