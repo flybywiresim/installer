@@ -46,6 +46,11 @@ function initializeApp() {
       header[keyToChange] = value;
     };
 
+    // Prevent <a> tags from opening in Electron
+    mainWindow.webContents.setWindowOpenHandler(() => {
+      return { action: 'deny' };
+    });
+
     mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
       const { requestHeaders } = details;
       UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', '*');

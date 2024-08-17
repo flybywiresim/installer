@@ -1,11 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
 import FbwTail from 'renderer/assets/FBW-Tail.svg';
 import * as packageInfo from '../../../../package.json';
-import path from 'path';
-import fs from 'fs';
 import { shell } from 'electron';
 import { ChangelogModal, useModals } from '../Modal';
 import { SentrySessionCard } from 'renderer/components/SentrySessionCard';
+import { ThirdPartyLicensesModal } from 'renderer/components/Modal/ThirdPartyLicensesModal';
 
 export const AboutSettings: FC = () => {
   const [logoRotation, setLogoRotation] = useState(0);
@@ -19,14 +18,7 @@ export const AboutSettings: FC = () => {
   }, [logoRotation]);
 
   const handleOpenThirdPartyLicenses = () => {
-    const licensesPath = path.join(process.resourcesPath, 'extraResources', 'licenses.md');
-
-    if (!fs.existsSync(licensesPath)) {
-      alert('The requested file does not exist.');
-      return;
-    }
-
-    shell.openExternal(licensesPath).catch(console.error);
+    showModal(<ThirdPartyLicensesModal />);
   };
 
   const handleLogoClick = () => {

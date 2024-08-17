@@ -70,3 +70,5 @@ declare module '*.module.sass' {
 }
 
 declare module '*.yaml' {}
+
+declare module '*.md' {}

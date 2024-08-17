@@ -108,6 +108,7 @@
     "@sentry/cli": "^2.31.0",
     "@sentry/electron": "^4.23.0",
     "@sentry/tracing": "^7.111.0",
+    "@tanstack/react-virtual": "^3.9.0",
     "@types/js-yaml": "^4.0.5",
     "@types/winreg": "^1.2.31",
     "@types/ws": "^8.5.3",
