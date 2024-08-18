@@ -435,7 +435,7 @@ export const AddonSection = (): JSX.Element => {
                   style={{
                     height: '44vh',
                     backgroundImage:
-                      selectedAddon.backgroundImageShadow ?? true
+                      (selectedAddon.backgroundImageShadow ?? true)
                         ? `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)), url(${selectedAddon.backgroundImageUrls[0]})`
                         : `url(${selectedAddon.backgroundImageUrls[0]})`,
                   }}
