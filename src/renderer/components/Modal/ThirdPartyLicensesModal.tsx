@@ -53,7 +53,6 @@ export const ThirdPartyLicensesModal: React.FC = () => {
                 key={item.key}
                 className="absolute left-0 top-0 w-full"
                 style={{
-                  // height: `${item.size}px`,
                   transform: `translateY(${item.start}px)`,
                 }}
                 data-index={item.index}
