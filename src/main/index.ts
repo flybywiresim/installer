@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, dialog } from 'electron';
 import { NsisUpdater } from 'electron-updater';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
@@ -122,7 +122,7 @@ function initializeApp() {
 
     mainWindow.center();
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       mainWindow.webContents.openDevTools();
     }
 
@@ -137,7 +137,7 @@ function initializeApp() {
       return { action: 'deny' };
     });
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       // Open the DevTools.
       settings.openInEditor();
       mainWindow.webContents.once('dom-ready', () => {
@@ -213,7 +213,13 @@ function initializeApp() {
   app.on('ready', () => {
     createWindow();
 
-    if (process.env.NODE_ENV === 'development') {
+    const extraResourcesPath = import.meta.env.PROD
+      ? path.join(process.resourcesPath, 'extraResources')
+      : 'extraResources';
+
+    void dialog.showMessageBox({ type: 'info', message: extraResourcesPath });
+
+    if (import.meta.env.DEV) {
       installExtension(REACT_DEVELOPER_TOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.log('An error occurred: ', err));

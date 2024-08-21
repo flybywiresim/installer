@@ -16,8 +16,9 @@ export class SentryClient {
 
     let dsn;
     try {
-      const extraResourcesPath =
-        process.env.NODE_ENV === 'production' ? path.join(process.resourcesPath, 'extraResources') : 'extraResources';
+      const extraResourcesPath = import.meta.env.PROD
+        ? path.join(process.resourcesPath, 'extraResources')
+        : 'extraResources';
 
       dsn = fs.readFileSync(path.join(extraResourcesPath, '.sentrydsn'), { encoding: 'utf-8' });
     } catch (e) {

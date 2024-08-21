@@ -145,7 +145,7 @@ const App = () => {
               <div className="flex h-full flex-1 flex-row items-stretch overflow-hidden">
                 <Logo />
 
-                {process.env.NODE_ENV === 'development' && (
+                {import.meta.env.DEV && (
                   <div className="my-auto ml-32 flex gap-x-4 text-2xl text-gray-400">
                     <pre>{packageInfo.version}</pre>
                     <pre className="text-gray-500">|</pre>

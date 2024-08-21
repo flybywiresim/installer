@@ -17,7 +17,7 @@ export const NavBar: FC = ({ children }) => {
       <div className="flex flex-col gap-y-5">{children}</div>
 
       <div className="mt-auto flex flex-col gap-y-5">
-        {process.env.NODE_ENV === 'development' && (
+        {import.meta.env.DEV && (
           <NavbarItem to="/debug" className="border-none">
             <Wrench className="text-gray-100" size={28} strokeWidth={1} />
           </NavbarItem>
