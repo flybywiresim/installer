@@ -73,7 +73,7 @@ export class Directories {
   }
 
   static inPackagesSteam(targetDir: string): string {
-    return path.join(Directories.localAppData(), MSFS_STEAM_PATH, this.sanitize(targetDir));
+    return path.join(Directories.appData(), MSFS_STEAM_PATH, this.sanitize(targetDir));
   }
 
   static inPackageCache(addon: Addon, targetDir: string): string {
