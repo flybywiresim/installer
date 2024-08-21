@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 import { NsisUpdater } from 'electron-updater';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
@@ -212,12 +212,6 @@ function initializeApp() {
   // Some APIs can only be used after this event occurs.
   app.on('ready', () => {
     createWindow();
-
-    const extraResourcesPath = import.meta.env.PROD
-      ? path.join(process.resourcesPath, 'extraResources')
-      : 'extraResources';
-
-    void dialog.showMessageBox({ type: 'info', message: extraResourcesPath });
 
     if (import.meta.env.DEV) {
       installExtension(REACT_DEVELOPER_TOOLS)
