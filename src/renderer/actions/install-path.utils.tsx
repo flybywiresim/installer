@@ -1,4 +1,4 @@
-import settings from 'common/settings';
+import settings from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import { dialog } from '@electron/remote';
 

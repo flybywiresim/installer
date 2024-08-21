@@ -1,5 +1,5 @@
 import { Directories } from 'renderer/utils/Directories';
-import fs from 'fs-extra';
+import fs from 'fs';
 import checkDiskSpace from 'check-disk-space';
 
 export enum FreeDiskSpaceStatus {
@@ -30,13 +30,13 @@ export class FreeDiskSpace {
     let resolvedTempDir = Directories.tempLocation();
 
     try {
-      resolvedDestDir = await fs.readlink(resolvedDestDir);
+      resolvedDestDir = await fs.promises.readlink(resolvedDestDir);
     } catch (e) {
       // noop - it's probably not a link
     }
 
     try {
-      resolvedTempDir = await fs.readlink(resolvedTempDir);
+      resolvedTempDir = await fs.promises.readlink(resolvedTempDir);
     } catch (e) {
       // noop - it's probably not a link
     }

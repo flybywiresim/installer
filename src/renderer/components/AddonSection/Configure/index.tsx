@@ -10,8 +10,8 @@ import './index.css';
 export interface ConfigureProps {
   routeAspectKey: string;
   selectedAddon: Addon;
-  selectedTrack: () => AddonTrack;
-  installedTrack: () => AddonTrack;
+  selectedTrack: AddonTrack;
+  installedTrack: AddonTrack;
   onTrackSelection: (track: AddonTrack) => void;
 }
 
@@ -40,8 +40,8 @@ export const Configure: FC<ConfigureProps> = ({
                     addon={selectedAddon}
                     key={track.key}
                     track={track}
-                    isSelected={selectedTrack() === track}
-                    isInstalled={installedTrack() === track}
+                    isSelected={selectedTrack === track}
+                    isInstalled={installedTrack === track}
                     handleSelected={() => onTrackSelection(track)}
                   />
                 ))}
@@ -57,8 +57,8 @@ export const Configure: FC<ConfigureProps> = ({
                     addon={selectedAddon}
                     key={track.key}
                     track={track}
-                    isSelected={selectedTrack() === track}
-                    isInstalled={installedTrack() === track}
+                    isSelected={selectedTrack === track}
+                    isInstalled={installedTrack === track}
                     handleSelected={() => onTrackSelection(track)}
                   />
                 ))}
@@ -69,7 +69,7 @@ export const Configure: FC<ConfigureProps> = ({
             )}
           </div>
         </div>
-        {selectedTrack() && selectedTrack().description && (
+        {selectedTrack && selectedTrack.description && (
           <div className="mt-10">
             <h2 className="font-bold text-white">Description</h2>
             <p className="font-manrope text-xl leading-relaxed text-white">
@@ -77,7 +77,7 @@ export const Configure: FC<ConfigureProps> = ({
                 className="font-manrope text-xl font-light leading-relaxed text-white"
                 linkTarget={'_blank'}
               >
-                {selectedTrack().description}
+                {selectedTrack.description}
               </ReactMarkdown>
             </p>
           </div>

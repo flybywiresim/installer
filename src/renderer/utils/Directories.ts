@@ -1,7 +1,8 @@
 import path from 'path';
 import { Addon } from 'renderer/utils/InstallerConfiguration';
-import fs from 'fs-extra';
-import settings from 'common/settings';
+import fs from 'fs';
+import settings from 'renderer/rendererSettings';
+import { app } from '@electron/remote';
 
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
@@ -13,6 +14,14 @@ const MSFS_STEAM_PATH = 'Microsoft Flight Simulator\\Packages';
 export class Directories {
   private static sanitize(suffix: string): string {
     return path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, '');
+  }
+
+  static appData(): string {
+    return app.getPath('appData');
+  }
+
+  static localAppData(): string {
+    return path.join(app.getPath('appData'), '..', 'Local');
   }
 
   static communityLocation(): string {
@@ -60,11 +69,11 @@ export class Directories {
   }
 
   static inPackagesMicrosoftStore(targetDir: string): string {
-    return path.join(process.env.LOCALAPPDATA, MSFS_APPDATA_PATH, this.sanitize(targetDir));
+    return path.join(Directories.localAppData(), MSFS_APPDATA_PATH, this.sanitize(targetDir));
   }
 
   static inPackagesSteam(targetDir: string): string {
-    return path.join(process.env.APPDATA, MSFS_STEAM_PATH, this.sanitize(targetDir));
+    return path.join(Directories.appData(), MSFS_STEAM_PATH, this.sanitize(targetDir));
   }
 
   static inPackageCache(addon: Addon, targetDir: string): string {
@@ -100,7 +109,7 @@ export class Directories {
 
         console.log('[CLEANUP] Removing', fullPath);
         try {
-          fs.removeSync(fullPath);
+          fs.rmSync(fullPath, { recursive: true });
           console.log('[CLEANUP] Removed', fullPath);
         } catch (e) {
           console.error('[CLEANUP] Could not remove', fullPath, e);
@@ -119,18 +128,9 @@ export class Directories {
 
       if (fs.existsSync(altDir)) {
         console.log('Removing alternative', altDir);
-        fs.removeSync(altDir);
+        fs.rmSync(altDir, { recursive: true });
       }
     });
-  }
-
-  static removeTargetForAddon(addon: Addon): void {
-    const dir = Directories.inInstallLocation(addon.targetDirectory);
-
-    if (fs.existsSync(dir)) {
-      console.log('Removing', dir);
-      fs.removeSync(dir);
-    }
   }
 
   static isFragmenterInstall(target: string | Addon): boolean {
