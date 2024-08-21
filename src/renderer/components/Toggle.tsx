@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface ToggleProps {
   value: boolean;
@@ -16,12 +17,12 @@ export const Toggle: FC<ToggleProps> = ({
   onColor = 'bg-cyan-medium',
 }) => (
   <div
-    className={`flex h-8 w-14 cursor-pointer items-center rounded-full text-3xl ${bgColor}`}
+    className={twMerge(`flex h-8 w-14 cursor-pointer items-center rounded-full text-3xl`, bgColor)}
     onClick={() => onToggle(!value)}
     style={{ transform: `scale(${scale})` }}
   >
     <div
-      className={`mx-1.5 size-6 rounded-full bg-gray-400 transition duration-200${value && `${onColor}`}`}
+      className={twMerge(`mx-1.5 size-6 rounded-full bg-gray-400 transition duration-200`, value && onColor)}
       style={{ transform: `translate(${value ? '12px' : '1px'}, 0)` }}
     />
   </div>

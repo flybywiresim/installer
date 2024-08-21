@@ -1,15 +1,18 @@
 import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 import { NsisUpdater } from 'electron-updater';
-import * as path from 'path';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
-import settings, { persistWindowSettings } from 'common/settings';
+import settings, { persistWindowSettings } from './mainSettings';
 import channels from 'common/channels';
 import * as remote from '@electron/remote/main';
 import { InstallManager } from 'main/InstallManager';
 import { SentryClient } from 'main/SentryClient';
+import Store from 'electron-store';
+import path from 'path';
 
 function initializeApp() {
+  Store.initRenderer();
+
   function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -42,6 +45,11 @@ function initializeApp() {
       }
       header[keyToChange] = value;
     };
+
+    // Prevent <a> tags from opening in Electron
+    mainWindow.webContents.setWindowOpenHandler(() => {
+      return { action: 'deny' };
+    });
 
     mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
       const { requestHeaders } = details;
@@ -114,9 +122,12 @@ function initializeApp() {
 
     mainWindow.center();
 
-    // and load the index.html of the app.
-    if (serve) {
-      mainWindow.loadURL('http://localhost:8080/index.html').then();
+    if (process.env.NODE_ENV === 'development') {
+      mainWindow.webContents.openDevTools();
+    }
+
+    if (!app.isPackaged) {
+      mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL).then();
     } else {
       mainWindow.loadFile(path.join(__dirname, '../renderer/index.html')).then();
     }
@@ -195,8 +206,6 @@ function initializeApp() {
   let mainWindow: BrowserWindow;
 
   Menu.setApplicationMenu(null);
-
-  const serve = process.argv.slice(1).some((arg) => arg === '--serve');
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
