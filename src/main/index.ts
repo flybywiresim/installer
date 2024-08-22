@@ -122,7 +122,7 @@ function initializeApp() {
 
     mainWindow.center();
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       mainWindow.webContents.openDevTools();
     }
 
@@ -137,7 +137,7 @@ function initializeApp() {
       return { action: 'deny' };
     });
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       // Open the DevTools.
       settings.openInEditor();
       mainWindow.webContents.once('dom-ready', () => {
@@ -213,7 +213,7 @@ function initializeApp() {
   app.on('ready', () => {
     createWindow();
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       installExtension(REACT_DEVELOPER_TOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.log('An error occurred: ', err));
