@@ -96,6 +96,10 @@ function initializeApp() {
       event.sender.send(channels.window.isMaximized, mainWindow.isMaximized());
     });
 
+    ipcMain.on(channels.openPath, (_, value: string) => {
+      shell.openPath(value).then();
+    });
+
     ipcMain.on('request-startup-at-login-changed', (_, value: boolean) => {
       app.setLoginItemSettings({
         openAtLogin: value,
