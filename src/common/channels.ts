@@ -4,6 +4,7 @@ export default {
     maximize: 'window/maximize',
     close: 'window/close',
     isMaximized: 'window/isMaximized',
+    reload: 'window/reload',
   },
   update: {
     error: 'update/error',

@@ -88,6 +88,10 @@ function initializeApp() {
       mainWindow.destroy();
     });
 
+    ipcMain.on(channels.window.reload, () => {
+      mainWindow.reload();
+    });
+
     ipcMain.on(channels.window.isMaximized, (event) => {
       event.sender.send(channels.window.isMaximized, mainWindow.isMaximized());
     });
