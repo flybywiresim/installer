@@ -97,7 +97,7 @@ function initializeApp() {
     });
 
     ipcMain.on(channels.openPath, (_, value: string) => {
-      shell.openPath(value).then();
+      void shell.openPath(value);
     });
 
     ipcMain.on('request-startup-at-login-changed', (_, value: boolean) => {
