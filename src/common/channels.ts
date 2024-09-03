@@ -4,6 +4,7 @@ export default {
     maximize: 'window/maximize',
     close: 'window/close',
     isMaximized: 'window/isMaximized',
+    reload: 'window/reload',
   },
   update: {
     error: 'update/error',
@@ -21,4 +22,5 @@ export default {
     requestSessionID: 'sentry/requestSessionID',
     provideSessionID: 'sentry/provideSessionID',
   },
+  openPath: 'openPath',
 };

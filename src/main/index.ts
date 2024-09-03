@@ -88,8 +88,16 @@ function initializeApp() {
       mainWindow.destroy();
     });
 
+    ipcMain.on(channels.window.reload, () => {
+      mainWindow.reload();
+    });
+
     ipcMain.on(channels.window.isMaximized, (event) => {
       event.sender.send(channels.window.isMaximized, mainWindow.isMaximized());
+    });
+
+    ipcMain.on(channels.openPath, (_, value: string) => {
+      void shell.openPath(value);
     });
 
     ipcMain.on('request-startup-at-login-changed', (_, value: boolean) => {

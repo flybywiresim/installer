@@ -10,6 +10,8 @@ import settings from 'renderer/rendererSettings';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from '../Button';
 import { PromptModal, useModals } from 'renderer/components/Modal';
+import { ipcRenderer } from 'electron';
+import channels from 'common/channels';
 
 interface InstallButtonProps {
   type?: ButtonType;
@@ -40,6 +42,7 @@ export const SettingsSection = (): JSX.Element => {
 
           // Workaround to flush the defaults
           settings.set('metaInfo.lastVersion', packageInfo.version);
+          ipcRenderer.send(channels.window.reload);
         }}
       />,
     );
