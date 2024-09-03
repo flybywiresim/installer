@@ -681,8 +681,7 @@ export class InstallManager {
     const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
     await ipcRenderer.invoke(channels.installManager.uninstall, installDir, [
-      Directories.inPackagesMicrosoftStore(addon.targetDirectory),
-      Directories.inPackagesSteam(addon.targetDirectory),
+      Directories.inPackages(addon.targetDirectory),
     ]);
 
     this.setCurrentInstallState(addon, { status: InstallStatus.NotInstalled });

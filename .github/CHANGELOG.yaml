@@ -17,6 +17,9 @@ releases:
       - title: Shortcut keys no longer override other applications shortcuts
         categories: [UI]
         authors: [alepouna]
+      - title: Improve detection of MSFS installation
+        categories: [Core]
+        authors: [FoxtrotSierra]
   - name: 3.4.0
     changes:
       - title: Add a button to the error dialog to copy error messages to clipboard

@@ -7,10 +7,6 @@ import { app } from '@electron/remote';
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
 const TEMP_DIRECTORY_PREFIXES_FOR_CLEANUP = ['flybywire_current_install', TEMP_DIRECTORY_PREFIX];
-
-const MSFS_APPDATA_PATH = 'Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState\\packages\\';
-const MSFS_STEAM_PATH = 'Microsoft Flight Simulator\\Packages';
-
 export class Directories {
   private static sanitize(suffix: string): string {
     return path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, '');
@@ -22,6 +18,10 @@ export class Directories {
 
   static localAppData(): string {
     return path.join(app.getPath('appData'), '..', 'Local');
+  }
+
+  static msfsBasePath(): string {
+    return settings.get('mainSettings.msfsBasePath') as string;
   }
 
   static communityLocation(): string {
@@ -60,24 +60,12 @@ export class Directories {
     return path.join(Directories.tempLocation(), this.sanitize(targetDir));
   }
 
-  static liveries(): string {
-    return settings.get('mainSettings.liveriesPath') as string;
-  }
-
-  static inLiveries(targetDir: string): string {
-    return path.join(settings.get('mainSettings.liveriesPath') as string, this.sanitize(targetDir));
-  }
-
-  static inPackagesMicrosoftStore(targetDir: string): string {
-    return path.join(Directories.localAppData(), MSFS_APPDATA_PATH, this.sanitize(targetDir));
-  }
-
-  static inPackagesSteam(targetDir: string): string {
-    return path.join(Directories.appData(), MSFS_STEAM_PATH, this.sanitize(targetDir));
+  static inPackages(targetDir: string): string {
+    return path.join(this.msfsBasePath(), 'packages', this.sanitize(targetDir)).replace('LocalCache', 'LocalState');
   }
 
   static inPackageCache(addon: Addon, targetDir: string): string {
-    const baseDir = this.inPackagesSteam(this.sanitize(addon.targetDirectory));
+    const baseDir = this.inPackages(this.sanitize(addon.targetDirectory));
 
     return path.join(baseDir, this.sanitize(targetDir));
   }
