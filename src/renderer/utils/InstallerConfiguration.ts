@@ -23,20 +23,31 @@ export type AddonVersion = {
   type: 'major' | 'minor' | 'patch';
 };
 
+export type FragmenterReleaseModel = {
+  type: 'fragmenter';
+};
+
 export type GithubReleaseReleaseModel = {
+  /** @deprecated */
   type: 'githubRelease';
 };
 
 export type GithubBranchReleaseModel = {
+  /** @deprecated */
   type: 'githubBranch';
   branch: string;
 };
 
 export type CDNReleaseModel = {
+  /** @deprecated */
   type: 'CDN';
 };
 
-export type ReleaseModel = GithubReleaseReleaseModel | GithubBranchReleaseModel | CDNReleaseModel;
+export type ReleaseModel =
+  | FragmenterReleaseModel
+  | GithubReleaseReleaseModel
+  | GithubBranchReleaseModel
+  | CDNReleaseModel;
 
 type BaseAddonTrack = {
   name: string;
@@ -354,6 +365,12 @@ export interface Configuration {
 
 export class InstallerConfiguration {
   static async obtain(): Promise<Configuration> {
+    const forceUseLocalConfig = settings.get('mainSettings.configForceUseLocal') as boolean;
+
+    if (forceUseLocalConfig) {
+      return this.loadConfigurationFromLocalStorage();
+    }
+
     return this.fetchConfigurationFromCdn()
       .then((config) => {
         if (this.isConfigurationValid(config)) {

@@ -4,17 +4,14 @@ import SimpleBar from 'simplebar-react';
 import { Logo } from 'renderer/components/Logo';
 import { SettingsSection } from 'renderer/components/SettingsSection';
 import { DebugSection } from 'renderer/components/DebugSection';
-import { GitVersions } from '@flybywiresim/api-client';
-import { DataCache } from '../../utils/DataCache';
 import { InstallerUpdate } from 'renderer/components/InstallerUpdate';
 import { WindowButtons } from 'renderer/components/WindowActionButtons';
-import { Addon, AddonVersion } from 'renderer/utils/InstallerConfiguration';
+import { Addon } from 'renderer/utils/InstallerConfiguration';
 import { AddonData } from 'renderer/utils/AddonData';
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from 'renderer/components/App/NavBar';
 import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
-import { store, useAppSelector } from 'renderer/redux/store';
-import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
+import { useAppSelector } from 'renderer/redux/store';
 import settings from 'renderer/rendererSettings';
 import './index.css';
 import { ipcRenderer } from 'electron';
@@ -22,55 +19,6 @@ import channels from 'common/channels';
 import { ModalContainer } from '../Modal';
 import { PublisherSection } from 'renderer/components/PublisherSection';
 import * as packageInfo from '../../../../package.json';
-
-const releaseCache = new DataCache<AddonVersion[]>('releases', 1000 * 3600 * 24);
-
-/**
- * Obtain releases for a specific addon
- *
- * @param addon
- */
-export const getAddonReleases = async (addon: Addon): Promise<AddonVersion[]> => {
-  const releases = (
-    await releaseCache.fetchOrCompute(async (): Promise<AddonVersion[]> => {
-      return (await GitVersions.getReleases(addon.repoOwner, addon.repoName))
-        .filter((r) => /v\d/.test(r.name))
-        .map((r) => ({ title: r.name, date: r.publishedAt, type: 'minor' }));
-    })
-  ).map((r) => ({ ...r, date: new Date(r.date) })); // Local Data cache returns a string instead of Date
-
-  releases.forEach((version, index) => {
-    const currentVersionTitle = version.title;
-    const otherVersionTitle = index === releases.length - 1 ? releases[index - 1].title : releases[index + 1].title;
-
-    if (currentVersionTitle[1] !== otherVersionTitle[1]) {
-      releases[index].type = 'major';
-    } else if (currentVersionTitle[3] !== otherVersionTitle[3]) {
-      releases[index].type = 'minor';
-    } else if (currentVersionTitle[5] !== otherVersionTitle[5] && index === releases.length - 1) {
-      releases[index].type = 'minor';
-    } else if (currentVersionTitle[5] !== otherVersionTitle[5]) {
-      releases[index].type = 'patch';
-    }
-  });
-
-  return releases;
-};
-
-export const fetchLatestVersionNames = async (addon: Addon): Promise<void> => {
-  const dispatch = store.dispatch;
-
-  for (const track of addon.tracks) {
-    const trackLatestVersionName = await AddonData.latestVersionForTrack(addon, track);
-    dispatch(
-      setAddonAndTrackLatestReleaseInfo({
-        addonKey: addon.key,
-        trackKey: track.key,
-        info: trackLatestVersionName,
-      }),
-    );
-  }
-};
 
 const App = () => {
   const history = useHistory();
@@ -86,8 +34,9 @@ const App = () => {
   );
 
   useEffect(() => {
-    addons.forEach(AddonData.configureInitialAddonState);
-    addons.forEach(fetchLatestVersionNames);
+    for (const addon of addons) {
+      void AddonData.configureInitialAddonState(addon);
+    }
 
     if (settings.get('cache.main.lastShownSection')) {
       history.push(settings.get('cache.main.lastShownSection'));
@@ -103,8 +52,10 @@ const App = () => {
     const updateCheck = setInterval(
       () => {
         ipcRenderer.send(channels.checkForInstallerUpdate);
-        addons.forEach(AddonData.checkForUpdates);
-        addons.forEach(fetchLatestVersionNames);
+
+        for (const addon of addons) {
+          void AddonData.checkForUpdates(addon);
+        }
       },
       5 * 60 * 1000,
     );

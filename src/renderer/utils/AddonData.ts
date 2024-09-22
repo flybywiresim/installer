@@ -10,6 +10,7 @@ import { setSelectedTrack } from 'renderer/redux/features/selectedTrack';
 import { InstallState, setInstallStatus } from 'renderer/redux/features/installStatus';
 import yaml from 'js-yaml';
 import { InstallStatus } from 'renderer/components/AddonSection/Enums';
+import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 
 export type ReleaseInfo = {
   name: string;
@@ -18,7 +19,7 @@ export type ReleaseInfo = {
 };
 
 export class AddonData {
-  static async latestVersionForTrack(addon: Addon, track: AddonTrack): Promise<ReleaseInfo> {
+  static async latestNonFragmenterVersionForTrack(addon: Addon, track: AddonTrack): Promise<ReleaseInfo> {
     switch (track.releaseModel.type) {
       case 'githubRelease':
         return this.latestVersionForReleasedTrack(addon);
@@ -102,6 +103,15 @@ export class AddonData {
       }
     }
 
+    setCurrentInstallStatus({ status: InstallStatus.Unknown });
+
+    try {
+      await AddonData.checkForUpdates(addon);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+
     const addonDiscovered = settings.get('cache.main.discoveredAddons.' + addon.key);
 
     if (addon.hidden && !addonDiscovered) {
@@ -130,50 +140,35 @@ export class AddonData {
       setCurrentInstallStatus({ status: InstallStatus.GitInstall });
       return;
     }
-
-    try {
-      const updateInfo = await new FragmenterUpdateChecker().needsUpdate(selectedTrack.url, installDir, {
-        forceCacheBust: true,
-      });
-
-      if (updateInfo.isFreshInstall) {
-        setCurrentInstallStatus({ status: InstallStatus.NotInstalled });
-        return;
-      }
-
-      if (updateInfo.needsUpdate) {
-        setCurrentInstallStatus({ status: InstallStatus.NeedsUpdate });
-        return;
-      }
-
-      setCurrentInstallStatus({ status: InstallStatus.UpToDate });
-      return;
-    } catch (e) {
-      console.error(e);
-      setCurrentInstallStatus({ status: InstallStatus.Unknown });
-      return;
-    }
   }
 
   static async checkForUpdates(addon: Addon): Promise<void> {
     console.log('Checking for updates for ' + addon.key);
 
-    const dispatch = store.dispatch;
-
     const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
     const state = store.getState();
 
-    if (state.installStatus[addon.key].status === InstallStatus.UpToDate) {
-      const updateInfo = await new FragmenterUpdateChecker().needsUpdate(
-        state.selectedTracks[addon.key].url,
-        installDir,
-        {
-          forceCacheBust: true,
-        },
-      );
-      if (updateInfo.needsUpdate) {
-        dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.NeedsUpdate } }));
+    const fragmenterUpdateChecker = new FragmenterUpdateChecker();
+
+    for (const track of addon.tracks) {
+      const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, installDir, { forceCacheBust: true });
+
+      let info: ReleaseInfo;
+      if (track.releaseModel.type === 'fragmenter') {
+        info = {
+          name: updateInfo.distributionManifest.version,
+          changelogUrl: undefined,
+          releaseDate: Date.now(),
+        };
+      } else {
+        info = await AddonData.latestNonFragmenterVersionForTrack(addon, track);
+      }
+
+      store.dispatch(setAddonAndTrackLatestReleaseInfo({ addonKey: addon.key, trackKey: track.key, info }));
+
+      if (track.key === state.selectedTracks[addon.key].key && updateInfo.needsUpdate) {
+        store.dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.NeedsUpdate } }));
       }
     }
   }
