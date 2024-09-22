@@ -19,6 +19,7 @@ import channels from 'common/channels';
 import { ModalContainer } from '../Modal';
 import { PublisherSection } from 'renderer/components/PublisherSection';
 import * as packageInfo from '../../../../package.json';
+import { InstallManager } from 'renderer/utils/InstallManager';
 
 const App = () => {
   const history = useHistory();
@@ -35,7 +36,7 @@ const App = () => {
 
   useEffect(() => {
     for (const addon of addons) {
-      void AddonData.configureInitialAddonState(addon);
+      void InstallManager.getAddonInstallState(addon).then(() => InstallManager.checkForUpdates(addon));
     }
 
     if (settings.get('cache.main.lastShownSection')) {
@@ -54,7 +55,7 @@ const App = () => {
         ipcRenderer.send(channels.checkForInstallerUpdate);
 
         for (const addon of addons) {
-          void AddonData.checkForUpdates(addon);
+          void InstallManager.checkForUpdates(addon);
         }
       },
       5 * 60 * 1000,

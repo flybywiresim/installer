@@ -19,6 +19,9 @@ import {
   FragmenterInstallerEvents,
   FragmenterOperation,
   FragmenterUpdateChecker,
+  getCurrentInstall,
+  InstallInfo,
+  InstallManifest,
 } from '@flybywiresim/fragmenter';
 import settings from 'renderer/rendererSettings';
 import { store } from 'renderer/redux/store';
@@ -41,6 +44,9 @@ import { ErrorDialog } from 'renderer/components/Modal/ErrorDialog';
 import { InstallSizeDialog } from 'renderer/components/Modal/InstallSizeDialog';
 import { IncompatibleAddOnsCheck } from 'renderer/utils/IncompatibleAddOnsCheck';
 import { FreeDiskSpace, FreeDiskSpaceStatus } from 'renderer/utils/FreeDiskSpace';
+import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
+import { AddonData, ReleaseInfo } from 'renderer/utils/AddonData';
+import { match } from 'react-router-dom';
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<
   (FragmenterInstallerEvents & FragmenterContextEvents)[K]
@@ -61,105 +67,7 @@ export class InstallManager {
     return arr;
   })();
 
-  private static lowestAvailableAbortControllerID(): number {
-    for (let i = 0; i < this.abortControllers.length; i++) {
-      if (
-        !store
-          .getState()
-          .downloads.map((download) => download.abortControllerID)
-          .includes(i)
-      ) {
-        return i;
-      }
-    }
-  }
-
-  static async determineAddonInstallState(addon: Addon): Promise<InstallState> {
-    const addonSelectedTrack = this.getAddonSelectedTrack(addon);
-    const addonInstalledTrack = this.getAddonInstalledTrack(addon);
-
-    if (!addonSelectedTrack) {
-      return { status: InstallStatus.Unknown };
-    }
-
-    console.log('Checking install status');
-
-    const installDir = Directories.inInstallLocation(addon.targetDirectory);
-
-    if (!fs.existsSync(installDir)) {
-      return { status: InstallStatus.NotInstalled };
-    }
-
-    console.log('Checking for git install');
-    if (Directories.isGitInstall(installDir)) {
-      return { status: InstallStatus.GitInstall };
-    }
-
-    try {
-      const updateInfo = await new FragmenterUpdateChecker().needsUpdate(addonSelectedTrack.url, installDir, {
-        forceCacheBust: true,
-      });
-      console.log('Update info', updateInfo);
-
-      if (addonSelectedTrack !== addonInstalledTrack && addonInstalledTrack) {
-        return { status: InstallStatus.TrackSwitch };
-      }
-      if (updateInfo.isFreshInstall) {
-        return { status: InstallStatus.NotInstalled };
-      }
-
-      if (updateInfo.needsUpdate) {
-        return { status: InstallStatus.NeedsUpdate };
-      }
-
-      return { status: InstallStatus.UpToDate };
-    } catch (e) {
-      console.error(e);
-      return { status: InstallStatus.Unknown };
-    }
-  }
-
-  static async getAddonInstallState(addon: Addon): Promise<InstallState> {
-    try {
-      return store.getState().installStatus[addon.key] as InstallState;
-    } catch (e) {
-      const state = await this.determineAddonInstallState(addon);
-      this.setCurrentInstallState(addon, state);
-      return state;
-    }
-  }
-
-  static getAddonSelectedTrack(addon: Addon): AddonTrack {
-    try {
-      return store.getState().selectedTracks[addon.key] as AddonTrack;
-    } catch (e) {
-      this.setCurrentSelectedTrack(addon, null);
-      return null;
-    }
-  }
-
-  static getAddonInstalledTrack(addon: Addon): AddonTrack {
-    try {
-      return store.getState().installedTracks[addon.key] as AddonTrack;
-    } catch (e) {
-      this.setCurrentlyInstalledTrack(addon, null);
-      return null;
-    }
-  }
-
-  private static setCurrentInstallState(addon: Addon, installState: InstallState): void {
-    store.dispatch(setInstallStatus({ addonKey: addon.key, installState }));
-  }
-
-  private static setCurrentSelectedTrack(addon: Addon, track: AddonTrack): void {
-    store.dispatch(setSelectedTrack({ addonKey: addon.key, track: track }));
-  }
-
-  private static setCurrentlyInstalledTrack(addon: Addon, track: AddonTrack): void {
-    store.dispatch(setInstalledTrack({ addonKey: addon.key, installedTrack: track }));
-  }
-
-  static async installAddon(
+  public static async installAddon(
     addon: Addon,
     publisher: Publisher,
     showModal: (modal: JSX.Element) => Promise<boolean>,
@@ -178,7 +86,7 @@ export class InstallManager {
     const startResetStateTimer = (timeout = 3_000) => {
       setTimeout(async () => {
         store.dispatch(deleteDownload({ id: addon.key }));
-        this.setCurrentInstallState(addon, await this.determineAddonInstallState(addon));
+        this.setCurrentInstallState(addon, await this.determineAddonInstallStatus(addon));
       }, timeout);
     };
 
@@ -624,7 +532,7 @@ export class InstallManager {
     return InstallResult.Success;
   }
 
-  static cancelDownload(addon: Addon): void {
+  public static cancelDownload(addon: Addon): void {
     let download = store.getState().downloads.find((it) => it.id === addon.key);
     if (!download) {
       for (const dependency of addon.dependencies ?? []) {
@@ -649,7 +557,7 @@ export class InstallManager {
     abortController?.abort();
   }
 
-  static async uninstallAddon(
+  public static async uninstallAddon(
     addon: Addon,
     publisher: Publisher,
     showModal: (modal: JSX.Element) => Promise<boolean>,
@@ -686,6 +594,169 @@ export class InstallManager {
 
     this.setCurrentInstallState(addon, { status: InstallStatus.NotInstalled });
     this.setCurrentlyInstalledTrack(addon, null);
+  }
+
+  private static getAddonInstall(directory: string): InstallManifest | null {
+    try {
+      return getCurrentInstall(directory);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  public static async getAddonInstallState(addon: Addon): Promise<InstallState> {
+    const status = store.getState().installStatus[addon.key] as InstallState;
+
+    if (status) {
+      return status;
+    }
+
+    return this.refreshAddonInstallState(addon);
+  }
+
+  public static async refreshAddonInstallState(addon: Addon): Promise<InstallState> {
+    let status: InstallState;
+
+    status = await this.determineAddonInstallStatus(addon);
+    this.setCurrentInstallState(addon, status);
+
+    return status;
+  }
+
+  public static getAddonSelectedTrack(addon: Addon): AddonTrack {
+    const selectedTrack = store.getState().selectedTracks[addon.key] as AddonTrack;
+
+    if (selectedTrack) {
+      return selectedTrack;
+    }
+
+    this.setCurrentSelectedTrack(addon, addon.tracks[0]);
+
+    return addon.tracks[0];
+  }
+
+  public static determineAddonInstalledTrack(addon: Addon): AddonTrack | null {
+    const installedTrack = store.getState().installedTracks[addon.key] as AddonTrack;
+
+    if (installedTrack) {
+      return installedTrack;
+    }
+
+    const install = this.getAddonInstall(Directories.inInstallLocation(addon.targetDirectory));
+
+    if (!install) {
+      return null;
+    }
+
+    const matchingTrack = addon.tracks.find((it) => it.url === install.source);
+
+    if (!matchingTrack) {
+      return null;
+    }
+
+    this.setCurrentlyInstalledTrack(addon, matchingTrack);
+
+    return matchingTrack;
+  }
+
+  private static lowestAvailableAbortControllerID(): number {
+    for (let i = 0; i < this.abortControllers.length; i++) {
+      if (
+        !store
+          .getState()
+          .downloads.map((download) => download.abortControllerID)
+          .includes(i)
+      ) {
+        return i;
+      }
+    }
+  }
+
+  private static async determineAddonInstallStatus(addon: Addon): Promise<InstallState> {
+    console.log('Checking install status');
+
+    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+
+    console.log('Checking for git install');
+
+    if (Directories.isGitInstall(installDir)) {
+      return { status: InstallStatus.GitInstall };
+    }
+
+    const addonInstalledTrack = this.determineAddonInstalledTrack(addon);
+    const addonSelectedTrack = this.getAddonSelectedTrack(addon);
+
+    if (!addonInstalledTrack) {
+      return { status: InstallStatus.NotInstalled };
+    }
+
+    try {
+      const updateInfo = await new FragmenterUpdateChecker().needsUpdate(addonSelectedTrack.url, installDir, {
+        forceCacheBust: true,
+      });
+
+      console.log('Update info', updateInfo);
+
+      if (addonSelectedTrack !== addonInstalledTrack && addonInstalledTrack) {
+        return { status: InstallStatus.TrackSwitch };
+      }
+
+      if (updateInfo.isFreshInstall) {
+        return { status: InstallStatus.NotInstalled };
+      }
+
+      if (updateInfo.needsUpdate) {
+        return { status: InstallStatus.NeedsUpdate };
+      }
+
+      return { status: InstallStatus.UpToDate };
+    } catch (e) {
+      console.error(e);
+      return { status: InstallStatus.Unknown };
+    }
+  }
+
+  public static async checkForUpdates(addon: Addon): Promise<void> {
+    console.log('Checking for updates for ' + addon.key);
+
+    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+
+    const state = store.getState();
+
+    const fragmenterUpdateChecker = new FragmenterUpdateChecker();
+
+    for (const track of addon.tracks) {
+      const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, installDir, { forceCacheBust: true });
+
+      let info: ReleaseInfo;
+      if (track.releaseModel.type === 'fragmenter') {
+        info = {
+          name: updateInfo.distributionManifest.version,
+          changelogUrl: undefined,
+          releaseDate: Date.now(),
+        };
+      } else {
+        info = await AddonData.latestNonFragmenterVersionForTrack(addon, track);
+      }
+
+      store.dispatch(setAddonAndTrackLatestReleaseInfo({ addonKey: addon.key, trackKey: track.key, info }));
+
+      if (track.key === state.installedTracks[addon.key]?.key && updateInfo.needsUpdate) {
+        store.dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.NeedsUpdate } }));
+      }
+    }
+  }
+
+  private static setCurrentInstallState(addon: Addon, installState: InstallState): void {
+    store.dispatch(setInstallStatus({ addonKey: addon.key, installState }));
+  }
+
+  private static setCurrentSelectedTrack(addon: Addon, track: AddonTrack): void {
+    store.dispatch(setSelectedTrack({ addonKey: addon.key, track: track }));
+  }
+
+  private static setCurrentlyInstalledTrack(addon: Addon, track: AddonTrack): void {
+    store.dispatch(setInstalledTrack({ addonKey: addon.key, installedTrack: track }));
   }
 
   private static notifyDownload(addon: Addon, successful: boolean): void {

@@ -2,10 +2,8 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem } from 'renderer/redux/types';
 import { useSelector } from 'react-redux';
-import { getCurrentInstall } from '@flybywiresim/fragmenter';
 import { InstallerStore, useAppDispatch, useAppSelector } from '../../redux/store';
 import { Addon, AddonCategoryDefinition, AddonTrack } from 'renderer/utils/InstallerConfiguration';
-import { Directories } from 'renderer/utils/Directories';
 import { NavLink, Redirect, Route, useHistory, useParams } from 'react-router-dom';
 import { Gear, InfoCircle, JournalText, Sliders } from 'react-bootstrap-icons';
 import settings, { useSetting } from 'renderer/rendererSettings';
@@ -13,8 +11,6 @@ import { ipcRenderer } from 'electron';
 import { AddonBar, AddonBarItem } from '../App/AddonBar';
 import { NoAvailableAddonsSection } from '../NoAvailableAddonsSection';
 import { ReleaseNotes } from './ReleaseNotes';
-import { setInstalledTrack } from 'renderer/redux/features/installedTrack';
-import { InstallState, setInstallStatus } from 'renderer/redux/features/installStatus';
 import { setSelectedTrack } from 'renderer/redux/features/selectedTrack';
 import { PromptModal, useModals } from 'renderer/components/Modal';
 import ReactMarkdown from 'react-markdown';
@@ -128,13 +124,6 @@ export const AddonSection = (): JSX.Element => {
 
   const installedTrack = (installedTracks[selectedAddon.key] as AddonTrack) ?? null;
 
-  const setCurrentlyInstalledTrack = useCallback(
-    (newInstalledTrack: AddonTrack) => {
-      dispatch(setInstalledTrack({ addonKey: selectedAddon.key, installedTrack: newInstalledTrack }));
-    },
-    [dispatch, selectedAddon.key],
-  );
-
   const setCurrentlySelectedTrack = useCallback(
     (newSelectedTrack: AddonTrack) => {
       dispatch(setSelectedTrack({ addonKey: selectedAddon.key, track: newSelectedTrack }));
@@ -144,79 +133,12 @@ export const AddonSection = (): JSX.Element => {
 
   const selectedTrack = (selectedTracks[selectedAddon.key] as AddonTrack) ?? null;
 
-  const selectAndSetTrack = useCallback(
-    (key: string) => {
-      const newTrack = selectedAddon.tracks.find((track) => track.key === key);
-      setCurrentlySelectedTrack(newTrack);
-    },
-    [selectedAddon.tracks, setCurrentlySelectedTrack],
-  );
-
-  const getCurrentInstallStatus = (): InstallState => {
-    try {
-      return installStates[selectedAddon.key];
-    } catch (e) {
-      setCurrentInstallStatus({ status: InstallStatus.Unknown });
-      return { status: InstallStatus.Unknown };
-    }
-  };
-
-  const setCurrentInstallStatus = useCallback(
-    (new_state: InstallState) => {
-      dispatch(setInstallStatus({ addonKey: selectedAddon.key, installState: new_state }));
-    },
-    [dispatch, selectedAddon.key],
-  );
-
-  const findInstalledTrack = useCallback((): AddonTrack => {
-    if (!Directories.isFragmenterInstall(selectedAddon)) {
-      console.log('Not installed');
-      if (selectedTrack) {
-        selectAndSetTrack(selectedTrack.key);
-        return selectedTrack;
-      } else {
-        setCurrentlySelectedTrack(selectedAddon.tracks[0]);
-        return selectedAddon.tracks[0];
-      }
-    }
-
-    try {
-      const manifest = getCurrentInstall(Directories.inInstallLocation(selectedAddon.targetDirectory));
-      console.log('Currently installed', manifest);
-
-      let track = selectedAddon.tracks.find((track) => track.url.includes(manifest.source));
-      if (!track) {
-        track = selectedAddon.tracks.find((track) => track.alternativeUrls?.includes(manifest.source));
-      }
-
-      console.log('Currently installed', track);
-      setCurrentlyInstalledTrack(track);
-      if (selectedTrack) {
-        selectAndSetTrack(selectedTrack.key);
-        return selectedTrack;
-      } else {
-        setCurrentlySelectedTrack(track);
-        return track;
-      }
-    } catch (e) {
-      console.error(e);
-      console.log('Not installed');
-      if (selectedTrack) {
-        selectAndSetTrack(selectedTrack.key);
-        return selectedTrack;
-      } else {
-        setCurrentlySelectedTrack(selectedAddon.tracks[0]);
-        return selectedAddon.tracks[0];
-      }
-    }
-  }, [selectAndSetTrack, selectedAddon, selectedTrack, setCurrentlyInstalledTrack, setCurrentlySelectedTrack]);
-
   const download: DownloadItem = useSelector((state: InstallerStore) =>
     state.downloads.find((download) => download.id === selectedAddon.key),
   );
 
   const isDownloading = download?.progress.totalPercent >= 0;
-  const status = getCurrentInstallStatus()?.status;
+  const status = installStates[selectedAddon.key]?.status;
   const isInstalling = InstallStatusCategories.installing.includes(status);
   const isFinishingDependencyInstall = status === InstallStatus.InstallingDependencyEnding;
 
@@ -254,11 +176,10 @@ export const AddonSection = (): JSX.Element => {
   }, [dispatch, publisherData, selectedAddon]);
 
   useEffect(() => {
-    findInstalledTrack();
     if (!isInstalling) {
-      InstallManager.determineAddonInstallState(selectedAddon).then(setCurrentInstallStatus);
+      void InstallManager.getAddonInstallState(selectedAddon);
     }
-  }, [findInstalledTrack, isInstalling, selectedAddon, setCurrentInstallStatus]);
+  }, [isInstalling, selectedAddon]);
 
   useEffect(() => {
     if (download && isDownloading) {
@@ -287,13 +208,16 @@ export const AddonSection = (): JSX.Element => {
             bodyText={track.warningContent}
             confirmColor={ButtonType.Caution}
             onConfirm={() => {
-              selectAndSetTrack(track.key);
+              setCurrentlySelectedTrack(track);
             }}
             dontShowAgainSettingName="mainSettings.disableExperimentalWarning"
           />,
         );
       } else {
-        selectAndSetTrack(track.key);
+        setCurrentlySelectedTrack(track);
+
+        // Update install state
+        void InstallManager.refreshAddonInstallState(selectedAddon);
       }
     }
   };
