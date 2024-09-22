@@ -20,7 +20,6 @@ import {
   FragmenterOperation,
   FragmenterUpdateChecker,
   getCurrentInstall,
-  InstallInfo,
   InstallManifest,
 } from '@flybywiresim/fragmenter';
 import settings from 'renderer/rendererSettings';
@@ -46,7 +45,6 @@ import { IncompatibleAddOnsCheck } from 'renderer/utils/IncompatibleAddOnsCheck'
 import { FreeDiskSpace, FreeDiskSpaceStatus } from 'renderer/utils/FreeDiskSpace';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import { AddonData, ReleaseInfo } from 'renderer/utils/AddonData';
-import { match } from 'react-router-dom';
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<
   (FragmenterInstallerEvents & FragmenterContextEvents)[K]
@@ -615,9 +613,7 @@ export class InstallManager {
   }
 
   public static async refreshAddonInstallState(addon: Addon): Promise<InstallState> {
-    let status: InstallState;
-
-    status = await this.determineAddonInstallStatus(addon);
+    const status = await this.determineAddonInstallStatus(addon);
     this.setCurrentInstallState(addon, status);
 
     return status;

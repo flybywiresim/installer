@@ -7,7 +7,6 @@ import { DebugSection } from 'renderer/components/DebugSection';
 import { InstallerUpdate } from 'renderer/components/InstallerUpdate';
 import { WindowButtons } from 'renderer/components/WindowActionButtons';
 import { Addon } from 'renderer/utils/InstallerConfiguration';
-import { AddonData } from 'renderer/utils/AddonData';
 import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from 'renderer/components/App/NavBar';
 import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
