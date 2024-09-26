@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.4.2
+    changes: 
+      - title: Fixed "show this again" toggle button on installer
+        categories: [UI]
+        authors: [JoaoOliveira85]
   - name: 3.4.1
     changes:
       - title: Update installer default data for addon sources
