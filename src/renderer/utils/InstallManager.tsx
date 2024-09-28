@@ -481,8 +481,8 @@ export class InstallManager {
       this.notifyDownload(addon, true);
 
       // Flash completion text
-      this.setCurrentInstallState(addon, { status: InstallStatus.DownloadDone });
       this.setCurrentlyInstalledTrack(addon, track);
+      this.setCurrentInstallState(addon, { status: InstallStatus.DownloadDone });
 
       // If we have a background service, ask if we want to enable it
       if (addon.backgroundService && (addon.backgroundService.enableAutostartConfiguration ?? true)) {
@@ -651,6 +651,7 @@ export class InstallManager {
     }
 
     this.setCurrentlyInstalledTrack(addon, matchingTrack);
+    this.setCurrentSelectedTrack(addon, matchingTrack);
 
     return matchingTrack;
   }
