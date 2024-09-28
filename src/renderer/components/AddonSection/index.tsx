@@ -177,7 +177,7 @@ export const AddonSection = (): JSX.Element => {
 
   useEffect(() => {
     if (!isInstalling) {
-      void InstallManager.getAddonInstallState(selectedAddon);
+      void InstallManager.refreshAddonInstallState(selectedAddon);
     }
   }, [isInstalling, selectedAddon]);
 

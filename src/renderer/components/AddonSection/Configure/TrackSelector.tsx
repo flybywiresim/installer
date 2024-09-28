@@ -35,11 +35,11 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
     >
       <div className="flex flex-col px-3 py-2.5">
         <span className="text-xl text-current">{track.name}</span>
-        <span className="mt-0.5 font-manrope text-3xl font-medium tracking-wider text-current">
+        <span className="mt-0.5 flex justify-between font-manrope text-3xl font-medium tracking-wider text-current">
           {latestVersionName ?? <span className="mt-1.5 block h-7 w-32 animate-pulse bg-navy-light"></span>}
+          {isInstalled && <Check className={`-mt-3.5 stroke-current text-cyan`} strokeWidth={3} />}
         </span>
       </div>
-      {isInstalled && <Check className={`absolute right-4 stroke-current text-cyan`} strokeWidth={3} />}
     </div>
   );
 };

@@ -78,7 +78,7 @@ export class InstallManager {
     };
 
     const setCancelledState = () => {
-      this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
+      this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled, timestamp: Date.now() });
     };
 
     const startResetStateTimer = (timeout = 3_000) => {
@@ -439,7 +439,7 @@ export class InstallManager {
             break;
           }
           case 'cancelled': {
-            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled });
+            this.setCurrentInstallState(addon, { status: InstallStatus.DownloadCanceled, timestamp: Date.now() });
             break;
           }
           case 'error': {
@@ -619,6 +619,20 @@ export class InstallManager {
   }
 
   public static async refreshAddonInstallState(addon: Addon): Promise<InstallState> {
+    const currenState = store.getState().installStatus[addon.key] as InstallState;
+
+    if (currenState?.status === InstallStatus.DownloadCanceled) {
+      setTimeout(
+        async () => {
+          const status = await this.determineAddonInstallStatus(addon);
+          this.setCurrentInstallState(addon, status);
+        },
+        3_000 - (Date.now() - currenState.timestamp),
+      );
+
+      return currenState;
+    }
+
     const status = await this.determineAddonInstallStatus(addon);
     this.setCurrentInstallState(addon, status);
 
@@ -679,6 +693,8 @@ export class InstallManager {
     console.log('[InstallManager](determineAddonInstallStatus) Checking install status');
 
     const installDir = Directories.inInstallLocation(addon.targetDirectory);
+    const addonInstalledTrack = this.determineAddonInstalledTrack(addon);
+    const addonSelectedTrack = this.getAddonSelectedTrack(addon);
 
     if (!fs.existsSync(installDir)) {
       console.log('[InstallManager](determineAddonInstallStatus) Is not installed');
@@ -693,9 +709,6 @@ export class InstallManager {
 
       return { status: InstallStatus.GitInstall };
     }
-
-    const addonInstalledTrack = this.determineAddonInstalledTrack(addon);
-    const addonSelectedTrack = this.getAddonSelectedTrack(addon);
 
     try {
       const updateInfo = await new FragmenterUpdateChecker().needsUpdate(addonSelectedTrack.url, installDir, {
