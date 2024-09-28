@@ -619,18 +619,18 @@ export class InstallManager {
   }
 
   public static async refreshAddonInstallState(addon: Addon): Promise<InstallState> {
-    const currenState = store.getState().installStatus[addon.key] as InstallState;
+    const currentState = store.getState().installStatus[addon.key] as InstallState;
 
-    if (currenState?.status === InstallStatus.DownloadCanceled) {
+    if (currentState?.status === InstallStatus.DownloadCanceled) {
       setTimeout(
         async () => {
           const status = await this.determineAddonInstallStatus(addon);
           this.setCurrentInstallState(addon, status);
         },
-        3_000 - (Date.now() - currenState.timestamp),
+        3_000 - (Date.now() - currentState.timestamp),
       );
 
-      return currenState;
+      return currentState;
     }
 
     const status = await this.determineAddonInstallStatus(addon);
