@@ -209,6 +209,9 @@ export const AddonSection = (): JSX.Element => {
             confirmColor={ButtonType.Caution}
             onConfirm={() => {
               setCurrentlySelectedTrack(track);
+
+              // Update install state
+              void InstallManager.refreshAddonInstallState(selectedAddon);
             }}
             dontShowAgainSettingName="mainSettings.disableExperimentalWarning"
           />,

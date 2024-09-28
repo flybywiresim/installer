@@ -35,7 +35,8 @@ const App = () => {
 
   useEffect(() => {
     for (const addon of addons) {
-      void InstallManager.getAddonInstallState(addon).then(() => InstallManager.checkForUpdates(addon));
+      void InstallManager.checkForUpdates(addon);
+      void InstallManager.refreshAddonInstallState(addon);
     }
 
     if (settings.get('cache.main.lastShownSection')) {
