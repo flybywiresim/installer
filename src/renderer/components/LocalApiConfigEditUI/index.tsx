@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import * as print from 'pdf-to-printer';
 import { PromptModal, useModals } from '../Modal';
 import { Button, ButtonType } from '../Button';
+import { homedir } from 'os';
 import fs from 'fs';
 import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
@@ -41,7 +42,7 @@ class LocalApiConfigurationHandler {
   }
 
   private static get simbridgeConfigPath(): string {
-    return path.join(this.simbridgeDirectory, 'resources', 'properties.json');
+    return path.join(homedir(), 'resources', 'properties.json');
   }
 
   static getConfiguration(): LocalApiConfiguration {
