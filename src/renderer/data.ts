@@ -363,8 +363,8 @@ export const defaultConfiguration: Configuration = {
             directories: [
               {
                 location: {
-                  in: 'package',
-                  path: 'resources',
+                  in: 'documents',
+                  path: 'FlyByWireSim/Simbridge/resources',
                 },
                 title: 'Resources',
               },

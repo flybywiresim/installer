@@ -8,7 +8,7 @@ export interface ExternalLink {
 
 export interface DirectoryDefinition {
   location: {
-    in: 'community' | 'packageCache' | 'package';
+    in: 'community' | 'packageCache' | 'package' | 'documents';
     path: string;
   };
 }
@@ -354,7 +354,7 @@ export interface Configuration {
 
 export class InstallerConfiguration {
   static async obtain(): Promise<Configuration> {
-    return this.fetchConfigurationFromCdn()
+    return this.loadConfigurationFromLocalStorage()
       .then((config) => {
         if (this.isConfigurationValid(config)) {
           console.log('Configuration from CDN is valid');

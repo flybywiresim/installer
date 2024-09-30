@@ -49,6 +49,8 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         return Directories.inInstallPackage(addon, def.location.path);
       case 'packageCache':
         return Directories.inPackageCache(addon, def.location.path);
+      case 'documents':
+        return Directories.inDocumentsFolder(def.location.path);
     }
   };
 
