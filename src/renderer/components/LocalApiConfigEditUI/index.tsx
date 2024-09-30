@@ -8,7 +8,7 @@ import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
 import { Toggle } from '../Toggle';
 
-const SIMBRIDGE_DIRECTORY = 'flybywire-externaltools-simbridge';
+const SIMBRIDGE_DIRECTORY = '/flybywire-externaltools-simbridge';
 
 interface LocalApiConfiguration {
   server: {
@@ -42,7 +42,7 @@ class LocalApiConfigurationHandler {
   }
 
   private static get simbridgeConfigPath(): string {
-    return path.join(homedir(), 'resources', 'properties.json');
+    return path.join(homedir(), SIMBRIDGE_DIRECTORY, 'resources', 'properties.json');
   }
 
   static getConfiguration(): LocalApiConfiguration {
