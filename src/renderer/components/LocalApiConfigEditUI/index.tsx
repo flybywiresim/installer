@@ -2,13 +2,13 @@ import React, { FC, useEffect, useState } from 'react';
 import * as print from 'pdf-to-printer';
 import { PromptModal, useModals } from '../Modal';
 import { Button, ButtonType } from '../Button';
-import { homedir } from 'os';
+import app from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { Directories } from 'renderer/utils/Directories';
 import { Toggle } from '../Toggle';
 
-const SIMBRIDGE_DIRECTORY = '/flybywire-externaltools-simbridge';
+const SIMBRIDGE_DIRECTORY = '/FlyByWireSim/Simbridge';
 
 interface LocalApiConfiguration {
   server: {
@@ -42,7 +42,7 @@ class LocalApiConfigurationHandler {
   }
 
   private static get simbridgeConfigPath(): string {
-    return path.join(homedir(), SIMBRIDGE_DIRECTORY, 'resources', 'properties.json');
+    return path.join(app.getPath('documents'), SIMBRIDGE_DIRECTORY, 'resources', 'properties.json');
   }
 
   static getConfiguration(): LocalApiConfiguration {
@@ -53,7 +53,7 @@ class LocalApiConfigurationHandler {
     } else {
       console.log(`No configuration found at ${this.simbridgeConfigPath}`);
 
-      if (fs.existsSync(path.join(this.simbridgeDirectory, 'resources'))) {
+      if (fs.existsSync(path.join(app.getPath('documents'), SIMBRIDGE_DIRECTORY, 'resources'))) {
         console.log(`Creating configuration at ${this.simbridgeConfigPath}`);
 
         fs.writeFileSync(path.join(this.simbridgeConfigPath), JSON.stringify(localApiDefaultConfiguration));
