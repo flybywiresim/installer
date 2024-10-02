@@ -11,7 +11,7 @@
 releases:
   - name: 3.4.2
     changes: 
-      - title: Fixed "show this again" toggle button on installer
+      - title: Fixed "Don't show this again" toggle button
         categories: [UI]
         authors: [JoaoOliveira85]
   - name: 3.4.1
