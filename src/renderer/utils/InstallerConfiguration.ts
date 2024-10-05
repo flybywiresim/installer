@@ -354,7 +354,7 @@ export interface Configuration {
 
 export class InstallerConfiguration {
   static async obtain(): Promise<Configuration> {
-    return this.loadConfigurationFromLocalStorage()
+    return this.fetchConfigurationFromCdn()
       .then((config) => {
         if (this.isConfigurationValid(config)) {
           console.log('Configuration from CDN is valid');
