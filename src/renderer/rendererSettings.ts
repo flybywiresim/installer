@@ -105,6 +105,7 @@ interface RendererSettings {
     allowSeasonalEffects: boolean;
     msfsBasePath: string;
     configDownloadUrl: string;
+    configForceUseLocal: boolean;
   };
   cache: {
     main: {
@@ -215,6 +216,10 @@ const schema: Schema<RendererSettings> = {
       configDownloadUrl: {
         type: 'string',
         default: packageInfo.configUrls.production,
+      },
+      configForceUseLocal: {
+        type: 'boolean',
+        default: false,
       },
     },
   },
