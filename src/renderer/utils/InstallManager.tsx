@@ -12,7 +12,7 @@ import {
 } from 'renderer/redux/features/downloads';
 import { Directories } from 'renderer/utils/Directories';
 import fs from 'fs';
-import { ApplicationStatus, InstallStatus } from 'renderer/components/AddonSection/Enums';
+import { ApplicationStatus, InstallStatus, InstallStatusCategories } from 'renderer/components/AddonSection/Enums';
 import {
   FragmenterContextEvents,
   FragmenterError,
@@ -742,6 +742,15 @@ export class InstallManager {
     const installDir = Directories.inInstallLocation(addon.targetDirectory);
 
     const state = store.getState();
+
+    const addonInstallState = state.installStatus[addon.key] ?? { status: InstallStatus.Unknown };
+
+    if (
+      InstallStatusCategories.installing.includes(addonInstallState.status) ||
+      addonInstallState.status === InstallStatus.Unknown
+    ) {
+      return;
+    }
 
     const fragmenterUpdateChecker = new FragmenterUpdateChecker();
 
