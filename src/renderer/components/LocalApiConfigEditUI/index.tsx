@@ -6,7 +6,9 @@ import fs from 'fs';
 import path from 'path';
 import { Toggle } from '../Toggle';
 import { app } from '@electron/remote';
+import { Directories } from 'renderer/utils/Directories';
 
+const LEGACY_SIMBRIDGE_DIRECTORY = 'flybywire-externaltools-simbridge';
 const SIMBRIDGE_DIRECTORY = '/FlyByWireSim/Simbridge';
 
 interface LocalApiConfiguration {
@@ -36,12 +38,21 @@ const localApiDefaultConfiguration: LocalApiConfiguration = {
 };
 
 class LocalApiConfigurationHandler {
+  private static get legacySimbridgeDirectory(): string {
+    return path.join(Directories.inInstallLocation(SIMBRIDGE_DIRECTORY));
+  }
+
   private static get simbridgeDirectory(): string {
     return path.join(app.getPath('documents'), SIMBRIDGE_DIRECTORY);
   }
 
   private static get simbridgeConfigPath(): string {
-    return path.join(this.simbridgeDirectory, 'resources', 'properties.json');
+    const configPath = path.join(this.simbridgeDirectory, 'resources', 'properties.json');
+    if (fs.existsSync(configPath)) {
+      return configPath;
+    }
+    // TODO remove this after a while once simbridge is released
+    return path.join(this.legacySimbridgeDirectory, 'resources', 'properties.json');
   }
 
   static getConfiguration(): LocalApiConfiguration {
