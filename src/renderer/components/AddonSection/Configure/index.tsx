@@ -6,6 +6,7 @@ import { Track, Tracks } from './TrackSelector';
 import { ConfigurationAspectDisplay } from 'renderer/components/AddonSection/Configure/ConfigurationAspectDisplay';
 
 import './index.css';
+import rehypeRaw from 'rehype-raw';
 
 export interface ConfigureProps {
   routeAspectKey: string;
@@ -76,6 +77,7 @@ export const Configure: FC<ConfigureProps> = ({
               <ReactMarkdown
                 className="font-manrope text-xl font-light leading-relaxed text-white"
                 linkTarget={'_blank'}
+                rehypePlugins={[rehypeRaw]}
               >
                 {selectedTrack.description}
               </ReactMarkdown>

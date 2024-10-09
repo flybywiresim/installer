@@ -137,6 +137,7 @@
     "react-router-dom": "^5.2.0",
     "react-windows-controls": "^1.1.1",
     "redux": "^4.0.5",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^2.0.0",
     "semver": "7.3.5",
     "simplebar-react": "^3.2.4",
