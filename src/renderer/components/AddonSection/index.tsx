@@ -28,6 +28,7 @@ import { InstallManager } from 'renderer/utils/InstallManager';
 import { StateSection } from 'renderer/components/AddonSection/StateSection';
 import { ExternalApps } from 'renderer/utils/ExternalApps';
 import { MyInstall } from 'renderer/components/AddonSection/MyInstall';
+import rehypeRaw from 'rehype-raw';
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController());
@@ -537,7 +538,11 @@ const About: FC<{ addon: Addon }> = ({ addon }) => (
 
       <h2 className="text-white">{addon.aircraftName}</h2>
     </div>
-    <ReactMarkdown className="font-manrope text-xl font-light leading-relaxed text-white" linkTarget={'_blank'}>
+    <ReactMarkdown
+      className="font-manrope text-xl font-light leading-relaxed text-white"
+      linkTarget={'_blank'}
+      rehypePlugins={[rehypeRaw]}
+    >
       {addon.description}
     </ReactMarkdown>
 
