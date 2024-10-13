@@ -9,7 +9,10 @@ interface BaseInstallState {
 export interface GenericInstallState {
   status: Exclude<
     InstallStatus,
-    InstallStatus.InstallingDependency | InstallStatus.InstallingDependencyEnding | InstallStatus.Decompressing
+    | InstallStatus.InstallingDependency
+    | InstallStatus.InstallingDependencyEnding
+    | InstallStatus.Decompressing
+    | InstallStatus.DownloadCanceled
   >;
 }
 
@@ -33,11 +36,17 @@ export interface DecompressingInstallState extends BaseInstallState {
   entry?: string;
 }
 
+export interface CancelledInstallState extends BaseInstallState {
+  status: InstallStatus.DownloadCanceled;
+  timestamp: number;
+}
+
 export type InstallState =
   | GenericInstallState
   | InstallingDependencyInstallState
   | InstallingDependencyEndingInstallState
-  | DecompressingInstallState;
+  | DecompressingInstallState
+  | CancelledInstallState;
 
 const initialState: Record<string, InstallState> = {};
 

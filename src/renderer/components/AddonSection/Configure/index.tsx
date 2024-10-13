@@ -11,8 +11,8 @@ import rehypeRaw from 'rehype-raw';
 export interface ConfigureProps {
   routeAspectKey: string;
   selectedAddon: Addon;
-  selectedTrack: AddonTrack;
-  installedTrack: AddonTrack;
+  selectedTrack: AddonTrack | null;
+  installedTrack: AddonTrack | null;
   onTrackSelection: (track: AddonTrack) => void;
 }
 
@@ -41,8 +41,8 @@ export const Configure: FC<ConfigureProps> = ({
                     addon={selectedAddon}
                     key={track.key}
                     track={track}
-                    isSelected={selectedTrack === track}
-                    isInstalled={installedTrack === track}
+                    isSelected={selectedTrack?.key === track.key}
+                    isInstalled={installedTrack?.key === track.key}
                     handleSelected={() => onTrackSelection(track)}
                   />
                 ))}
@@ -58,8 +58,8 @@ export const Configure: FC<ConfigureProps> = ({
                     addon={selectedAddon}
                     key={track.key}
                     track={track}
-                    isSelected={selectedTrack === track}
-                    isInstalled={installedTrack === track}
+                    isSelected={selectedTrack?.key === track.key}
+                    isInstalled={installedTrack?.key === track.key}
                     handleSelected={() => onTrackSelection(track)}
                   />
                 ))}

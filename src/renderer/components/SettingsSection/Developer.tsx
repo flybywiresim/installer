@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
+import { Toggle } from 'renderer/components/Toggle';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -8,9 +9,11 @@ const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   </div>
 );
 
-export const DeveloperSettings = (): JSX.Element => {
+export const DeveloperSettings: React.FC = () => {
   const [configDownloadUrl, setConfigDownloadUrl] = useSetting<string>('mainSettings.configDownloadUrl');
   const [configDownloadUrlValid, setConfigDownloadUrlValid] = useState<boolean>(false);
+
+  const [configForceUseLocal, setConfigForceUseLocal] = useSetting<boolean>('mainSettings.configForceUseLocal');
 
   const validateUrl = useCallback(() => {
     try {
@@ -32,7 +35,7 @@ export const DeveloperSettings = (): JSX.Element => {
         <h2 className="text-white">General Settings</h2>
         <div className="flex flex-col divide-y divide-gray-600">
           <SettingsItem name="Configuration Download URL">
-            <div className="flex flex-row items-center justify-between py-4 text-white">
+            <div className="flex flex-row items-center justify-between py-2 text-white">
               <input
                 className={` text-right text-xl ${configDownloadUrlValid ? 'text-green-500' : 'text-red-500'}`}
                 value={configDownloadUrl}
@@ -41,6 +44,11 @@ export const DeveloperSettings = (): JSX.Element => {
                 onBlur={() => validateUrl()}
                 size={50}
               />
+            </div>
+          </SettingsItem>
+          <SettingsItem name="Force Use Local Configuration">
+            <div className="flex flex-row items-center justify-between text-white">
+              <Toggle value={configForceUseLocal} onToggle={setConfigForceUseLocal} />
             </div>
           </SettingsItem>
         </div>
