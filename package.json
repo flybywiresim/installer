@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "3.4.0-dev.1",
+  "version": "3.4.2-dev.1",
   "description": "Desktop application to install and customize FlyByWire addons",
   "configUrls": {
     "production": "https://cdn.flybywiresim.com/installer/config/production.json",
@@ -103,7 +103,7 @@
     "webpack-dev-server": "^4.4.0"
   },
   "dependencies": {
-    "@flybywiresim/fragmenter": "^0.7.4",
+    "@flybywiresim/fragmenter": "^0.8.0",
     "@reduxjs/toolkit": "^1.7.1",
     "@sentry/cli": "^2.31.0",
     "@sentry/electron": "^4.23.0",

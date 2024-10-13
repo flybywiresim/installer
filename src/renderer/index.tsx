@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/electron/renderer';
 import { browserTracingIntegration } from '@sentry/browser';
 import { Provider } from 'react-redux';
-import App, { fetchLatestVersionNames } from 'renderer/components/App';
+import App from 'renderer/components/App';
 import { Configuration, InstallerConfiguration } from 'renderer/utils/InstallerConfiguration';
 import { ipcRenderer } from 'electron';
 import { Directories } from 'renderer/utils/Directories';
@@ -66,8 +66,6 @@ InstallerConfiguration.obtain()
         } else {
           store.dispatch(addReleases({ key: addon.key, releases: [] }));
         }
-
-        fetchLatestVersionNames(addon);
       }
     }
 
