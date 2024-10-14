@@ -8,7 +8,7 @@ export interface ExternalLink {
 
 export interface DirectoryDefinition {
   location: {
-    in: 'community' | 'packageCache' | 'package';
+    in: 'community' | 'packageCache' | 'package' | 'documents';
     path: string;
   };
 }
