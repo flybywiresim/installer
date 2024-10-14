@@ -55,7 +55,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
           return documents;
         }
         // fallback for simbridge installations prior to 0.6
-        // remove afer transition period
+        // remove after transition period
         return Directories.inInstallPackage(addon, 'resources');
       }
     }
