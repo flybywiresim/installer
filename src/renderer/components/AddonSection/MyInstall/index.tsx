@@ -49,7 +49,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         return Directories.inInstallPackage(addon, def.location.path);
       case 'packageCache':
         return Directories.inPackageCache(addon, def.location.path);
-      case 'documents':
+      case 'documents': {
         const documents = Directories.inDocumentsFolder(def.location.path);
         if (fs.existsSync(documents)) {
           return documents;
@@ -57,6 +57,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         // fallback for simbridge installations prior to 0.6
         // remove afer transition period
         return Directories.inInstallPackage(addon, 'resources');
+      }
     }
   };
 
