@@ -13,7 +13,7 @@ releases:
     changes:
       - title: Fix printer selection not working in some cases
         categories: [UI]
-        authors: [sas-chl]
+        authors: [saschl]
       - title: Add possibility of getting latest track versions from fragmenter distribution manifest
         categories: [Core]
         authors: [holland]
