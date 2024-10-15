@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "3.4.2-dev.1",
+  "version": "3.4.2",
   "description": "Desktop application to install and customize FlyByWire addons",
   "configUrls": {
     "production": "https://cdn.flybywiresim.com/installer/config/production.json",
