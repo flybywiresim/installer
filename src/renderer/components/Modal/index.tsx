@@ -272,7 +272,7 @@ interface DoNotAskAgainProps {
 }
 
 const DoNotAskAgain: FC<DoNotAskAgainProps> = ({ checked, toggleChecked }) => (
-  <div className="mt-8 w-auto gap-x-4" onClick={toggleChecked}>
+  <div className="mt-8 w-auto gap-x-4">
     <CompactYesNoOptionToggle enabled={checked} onToggle={toggleChecked} enabledBgColor="bg-cyan">
       Don&apos;t show this again
     </CompactYesNoOptionToggle>
