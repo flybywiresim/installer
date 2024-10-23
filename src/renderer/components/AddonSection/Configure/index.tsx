@@ -6,12 +6,13 @@ import { Track, Tracks } from './TrackSelector';
 import { ConfigurationAspectDisplay } from 'renderer/components/AddonSection/Configure/ConfigurationAspectDisplay';
 
 import './index.css';
+import rehypeRaw from 'rehype-raw';
 
 export interface ConfigureProps {
   routeAspectKey: string;
   selectedAddon: Addon;
-  selectedTrack: AddonTrack;
-  installedTrack: AddonTrack;
+  selectedTrack: AddonTrack | null;
+  installedTrack: AddonTrack | null;
   onTrackSelection: (track: AddonTrack) => void;
 }
 
@@ -40,8 +41,8 @@ export const Configure: FC<ConfigureProps> = ({
                     addon={selectedAddon}
                     key={track.key}
                     track={track}
-                    isSelected={selectedTrack === track}
-                    isInstalled={installedTrack === track}
+                    isSelected={selectedTrack?.key === track.key}
+                    isInstalled={installedTrack?.key === track.key}
                     handleSelected={() => onTrackSelection(track)}
                   />
                 ))}
@@ -57,8 +58,8 @@ export const Configure: FC<ConfigureProps> = ({
                     addon={selectedAddon}
                     key={track.key}
                     track={track}
-                    isSelected={selectedTrack === track}
-                    isInstalled={installedTrack === track}
+                    isSelected={selectedTrack?.key === track.key}
+                    isInstalled={installedTrack?.key === track.key}
                     handleSelected={() => onTrackSelection(track)}
                   />
                 ))}
@@ -76,6 +77,7 @@ export const Configure: FC<ConfigureProps> = ({
               <ReactMarkdown
                 className="font-manrope text-xl font-light leading-relaxed text-white"
                 linkTarget={'_blank'}
+                rehypePlugins={[rehypeRaw]}
               >
                 {selectedTrack.description}
               </ReactMarkdown>

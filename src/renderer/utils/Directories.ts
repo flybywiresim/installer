@@ -141,4 +141,8 @@ export class Directories {
       return false;
     }
   }
+
+  static inDocumentsFolder(targetDir: string): string {
+    return path.join(app.getPath('documents'), this.sanitize(targetDir));
+  }
 }

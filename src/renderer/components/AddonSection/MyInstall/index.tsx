@@ -49,6 +49,15 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
         return Directories.inInstallPackage(addon, def.location.path);
       case 'packageCache':
         return Directories.inPackageCache(addon, def.location.path);
+      case 'documents': {
+        const documents = Directories.inDocumentsFolder(def.location.path);
+        if (fs.existsSync(documents)) {
+          return documents;
+        }
+        // fallback for simbridge installations prior to 0.6
+        // remove after transition period
+        return Directories.inInstallPackage(addon, 'resources');
+      }
     }
   };
 
