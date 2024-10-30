@@ -192,12 +192,6 @@ export const defaultConfiguration: Configuration = {
                 'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
             },
             {
-              title: 'Toolbar Pushback',
-              creator: 'AmbitiousPilots',
-              description:
-                'This add-on sometimes causes performance issues and also sometimes prevents the A32NX from taxiing. Consider removing it if you experience these issues.',
-            },
-            {
               title: 'Asobo_A320_A (A32NX Converted)',
               creator: 'UnitDeath',
               description:
