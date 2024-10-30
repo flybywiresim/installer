@@ -48,7 +48,7 @@ export const DeveloperSettings: React.FC = () => {
               <input
                 className="ml-2"
                 type="button"
-                value="Reset do default"
+                value="Reset to default"
                 onClick={() => setConfigDownloadUrl(packageInfo.configUrls.production)}
               />
             </div>
