@@ -11,6 +11,7 @@
   "scripts": {
     "generate-licenses": "node scripts/licenses.js",
     "start": "electron-vite",
+    "dev": "electron-vite dev",
     "build": "npm run generate-licenses && electron-vite build",
     "package": "npm run build && electron-builder --win --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
