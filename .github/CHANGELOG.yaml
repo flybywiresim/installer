@@ -9,6 +9,10 @@
 
 
 releases:
+  - name: 3.4.3
+    changes:
+      - title: Change installer configuration to Cloudflare
+        categories: [Core]
   - name: 3.4.2
     changes:
       - title: Fix printer selection not working in some cases
