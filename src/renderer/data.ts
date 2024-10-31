@@ -305,7 +305,7 @@ export const defaultConfiguration: Configuration = {
             {
               name: 'Release',
               key: 'kfbw-release',
-              url: 'https://cdn.flybywiresim.com/addons/kfbw/release/',
+              url: 'https://flybywirecdn.com/addons/kfbw/release/',
               isExperimental: false,
               releaseModel: {
                 type: 'CDN',
@@ -341,7 +341,7 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'githubRelease',
               },
-              url: 'https://cdn.flybywiresim.com/addons/simbridge/release/',
+              url: 'https://flybywirecdn.com/addons/simbridge/release/',
               isExperimental: false,
               description: `<b><span class="text-utility-amber">&#9888; Note: Starting with version 0.6.0 custom resources like PDF Charts and Company Routes need to be located inside the Documents folder. Please refer to the documentation.</span></b> \n\n SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
             },
