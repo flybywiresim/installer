@@ -118,6 +118,13 @@ function initializeApp() {
     const lastY = settings.get<string, number>('cache.main.lastWindowY');
     const shouldMaximize = settings.get<string, boolean>('cache.main.maximized');
 
+    if (
+      (settings.get('mainSettings.configDownloadUrl') as string) ===
+      'https://cdn.flybywiresim.com/installer/config/production.json'
+    ) {
+      settings.set('mainSettings.configDownloadUrl', packageInfo.configUrls.production);
+    }
+
     if (shouldMaximize) {
       mainWindow.maximize();
     } else if (lastX && lastY) {
