@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from 'renderer/components/Toggle';
+import * as packageInfo from '../../../../package.json';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -44,6 +45,16 @@ export const DeveloperSettings: React.FC = () => {
                 onBlur={() => validateUrl()}
                 size={50}
               />
+            </div>
+          </SettingsItem>
+          <SettingsItem name="Reset to production configuration">
+            <div className="flex flex-row items-center justify-between text-white">
+              <button
+                className="rounded-md bg-red-500 px-2 py-1 text-white"
+                onClick={() => setConfigDownloadUrl(packageInfo.configUrls.production)}
+              >
+                Reset
+              </button>
             </div>
           </SettingsItem>
           <SettingsItem name="Force Use Local Configuration">
