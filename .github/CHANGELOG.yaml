@@ -9,6 +9,21 @@
 
 
 releases:
+  - name: 3.4.3
+    changes:
+      - title: Change installer configuration to Cloudflare
+        categories: [Core]
+  - name: 3.4.2
+    changes:
+      - title: Fix printer selection not working in some cases
+        categories: [UI]
+        authors: [saschl]
+      - title: Add possibility of getting latest track versions from fragmenter distribution manifest
+        categories: [Core]
+        authors: [holland]
+      - title: Preparation work for new Simbridge resources directory
+        categories: [Core]
+        authors: [saschl]
   - name: 3.4.1
     changes:
       - title: Update installer default data for addon sources
