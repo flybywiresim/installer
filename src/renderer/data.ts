@@ -244,7 +244,7 @@ export const defaultConfiguration: Configuration = {
           myInstallPage: {
             links: [
               {
-                url: 'https://docs.flybywiresim.com/fbw-a32nx/',
+                url: 'https://docs.flybywiresim.com/',
                 title: 'Documentation',
               },
             ],
@@ -355,7 +355,7 @@ export const defaultConfiguration: Configuration = {
           myInstallPage: {
             links: [
               {
-                url: 'https://docs.flybywiresim.com/simbridge/',
+                url: 'https://docs.flybywiresim.com/tools/simbridge/',
                 title: 'Documentation',
               },
             ],
