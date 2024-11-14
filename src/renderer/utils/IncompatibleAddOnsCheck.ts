@@ -29,30 +29,34 @@ export class IncompatibleAddOnsCheck {
           const dirEntries = fs.readdirSync(filePath);
 
           if (dirEntries.includes(manifestFileName)) {
-            const manifest = JSON.parse(fs.readFileSync(path.join(filePath, manifestFileName), 'utf8'));
+            try {
+              const manifest = JSON.parse(fs.readFileSync(path.join(filePath, manifestFileName), 'utf8'));
 
-            for (const item of addon.incompatibleAddons) {
-              // This checks the configuration item properties (if set) against the manifest.json file
-              // entry property values. If all properties match, the add-on is considered incompatible.
-              // packageVersion syntax follows: https://www.npmjs.com/package/semver
-              // Future improvement would be to allow for regular expressions in the configuration item.
-              const titleMatches = !item.title || manifest.title === item.title;
-              const creatorMatches = !item.creator || manifest.creator === item.creator;
-              const packageVersionTargeted =
-                !item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion);
+              for (const item of addon.incompatibleAddons) {
+                // This checks the configuration item properties (if set) against the manifest.json file
+                // entry property values. If all properties match, the add-on is considered incompatible.
+                // packageVersion syntax follows: https://www.npmjs.com/package/semver
+                // Future improvement would be to allow for regular expressions in the configuration item.
+                const titleMatches = !item.title || manifest.title === item.title;
+                const creatorMatches = !item.creator || manifest.creator === item.creator;
+                const packageVersionTargeted =
+                    !item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion);
 
-              if (titleMatches && creatorMatches && packageVersionTargeted) {
-                // Also write this to the log as this info might be useful for support.
-                console.log(`Incompatible Add-On found: ${manifest.title}: ${item.description}`);
+                if (titleMatches && creatorMatches && packageVersionTargeted) {
+                  // Also write this to the log as this info might be useful for support.
+                  console.log(`Incompatible Add-On found: ${manifest.title}: ${item.description}`);
 
-                incompatibleAddons.push({
-                  title: item.title,
-                  creator: item.creator,
-                  packageVersion: item.packageVersion,
-                  folder: entry,
-                  description: item.description,
-                });
-              }
+                  incompatibleAddons.push({
+                    title: item.title,
+                    creator: item.creator,
+                    packageVersion: item.packageVersion,
+                    folder: entry,
+                    description: item.description,
+                  });
+                }
+              }              
+            } catch (e) {
+              console.warn(`Failed to read or parse manifest.json in ${filePath}:`, e.message);
             }
           }
         }
