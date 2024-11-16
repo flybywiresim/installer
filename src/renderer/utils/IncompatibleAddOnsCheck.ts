@@ -40,7 +40,7 @@ export class IncompatibleAddOnsCheck {
                 const titleMatches = !item.title || manifest.title === item.title;
                 const creatorMatches = !item.creator || manifest.creator === item.creator;
                 const packageVersionTargeted =
-                    !item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion);
+                  !item.packageVersion || semverSatisfies(manifest.package_version, item.packageVersion);
 
                 if (titleMatches && creatorMatches && packageVersionTargeted) {
                   // Also write this to the log as this info might be useful for support.
@@ -54,7 +54,7 @@ export class IncompatibleAddOnsCheck {
                     description: item.description,
                   });
                 }
-              }              
+              }
             } catch (e) {
               console.warn(`Failed to read or parse manifest.json in ${filePath}:`, e.message);
             }
