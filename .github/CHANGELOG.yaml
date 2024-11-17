@@ -11,6 +11,9 @@
 releases:
   - name: 3.4.4
     changes:
+      - title: Added reload-button to developer configuration
+        categories: [Core]
+        authors: [Revyn112]
       - title: Improved handling of checkIncompatibleAddOns
         categories: [Core]
         authors: [Revyn112]
