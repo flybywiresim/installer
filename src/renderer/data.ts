@@ -142,7 +142,7 @@ export const defaultConfiguration: Configuration = {
           myInstallPage: {
             links: [
               {
-                url: 'https://docs.flybywiresim.com/fbw-a32nx/',
+                url: 'https://docs.flybywiresim.com/',
                 title: 'Documentation',
               },
             ],
@@ -225,7 +225,7 @@ export const defaultConfiguration: Configuration = {
               url: 'https://flybywirecdn.com/addons/a380x/master-4k',
               alternativeUrls: [],
               description:
-                'TEST will have the latest features that will end up in the next stable. ' +
+                'Development will have the latest features that will end up in the next stable. ' +
                 'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
                 "the 'master' branch on Github. Please visit our discord for support. \n\n" +
                 'Includes our 4K downscaled cabin, cockpit and exterior textures. Choose this option for reduced ' +
@@ -246,7 +246,7 @@ export const defaultConfiguration: Configuration = {
               url: 'https://flybywirecdn.com/addons/a380x/master-8k',
               alternativeUrls: [],
               description:
-                'TEST will have the latest features that will end up in the next stable. ' +
+                'Development will have the latest features that will end up in the next stable. ' +
                 'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
                 "the 'master' branch on Github. Please visit our discord for support. \n\n" +
                 '* DX11 recommended \n\n' +
@@ -343,7 +343,7 @@ export const defaultConfiguration: Configuration = {
           myInstallPage: {
             links: [
               {
-                url: 'https://docs.flybywiresim.com/simbridge/',
+                url: 'https://docs.flybywiresim.com/tools/simbridge/',
                 title: 'Documentation',
               },
             ],
