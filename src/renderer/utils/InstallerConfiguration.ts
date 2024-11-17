@@ -401,7 +401,8 @@ export class InstallerConfiguration {
   }
 
   private static async fetchConfigurationFromCdn(): Promise<Configuration> {
-    const url = settings.get('mainSettings.configDownloadUrl') as string;
+    const url = `${settings.get('mainSettings.configDownloadUrl') as string}?cache-killer=${Math.random()}`;
+
     console.log('Obtaining configuration from CDN (%s)', url);
     return await fetch(url)
       .then((res) => res.blob())
