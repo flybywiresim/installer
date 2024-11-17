@@ -9,6 +9,20 @@
 
 
 releases:
+  - name: 3.4.4
+    changes:
+      - title: Improved handling of checkIncompatibleAddOns
+        categories: [Core]
+        authors: [Denis Freund]
+      - title: Avoid caching of the installer configuration
+        categories: [Core]
+        authors: [Cdr_Maverick]
+      - title: Reset-to-default button for developer configuration
+        categories: [Core]
+        authors: [Gaudv]
+      - title: fix move people to new installer config url
+        categories: [Core]
+        authors: [FoxtrotSierra]
   - name: 3.4.3
     changes:
       - title: Change installer configuration to Cloudflare
