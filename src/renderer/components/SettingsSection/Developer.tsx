@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from 'renderer/components/Toggle';
+import * as packageInfo from '../../../../package.json';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -43,6 +44,12 @@ export const DeveloperSettings: React.FC = () => {
                 onChange={(event) => setConfigDownloadUrl(event.target.value)}
                 onBlur={() => validateUrl()}
                 size={50}
+              />
+              <input
+                className="ml-2"
+                type="button"
+                value="Reset to default"
+                onClick={() => setConfigDownloadUrl(packageInfo.configUrls.production)}
               />
             </div>
           </SettingsItem>
