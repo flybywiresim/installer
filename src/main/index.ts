@@ -137,6 +137,13 @@ function initializeApp() {
 
     mainWindow.center();
 
+    if (
+      (settings.get('mainSettings.configDownloadUrl') as string) ===
+      'https://cdn.flybywiresim.com/installer/config/production.json'
+    ) {
+      settings.set('mainSettings.configDownloadUrl', packageInfo.configUrls.production);
+    }
+
     if (import.meta.env.DEV) {
       mainWindow.webContents.openDevTools();
     }
