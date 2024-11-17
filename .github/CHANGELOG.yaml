@@ -13,7 +13,7 @@ releases:
     changes:
       - title: Improved handling of checkIncompatibleAddOns
         categories: [Core]
-        authors: [Denis Freund]
+        authors: [Revyn112]
       - title: Avoid caching of the installer configuration
         categories: [Core]
         authors: [Cdr_Maverick]
