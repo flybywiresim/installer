@@ -2,6 +2,9 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from 'renderer/components/Toggle';
 import * as packageInfo from '../../../../package.json';
+import { Button, ButtonType } from 'renderer/components/Button';
+import { ipcRenderer } from 'electron';
+import channels from 'common/channels';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -45,12 +48,20 @@ export const DeveloperSettings: React.FC = () => {
                 onBlur={() => validateUrl()}
                 size={50}
               />
-              <input
-                className="ml-2"
-                type="button"
-                value="Reset to default"
+              <Button
+                type={ButtonType.Neutral}
+                className="ml-2 h-fit min-h-10 text-lg"
+                onClick={() => ipcRenderer.send(channels.window.reload)}
+              >
+                Reload Installer
+              </Button>
+              <Button
+                type={ButtonType.Neutral}
+                className="ml-2 h-fit min-h-10 text-lg"
                 onClick={() => setConfigDownloadUrl(packageInfo.configUrls.production)}
-              />
+              >
+                Reset to default
+              </Button>
             </div>
           </SettingsItem>
           <SettingsItem name="Force Use Local Configuration">
