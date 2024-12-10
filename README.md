@@ -15,7 +15,7 @@ using [TypeScript](https://www.typescriptlang.org/) and [React](https://reactjs.
 Please make sure you have:
 
 - [git](https://git-scm.com/downloads)
-- [NodeJS 16](https://nodejs.org/en/)
+- [NodeJS 20](https://nodejs.org/en/)
 
 ### Get started
 
