@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.event.pull_request.draft == false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -47,7 +47,7 @@ jobs:
       - name: Build Installer
         run: npm run package
       - name: Upload PR artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FlyByWire_Installer_Setup
           path: ./dist/FlyByWire_Installer_Setup.exe
