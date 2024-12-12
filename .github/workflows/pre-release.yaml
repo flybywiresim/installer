@@ -14,9 +14,9 @@ jobs:
       ASSET_NAME: FlyByWire_Installer_Setup.exe
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16.9'
+          node-version: '20'
 
       - name: Create .sentrydsn file
         run: |
