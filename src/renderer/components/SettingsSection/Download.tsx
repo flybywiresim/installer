@@ -42,19 +42,6 @@ const PathSettingItem: React.FC<PathSettingItemProps> = ({ value, setValue, name
   );
 };
 
-const MsfsCommunityPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => (
-  <PathSettingItem
-    value={value}
-    setValue={setValue}
-    name="MSFS Community Directory"
-    callback={setupMsfsCommunityPath}
-  />
-);
-
-const InstallPathSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => (
-  <PathSettingItem value={value} setValue={setValue} name="Install Directory" callback={setupInstallPath} />
-);
-
 const TempLocationSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => (
   <PathSettingItem
     value={value}
@@ -107,9 +94,39 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
   );
 };
 
+const MsfsSettings = ({ version }: { version: string }): JSX.Element => {
+  const [enabled, setEnabled] = useSetting<boolean>(`mainSettings.simulator.msfs${version}.enabled`);
+  const [communityPath, setCommunityPath] = useSetting<string>(`mainSettings.simulator.msfs${version}.communityPath`);
+  const [installPath, setInstallPath] = useSetting<string>(`mainSettings.simulator.msfs${version}.installPath`);
+
+  return (
+    <>
+      <div className="flex flex-col divide-y divide-gray-600">
+        <SettingsItem name={'Microsoft Flight Simulator' + version}>
+          <Toggle value={enabled} onToggle={() => setEnabled(!enabled)} />
+        </SettingsItem>
+        {enabled && (
+          <div className="flex flex-col divide-y divide-gray-600 pl-6">
+            <PathSettingItem
+              name="Community Directory"
+              value={communityPath}
+              setValue={setCommunityPath}
+              callback={setupMsfsCommunityPath}
+            />
+            <PathSettingItem
+              name="Install Directory"
+              value={installPath}
+              setValue={setInstallPath}
+              callback={setupInstallPath}
+            />
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
+
 export const DownloadSettings = (): JSX.Element => {
-  const [communityPath, setCommunityPath] = useSetting<string>('mainSettings.msfsCommunityPath');
-  const [installPath, setInstallPath] = useSetting<string>('mainSettings.installPath');
   const [tempLocation, setTempLocation] = useSetting<string>('mainSettings.tempLocation');
   const [separateTempLocation, setSeparateTempLocation] = useSetting<boolean>('mainSettings.separateTempLocation');
   const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>(
@@ -120,10 +137,10 @@ export const DownloadSettings = (): JSX.Element => {
   return (
     <div>
       <div className="flex flex-col">
-        <h2 className="text-white">Download Settings</h2>
+        <h2 className="font-manrope font-bold text-white">Download Settings</h2>
         <div className="flex flex-col divide-y divide-gray-600">
-          <MsfsCommunityPathSettingItem value={communityPath} setValue={setCommunityPath} />
-          <InstallPathSettingItem value={installPath} setValue={setInstallPath} />
+          <MsfsSettings version={'2020'} />
+          <MsfsSettings version={'2024'} />
           <SeparateTempLocationSettingItem value={separateTempLocation} setValue={setSeparateTempLocation} />
           {separateTempLocation && <TempLocationSettingItem value={tempLocation} setValue={setTempLocation} />}
           <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />

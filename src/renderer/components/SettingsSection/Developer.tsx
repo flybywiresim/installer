@@ -36,7 +36,7 @@ export const DeveloperSettings: React.FC = () => {
   return (
     <div>
       <div className="flex flex-col">
-        <h2 className="text-white">General Settings</h2>
+        <h2 className="font-manrope font-bold text-white">Developer Settings</h2>
         <div className="flex flex-col divide-y divide-gray-600">
           <SettingsItem name="Configuration Download URL">
             <div className="flex flex-row items-center justify-between py-2 text-white">

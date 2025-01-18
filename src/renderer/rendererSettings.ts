@@ -7,11 +7,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as packageInfo from '../../package.json';
 import { Directories } from 'renderer/utils/Directories';
 
-export const msStoreBasePath = path.join(
+export const msfs2020StoreBasePath = path.join(
   Directories.localAppData(),
   '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\',
 );
-export const steamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
+export const msfs2020steamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
 
 const msfsBasePath = (): string => {
   if (os.platform().toString() === 'linux') {
@@ -21,8 +21,8 @@ const msfsBasePath = (): string => {
   // Ensure proper functionality in main- and renderer-process
   let msfsConfigPath = null;
 
-  const steamPath = path.join(steamBasePath, 'UserCfg.opt');
-  const storePath = path.join(msStoreBasePath, 'UserCfg.opt');
+  const steamPath = path.join(msfs2020steamBasePath, 'UserCfg.opt');
+  const storePath = path.join(msfs2020StoreBasePath, 'UserCfg.opt');
   if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return 'C:\\';
   if (fs.existsSync(steamPath)) {
     msfsConfigPath = steamPath;
@@ -204,6 +204,56 @@ const schema: Schema<RendererSettings> = {
       installPath: {
         type: 'string',
         default: defaultCommunityDir(msfsBasePath()),
+      },
+      simulator: {
+        type: 'object',
+        default: {},
+        properties: {
+          msfs2020: {
+            type: 'object',
+            default: {},
+            properties: {
+              enabled: {
+                type: 'boolean',
+                default: msfsBasePath() !== 'C:\\' && msfsBasePath() !== 'linux' ? true : false,
+              },
+              basePath: {
+                type: 'string',
+                default: msfsBasePath(),
+              },
+              communityPath: {
+                type: 'string',
+                default: defaultCommunityDir(msfsBasePath()),
+              },
+              installPath: {
+                type: 'string',
+                default: defaultCommunityDir(msfsBasePath()),
+              },
+            },
+          },
+          msfs2024: {
+            type: 'object',
+            default: {},
+            properties: {
+              enabled: {
+                type: 'boolean',
+                default: msfsBasePath() !== 'C:\\' && msfsBasePath() !== 'linux' ? true : false,
+              },
+              basePath: {
+                type: 'string',
+                default: msfsBasePath(),
+              },
+              communityPath: {
+                type: 'string',
+                default: defaultCommunityDir(msfsBasePath()),
+              },
+              installPath: {
+                type: 'string',
+                default: defaultCommunityDir(msfsBasePath()),
+              },
+            },
+          },
+        },
       },
       separateTempLocation: {
         type: 'boolean',

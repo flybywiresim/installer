@@ -1,4 +1,4 @@
-import settings, { msStoreBasePath, steamBasePath } from 'renderer/rendererSettings';
+import settings, { msfs2020StoreBasePath, msfs2020steamBasePath } from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import { dialog } from '@electron/remote';
 import fs from 'fs';
@@ -22,10 +22,10 @@ export const setupMsfsBasePath = async (): Promise<string> => {
   const currentPath = Directories.msfsBasePath();
 
   const availablePaths: string[] = [];
-  if (fs.existsSync(msStoreBasePath)) {
+  if (fs.existsSync(msfs2020StoreBasePath)) {
     availablePaths.push('Microsoft Store Edition');
   }
-  if (fs.existsSync(steamBasePath)) {
+  if (fs.existsSync(msfs2020steamBasePath)) {
     availablePaths.push('Steam Edition');
   }
 
@@ -42,11 +42,11 @@ export const setupMsfsBasePath = async (): Promise<string> => {
     const selection = availablePaths[response];
     switch (selection) {
       case 'Microsoft Store Edition':
-        settings.set('mainSettings.msfsBasePath', msStoreBasePath);
-        return msStoreBasePath;
+        settings.set('mainSettings.msfsBasePath', msfs2020StoreBasePath);
+        return msfs2020StoreBasePath;
       case 'Steam Edition':
-        settings.set('mainSettings.msfsBasePath', steamBasePath);
-        return steamBasePath;
+        settings.set('mainSettings.msfsBasePath', msfs2020steamBasePath);
+        return msfs2020steamBasePath;
       case 'Custom Directory':
         break;
     }
