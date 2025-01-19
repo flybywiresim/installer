@@ -12,8 +12,14 @@ export const msfs2020StoreBasePath = path.join(
   '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\',
 );
 export const msfs2020steamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
+export const msfs2024StoreBasePath = path.join(
+  Directories.localAppData(),
+  '\\Packages\\Microsoft.Limitless_8wekyb3d8bbwe\\LocalCache\\',
+);
+// TODO: CHECK
+export const msfs2024steamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\');
 
-const msfsBasePath = (): string => {
+const msfsBasePath = (version: number): string => {
   if (os.platform().toString() === 'linux') {
     return 'linux';
   }
@@ -21,8 +27,14 @@ const msfsBasePath = (): string => {
   // Ensure proper functionality in main- and renderer-process
   let msfsConfigPath = null;
 
-  const steamPath = path.join(msfs2020steamBasePath, 'UserCfg.opt');
-  const storePath = path.join(msfs2020StoreBasePath, 'UserCfg.opt');
+  const steamPath =
+    version === 2020
+      ? path.join(msfs2020steamBasePath, 'UserCfg.opt')
+      : path.join(msfs2024steamBasePath, 'UserCfg.opt');
+  const storePath =
+    version === 2020
+      ? path.join(msfs2020StoreBasePath, 'UserCfg.opt')
+      : path.join(msfs2024StoreBasePath, 'UserCfg.opt');
   if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return 'C:\\';
   if (fs.existsSync(steamPath)) {
     msfsConfigPath = steamPath;
@@ -195,15 +207,15 @@ const schema: Schema<RendererSettings> = {
       },
       msfsBasePath: {
         type: 'string',
-        default: msfsBasePath(),
+        default: msfsBasePath(2020),
       },
       msfsCommunityPath: {
         type: 'string',
-        default: defaultCommunityDir(msfsBasePath()),
+        default: defaultCommunityDir(msfsBasePath(2020)),
       },
       installPath: {
         type: 'string',
-        default: defaultCommunityDir(msfsBasePath()),
+        default: defaultCommunityDir(msfsBasePath(2020)),
       },
       simulator: {
         type: 'object',
@@ -215,19 +227,19 @@ const schema: Schema<RendererSettings> = {
             properties: {
               enabled: {
                 type: 'boolean',
-                default: msfsBasePath() !== 'C:\\' && msfsBasePath() !== 'linux' ? true : false,
+                default: msfsBasePath(2020) !== 'C:\\' && msfsBasePath(2020) !== 'linux' ? true : false,
               },
               basePath: {
                 type: 'string',
-                default: msfsBasePath(),
+                default: msfsBasePath(2020),
               },
               communityPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath()),
+                default: defaultCommunityDir(msfsBasePath(2020)),
               },
               installPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath()),
+                default: defaultCommunityDir(msfsBasePath(2020)),
               },
             },
           },
@@ -237,19 +249,19 @@ const schema: Schema<RendererSettings> = {
             properties: {
               enabled: {
                 type: 'boolean',
-                default: msfsBasePath() !== 'C:\\' && msfsBasePath() !== 'linux' ? true : false,
+                default: msfsBasePath(2024) !== 'C:\\' && msfsBasePath(2024) !== 'linux' ? true : false,
               },
               basePath: {
                 type: 'string',
-                default: msfsBasePath(),
+                default: msfsBasePath(2024),
               },
               communityPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath()),
+                default: defaultCommunityDir(msfsBasePath(2024)),
               },
               installPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath()),
+                default: defaultCommunityDir(msfsBasePath(2024)),
               },
             },
           },
@@ -261,7 +273,7 @@ const schema: Schema<RendererSettings> = {
       },
       tempLocation: {
         type: 'string',
-        default: defaultCommunityDir(msfsBasePath()),
+        default: defaultCommunityDir(msfsBasePath(2020)),
       },
       configDownloadUrl: {
         type: 'string',
