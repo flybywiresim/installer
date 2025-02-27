@@ -1,24 +1,32 @@
 import React from 'react';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useIsDarkTheme } from 'renderer/rendererSettings';
+import { useIsDarkTheme, useSetting } from 'renderer/rendererSettings';
 import { Publisher } from 'renderer/utils/InstallerConfiguration';
 import { useAppSelector } from 'renderer/redux/store';
 import { Gear, Wrench, ArrowRepeat } from 'react-bootstrap-icons';
 import Msfs2020logo from '../../assets/msfs2020.png';
 import Msfs2024logo from '../../assets/msfs2024.png';
 import { InstallStatus } from 'renderer/components/AddonSection/Enums';
+import { Simulators } from 'renderer/utils/SimManager';
 
 export const NavBar: FC = ({ children }) => {
   const darkTheme = useIsDarkTheme();
-  const managedSim = 'msfs2020';
+  const [managedSim, setManagedSim] = useSetting<Simulators>('cache.main.managedSim');
+  const rotateManagedSim = () => {
+    const values = Object.values(Simulators);
+    const currentIndex = values.indexOf(managedSim);
+    const nextIndex = (currentIndex + 1) % values.length;
+    setManagedSim(values[nextIndex]);
+    return;
+  };
 
   const bg = darkTheme ? 'bg-navy-dark' : 'bg-navy';
 
   return (
     <div className={`${bg} flex h-full flex-col justify-between border-r border-navy-light px-6 py-7`}>
-      <div className="pb-5 mb-5 border-b-2 border-navy-light">
-        <ManagedSimSelector to="/settings" className="border-none">
+      <div className="mb-5 border-b-2 border-navy-light pb-5">
+        <ManagedSimSelector to="/" className="border-none" handleClick={rotateManagedSim}>
           {managedSim === 'msfs2020' && <img width={36} src={Msfs2020logo} alt={`MSFS 2020 Logo`} />}
           {managedSim === 'msfs2024' && <img width={36} src={Msfs2024logo} alt={`MSFS 2024 Logo`} />}
         </ManagedSimSelector>
@@ -47,6 +55,7 @@ export interface NavBarItemProps {
   showNotification?: boolean;
   notificationColor?: string;
   className?: string;
+  handleClick?: () => void;
 }
 
 export const NavbarItem: FC<NavBarItemProps> = ({
@@ -73,8 +82,14 @@ export const ManagedSimSelector: FC<NavBarItemProps> = ({
   notificationColor = 'orange',
   className,
   children,
+  handleClick,
 }) => (
-  <NavLink to={to} className={`${BASE_STYLE} ${className}`} activeClassName={`${BASE_STYLE} bg-navy-light`}>
+  <NavLink
+    to={to}
+    className={`${BASE_STYLE} ${className}`}
+    activeClassName={`${BASE_STYLE} bg-navy-light`}
+    onClick={handleClick}
+  >
     {children}
 
     <span className="absolute size-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
@@ -82,7 +97,7 @@ export const ManagedSimSelector: FC<NavBarItemProps> = ({
         <circle cx={5} cy={5} r={5} fill={notificationColor} />
       </svg>
     </span>
-    <span className="absolute size-0" style={{ visibility: true ? 'visible' : 'hidden' }}>
+    <span className="absolute size-0">
       <svg className="relative w-8" viewBox="0 0 10 10" style={{ right: '-10px', bottom: '-10px' }}>
         <circle cx={5} cy={5} r={5} fill={'#1f2a3c'} />
         <ArrowRepeat className="text-gray-100" size={10} strokeWidth={1} />
