@@ -293,6 +293,10 @@ const schema: Schema<RendererSettings> = {
         type: 'object',
         default: {},
         properties: {
+          managedSim: {
+            type: 'string',
+            default: '',
+          },
           lastShownSection: {
             type: 'string',
             default: '',
