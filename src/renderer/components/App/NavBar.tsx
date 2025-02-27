@@ -98,7 +98,10 @@ export const ManagedSimSelector: FC<NavBarItemProps> = ({
       </svg>
     </span>
     <span className="absolute size-0">
-      <svg className="relative bottom-[-12px] right-[-12px] group-hover:bottom-[-10px] group-hover:right-[-10px] w-6 group-hover:w-8" viewBox="0 0 10 10">
+      <svg
+        className="relative bottom-[-12px] right-[-12px] w-6 group-hover:bottom-[-10px] group-hover:right-[-10px] group-hover:w-8"
+        viewBox="0 0 10 10"
+      >
         <circle className="hidden group-hover:block" cx={5} cy={5} r={5} fill={'#1f2a3c'} />
         <ArrowRepeat className="text-gray-100" size={10} strokeWidth={1} />
       </svg>
