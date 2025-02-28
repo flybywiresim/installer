@@ -1,20 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useIsDarkTheme, useSetting } from 'renderer/rendererSettings';
+import store, { useIsDarkTheme, useSetting } from 'renderer/rendererSettings';
 import { Publisher } from 'renderer/utils/InstallerConfiguration';
 import { useAppSelector } from 'renderer/redux/store';
 import { Gear, Wrench, ArrowRepeat } from 'react-bootstrap-icons';
 import Msfs2020logo from '../../assets/msfs2020.png';
 import Msfs2024logo from '../../assets/msfs2024.png';
 import { InstallStatus } from 'renderer/components/AddonSection/Enums';
-import { Simulators } from 'renderer/utils/SimManager';
+import { enabledSimulators, Simulators } from 'renderer/utils/SimManager';
 
 export const NavBar: FC = ({ children }) => {
   const darkTheme = useIsDarkTheme();
   const [managedSim, setManagedSim] = useSetting<Simulators>('cache.main.managedSim');
   const rotateManagedSim = () => {
-    const values = Object.values(Simulators);
+    const values = Object.values(enabledSimulators());
     const currentIndex = values.indexOf(managedSim);
     const nextIndex = (currentIndex + 1) % values.length;
     setManagedSim(values[nextIndex]);
@@ -83,31 +83,38 @@ export const ManagedSimSelector: FC<NavBarItemProps> = ({
   className,
   children,
   handleClick,
-}) => (
-  <NavLink
-    to={to}
-    className={`${BASE_STYLE} ${className} group`}
-    activeClassName={`${BASE_STYLE} bg-navy-light`}
-    onClick={handleClick}
-  >
-    {children}
+}) => {
+  const [simCount, setSimCount] = useState(Object.values(enabledSimulators()).length);
+  store.onDidChange('mainSettings', () => {
+    setSimCount(Object.values(enabledSimulators()).length);
+  });
 
-    <span className="absolute size-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
-      <svg className="relative w-4" viewBox="0 0 10 10" style={{ left: '19px', bottom: '30px' }}>
-        <circle cx={5} cy={5} r={5} fill={notificationColor} />
-      </svg>
-    </span>
-    <span className="absolute size-0">
-      <svg
-        className="relative bottom-[-12px] right-[-12px] w-6 group-hover:bottom-[-10px] group-hover:right-[-10px] group-hover:w-8"
-        viewBox="0 0 10 10"
-      >
-        <circle className="hidden group-hover:block" cx={5} cy={5} r={5} fill={'#1f2a3c'} />
-        <ArrowRepeat className="text-gray-100" size={10} strokeWidth={1} />
-      </svg>
-    </span>
-  </NavLink>
-);
+  return (
+    <NavLink
+      to={to}
+      className={`${BASE_STYLE} ${className} group`}
+      activeClassName={`${BASE_STYLE} bg-navy-light`}
+      onClick={handleClick}
+    >
+      {children}
+
+      <span className="absolute size-0" style={{ visibility: showNotification ? 'visible' : 'hidden' }}>
+        <svg className="relative w-4" viewBox="0 0 10 10" style={{ left: '19px', bottom: '30px' }}>
+          <circle cx={5} cy={5} r={5} fill={notificationColor} />
+        </svg>
+      </span>
+      <span className="absolute size-0" style={{ visibility: simCount > 1 ? 'visible' : 'hidden' }}>
+        <svg
+          className="relative bottom-[-12px] right-[-12px] w-6 group-hover:bottom-[-10px] group-hover:right-[-10px] group-hover:w-8"
+          viewBox="0 0 10 10"
+        >
+          <circle className="hidden group-hover:block" cx={5} cy={5} r={5} fill={'#1f2a3c'} />
+          <ArrowRepeat className="text-gray-100" size={10} strokeWidth={1} />
+        </svg>
+      </span>
+    </NavLink>
+  );
+};
 
 export interface NavBarPublisherProps extends NavBarItemProps {
   publisher: Publisher;
