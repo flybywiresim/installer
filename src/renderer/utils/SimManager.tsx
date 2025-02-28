@@ -18,7 +18,7 @@ export const nextSim = (sim: Simulators) => {
   return values[nextIndex];
 };
 
-export const getManagedSim = () => {
+export const managedSim = () => {
   return settings.get('cache.main.managedSim') as Simulators;
 };
 
