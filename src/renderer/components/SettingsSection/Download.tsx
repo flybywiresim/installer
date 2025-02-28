@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { setupMsfsCommunityPath, setupInstallPath, setupTempLocation } from 'renderer/actions/install-path.utils';
 import settings, { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from '../Toggle';
-import { Simulators } from 'renderer/utils/SimManager';
+import { enabledSimulators, getManagedSim, nextSim, setManagedSim, Simulators } from 'renderer/utils/SimManager';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -105,7 +105,13 @@ const MsfsSettings = ({ sim }: { sim: Simulators }): JSX.Element => {
     <>
       <div className="flex flex-col divide-y divide-gray-600">
         <SettingsItem name={'Microsoft Flight Simulator ' + version}>
-          <Toggle value={enabled} onToggle={() => setEnabled(!enabled)} />
+          <Toggle
+            value={enabled}
+            onToggle={() => {
+              Object.values(enabledSimulators()).length > 1 || !enabled ? setEnabled(!enabled) : null;
+              getManagedSim() === sim ? setManagedSim(nextSim(sim)) : null;
+            }}
+          />
         </SettingsItem>
         {enabled && (
           <div className="flex flex-col divide-y divide-gray-600 pl-6">
