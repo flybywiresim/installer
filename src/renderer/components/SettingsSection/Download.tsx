@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { setupMsfsCommunityPath, setupInstallPath, setupTempLocation } from 'renderer/actions/install-path.utils';
 import settings, { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from '../Toggle';
+import { Simulators } from 'renderer/utils/SimManager';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -94,7 +95,8 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
   );
 };
 
-const MsfsSettings = ({ version }: { version: string }): JSX.Element => {
+const MsfsSettings = ({ sim }: { sim: Simulators }): JSX.Element => {
+  const version = sim.slice(-4);
   const [enabled, setEnabled] = useSetting<boolean>(`mainSettings.simulator.msfs${version}.enabled`);
   const [communityPath, setCommunityPath] = useSetting<string>(`mainSettings.simulator.msfs${version}.communityPath`);
   const [installPath, setInstallPath] = useSetting<string>(`mainSettings.simulator.msfs${version}.installPath`);
@@ -102,7 +104,7 @@ const MsfsSettings = ({ version }: { version: string }): JSX.Element => {
   return (
     <>
       <div className="flex flex-col divide-y divide-gray-600">
-        <SettingsItem name={'Microsoft Flight Simulator' + version}>
+        <SettingsItem name={'Microsoft Flight Simulator ' + version}>
           <Toggle value={enabled} onToggle={() => setEnabled(!enabled)} />
         </SettingsItem>
         {enabled && (
@@ -139,8 +141,8 @@ export const DownloadSettings = (): JSX.Element => {
       <div className="flex flex-col">
         <h2 className="font-manrope font-bold text-white">Download Settings</h2>
         <div className="flex flex-col divide-y divide-gray-600">
-          <MsfsSettings version={'2020'} />
-          <MsfsSettings version={'2024'} />
+          <MsfsSettings sim={Simulators.Msfs2020} />
+          <MsfsSettings sim={Simulators.Msfs2024} />
           <SeparateTempLocationSettingItem value={separateTempLocation} setValue={setSeparateTempLocation} />
           {separateTempLocation && <TempLocationSettingItem value={tempLocation} setValue={setTempLocation} />}
           <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />
