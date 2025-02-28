@@ -97,9 +97,9 @@ const UseCdnSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
 
 const MsfsSettings = ({ sim }: { sim: Simulators }): JSX.Element => {
   const version = sim.slice(-4);
-  const [enabled, setEnabled] = useSetting<boolean>(`mainSettings.simulator.msfs${version}.enabled`);
-  const [communityPath, setCommunityPath] = useSetting<string>(`mainSettings.simulator.msfs${version}.communityPath`);
-  const [installPath, setInstallPath] = useSetting<string>(`mainSettings.simulator.msfs${version}.installPath`);
+  const [enabled, setEnabled] = useSetting<boolean>(`mainSettings.simulator.${sim}.enabled`);
+  const [communityPath, setCommunityPath] = useSetting<string>(`mainSettings.simulator.${sim}.communityPath`);
+  const [installPath, setInstallPath] = useSetting<string>(`mainSettings.simulator.${sim}.installPath`);
 
   return (
     <>
