@@ -43,27 +43,31 @@ const PathSettingItem: React.FC<PathSettingItemProps> = ({ value, setValue, name
   );
 };
 
-const TempLocationSettingItem = ({ value, setValue }: SettingItemProps<string>): JSX.Element => (
-  <PathSettingItem
-    value={value}
-    setValue={setValue}
-    name="Location for temporary folders"
-    callback={setupTempLocation}
-  />
-);
-
-const SeparateTempLocationSettingItem = ({ value, setValue }: SettingItemProps<boolean>) => {
-  const handleClick = () => {
-    const newState = !value;
-    setValue(newState);
-    settings.set('mainSettings.separateTempLocation', newState);
-    settings.set('mainSettings.tempLocation', settings.get('mainSettings.installPath'));
+const TempLocationSettingItem = ({ value, setValue }: SettingItemProps<boolean>): JSX.Element => {
+  const [tempLocation, setTempLocation] = useSetting<string>('mainSettings.tempLocation');
+  const handleToggle = () => {
+    setValue(!value);
+    settings.set('mainSettings.separateTempLocation', !value);
   };
 
   return (
-    <SettingsItem name="Separate location for temporary folders">
-      <Toggle value={value} onToggle={handleClick} />
-    </SettingsItem>
+    <>
+      <div className="flex flex-col divide-y divide-gray-600">
+        <SettingsItem name="Separate location for temporary folders">
+          <Toggle value={value} onToggle={handleToggle} />
+        </SettingsItem>
+        {value && (
+          <div className="flex flex-col divide-y divide-gray-600 pl-6">
+            <PathSettingItem
+              name="Location for temporary folders"
+              value={tempLocation}
+              setValue={setTempLocation}
+              callback={setupTempLocation}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
@@ -135,7 +139,6 @@ const MsfsSettings = ({ sim }: { sim: Simulators }): JSX.Element => {
 };
 
 export const DownloadSettings = (): JSX.Element => {
-  const [tempLocation, setTempLocation] = useSetting<string>('mainSettings.tempLocation');
   const [separateTempLocation, setSeparateTempLocation] = useSetting<boolean>('mainSettings.separateTempLocation');
   const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>(
     'mainSettings.disableExperimentalWarning',
@@ -149,8 +152,7 @@ export const DownloadSettings = (): JSX.Element => {
         <div className="flex flex-col divide-y divide-gray-600">
           <MsfsSettings sim={Simulators.Msfs2020} />
           <MsfsSettings sim={Simulators.Msfs2024} />
-          <SeparateTempLocationSettingItem value={separateTempLocation} setValue={setSeparateTempLocation} />
-          {separateTempLocation && <TempLocationSettingItem value={tempLocation} setValue={setTempLocation} />}
+          <TempLocationSettingItem value={separateTempLocation} setValue={setSeparateTempLocation} />
           <DisableWarningSettingItem value={disableVersionWarning} setValue={setDisableVersionWarning} />
           <UseCdnSettingItem value={useCdnCache} setValue={setUseCdnCache} />
         </div>
