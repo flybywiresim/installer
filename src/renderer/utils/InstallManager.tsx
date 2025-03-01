@@ -212,7 +212,7 @@ export class InstallManager {
     }
 
     const destDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
-    const tempDir = Directories.temp();
+    const tempDir = Directories.temp(addon.simulator);
 
     const fragmenterUpdateChecker = new FragmenterUpdateChecker();
     const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, destDir, { forceCacheBust: true });

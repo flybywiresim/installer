@@ -119,13 +119,13 @@ const MsfsSettings = ({ sim }: { sim: Simulators }): JSX.Element => {
               name="Community Directory"
               value={communityPath}
               setValue={setCommunityPath}
-              callback={setupMsfsCommunityPath}
+              callback={() => setupMsfsCommunityPath(sim)}
             />
             <PathSettingItem
               name="Install Directory"
               value={installPath}
               setValue={setInstallPath}
-              callback={setupInstallPath}
+              callback={() => setupInstallPath(sim)}
             />
           </div>
         )}

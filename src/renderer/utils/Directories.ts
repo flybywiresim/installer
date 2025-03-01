@@ -3,7 +3,7 @@ import { Addon } from 'renderer/utils/InstallerConfiguration';
 import fs from 'fs';
 import settings from 'renderer/rendererSettings';
 import { app } from '@electron/remote';
-import { TypeOfSimulator } from './SimManager';
+import { Simulators, TypeOfSimulator } from './SimManager';
 
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
@@ -55,14 +55,14 @@ export class Directories {
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
-  static tempLocation(): string {
+  static tempLocation(sim: TypeOfSimulator): string {
     return settings.get('mainSettings.separateTempLocation')
       ? (settings.get('mainSettings.tempLocation') as string)
-      : (settings.get('mainSettings.installPath') as string);
+      : this.installLocation(sim);
   }
 
-  static inTempLocation(targetDir: string): string {
-    return path.join(Directories.tempLocation(), this.sanitize(targetDir));
+  static inTempLocation(sim: TypeOfSimulator, targetDir: string): string {
+    return path.join(Directories.tempLocation(sim), this.sanitize(targetDir));
   }
 
   static inPackages(sim: TypeOfSimulator, targetDir: string): string {
@@ -77,10 +77,13 @@ export class Directories {
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
-  static temp(): string {
-    const dir = path.join(Directories.tempLocation(), `${TEMP_DIRECTORY_PREFIX}-${(Math.random() * 1000).toFixed(0)}`);
+  static temp(sim: TypeOfSimulator): string {
+    const dir = path.join(
+      Directories.tempLocation(sim),
+      `${TEMP_DIRECTORY_PREFIX}-${(Math.random() * 1000).toFixed(0)}`,
+    );
     if (fs.existsSync(dir)) {
-      return Directories.temp();
+      return Directories.temp(sim);
     }
     return dir;
   }
@@ -88,32 +91,34 @@ export class Directories {
   static removeAllTemp(): void {
     console.log('[CLEANUP] Removing all temp directories');
 
-    if (!fs.existsSync(Directories.tempLocation())) {
-      console.warn('[CLEANUP] Location of temporary folders does not exist. Aborting');
-      return;
-    }
-
-    try {
-      const dirents = fs
-        .readdirSync(Directories.tempLocation(), { withFileTypes: true })
-        .filter((dirEnt) => dirEnt.isDirectory())
-        .filter((dirEnt) => TEMP_DIRECTORY_PREFIXES_FOR_CLEANUP.some((it) => dirEnt.name.startsWith(it)));
-
-      for (const dir of dirents) {
-        const fullPath = Directories.inTempLocation(dir.name);
-
-        console.log('[CLEANUP] Removing', fullPath);
-        try {
-          fs.rmSync(fullPath, { recursive: true });
-          console.log('[CLEANUP] Removed', fullPath);
-        } catch (e) {
-          console.error('[CLEANUP] Could not remove', fullPath, e);
-        }
+    for (const sim in Simulators) {
+      if (!fs.existsSync(Directories.tempLocation(sim as TypeOfSimulator))) {
+        console.warn('[CLEANUP] Location of temporary folders does not exist. Aborting');
+        return;
       }
 
-      console.log('[CLEANUP] Finished removing all temp directories');
-    } catch (e) {
-      console.error('[CLEANUP] Could not scan folder', Directories.tempLocation(), e);
+      try {
+        const dirents = fs
+          .readdirSync(Directories.tempLocation(sim as TypeOfSimulator), { withFileTypes: true })
+          .filter((dirEnt) => dirEnt.isDirectory())
+          .filter((dirEnt) => TEMP_DIRECTORY_PREFIXES_FOR_CLEANUP.some((it) => dirEnt.name.startsWith(it)));
+
+        for (const dir of dirents) {
+          const fullPath = Directories.inTempLocation(sim as TypeOfSimulator, dir.name);
+
+          console.log('[CLEANUP] Removing', fullPath);
+          try {
+            fs.rmSync(fullPath, { recursive: true });
+            console.log('[CLEANUP] Removed', fullPath);
+          } catch (e) {
+            console.error('[CLEANUP] Could not remove', fullPath, e);
+          }
+        }
+
+        console.log('[CLEANUP] Finished removing all temp directories');
+      } catch (e) {
+        console.error('[CLEANUP] Could not scan folder', Directories.tempLocation(sim as TypeOfSimulator), e);
+      }
     }
   }
 

@@ -5,18 +5,18 @@ import * as os from 'os';
 import settings from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import { dialog } from '@electron/remote';
-import { Simulators, TypeOfSimulator } from 'renderer/utils/SimManager';
+import { managedSim, Simulators, TypeOfSimulator } from 'renderer/utils/SimManager';
 
-export const msfs2020StoreBasePath = path.join(
+const msfs2020StoreBasePath = path.join(
   Directories.localAppData(),
   '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\',
 );
-export const msfs2020SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
-export const msfs2024StoreBasePath = path.join(
+const msfs2020SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
+const msfs2024StoreBasePath = path.join(
   Directories.localAppData(),
   '\\Packages\\Microsoft.Limitless_8wekyb3d8bbwe\\LocalCache\\',
 );
-export const msfs2024SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\');
+const msfs2024SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\');
 
 export const msfsBasePath = (version: number): string => {
   if (os.platform().toString() === 'linux') {
@@ -180,7 +180,7 @@ export const setupInstallPath = async (sim: TypeOfSimulator): Promise<string> =>
 };
 
 export const setupTempLocation = async (): Promise<string> => {
-  const currentPath = Directories.tempLocation();
+  const currentPath = Directories.tempLocation(managedSim());
 
   return await selectPath(currentPath, 'Select a location for temporary folders', 'mainSettings.tempLocation');
 };

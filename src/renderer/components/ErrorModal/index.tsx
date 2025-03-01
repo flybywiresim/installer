@@ -24,13 +24,13 @@ export const ErrorModal = (): JSX.Element => {
     !fs.existsSync(Directories.installLocation(Simulators.Msfs2020)) ||
       Directories.installLocation(Simulators.Msfs2020) === 'C:\\' ||
       !fs.existsSync(Directories.communityLocation(Simulators.Msfs2020)) ||
-      !fs.existsSync(Directories.tempLocation()),
+      !fs.existsSync(Directories.tempLocation(Simulators.Msfs2020)),
   );
   const [msfs2024installLocationError] = useState<boolean>(
     !fs.existsSync(Directories.installLocation(Simulators.Msfs2024)) ||
       Directories.installLocation(Simulators.Msfs2024) === 'C:\\' ||
       !fs.existsSync(Directories.communityLocation(Simulators.Msfs2024)) ||
-      !fs.existsSync(Directories.tempLocation()),
+      !fs.existsSync(Directories.tempLocation(Simulators.Msfs2020)),
   );
 
   const handleSelectSimulatorBasePath = async (sim: TypeOfSimulator) => {

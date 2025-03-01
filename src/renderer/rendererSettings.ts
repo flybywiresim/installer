@@ -40,9 +40,6 @@ interface RendererSettings {
     useLongDateFormat: boolean;
     useDarkTheme: boolean;
     allowSeasonalEffects: boolean;
-    msfsBasePath: string;
-    configDownloadUrl: string;
-    configForceUseLocal: boolean;
   };
   cache: {
     main: {
@@ -129,18 +126,6 @@ const schema: Schema<RendererSettings> = {
       allowSeasonalEffects: {
         type: 'boolean',
         default: true,
-      },
-      msfsBasePath: {
-        type: 'string',
-        default: msfsBasePath(2020),
-      },
-      msfsCommunityPath: {
-        type: 'string',
-        default: defaultCommunityDir(msfsBasePath(2020)),
-      },
-      installPath: {
-        type: 'string',
-        default: defaultCommunityDir(msfsBasePath(2020)),
       },
       simulator: {
         type: 'object',
@@ -254,5 +239,20 @@ const store = new Store({ schema, clearInvalidConfig: true });
 
 // Workaround to flush the defaults
 store.set('metaInfo.lastLaunch', Date.now());
+
+// TODO: Remove in future
+// Transfer old MSFS path settings
+if (store.get('mainSettings.msfsBasePath')) {
+  store.set('mainSettings.simulator.msfs2020.basePath', store.get('mainSettings.msfsBasePath'));
+  store.delete('mainSettings.msfsBasePath' as keyof RendererSettings);
+}
+if (store.get('mainSettings.msfsCommunityPath')) {
+  store.set('mainSettings.simulator.msfs2020.communityPath', store.get('mainSettings.msfsCommunityPath'));
+  store.delete('mainSettings.msfsCommunityPath' as keyof RendererSettings);
+}
+if (store.get('mainSettings.installPath')) {
+  store.set('mainSettings.simulator.msfs2020.installPath', store.get('mainSettings.installPath'));
+  store.delete('mainSettings.installPath' as keyof RendererSettings);
+}
 
 export default store;
