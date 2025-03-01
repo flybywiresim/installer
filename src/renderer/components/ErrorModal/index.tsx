@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { setupInstallPath, setupMsfsBasePath } from 'renderer/actions/install-path.utils';
+import { setupInstallPath, setupSimulatorBasePath } from 'renderer/actions/install-path.utils';
 import settings, { defaultCommunityDir } from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import * as fs from 'fs';
@@ -34,7 +34,7 @@ export const ErrorModal = (): JSX.Element => {
   );
 
   const handleSelectSimulatorBasePath = async (sim: TypeOfSimulator) => {
-    const path = await setupMsfsBasePath();
+    const path = await setupSimulatorBasePath(sim);
     if (path) {
       const communityDir = defaultCommunityDir(path);
       settings.set(`mainSettings.simulator.${sim}.communityPath`, communityDir);
@@ -46,7 +46,7 @@ export const ErrorModal = (): JSX.Element => {
   };
 
   const handleSelectInstallPath = async (sim: TypeOfSimulator) => {
-    const path = await setupInstallPath();
+    const path = await setupInstallPath(sim);
     if (path) {
       settings.set(`mainSettings.simulator.${sim}.communityPath`, path);
       settings.set('mainSettings.separateTempLocation', false);
@@ -177,7 +177,7 @@ export const ErrorModal = (): JSX.Element => {
     if (msfs2020installLocationError) {
       return (
         <>
-          <span className="w-3/5 text-center text-2xl">Your Community folder is set to</span>
+          <span className="w-3/5 text-center text-2xl">Your MSFS 2020 Community folder is set to</span>
           <pre className="mb-0 w-3/5 rounded-lg bg-gray-700 px-6 py-2.5 text-center font-mono text-2xl">
             {Directories.installLocation(Simulators.Msfs2020)}
           </pre>
@@ -194,7 +194,7 @@ export const ErrorModal = (): JSX.Element => {
     if (msfs2024installLocationError) {
       return (
         <>
-          <span className="w-3/5 text-center text-2xl">Your Community folder is set to</span>
+          <span className="w-3/5 text-center text-2xl">Your MSFS 2024 Community folder is set to</span>
           <pre className="mb-0 w-3/5 rounded-lg bg-gray-700 px-6 py-2.5 text-center font-mono text-2xl">
             {Directories.installLocation(Simulators.Msfs2024)}
           </pre>

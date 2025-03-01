@@ -11,13 +11,13 @@ export const msfs2020StoreBasePath = path.join(
   Directories.localAppData(),
   '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\',
 );
-export const msfs2020steamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
+export const msfs2020SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
 export const msfs2024StoreBasePath = path.join(
   Directories.localAppData(),
   '\\Packages\\Microsoft.Limitless_8wekyb3d8bbwe\\LocalCache\\',
 );
 // TODO: CHECK
-export const msfs2024steamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\');
+export const msfs2024SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\');
 
 const msfsBasePath = (version: number): string => {
   if (os.platform().toString() === 'linux') {
@@ -29,8 +29,8 @@ const msfsBasePath = (version: number): string => {
 
   const steamPath =
     version === 2020
-      ? path.join(msfs2020steamBasePath, 'UserCfg.opt')
-      : path.join(msfs2024steamBasePath, 'UserCfg.opt');
+      ? path.join(msfs2020SteamBasePath, 'UserCfg.opt')
+      : path.join(msfs2024SteamBasePath, 'UserCfg.opt');
   const storePath =
     version === 2020
       ? path.join(msfs2020StoreBasePath, 'UserCfg.opt')
