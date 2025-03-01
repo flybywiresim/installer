@@ -5,20 +5,20 @@ import * as os from 'os';
 import settings from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import { dialog } from '@electron/remote';
-import { managedSim, Simulators, TypeOfSimulator } from 'renderer/utils/SimManager';
+import { managedSim, TypeOfSimulator } from 'renderer/utils/SimManager';
 
-const msfs2020StoreBasePath = path.join(
-  Directories.localAppData(),
-  '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\',
-);
-const msfs2020SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
-const msfs2024StoreBasePath = path.join(
-  Directories.localAppData(),
-  '\\Packages\\Microsoft.Limitless_8wekyb3d8bbwe\\LocalCache\\',
-);
-const msfs2024SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\');
+const possibleBasePaths = {
+  msfs2020: {
+    store: path.join(Directories.localAppData(), '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\'),
+    steam: path.join(Directories.appData(), '\\Microsoft Flight Simulator\\'),
+  },
+  msfs2024: {
+    store: path.join(Directories.localAppData(), '\\Packages\\Microsoft.Limitless_8wekyb3d8bbwe\\LocalCache\\'),
+    steam: path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\'),
+  },
+};
 
-export const msfsBasePath = (version: number): string => {
+export const msfsBasePath = (sim: TypeOfSimulator): string => {
   if (os.platform().toString() === 'linux') {
     return 'linux';
   }
@@ -26,14 +26,8 @@ export const msfsBasePath = (version: number): string => {
   // Ensure proper functionality in main- and renderer-process
   let msfsConfigPath = null;
 
-  const steamPath =
-    version === 2020
-      ? path.join(msfs2020SteamBasePath, 'UserCfg.opt')
-      : path.join(msfs2024SteamBasePath, 'UserCfg.opt');
-  const storePath =
-    version === 2020
-      ? path.join(msfs2020StoreBasePath, 'UserCfg.opt')
-      : path.join(msfs2024StoreBasePath, 'UserCfg.opt');
+  const steamPath = path.join(possibleBasePaths[sim].steam, 'UserCfg.opt');
+  const storePath = path.join(possibleBasePaths[sim].store, 'UserCfg.opt');
   if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return 'C:\\';
   if (fs.existsSync(steamPath)) {
     msfsConfigPath = steamPath;
@@ -96,21 +90,11 @@ export const setupSimulatorBasePath = async (sim: TypeOfSimulator): Promise<stri
   const currentPath = Directories.simulatorBasePath(sim);
 
   const availablePaths: string[] = [];
-  if (sim === Simulators.Msfs2020) {
-    if (fs.existsSync(msfs2020StoreBasePath)) {
-      availablePaths.push('Microsoft Store Edition');
-    }
-    if (fs.existsSync(msfs2020SteamBasePath)) {
-      availablePaths.push('Steam Edition');
-    }
+  if (fs.existsSync(possibleBasePaths[sim].store)) {
+    availablePaths.push('Microsoft Store Edition');
   }
-  if (sim === Simulators.Msfs2024) {
-    if (fs.existsSync(msfs2024StoreBasePath)) {
-      availablePaths.push('Microsoft Store Edition');
-    }
-    if (fs.existsSync(msfs2024SteamBasePath)) {
-      availablePaths.push('Steam Edition');
-    }
+  if (fs.existsSync(possibleBasePaths[sim].steam)) {
+    availablePaths.push('Steam Edition');
   }
 
   if (availablePaths.length > 0) {
@@ -124,30 +108,14 @@ export const setupSimulatorBasePath = async (sim: TypeOfSimulator): Promise<stri
     });
 
     const selection = availablePaths[response];
-    switch (sim) {
-      case Simulators.Msfs2020:
-        switch (selection) {
-          case 'Microsoft Store Edition':
-            settings.set(`mainSettings.simulator.${sim}.basePath`, msfs2020StoreBasePath);
-            return msfs2020StoreBasePath;
-          case 'Steam Edition':
-            settings.set(`mainSettings.simulator.${sim}.basePath`, msfs2020SteamBasePath);
-            return msfs2020SteamBasePath;
-          case 'Custom Directory':
-            break;
-        }
-        break;
-      case Simulators.Msfs2024:
-        switch (selection) {
-          case 'Microsoft Store Edition':
-            settings.set(`mainSettings.simulator.${sim}.basePath`, msfs2024StoreBasePath);
-            return msfs2024StoreBasePath;
-          case 'Steam Edition':
-            settings.set(`mainSettings.simulator.${sim}.basePath`, msfs2024SteamBasePath);
-            return msfs2024SteamBasePath;
-          case 'Custom Directory':
-            break;
-        }
+    switch (selection) {
+      case 'Microsoft Store Edition':
+        settings.set(`mainSettings.simulator.${sim}.basePath`, possibleBasePaths[sim].store);
+        return possibleBasePaths[sim].store;
+      case 'Steam Edition':
+        settings.set(`mainSettings.simulator.${sim}.basePath`, possibleBasePaths[sim].steam);
+        return possibleBasePaths[sim].steam;
+      case 'Custom Directory':
         break;
     }
   }

@@ -2,6 +2,8 @@ import Store, { Schema } from 'electron-store';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as packageInfo from '../../package.json';
 import { defaultCommunityDir, msfsBasePath } from './actions/install-path.utils';
+import { Simulators } from './utils/SimManager';
+import { Directories } from './utils/Directories';
 
 export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetStateAction<T>>] => {
   const [storedValue, setStoredValue] = useState(store.get<string, T>(key, defaultValue));
@@ -137,19 +139,22 @@ const schema: Schema<RendererSettings> = {
             properties: {
               enabled: {
                 type: 'boolean',
-                default: msfsBasePath(2020) !== 'C:\\' && msfsBasePath(2020) !== 'linux' ? true : false,
+                default:
+                  msfsBasePath(Simulators.Msfs2020) !== 'C:\\' && msfsBasePath(Simulators.Msfs2020) !== 'linux'
+                    ? true
+                    : false,
               },
               basePath: {
                 type: 'string',
-                default: msfsBasePath(2020),
+                default: msfsBasePath(Simulators.Msfs2020),
               },
               communityPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath(2020)),
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2020)),
               },
               installPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath(2020)),
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2020)),
               },
             },
           },
@@ -159,19 +164,22 @@ const schema: Schema<RendererSettings> = {
             properties: {
               enabled: {
                 type: 'boolean',
-                default: msfsBasePath(2024) !== 'C:\\' && msfsBasePath(2024) !== 'linux' ? true : false,
+                default:
+                  msfsBasePath(Simulators.Msfs2024) !== 'C:\\' && msfsBasePath(Simulators.Msfs2024) !== 'linux'
+                    ? true
+                    : false,
               },
               basePath: {
                 type: 'string',
-                default: msfsBasePath(2024),
+                default: msfsBasePath(Simulators.Msfs2024),
               },
               communityPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath(2024)),
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2024)),
               },
               installPath: {
                 type: 'string',
-                default: defaultCommunityDir(msfsBasePath(2024)),
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2024)),
               },
             },
           },
@@ -183,7 +191,7 @@ const schema: Schema<RendererSettings> = {
       },
       tempLocation: {
         type: 'string',
-        default: defaultCommunityDir(msfsBasePath(2020)),
+        default: Directories.appData(),
       },
       configDownloadUrl: {
         type: 'string',
