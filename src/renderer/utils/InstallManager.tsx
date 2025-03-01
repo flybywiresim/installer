@@ -211,7 +211,7 @@ export class InstallManager {
       }
     }
 
-    const destDir = Directories.inInstallLocation(addon.targetDirectory);
+    const destDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
     const tempDir = Directories.temp();
 
     const fragmenterUpdateChecker = new FragmenterUpdateChecker();
@@ -264,7 +264,7 @@ export class InstallManager {
       }),
     );
 
-    if (tempDir === Directories.installLocation()) {
+    if (tempDir === Directories.installLocation(addon.simulator)) {
       console.error('[InstallManager](installAddon) Community directory equals temp directory');
 
       this.notifyDownload(addon, false);
@@ -590,10 +590,10 @@ export class InstallManager {
       await BackgroundServices.setAutoStartEnabled(addon, publisher, false);
     }
 
-    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+    const installDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
 
     await ipcRenderer.invoke(channels.installManager.uninstall, installDir, [
-      Directories.inPackages(addon.targetDirectory),
+      Directories.inPackages(addon.simulator, addon.targetDirectory),
     ]);
 
     this.setCurrentInstallState(addon, { status: InstallStatus.NotInstalled });
@@ -658,7 +658,7 @@ export class InstallManager {
       return installedTrack;
     }
 
-    const install = this.getAddonInstall(Directories.inInstallLocation(addon.targetDirectory));
+    const install = this.getAddonInstall(Directories.inInstallLocation(addon.simulator, addon.targetDirectory));
 
     if (!install) {
       return null;
@@ -692,7 +692,7 @@ export class InstallManager {
   private static async determineAddonInstallStatus(addon: Addon): Promise<InstallState> {
     console.log('[InstallManager](determineAddonInstallStatus) Checking install status');
 
-    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+    const installDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
     const addonInstalledTrack = this.determineAddonInstalledTrack(addon);
     const addonSelectedTrack = this.getAddonSelectedTrack(addon);
 
@@ -739,7 +739,7 @@ export class InstallManager {
   public static async checkForUpdates(addon: Addon): Promise<void> {
     console.log('[InstallManager](checkForUpdates) Checking for updates for ' + addon.key);
 
-    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+    const installDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
 
     const state = store.getState();
 

@@ -3,6 +3,7 @@ import { Addon } from 'renderer/utils/InstallerConfiguration';
 import fs from 'fs';
 import settings from 'renderer/rendererSettings';
 import { app } from '@electron/remote';
+import { TypeOfSimulator } from './SimManager';
 
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
@@ -24,29 +25,33 @@ export class Directories {
     return settings.get('mainSettings.msfsBasePath') as string;
   }
 
-  static communityLocation(): string {
-    return settings.get('mainSettings.msfsCommunityPath') as string;
+  static simulatorBasePath(sim: TypeOfSimulator): string {
+    return settings.get(`mainSettings.simulator.${sim}.basePath`) as string;
   }
 
-  static inCommunityLocation(targetDir: string): string {
-    return path.join(Directories.communityLocation(), this.sanitize(targetDir));
+  static communityLocation(sim: TypeOfSimulator): string {
+    return settings.get(`mainSettings.simulator.${sim}.communityPath`) as string;
+  }
+
+  static inCommunityLocation(sim: TypeOfSimulator, targetDir: string): string {
+    return path.join(Directories.communityLocation(sim), this.sanitize(targetDir));
   }
 
   static inCommunityPackage(addon: Addon, targetDir: string): string {
-    const baseDir = this.inCommunityLocation(this.sanitize(addon.targetDirectory));
+    const baseDir = this.inCommunityLocation(addon.simulator, this.sanitize(addon.targetDirectory));
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
-  static installLocation(): string {
-    return settings.get('mainSettings.installPath') as string;
+  static installLocation(sim: TypeOfSimulator): string {
+    return settings.get(`mainSettings.simulator.${sim}.installPath`) as string;
   }
 
-  static inInstallLocation(targetDir: string): string {
-    return path.join(Directories.installLocation(), this.sanitize(targetDir));
+  static inInstallLocation(sim: TypeOfSimulator, targetDir: string): string {
+    return path.join(Directories.installLocation(sim), this.sanitize(targetDir));
   }
 
   static inInstallPackage(addon: Addon, targetDir: string): string {
-    const baseDir = this.inInstallLocation(this.sanitize(addon.targetDirectory));
+    const baseDir = this.inInstallLocation(addon.simulator, this.sanitize(addon.targetDirectory));
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
@@ -60,12 +65,14 @@ export class Directories {
     return path.join(Directories.tempLocation(), this.sanitize(targetDir));
   }
 
-  static inPackages(targetDir: string): string {
-    return path.join(this.msfsBasePath(), 'packages', this.sanitize(targetDir)).replace('LocalCache', 'LocalState');
+  static inPackages(sim: TypeOfSimulator, targetDir: string): string {
+    return path
+      .join(this.simulatorBasePath(sim), 'packages', this.sanitize(targetDir))
+      .replace('LocalCache', 'LocalState');
   }
 
   static inPackageCache(addon: Addon, targetDir: string): string {
-    const baseDir = this.inPackages(this.sanitize(addon.targetDirectory));
+    const baseDir = this.inPackages(addon.simulator, this.sanitize(addon.targetDirectory));
 
     return path.join(baseDir, this.sanitize(targetDir));
   }
@@ -112,7 +119,7 @@ export class Directories {
 
   static removeAlternativesForAddon(addon: Addon): void {
     addon.alternativeNames?.forEach((altName) => {
-      const altDir = Directories.inInstallLocation(altName);
+      const altDir = Directories.inInstallLocation(addon.simulator, altName);
 
       if (fs.existsSync(altDir)) {
         console.log('Removing alternative', altDir);
@@ -122,13 +129,15 @@ export class Directories {
   }
 
   static isFragmenterInstall(target: string | Addon): boolean {
-    const targetDir = typeof target === 'string' ? target : Directories.inInstallLocation(target.targetDirectory);
+    const targetDir =
+      typeof target === 'string' ? target : Directories.inInstallLocation(target.simulator, target.targetDirectory);
 
     return fs.existsSync(path.join(targetDir, 'install.json'));
   }
 
   static isGitInstall(target: string | Addon): boolean {
-    const targetDir = typeof target === 'string' ? target : Directories.inInstallLocation(target.targetDirectory);
+    const targetDir =
+      typeof target === 'string' ? target : Directories.inInstallLocation(target.simulator, target.targetDirectory);
 
     try {
       const symlinkPath = fs.readlinkSync(targetDir);
