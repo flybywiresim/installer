@@ -20,8 +20,8 @@ export const NavBar: FC = ({ children }) => {
     <div className={`${bg} flex h-full flex-col justify-between border-r border-navy-light px-6 py-7`}>
       <div className="mb-5 border-b-2 border-navy-light pb-5">
         <ManagedSimSelector to="/" className="border-none" handleClick={() => setManagedSim(nextSim(managedSim))}>
-          {managedSim === 'msfs2020' && <img width={36} src={Msfs2020logo} alt={`MSFS 2020 Logo`} />}
-          {managedSim === 'msfs2024' && <img width={36} src={Msfs2024logo} alt={`MSFS 2024 Logo`} />}
+          {managedSim === Simulators.Msfs2020 && <img width={36} src={Msfs2020logo} alt={`MSFS 2020 Logo`} />}
+          {managedSim === Simulators.Msfs2024 && <img width={36} src={Msfs2024logo} alt={`MSFS 2024 Logo`} />}
         </ManagedSimSelector>
       </div>
       <div className="flex flex-col gap-y-5">{children}</div>
