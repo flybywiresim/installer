@@ -10,6 +10,10 @@ import channels from 'common/channels';
 import { Simulators, TypeOfSimulator } from 'renderer/utils/SimManager';
 
 export const ErrorModal = (): JSX.Element => {
+  const [noSimInstalled] = useState<boolean>(
+    !settings.get(`mainSettings.simulator.${Simulators.Msfs2020}.enabled`) &&
+      !settings.get(`mainSettings.simulator.${Simulators.Msfs2024}.enabled`),
+  );
   const [msfs2020BasePathError] = useState<boolean>(
     settings.get(`mainSettings.simulator.${Simulators.Msfs2020}.enabled`) &&
       ((!fs.existsSync(Directories.simulatorBasePath(Simulators.Msfs2020)) &&
@@ -34,7 +38,7 @@ export const ErrorModal = (): JSX.Element => {
       (!fs.existsSync(Directories.installLocation(Simulators.Msfs2024)) ||
         Directories.installLocation(Simulators.Msfs2024) === 'C:\\' ||
         !fs.existsSync(Directories.communityLocation(Simulators.Msfs2024)) ||
-        !fs.existsSync(Directories.tempLocation(Simulators.Msfs2020))),
+        !fs.existsSync(Directories.tempLocation(Simulators.Msfs2024))),
   );
 
   const handleSelectSimulatorBasePath = async (sim: TypeOfSimulator) => {
@@ -56,11 +60,40 @@ export const ErrorModal = (): JSX.Element => {
   };
 
   const handleSimulatorNotInstalled = (sim: TypeOfSimulator) => {
-    settings.set(`'mainSettings.simulator.${sim}.basePath'`, 'notInstalled');
+    settings.set(`mainSettings.simulator.${sim}.basePath`, 'notInstalled');
     ipcRenderer.send(channels.window.reload);
   };
 
   const content = (): JSX.Element => {
+    if (noSimInstalled) {
+      return (
+        <>
+          <span className="w-3/5 text-center text-2xl">
+            We could not find an installed simulator. Please select for which simulator you&apos;d like to manage your
+            addons. You can change your selection any time in the settings.
+          </span>
+
+          <Button
+            type={ButtonType.Neutral}
+            onClick={() => {
+              settings.set(`mainSettings.simulator.${Simulators.Msfs2020}.enabled`, true);
+              ipcRenderer.send(channels.window.reload);
+            }}
+          >
+            Microsoft Flight Simulator 2020
+          </Button>
+          <Button
+            type={ButtonType.Neutral}
+            onClick={() => {
+              settings.set(`mainSettings.simulator.${Simulators.Msfs2024}.enabled`, true);
+              ipcRenderer.send(channels.window.reload);
+            }}
+          >
+            Microsoft Flight Simulator 2024
+          </Button>
+        </>
+      );
+    }
     // Linux's error goes first because it may interfere with the other dir checkers
     if (os.platform().toString() === 'linux') {
       if (msfs2020BasePathError) {
@@ -211,7 +244,13 @@ export const ErrorModal = (): JSX.Element => {
     return <></>;
   };
 
-  if (msfs2020installLocationError || msfs2024installLocationError || msfs2020BasePathError || msfs2024BasePathError) {
+  if (
+    noSimInstalled ||
+    msfs2020installLocationError ||
+    msfs2024installLocationError ||
+    msfs2020BasePathError ||
+    msfs2024BasePathError
+  ) {
     return (
       <div className="fixed left-0 top-0 z-50 flex h-screen w-screen flex-col items-center justify-center gap-y-5 bg-navy text-gray-100">
         <span className="text-5xl font-semibold">Something went wrong.</span>
