@@ -25,6 +25,7 @@ import { StateSection } from 'renderer/components/AddonSection/StateSection';
 import { ExternalApps } from 'renderer/utils/ExternalApps';
 import { MyInstall } from 'renderer/components/AddonSection/MyInstall';
 import rehypeRaw from 'rehype-raw';
+import { Simulators } from 'renderer/utils/SimManager';
 
 const abortControllers = new Array<AbortController>(20);
 abortControllers.fill(new AbortController());
@@ -70,6 +71,7 @@ export interface AircraftSectionURLParams {
 export const AddonSection = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const [managedSim] = useSetting<Simulators>('cache.main.managedSim');
 
   const { publisherName } = useParams<AircraftSectionURLParams>();
   const publisherData = useAppSelector((state) =>
@@ -276,6 +278,7 @@ export const AddonSection = (): JSX.Element => {
           <AddonBar>
             <div className="flex flex-col gap-y-4">
               {publisherData.addons
+                .filter((it) => it.simulator === managedSim)
                 .filter((it) => !it.category)
                 .map((addon) => (
                   <AddonBarItem
@@ -296,9 +299,9 @@ export const AddonSection = (): JSX.Element => {
               {publisherData.defs
                 ?.filter((it) => it.kind === 'addonCategory')
                 .map((category: AddonCategoryDefinition) => {
-                  const categoryAddons = publisherData.addons.filter(
-                    (it) => it.category?.substring(1) === category.key,
-                  );
+                  const categoryAddons = publisherData.addons
+                    .filter((it) => it.simulator === managedSim)
+                    .filter((it) => it.category?.substring(1) === category.key);
 
                   if (categoryAddons.length === 0) {
                     return null;
@@ -315,6 +318,7 @@ export const AddonSection = (): JSX.Element => {
 
                       <div className="flex flex-col gap-y-4">
                         {publisherData.addons
+                          .filter((it) => it.simulator === managedSim)
                           .filter((it) => it.category?.substring(1) === category.key)
                           .map((addon) => (
                             <AddonBarItem

@@ -114,12 +114,15 @@ export interface NavBarPublisherProps extends NavBarItemProps {
 }
 
 export const NavBarPublisher: FC<NavBarPublisherProps> = ({ to, publisher }) => {
+  const [managedSim] = useSetting<Simulators>('cache.main.managedSim');
   const hasAvailableUpdates = useAppSelector((state) => {
-    return publisher.addons.some((addon) => {
-      const status = state.installStatus[addon.key]?.status;
+    return publisher.addons
+      .filter((addon) => addon.simulator === managedSim)
+      .some((addon) => {
+        const status = state.installStatus[addon.key]?.status;
 
-      return status === InstallStatus.NeedsUpdate || status === InstallStatus.TrackSwitch;
-    });
+        return status === InstallStatus.NeedsUpdate || status === InstallStatus.TrackSwitch;
+      });
   });
 
   return (

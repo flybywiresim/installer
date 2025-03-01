@@ -1,5 +1,6 @@
 import { defaultConfiguration } from 'renderer/data';
 import settings from 'renderer/rendererSettings';
+import { Simulators } from './SimManager';
 
 export interface ExternalLink {
   url: string;
@@ -107,6 +108,7 @@ export interface AddonMyInstallPageConfiguration {
 export interface Addon {
   key: string;
   name: string;
+  simulator: `${Simulators}`;
   repoOwner?: string;
   repoName?: string;
   category?: `@${string}`;

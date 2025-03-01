@@ -11,7 +11,7 @@ import { ErrorModal } from '../ErrorModal';
 import { NavBar, NavBarPublisher } from 'renderer/components/App/NavBar';
 import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { useAppSelector } from 'renderer/redux/store';
-import settings from 'renderer/rendererSettings';
+import settings, { useSetting } from 'renderer/rendererSettings';
 import './index.css';
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
@@ -19,6 +19,7 @@ import { ModalContainer } from '../Modal';
 import { PublisherSection } from 'renderer/components/PublisherSection';
 import * as packageInfo from '../../../../package.json';
 import { InstallManager } from 'renderer/utils/InstallManager';
+import { Simulators } from 'renderer/utils/SimManager';
 
 const App = () => {
   const history = useHistory();
@@ -32,6 +33,8 @@ const App = () => {
       return arr;
     }, []),
   );
+
+  const [managedSim] = useSetting<Simulators>('cache.main.managedSim');
 
   useEffect(() => {
     for (const addon of addons) {
@@ -117,13 +120,15 @@ const App = () => {
             <div className="flex h-full flex-row justify-start pt-10">
               <div className="z-40 h-full">
                 <NavBar>
-                  {configuration.publishers.map((publisher) => (
-                    <NavBarPublisher
-                      key={publisher.key}
-                      to={`/addon-section/${publisher.name}`}
-                      publisher={publisher}
-                    />
-                  ))}
+                  {configuration.publishers
+                    .filter((publisher) => publisher.addons.some((addon) => addon.simulator === managedSim))
+                    .map((publisher) => (
+                      <NavBarPublisher
+                        key={publisher.key}
+                        to={`/addon-section/${publisher.name}`}
+                        publisher={publisher}
+                      />
+                    ))}
                 </NavBar>
               </div>
 
