@@ -110,7 +110,9 @@ export const AddonSection = (): JSX.Element => {
   }, [history, publisherData.addons, publisherName, selectedAddon]);
 
   useEffect(() => {
-    const firstAvailableAddon = publisherData.addons.find((addon) => addon.enabled);
+    const firstAvailableAddon = publisherData.addons
+      .filter((addon) => addon.simulator === managedSim)
+      .find((addon) => addon.enabled);
 
     if (!firstAvailableAddon) {
       history.push(`/addon-section/${publisherName}/no-available-addons`);
@@ -119,11 +121,13 @@ export const AddonSection = (): JSX.Element => {
 
     const lastSeenAddonKey = settings.get('cache.main.lastShownAddonKey');
     const addonToSelect =
-      publisherData.addons.find((addon) => addon.key === lastSeenAddonKey) ||
+      publisherData.addons
+        .filter((addon) => addon.simulator === managedSim)
+        .find((addon) => addon.key === lastSeenAddonKey) ||
       publisherData.addons.find((addon) => addon.key === firstAvailableAddon.key);
 
     setSelectedAddon(addonToSelect);
-  }, [history, publisherData.addons, publisherName]);
+  }, [history, publisherData.addons, publisherName, managedSim]);
 
   const installedTrack = (installedTracks[selectedAddon.key] as AddonTrack) ?? null;
 
