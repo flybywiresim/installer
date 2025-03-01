@@ -30,15 +30,13 @@ export const ErrorModal = (): JSX.Element => {
     settings.get(`mainSettings.simulator.${Simulators.Msfs2020}.enabled`) &&
       (!fs.existsSync(Directories.installLocation(Simulators.Msfs2020)) ||
         Directories.installLocation(Simulators.Msfs2020) === 'C:\\' ||
-        !fs.existsSync(Directories.communityLocation(Simulators.Msfs2020)) ||
-        !fs.existsSync(Directories.tempLocation(Simulators.Msfs2020))),
+        !fs.existsSync(Directories.communityLocation(Simulators.Msfs2020))),
   );
   const [msfs2024installLocationError] = useState<boolean>(
-    settings.get(`mainSettings.simulator.${Simulators.Msfs2020}.enabled`) &&
+    settings.get(`mainSettings.simulator.${Simulators.Msfs2024}.enabled`) &&
       (!fs.existsSync(Directories.installLocation(Simulators.Msfs2024)) ||
         Directories.installLocation(Simulators.Msfs2024) === 'C:\\' ||
-        !fs.existsSync(Directories.communityLocation(Simulators.Msfs2024)) ||
-        !fs.existsSync(Directories.tempLocation(Simulators.Msfs2024))),
+        !fs.existsSync(Directories.communityLocation(Simulators.Msfs2024))),
   );
 
   const handleSelectSimulatorBasePath = async (sim: TypeOfSimulator) => {
