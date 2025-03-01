@@ -21,10 +21,6 @@ export class Directories {
     return path.join(app.getPath('appData'), '..', 'Local');
   }
 
-  static msfsBasePath(): string {
-    return settings.get('mainSettings.msfsBasePath') as string;
-  }
-
   static simulatorBasePath(sim: TypeOfSimulator): string {
     return settings.get(`mainSettings.simulator.${sim}.basePath`) as string;
   }
