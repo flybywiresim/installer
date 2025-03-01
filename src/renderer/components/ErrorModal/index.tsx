@@ -39,8 +39,6 @@ export const ErrorModal = (): JSX.Element => {
       const communityDir = defaultCommunityDir(path);
       settings.set(`mainSettings.simulator.${sim}.communityPath`, communityDir);
       settings.set(`mainSettings.simulator.${sim}.installPath`, communityDir);
-      settings.set('mainSettings.separateTempLocation', false);
-      settings.set('mainSettings.tempLocation', communityDir);
       ipcRenderer.send(channels.window.reload);
     }
   };
@@ -49,8 +47,6 @@ export const ErrorModal = (): JSX.Element => {
     const path = await setupInstallPath(sim);
     if (path) {
       settings.set(`mainSettings.simulator.${sim}.communityPath`, path);
-      settings.set('mainSettings.separateTempLocation', false);
-      settings.set('mainSettings.tempLocation', path);
       ipcRenderer.send(channels.window.reload);
     }
   };
