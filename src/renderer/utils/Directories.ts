@@ -21,6 +21,10 @@ export class Directories {
     return path.join(app.getPath('appData'), '..', 'Local');
   }
 
+  static osTemp(): string {
+    return app.getPath('temp');
+  }
+
   static simulatorBasePath(sim: TypeOfSimulator): string {
     return settings.get(`mainSettings.simulator.${sim}.basePath`) as string;
   }

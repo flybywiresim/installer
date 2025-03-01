@@ -191,7 +191,7 @@ const schema: Schema<RendererSettings> = {
       },
       tempLocation: {
         type: 'string',
-        default: Directories.appData(),
+        default: Directories.osTemp(),
       },
       configDownloadUrl: {
         type: 'string',
