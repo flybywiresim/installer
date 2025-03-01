@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { setupInstallPath, setupSimulatorBasePath } from 'renderer/actions/install-path.utils';
-import settings, { defaultCommunityDir } from 'renderer/rendererSettings';
+import { setupInstallPath, setupSimulatorBasePath, defaultCommunityDir } from 'renderer/actions/install-path.utils';
+import settings from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import * as fs from 'fs';
 import { Button, ButtonType } from 'renderer/components/Button';

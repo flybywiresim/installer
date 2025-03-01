@@ -1,13 +1,81 @@
-import settings, {
-  msfs2020StoreBasePath,
-  msfs2020SteamBasePath,
-  msfs2024StoreBasePath,
-  msfs2024SteamBasePath,
-} from 'renderer/rendererSettings';
+import * as fs from 'fs';
+import walk from 'walkdir';
+import * as path from 'path';
+import * as os from 'os';
+import settings from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import { dialog } from '@electron/remote';
-import fs from 'fs';
 import { Simulators, TypeOfSimulator } from 'renderer/utils/SimManager';
+
+export const msfs2020StoreBasePath = path.join(
+  Directories.localAppData(),
+  '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\',
+);
+export const msfs2020SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
+export const msfs2024StoreBasePath = path.join(
+  Directories.localAppData(),
+  '\\Packages\\Microsoft.Limitless_8wekyb3d8bbwe\\LocalCache\\',
+);
+export const msfs2024SteamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator 2024\\');
+
+export const msfsBasePath = (version: number): string => {
+  if (os.platform().toString() === 'linux') {
+    return 'linux';
+  }
+
+  // Ensure proper functionality in main- and renderer-process
+  let msfsConfigPath = null;
+
+  const steamPath =
+    version === 2020
+      ? path.join(msfs2020SteamBasePath, 'UserCfg.opt')
+      : path.join(msfs2024SteamBasePath, 'UserCfg.opt');
+  const storePath =
+    version === 2020
+      ? path.join(msfs2020StoreBasePath, 'UserCfg.opt')
+      : path.join(msfs2024StoreBasePath, 'UserCfg.opt');
+  if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return 'C:\\';
+  if (fs.existsSync(steamPath)) {
+    msfsConfigPath = steamPath;
+  } else if (fs.existsSync(storePath)) {
+    msfsConfigPath = storePath;
+  } else {
+    walk(Directories.localAppData(), (path) => {
+      if (path.includes('Flight') && path.includes('UserCfg.opt')) {
+        msfsConfigPath = path;
+      }
+    });
+  }
+
+  if (!msfsConfigPath) {
+    return 'C:\\';
+  }
+
+  return path.dirname(msfsConfigPath);
+};
+
+export const defaultCommunityDir = (msfsBase: string): string => {
+  const msfsConfigPath = path.join(msfsBase, 'UserCfg.opt');
+  if (!fs.existsSync(msfsConfigPath)) {
+    if (os.platform().toString() === 'linux') {
+      return 'linux';
+    }
+    return 'C:\\';
+  }
+
+  try {
+    const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
+    const msfsConfigLines = msfsConfig.split(/\r?\n/);
+    const packagesPathLine = msfsConfigLines.find((line) => line.includes('InstalledPackagesPath'));
+    const communityDir = path.join(packagesPathLine.split(' ').slice(1).join(' ').replaceAll('"', ''), '\\Community');
+
+    return fs.existsSync(communityDir) ? communityDir : 'C:\\';
+  } catch (e) {
+    console.warn('Could not parse community dir from file', msfsConfigPath);
+    console.error(e);
+    return 'C:\\';
+  }
+};
 
 const selectPath = async (currentPath: string, dialogTitle: string, setting: string): Promise<string> => {
   const path = await dialog.showOpenDialog({
