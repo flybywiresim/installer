@@ -1,6 +1,7 @@
 import { Directories } from 'renderer/utils/Directories';
 import fs from 'fs';
 import checkDiskSpace from 'check-disk-space';
+import { Addon } from './InstallerConfiguration';
 
 export enum FreeDiskSpaceStatus {
   Unknown,
@@ -17,7 +18,7 @@ export interface FreeDiskSpaceInfo {
 }
 
 export class FreeDiskSpace {
-  static async analyse(requiredSpace: number): Promise<FreeDiskSpaceInfo> {
+  static async analyse(addon: Addon, requiredSpace: number): Promise<FreeDiskSpaceInfo> {
     if (!Number.isFinite(requiredSpace)) {
       return {
         freeSpaceInTemp: -1,
@@ -26,8 +27,8 @@ export class FreeDiskSpace {
       };
     }
 
-    let resolvedDestDir = Directories.installLocation();
-    let resolvedTempDir = Directories.tempLocation();
+    let resolvedDestDir = Directories.installLocation(addon.simulator);
+    let resolvedTempDir = Directories.tempLocation(addon.simulator);
 
     try {
       resolvedDestDir = await fs.promises.readlink(resolvedDestDir);

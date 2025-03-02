@@ -220,7 +220,7 @@ export class InstallManager {
     // Confirm download size and required disk space with user
     const requiredDiskSpace = updateInfo.requiredDiskSpace;
 
-    const freeDeskSpaceInfo = await FreeDiskSpace.analyse(requiredDiskSpace);
+    const freeDeskSpaceInfo = await FreeDiskSpace.analyse(addon, requiredDiskSpace);
 
     const diskSpaceModalSettingString = `mainSettings.disableAddonDiskSpaceModal.${publisher.key}.${addon.key}`;
     const dontAsk = settings.get(diskSpaceModalSettingString);

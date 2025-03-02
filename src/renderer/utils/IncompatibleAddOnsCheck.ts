@@ -16,7 +16,7 @@ export class IncompatibleAddOnsCheck {
 
     const incompatibleAddons: AddonIncompatibleAddon[] = [];
     const manifestFileName = 'manifest.json';
-    const comDir = Directories.communityLocation();
+    const comDir = Directories.communityLocation(addon.simulator);
 
     try {
       const addonFolders = fs.readdirSync(comDir);
