@@ -19,7 +19,7 @@ import { ModalContainer } from '../Modal';
 import { PublisherSection } from 'renderer/components/PublisherSection';
 import * as packageInfo from '../../../../package.json';
 import { InstallManager } from 'renderer/utils/InstallManager';
-import { Simulators } from 'renderer/utils/SimManager';
+import { enabledSimulators, Simulators } from 'renderer/utils/SimManager';
 
 const App = () => {
   const history = useHistory();
@@ -34,7 +34,11 @@ const App = () => {
     }, []),
   );
 
-  const [managedSim] = useSetting<Simulators>('cache.main.managedSim');
+  const [managedSim, setManagedSim] = useSetting<Simulators>('cache.main.managedSim');
+
+  if (!Object.values(Simulators).includes(managedSim) && Object.values(enabledSimulators()).length > 0) {
+    setManagedSim(Object.values(enabledSimulators())[0]);
+  }
 
   useEffect(() => {
     for (const addon of addons) {
