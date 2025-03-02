@@ -233,11 +233,7 @@ export const AddonSection = (): JSX.Element => {
   };
 
   const handleInstall = async () => {
-    if (settings.has('mainSettings.installPath')) {
-      await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
-    } else {
-      await setupInstallPath();
-    }
+    await InstallManager.installAddon(selectedAddon, publisherData, showModalAsync);
   };
 
   const handleCancel = useCallback(() => {
