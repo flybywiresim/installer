@@ -235,7 +235,7 @@ export const ErrorModal = (): JSX.Element => {
           </span>
 
           <Button type={ButtonType.Neutral} onClick={() => handleSelectInstallPath(Simulators.Msfs2020)}>
-            Select
+            Select Path
           </Button>
         </>
       );
@@ -252,7 +252,7 @@ export const ErrorModal = (): JSX.Element => {
           </span>
 
           <Button type={ButtonType.Neutral} onClick={() => handleSelectInstallPath(Simulators.Msfs2024)}>
-            Select
+            Select Path
           </Button>
         </>
       );
@@ -269,7 +269,7 @@ export const ErrorModal = (): JSX.Element => {
           </span>
 
           <Button type={ButtonType.Neutral} onClick={() => handleSelectTempLocation()}>
-            Select new location
+            Select Path
           </Button>
           <Button type={ButtonType.Neutral} onClick={() => resetTempLocation()}>
             Reset
