@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { setupInstallPath } from 'renderer/actions/install-path.utils';
 import { DownloadItem } from 'renderer/redux/types';
 import { useSelector } from 'react-redux';
 import { InstallerStore, useAppDispatch, useAppSelector } from '../../redux/store';
