@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { setupInstallPath, setupSimulatorBasePath, defaultCommunityDir } from 'renderer/actions/install-path.utils';
+import {
+  setupInstallPath,
+  setupSimulatorBasePath,
+  defaultCommunityDir,
+  setupTempLocation,
+} from 'renderer/actions/install-path.utils';
 import settings from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
 import * as fs from 'fs';
@@ -38,6 +43,7 @@ export const ErrorModal = (): JSX.Element => {
         Directories.installLocation(Simulators.Msfs2024) === 'C:\\' ||
         !fs.existsSync(Directories.communityLocation(Simulators.Msfs2024))),
   );
+  const [tempLocationError] = useState<boolean>(!fs.existsSync(settings.get('mainSettings.tempLocation')));
 
   const handleSelectSimulatorBasePath = async (sim: TypeOfSimulator) => {
     const path = await setupSimulatorBasePath(sim);
@@ -55,6 +61,18 @@ export const ErrorModal = (): JSX.Element => {
       settings.set(`mainSettings.simulator.${sim}.communityPath`, path);
       ipcRenderer.send(channels.window.reload);
     }
+  };
+
+  const handleSelectTempLocation = async () => {
+    const path = await setupTempLocation();
+    if (path) {
+      settings.set('mainSettings.tempLocation', path);
+      ipcRenderer.send(channels.window.reload);
+    }
+  };
+  const resetTempLocation = () => {
+    settings.set('mainSettings.tempLocation', Directories.osTemp());
+    ipcRenderer.send(channels.window.reload);
   };
 
   const handleSimulatorNotInstalled = (sim: TypeOfSimulator) => {
@@ -239,6 +257,26 @@ export const ErrorModal = (): JSX.Element => {
         </>
       );
     }
+    if (tempLocationError) {
+      return (
+        <>
+          <span className="w-3/5 text-center text-2xl">Your loation for temporary folders is set to</span>
+          <pre className="mb-0 w-3/5 rounded-lg bg-gray-700 px-6 py-2.5 text-center font-mono text-2xl">
+            {settings.get('mainSettings.tempLocation')}
+          </pre>
+          <span className="w-3/5 text-center text-2xl">
+            but we couldn&apos;t find it there. Please set the correct location before we can continue.
+          </span>
+
+          <Button type={ButtonType.Neutral} onClick={() => handleSelectTempLocation()}>
+            Select new location
+          </Button>
+          <Button type={ButtonType.Neutral} onClick={() => resetTempLocation()}>
+            Reset
+          </Button>
+        </>
+      );
+    }
     return <></>;
   };
 
@@ -247,7 +285,8 @@ export const ErrorModal = (): JSX.Element => {
     msfs2020installLocationError ||
     msfs2024installLocationError ||
     msfs2020BasePathError ||
-    msfs2024BasePathError
+    msfs2024BasePathError ||
+    tempLocationError
   ) {
     return (
       <div className="fixed left-0 top-0 z-50 flex h-screen w-screen flex-col items-center justify-center gap-y-5 bg-navy text-gray-100">
