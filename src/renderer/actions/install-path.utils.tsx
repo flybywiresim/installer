@@ -60,7 +60,8 @@ export const defaultCommunityDir = (msfsBase: string): string => {
   try {
     const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
     const msfsConfigLines = msfsConfig.split(/\r?\n/);
-    const packagesPathLine = msfsConfigLines.find((line) => line.includes('InstalledPackagesPath'));
+    // Intentional space after InstalledPackagesPath to ensure not matching the InstalledPackagesPathNextBoot property added in MSFS2024 SU2.
+    const packagesPathLine = msfsConfigLines.find((line) => line.includes('InstalledPackagesPath '));
     const communityDir = path.join(packagesPathLine.split(' ').slice(1).join(' ').replaceAll('"', ''), '\\Community');
 
     return fs.existsSync(communityDir) ? communityDir : 'C:\\';
