@@ -103,3 +103,4 @@ dist/
 
 # License checker
 extraResources/licenses.md
+.github/LICENSES.yaml

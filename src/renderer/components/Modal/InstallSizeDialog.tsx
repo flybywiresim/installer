@@ -1,101 +1,130 @@
-import React, { FC } from "react";
-import { UpdateInfo } from "@flybywiresim/fragmenter";
-import { PromptModal } from "renderer/components/Modal/index";
-import { Download, Hdd, HddFill } from "react-bootstrap-icons";
-import { ButtonType } from "renderer/components/Button";
+import React, { FC } from 'react';
+import type { UpdateInfo } from '@flybywiresim/fragmenter';
+import { PromptModal } from 'renderer/components/Modal/index';
+import { Download, Hdd, HddFill } from 'react-bootstrap-icons';
+import { ButtonType } from 'renderer/components/Button';
+import { FreeDiskSpaceInfo } from 'renderer/utils/FreeDiskSpace';
 
 const GIB = 1_074_000_000;
 const MIB = 1_049_000;
 
 function formatSize(size: number): string {
-    const numGigabytes = size / GIB;
+  const numGigabytes = size / GIB;
 
-    if (numGigabytes > 1) {
-        return `${numGigabytes.toFixed(1)} GiB`;
-    } else {
-        const numMegabytes = size / MIB;
+  if (numGigabytes > 1) {
+    return `${numGigabytes.toFixed(1)} GiB`;
+  } else {
+    const numMegabytes = size / MIB;
 
-        return `${numMegabytes.toFixed(1)} MiB`;
-    }
+    return `${numMegabytes.toFixed(1)} MiB`;
+  }
 }
 
 export interface InstallSizeDialogProps {
-    updateInfo: UpdateInfo,
-    onConfirm?: () => void,
-    onCancel?: () => void,
-    availableDiskSpace: number,
-    dontShowAgainSettingName: string,
+  updateInfo: UpdateInfo;
+  freeDeskSpaceInfo: FreeDiskSpaceInfo;
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  dontShowAgainSettingName: string;
 }
 
-export const InstallSizeDialog: FC<InstallSizeDialogProps> = ({ updateInfo, onConfirm, onCancel, availableDiskSpace, dontShowAgainSettingName }) => {
-    const requiredDiskSpace = (updateInfo.requiredDiskSpace + updateInfo.downloadSize) + (10 * MIB);
+export const InstallSizeDialog: FC<InstallSizeDialogProps> = ({
+  updateInfo,
+  freeDeskSpaceInfo,
+  onConfirm,
+  onCancel,
+  dontShowAgainSettingName,
+}) => {
+  const requiredDiskSpace = updateInfo.requiredDiskSpace + updateInfo.downloadSize + 10 * MIB;
 
-    const availableDiskSpaceSufficient = availableDiskSpace > requiredDiskSpace;
+  const showTemporaryAsSeparate = freeDeskSpaceInfo.freeSpaceInDest !== freeDeskSpaceInfo.freeSpaceInTemp;
 
-    const availableDiskSpaceColor = availableDiskSpaceSufficient ? 'text-utility-green' : 'text-utility-red';
+  const sufficientSpaceInDest = freeDeskSpaceInfo.freeSpaceInDest > requiredDiskSpace;
+  const sufficientSpaceInTemp = freeDeskSpaceInfo.freeSpaceInTemp > requiredDiskSpace;
 
-    return (
-        <PromptModal
-            title={"Package size"}
-            bodyText={(
-                <div className="flex flex-col gap-y-8 mt-5">
-                    <div className="flex flex-col rounded-sm">
-                        <span className="flex justify-between items-center">
-                            <span className="flex gap-x-6 items-center">
-                                <Download size={30} />
+  const canInstall = sufficientSpaceInDest && sufficientSpaceInTemp;
 
-                                <span className="text-3xl">Download size</span>
-                            </span>
+  const availableDiskSpaceColorDest = sufficientSpaceInDest ? 'text-utility-green' : 'text-utility-red';
+  const availableDiskSpaceColorTemp = sufficientSpaceInTemp ? 'text-utility-green' : 'text-utility-red';
 
-                            <span className="text-5xl font-bold font-manrope">{formatSize(updateInfo.downloadSize)}</span>
-                        </span>
-                    </div>
+  return (
+    <PromptModal
+      title={'Package size'}
+      bodyText={
+        <div className="mt-5 flex flex-col gap-y-8">
+          <div className="flex flex-col rounded-sm">
+            <span className="flex items-center justify-between">
+              <span className="flex items-center gap-x-6">
+                <Download size={30} />
 
-                    <hr className="m-0" />
+                <span className="text-3xl">Download size</span>
+              </span>
 
-                    <div className="flex flex-col rounded-sm">
-                        <span className="flex gap-x-5 justify-between items-center">
-                            <span className="flex gap-x-6 items-center">
-                                <HddFill size={30} />
+              <span className="font-manrope text-5xl font-bold">{formatSize(updateInfo.downloadSize)}</span>
+            </span>
+          </div>
 
-                                <span className="text-3xl">Required disk space</span>
-                            </span>
+          <hr className="m-0" />
 
-                            <span className="text-4xl font-bold font-manrope">{formatSize(requiredDiskSpace)}</span>
-                        </span>
-                    </div>
+          <div className="flex flex-col rounded-sm">
+            <span className="flex items-center justify-between gap-x-5">
+              <span className="flex items-center gap-x-6">
+                <HddFill size={30} />
 
-                    <div className="flex flex-col rounded-sm">
-                        <span className="flex gap-x-5 justify-between items-center">
-                            <span className="flex gap-x-6 items-center">
-                                <Hdd size={30} />
+                <span className="text-3xl">Required disk space</span>
+              </span>
 
-                                <span className="text-3xl">Available disk space</span>
-                            </span>
+              <span className="font-manrope text-4xl font-bold">{formatSize(requiredDiskSpace)}</span>
+            </span>
+          </div>
 
-                            <span className={`text-4xl font-bold font-manrope ${availableDiskSpaceColor}`}>{formatSize(availableDiskSpace)}</span>
-                        </span>
-                    </div>
+          <div className="flex flex-col rounded-sm">
+            <span className="flex items-center justify-between gap-x-5">
+              <span className="flex items-center gap-x-6">
+                <Hdd size={30} />
 
-                    {(!availableDiskSpaceSufficient) && (
-                        <div className="w-full flex items-center gap-x-7 border-2 px-7 py-3.5 border-utility-red text-utility-red rounded-md">
-                            <Hdd className="text-utility-red" size={36} />
+                <span className="text-3xl">Available disk space (destination)</span>
+              </span>
 
-                            <div className="flex flex-col gap-y-2.5">
-                                <span className="text-4xl font-bold font-manrope">Not enough available disk space</span>
+              <span className={`font-manrope text-4xl font-bold ${availableDiskSpaceColorDest}`}>
+                {formatSize(freeDeskSpaceInfo.freeSpaceInDest)}
+              </span>
+            </span>
 
-                                <span className="text-2xl">Try to free up space in order to install this addon.</span>
-                            </div>
-                        </div>
-                    )}
-                </div>
+            {showTemporaryAsSeparate && (
+              <span className="flex items-center justify-between gap-x-5">
+                <span className="flex items-center gap-x-6">
+                  <Hdd size={30} />
+
+                  <span className="text-3xl">Available disk space (temporary)</span>
+                </span>
+
+                <span className={`font-manrope text-4xl font-bold ${availableDiskSpaceColorTemp}`}>
+                  {formatSize(freeDeskSpaceInfo.freeSpaceInTemp)}
+                </span>
+              </span>
             )}
-            confirmText="Install"
-            confirmColor={ButtonType.Positive}
-            onConfirm={onConfirm}
-            confirmEnabled={availableDiskSpaceSufficient}
-            onCancel={onCancel}
-            dontShowAgainSettingName={availableDiskSpaceSufficient ? dontShowAgainSettingName : undefined}
-        />
-    );
+          </div>
+
+          {!canInstall && (
+            <div className="flex w-full items-center gap-x-7 rounded-md border-2 border-utility-red px-7 py-3.5 text-utility-red">
+              <Hdd className="text-utility-red" size={36} />
+
+              <div className="flex flex-col gap-y-2.5">
+                <span className="font-manrope text-4xl font-bold">Not enough available disk space</span>
+
+                <span className="text-2xl">Try to free up space in order to install this addon.</span>
+              </div>
+            </div>
+          )}
+        </div>
+      }
+      confirmText="Install"
+      confirmColor={ButtonType.Positive}
+      onConfirm={onConfirm}
+      confirmEnabled={canInstall}
+      onCancel={onCancel}
+      dontShowAgainSettingName={sufficientSpaceInDest ? dontShowAgainSettingName : undefined}
+    />
+  );
 };
