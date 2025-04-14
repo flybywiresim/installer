@@ -253,7 +253,7 @@ function initializeApp() {
   app.on('ready', () => {
     createWindow();
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       installExtension(REACT_DEVELOPER_TOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.log('An error occurred: ', err));
@@ -262,6 +262,23 @@ function initializeApp() {
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.log('An error occurred: ', err));
     }
+
+    //Register keybinds
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+      // Check if the input event is for window reloading
+      if (
+        input.type === 'keyUp' &&
+        (input.key.toLowerCase() === 'r' || input.key === 'F5') &&
+        (input.control || input.meta)
+      ) {
+        mainWindow.isFocused() && mainWindow.reload();
+      }
+
+      // Check if the input even is for dev tools
+      if (input.type === 'keyUp' && input.key === 'F12' && (input.control || input.meta)) {
+        mainWindow.isFocused() && mainWindow.webContents.toggleDevTools();
+      }
+    });
   });
 
   // Quit when all windows are closed, except on macOS. There, it's common
