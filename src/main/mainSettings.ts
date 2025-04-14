@@ -16,6 +16,12 @@ interface Settings {
       maximized: boolean;
     };
   };
+  advanced: {
+    showAll: boolean;
+    disableHardwareAcceleration: boolean;
+    disableGpuSandbox: boolean;
+    noSandbox: boolean;
+  };
 }
 
 const schema: Schema<Settings> = {
@@ -38,6 +44,26 @@ const schema: Schema<Settings> = {
             default: false,
           },
         },
+      },
+    },
+  },
+  advanced: {
+    type: 'object',
+    default: {},
+    properties: {
+      showAll: {
+        type: 'boolean',
+        default: false,
+      },
+      disableHardwareAcceleration: {
+        type: 'boolean',
+        default: false,
+      },
+      disableGpuSandbox: {
+        type: 'boolean',
+      },
+      noSandbox: {
+        type: 'boolean',
       },
     },
   },

@@ -26,6 +26,9 @@ releases:
       - title: fix move people to new installer config url
         categories: [Core]
         authors: [FoxtrotSierra]
+      - title: Add advanced settings (e.g. disable hardware acceleration)
+        categories: [Core]
+        authors: [FoxtrotSierra]
   - name: 3.4.3
     changes:
       - title: Change installer configuration to Cloudflare
