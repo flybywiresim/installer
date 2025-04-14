@@ -1,5 +1,6 @@
 import React from 'react';
-import settings, { useSetting } from 'common/settings';
+import settings from 'main/mainSettings';
+import { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from '../Toggle';
 import { SettingItemProps, SettingsItem } from './General';
 
@@ -42,7 +43,7 @@ const DisableSandbox = ({ value, setValue }: SettingItemProps<boolean>) => {
   );
 };
 
-const index = (): JSX.Element => {
+export const AdvancedSettings = (): JSX.Element => {
   const [showAll] = useSetting<boolean>('advanced.showAll');
   const showAllSettings = showAll || process.env.NODE_ENV === 'development';
   const [disableHardwareAcceleration, setDisableHardwareAcceleration] = useSetting<boolean>(
@@ -69,5 +70,3 @@ const index = (): JSX.Element => {
     </div>
   );
 };
-
-export default index;

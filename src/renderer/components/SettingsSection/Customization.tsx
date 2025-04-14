@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import settings, { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from '../Toggle';
 import { SettingItemProps, SettingsItem } from './General';

@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { GeneralSettings } from 'renderer/components/SettingsSection/General';
 import { Redirect, Route } from 'react-router-dom';
 import { AboutSettings } from 'renderer/components/SettingsSection/About';
-import AdvancedSettings from 'renderer/components/SettingsSection/Advanced';
+import { AdvancedSettings } from 'renderer/components/SettingsSection/Advanced';
 import { SideBar, SideBarLink, SideBarTitle } from 'renderer/components/SideBar';
 import { CustomizationSettings } from './Customization';
 import { DownloadSettings } from './Download';
@@ -50,7 +50,7 @@ export const SettingsSection = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-navy-lighter w-full overflow-hidden text-white">
+    <div className="w-full overflow-hidden bg-navy-lighter text-white">
       <div className="flex size-full flex-row items-stretch">
         <SideBar className="shrink-0">
           <div
@@ -98,7 +98,7 @@ export const SettingsSection = (): JSX.Element => {
           </div>
         </SideBar>
 
-        <div className="bg-navy grow border-l border-gray-700 px-12 py-8">
+        <div className="grow border-l border-gray-700 bg-navy px-12 py-8">
           <Route exact path="/settings">
             <Redirect to="/settings/general" />
           </Route>
