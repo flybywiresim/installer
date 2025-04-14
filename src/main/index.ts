@@ -297,6 +297,7 @@ function initializeApp() {
       createWindow();
     }
   });
+
   // Someone tried to run a second instance, we should focus our window.
   app.on('second-instance', () => {
     if (mainWindow) {
