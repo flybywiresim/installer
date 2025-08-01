@@ -9,6 +9,7 @@ import Msfs2020logo from '../../assets/msfs2020.png';
 import Msfs2024logo from '../../assets/msfs2024.png';
 import { InstallStatus } from 'renderer/components/AddonSection/Enums';
 import { enabledSimulators, nextSim, Simulators } from 'renderer/utils/SimManager';
+import cn from 'renderer/utils/cn';
 
 export const NavBar: FC = ({ children }) => {
   const darkTheme = useIsDarkTheme();
@@ -85,8 +86,8 @@ export const ManagedSimSelector: FC<NavBarItemProps> = ({
   return (
     <NavLink
       to={to}
-      className={`${BASE_STYLE} ${className} group`}
-      activeClassName={`${BASE_STYLE} bg-navy-light`}
+      className={cn(BASE_STYLE, className, 'group')}
+      activeClassName={cn(BASE_STYLE, 'bg-navy-light')}
       onClick={handleClick}
     >
       {children}

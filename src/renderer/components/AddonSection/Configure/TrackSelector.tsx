@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { InstallerStore } from 'renderer/redux/store';
 import { Check } from 'tabler-icons-react';
 import { Addon, AddonTrack } from 'renderer/utils/InstallerConfiguration';
-
+import cn from 'renderer/utils/cn';
 import '../index.css';
-import { twMerge } from 'tailwind-merge';
 
 export const Tracks: React.FC = ({ children }) => (
   <div className="flex flex-row items-stretch justify-start gap-3">{children}</div>
@@ -27,8 +26,8 @@ export const Track: React.FC<TrackProps> = ({ isSelected, isInstalled, handleSel
 
   return (
     <div
-      className={twMerge(
-        `flex w-60 h-24 cursor-pointer flex-col rounded-sm-md border-2 border-transparent bg-navy-dark text-white transition-all duration-200 hover:border-navy-lightest hover:text-gray-300`,
+      className={cn(
+        'flex w-60 h-24 cursor-pointer flex-col rounded-sm-md border-2 border-transparent bg-navy-dark text-white transition-all duration-200 hover:border-navy-lightest hover:text-gray-300',
         isSelected && 'border-2 border-cyan text-cyan',
       )}
       onClick={() => handleSelected(track)}
