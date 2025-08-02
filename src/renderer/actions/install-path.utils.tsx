@@ -7,7 +7,7 @@ import { Directories } from 'renderer/utils/Directories';
 import { dialog } from '@electron/remote';
 import { managedSim, TypeOfSimulator } from 'renderer/utils/SimManager';
 
-const possibleBasePaths = {
+const possibleBasePaths: Record<TypeOfSimulator, { store: string; steam: string }> = {
   msfs2020: {
     store: path.join(Directories.localAppData(), '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\'),
     steam: path.join(Directories.appData(), '\\Microsoft Flight Simulator\\'),
