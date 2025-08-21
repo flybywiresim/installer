@@ -45,6 +45,7 @@ import { IncompatibleAddOnsCheck } from 'renderer/utils/IncompatibleAddOnsCheck'
 import { FreeDiskSpace, FreeDiskSpaceStatus } from 'renderer/utils/FreeDiskSpace';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import { AddonData, ReleaseInfo } from 'renderer/utils/AddonData';
+import install from 'electron-devtools-installer/dist';
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<
   (FragmenterInstallerEvents & FragmenterContextEvents)[K]
@@ -755,6 +756,11 @@ export class InstallManager {
     const fragmenterUpdateChecker = new FragmenterUpdateChecker();
 
     for (const track of addon.tracks) {
+      if (!installDir) {
+        console.warn(`[InstallManager](checkForUpdates) No install directory for addon ${addon.key}`);
+        store.dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.Unknown } }));
+        continue;
+      }
       const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, installDir, { forceCacheBust: true });
 
       let info: ReleaseInfo;

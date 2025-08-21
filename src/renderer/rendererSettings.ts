@@ -139,21 +139,18 @@ const schema: Schema<RendererSettings> = {
             properties: {
               enabled: {
                 type: 'boolean',
-                default:
-                  msfsBasePath(Simulators.Msfs2020) !== 'C:\\' && msfsBasePath(Simulators.Msfs2020) !== 'linux'
-                    ? true
-                    : false,
+                default: msfsBasePath(Simulators.Msfs2020) !== null,
               },
               basePath: {
-                type: 'string',
+                type: ['string', 'null'],
                 default: msfsBasePath(Simulators.Msfs2020),
               },
               communityPath: {
-                type: 'string',
+                type: ['string', 'null'],
                 default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2020)),
               },
               installPath: {
-                type: 'string',
+                type: ['string', 'null'],
                 default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2020)),
               },
             },
@@ -164,21 +161,18 @@ const schema: Schema<RendererSettings> = {
             properties: {
               enabled: {
                 type: 'boolean',
-                default:
-                  msfsBasePath(Simulators.Msfs2024) !== 'C:\\' && msfsBasePath(Simulators.Msfs2024) !== 'linux'
-                    ? true
-                    : false,
+                default: msfsBasePath(Simulators.Msfs2024) !== null,
               },
               basePath: {
-                type: 'string',
+                type: ['string', 'null'],
                 default: msfsBasePath(Simulators.Msfs2024),
               },
               communityPath: {
-                type: 'string',
+                type: ['string', 'null'],
                 default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2024)),
               },
               installPath: {
-                type: 'string',
+                type: ['string', 'null'],
                 default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2024)),
               },
             },

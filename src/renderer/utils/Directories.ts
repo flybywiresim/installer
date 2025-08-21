@@ -25,39 +25,44 @@ export class Directories {
     return app.getPath('temp');
   }
 
-  static simulatorBasePath(sim: TypeOfSimulator): string {
-    return settings.get(`mainSettings.simulator.${sim}.basePath`) as string;
+  static simulatorBasePath(sim: TypeOfSimulator): string | null {
+    return settings.get(`mainSettings.simulator.${sim}.basePath`);
   }
 
-  static communityLocation(sim: TypeOfSimulator): string {
-    return settings.get(`mainSettings.simulator.${sim}.communityPath`) as string;
+  static communityLocation(sim: TypeOfSimulator): string | null {
+    return settings.get(`mainSettings.simulator.${sim}.communityPath`);
   }
 
-  static inCommunityLocation(sim: TypeOfSimulator, targetDir: string): string {
-    return path.join(Directories.communityLocation(sim), this.sanitize(targetDir));
+  static inCommunityLocation(sim: TypeOfSimulator, targetDir: string): string | null {
+    const communityPath = Directories.communityLocation(sim);
+    if (!communityPath) return null;
+    return path.join(communityPath, this.sanitize(targetDir));
   }
 
-  static inCommunityPackage(addon: Addon, targetDir: string): string {
+  static inCommunityPackage(addon: Addon, targetDir: string): string | null {
     const baseDir = this.inCommunityLocation(addon.simulator, this.sanitize(addon.targetDirectory));
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
-  static installLocation(sim: TypeOfSimulator): string {
-    return settings.get(`mainSettings.simulator.${sim}.installPath`) as string;
+  static installLocation(sim: TypeOfSimulator): string | null {
+    return settings.get(`mainSettings.simulator.${sim}.installPath`);
   }
 
-  static inInstallLocation(sim: TypeOfSimulator, targetDir: string): string {
-    return path.join(Directories.installLocation(sim), this.sanitize(targetDir));
+  static inInstallLocation(sim: TypeOfSimulator, targetDir: string): string | null {
+    const installPath = this.installLocation(sim);
+    if (!installPath) return null;
+    return path.join(installPath, this.sanitize(targetDir));
   }
 
-  static inInstallPackage(addon: Addon, targetDir: string): string {
+  static inInstallPackage(addon: Addon, targetDir: string): string | null {
     const baseDir = this.inInstallLocation(addon.simulator, this.sanitize(addon.targetDirectory));
+    if (!baseDir) return null;
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
   static tempLocation(sim: TypeOfSimulator): string {
     return settings.get('mainSettings.separateTempLocation')
-      ? (settings.get('mainSettings.tempLocation') as string)
+      ? settings.get('mainSettings.tempLocation')
       : this.installLocation(sim);
   }
 

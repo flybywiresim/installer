@@ -18,9 +18,9 @@ const possibleBasePaths: Record<TypeOfSimulator, { store: string; steam: string 
   },
 };
 
-export const msfsBasePath = (sim: TypeOfSimulator): string => {
+export const msfsBasePath = (sim: TypeOfSimulator): string | null => {
   if (os.platform().toString() === 'linux') {
-    return 'linux';
+    return null;
   }
 
   // Ensure proper functionality in main- and renderer-process
@@ -28,7 +28,7 @@ export const msfsBasePath = (sim: TypeOfSimulator): string => {
 
   const steamPath = path.join(possibleBasePaths[sim].steam, 'UserCfg.opt');
   const storePath = path.join(possibleBasePaths[sim].store, 'UserCfg.opt');
-  if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return 'C:\\';
+  if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return null;
   if (fs.existsSync(steamPath)) {
     msfsConfigPath = steamPath;
   } else if (fs.existsSync(storePath)) {
@@ -42,19 +42,19 @@ export const msfsBasePath = (sim: TypeOfSimulator): string => {
   }
 
   if (!msfsConfigPath) {
-    return 'C:\\';
+    return null;
   }
 
   return path.dirname(msfsConfigPath);
 };
 
-export const defaultCommunityDir = (msfsBase: string): string => {
+export const defaultCommunityDir = (msfsBase: string | null): string | null => {
+  if (!msfsBase) {
+    return null;
+  }
   const msfsConfigPath = path.join(msfsBase, 'UserCfg.opt');
   if (!fs.existsSync(msfsConfigPath)) {
-    if (os.platform().toString() === 'linux') {
-      return 'linux';
-    }
-    return 'C:\\';
+    return null;
   }
 
   try {
@@ -64,11 +64,11 @@ export const defaultCommunityDir = (msfsBase: string): string => {
     const packagesPathLine = msfsConfigLines.find((line) => line.includes('InstalledPackagesPath '));
     const communityDir = path.join(packagesPathLine.split(' ').slice(1).join(' ').replaceAll('"', ''), '\\Community');
 
-    return fs.existsSync(communityDir) ? communityDir : 'C:\\';
+    return fs.existsSync(communityDir) ? communityDir : null;
   } catch (e) {
     console.warn('Could not parse community dir from file', msfsConfigPath);
     console.error(e);
-    return 'C:\\';
+    return null;
   }
 };
 

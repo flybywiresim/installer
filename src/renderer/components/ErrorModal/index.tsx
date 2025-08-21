@@ -23,24 +23,24 @@ export const ErrorModal = (): JSX.Element => {
     settings.get(`mainSettings.simulator.${Simulators.Msfs2020}.enabled`) &&
       ((!fs.existsSync(Directories.simulatorBasePath(Simulators.Msfs2020)) &&
         Directories.simulatorBasePath(Simulators.Msfs2020) !== 'notInstalled') ||
-        Directories.simulatorBasePath(Simulators.Msfs2020) === 'C:\\'),
+        Directories.simulatorBasePath(Simulators.Msfs2020) === null),
   );
   const [msfs2024BasePathError] = useState<boolean>(
     settings.get(`mainSettings.simulator.${Simulators.Msfs2024}.enabled`) &&
       ((!fs.existsSync(Directories.simulatorBasePath(Simulators.Msfs2024)) &&
         Directories.simulatorBasePath(Simulators.Msfs2024) !== 'notInstalled') ||
-        Directories.simulatorBasePath(Simulators.Msfs2024) === 'C:\\'),
+        Directories.simulatorBasePath(Simulators.Msfs2024) === null),
   );
   const [msfs2020installLocationError] = useState<boolean>(
     settings.get(`mainSettings.simulator.${Simulators.Msfs2020}.enabled`) &&
       (!fs.existsSync(Directories.installLocation(Simulators.Msfs2020)) ||
-        Directories.installLocation(Simulators.Msfs2020) === 'C:\\' ||
+        Directories.installLocation(Simulators.Msfs2020) === null ||
         !fs.existsSync(Directories.communityLocation(Simulators.Msfs2020))),
   );
   const [msfs2024installLocationError] = useState<boolean>(
     settings.get(`mainSettings.simulator.${Simulators.Msfs2024}.enabled`) &&
       (!fs.existsSync(Directories.installLocation(Simulators.Msfs2024)) ||
-        Directories.installLocation(Simulators.Msfs2024) === 'C:\\' ||
+        Directories.installLocation(Simulators.Msfs2024) === null ||
         !fs.existsSync(Directories.communityLocation(Simulators.Msfs2024))),
   );
   const [tempLocationError] = useState<boolean>(!fs.existsSync(settings.get('mainSettings.tempLocation')));
