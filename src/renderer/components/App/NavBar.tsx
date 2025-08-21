@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { FC } from 'react';
+import React, { useState, FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import store, { useIsDarkTheme, useSetting } from 'renderer/rendererSettings';
 import { Publisher } from 'renderer/utils/InstallerConfiguration';
