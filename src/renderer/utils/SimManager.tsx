@@ -5,6 +5,8 @@ export enum Simulators {
   Msfs2024 = 'msfs2024',
 }
 
+export type TypeOfSimulator = `${Simulators}` | Simulators;
+
 export const enabledSimulators = () => {
   return Object.values(Simulators).filter(
     (sim) => (settings.get('mainSettings.simulator') as Record<Simulators, { enabled: boolean }>)[sim]?.enabled,

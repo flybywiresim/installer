@@ -3,7 +3,7 @@ import { Addon } from 'renderer/utils/InstallerConfiguration';
 import fs from 'fs';
 import settings from 'renderer/rendererSettings';
 import { app } from '@electron/remote';
-import { Simulators } from './SimManager';
+import { Simulators, TypeOfSimulator } from './SimManager';
 
 const TEMP_DIRECTORY_PREFIX = 'flybywire-current-install';
 
@@ -25,15 +25,15 @@ export class Directories {
     return app.getPath('temp');
   }
 
-  static simulatorBasePath(sim: Simulators): string {
+  static simulatorBasePath(sim: TypeOfSimulator): string {
     return settings.get(`mainSettings.simulator.${sim}.basePath`) as string;
   }
 
-  static communityLocation(sim: Simulators): string {
+  static communityLocation(sim: TypeOfSimulator): string {
     return settings.get(`mainSettings.simulator.${sim}.communityPath`) as string;
   }
 
-  static inCommunityLocation(sim: Simulators, targetDir: string): string {
+  static inCommunityLocation(sim: TypeOfSimulator, targetDir: string): string {
     return path.join(Directories.communityLocation(sim), this.sanitize(targetDir));
   }
 
@@ -42,11 +42,11 @@ export class Directories {
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
-  static installLocation(sim: Simulators): string {
+  static installLocation(sim: TypeOfSimulator): string {
     return settings.get(`mainSettings.simulator.${sim}.installPath`) as string;
   }
 
-  static inInstallLocation(sim: Simulators, targetDir: string): string {
+  static inInstallLocation(sim: TypeOfSimulator, targetDir: string): string {
     return path.join(Directories.installLocation(sim), this.sanitize(targetDir));
   }
 
@@ -55,17 +55,17 @@ export class Directories {
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
-  static tempLocation(sim: Simulators): string {
+  static tempLocation(sim: TypeOfSimulator): string {
     return settings.get('mainSettings.separateTempLocation')
       ? (settings.get('mainSettings.tempLocation') as string)
       : this.installLocation(sim);
   }
 
-  static inTempLocation(sim: Simulators, targetDir: string): string {
+  static inTempLocation(sim: TypeOfSimulator, targetDir: string): string {
     return path.join(Directories.tempLocation(sim), this.sanitize(targetDir));
   }
 
-  static inPackages(sim: Simulators, targetDir: string): string {
+  static inPackages(sim: TypeOfSimulator, targetDir: string): string {
     return path
       .join(this.simulatorBasePath(sim), 'packages', this.sanitize(targetDir))
       .replace('LocalCache', 'LocalState');
@@ -77,7 +77,7 @@ export class Directories {
     return path.join(baseDir, this.sanitize(targetDir));
   }
 
-  static temp(sim: Simulators): string {
+  static temp(sim: TypeOfSimulator): string {
     const dir = path.join(
       Directories.tempLocation(sim),
       `${TEMP_DIRECTORY_PREFIX}-${(Math.random() * 1000).toFixed(0)}`,
@@ -92,19 +92,19 @@ export class Directories {
     console.log('[CLEANUP] Removing all temp directories');
 
     for (const sim in Simulators) {
-      if (!fs.existsSync(Directories.tempLocation(sim as Simulators))) {
+      if (!fs.existsSync(Directories.tempLocation(sim as TypeOfSimulator))) {
         console.warn('[CLEANUP] Location of temporary folders does not exist. Aborting');
         return;
       }
 
       try {
         const dirents = fs
-          .readdirSync(Directories.tempLocation(sim as Simulators), { withFileTypes: true })
+          .readdirSync(Directories.tempLocation(sim as TypeOfSimulator), { withFileTypes: true })
           .filter((dirEnt) => dirEnt.isDirectory())
           .filter((dirEnt) => TEMP_DIRECTORY_PREFIXES_FOR_CLEANUP.some((it) => dirEnt.name.startsWith(it)));
 
         for (const dir of dirents) {
-          const fullPath = Directories.inTempLocation(sim as Simulators, dir.name);
+          const fullPath = Directories.inTempLocation(sim as TypeOfSimulator, dir.name);
 
           console.log('[CLEANUP] Removing', fullPath);
           try {
@@ -117,7 +117,7 @@ export class Directories {
 
         console.log('[CLEANUP] Finished removing all temp directories');
       } catch (e) {
-        console.error('[CLEANUP] Could not scan folder', Directories.tempLocation(sim as Simulators), e);
+        console.error('[CLEANUP] Could not scan folder', Directories.tempLocation(sim as TypeOfSimulator), e);
       }
     }
   }

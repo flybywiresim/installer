@@ -12,7 +12,7 @@ import { Button, ButtonType } from 'renderer/components/Button';
 import * as os from 'os';
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
-import { Simulators } from 'renderer/utils/SimManager';
+import { Simulators, TypeOfSimulator } from 'renderer/utils/SimManager';
 
 export const ErrorModal = (): JSX.Element => {
   const [noSimInstalled] = useState<boolean>(
@@ -45,7 +45,7 @@ export const ErrorModal = (): JSX.Element => {
   );
   const [tempLocationError] = useState<boolean>(!fs.existsSync(settings.get('mainSettings.tempLocation')));
 
-  const handleSelectSimulatorBasePath = async (sim: Simulators) => {
+  const handleSelectSimulatorBasePath = async (sim: TypeOfSimulator) => {
     const path = await setupSimulatorBasePath(sim);
     if (path) {
       const communityDir = defaultCommunityDir(path);
@@ -55,7 +55,7 @@ export const ErrorModal = (): JSX.Element => {
     }
   };
 
-  const handleSelectInstallPath = async (sim: Simulators) => {
+  const handleSelectInstallPath = async (sim: TypeOfSimulator) => {
     const path = await setupInstallPath(sim);
     if (path) {
       settings.set(`mainSettings.simulator.${sim}.communityPath`, path);
@@ -75,7 +75,7 @@ export const ErrorModal = (): JSX.Element => {
     ipcRenderer.send(channels.window.reload);
   };
 
-  const handleSimulatorNotInstalled = (sim: Simulators) => {
+  const handleSimulatorNotInstalled = (sim: TypeOfSimulator) => {
     settings.set(`mainSettings.simulator.${sim}.basePath`, 'notInstalled');
     ipcRenderer.send(channels.window.reload);
   };
