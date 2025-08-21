@@ -45,7 +45,6 @@ import { IncompatibleAddOnsCheck } from 'renderer/utils/IncompatibleAddOnsCheck'
 import { FreeDiskSpace, FreeDiskSpaceStatus } from 'renderer/utils/FreeDiskSpace';
 import { setAddonAndTrackLatestReleaseInfo } from 'renderer/redux/features/latestVersionNames';
 import { AddonData, ReleaseInfo } from 'renderer/utils/AddonData';
-import install from 'electron-devtools-installer/dist';
 
 type FragmenterEventArguments<K extends keyof FragmenterInstallerEvents | keyof FragmenterContextEvents> = Parameters<
   (FragmenterInstallerEvents & FragmenterContextEvents)[K]
