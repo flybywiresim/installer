@@ -7,19 +7,12 @@ import {
 } from 'renderer/actions/install-path.utils';
 import settings from 'renderer/rendererSettings';
 import { Directories } from 'renderer/utils/Directories';
-import { Button, ButtonType } from 'renderer/components/Button';
 import * as os from 'os';
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
-import { Simulators, TypeOfSimulator } from 'renderer/utils/SimManager';
+import { TypeOfSimulator } from 'renderer/utils/SimManager';
 import { useErrors } from './useErrors';
-
-type Error = {
-  condition: boolean;
-  title: string;
-  description: React.ReactNode;
-  actions: React.ReactNode;
-};
+import { errorConfig } from './errorConfig';
 
 const platform = os.platform();
 const reload = () => ipcRenderer.send(channels.window.reload);
@@ -74,131 +67,25 @@ export const ErrorModal = (): JSX.Element => {
     reload();
   };
 
-  const errors: Error[] = [
+  const errors = errorConfig(
+    platform,
     {
-      condition: noSimInstalled,
-      title: 'No simulator detected',
-      description: (
-        <>
-          We could not find an installed simulator. Please select for which simulator you’d like to manage your addons.
-          You can change your selection any time in the settings.
-        </>
-      ),
-      actions: (
-        <>
-          <Button type={ButtonType.Neutral} onClick={() => enableSimulator(Simulators.Msfs2020)}>
-            Microsoft Flight Simulator 2020
-          </Button>
-          <Button type={ButtonType.Neutral} onClick={() => enableSimulator(Simulators.Msfs2024)}>
-            Microsoft Flight Simulator 2024
-          </Button>
-        </>
-      ),
+      noSimInstalled,
+      msfs2020BasePathError,
+      msfs2024BasePathError,
+      msfs2020InstallError,
+      msfs2024InstallError,
+      tempLocationError,
     },
     {
-      condition: msfs2020BasePathError,
-      title: 'MSFS 2020 base path missing',
-      description: (
-        <>
-          We couldn’t determine the correct MSFS 2020 base path. Please select it manually. <br />
-          {platform === 'linux'
-            ? 'Usually: ~/.local/share/Steam/steamapps/compatdata/<APPID>/pfx/drive_c/users/steamuser/AppData/Microsoft Flight Simulator/'
-            : 'Usually: "%LOCALAPPDATA%\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache"'}
-        </>
-      ),
-      actions: (
-        <>
-          <Button type={ButtonType.Neutral} onClick={() => handleSelectSimulatorBasePath(Simulators.Msfs2020)}>
-            Select Path
-          </Button>
-          <Button type={ButtonType.Neutral} onClick={() => handleSimulatorNotInstalled(Simulators.Msfs2020)}>
-            I don’t have MSFS 2020 installed
-          </Button>
-        </>
-      ),
+      enableSimulator,
+      handleSelectSimulatorBasePath,
+      handleSimulatorNotInstalled,
+      handleSelectInstallPath,
+      handleSelectTempLocation,
+      resetTempLocation,
     },
-    {
-      condition: msfs2024BasePathError,
-      title: 'MSFS 2024 base path missing',
-      description: (
-        <>
-          We couldn’t determine the correct MSFS 2024 base path. Please select it manually. <br />
-          {platform === 'linux'
-            ? 'You can usually find it somewhere here:\n~/.local/share/Steam/steamapps/compatdata/<APPID>/pfx/drive_c/users/steamuser/AppData/Microsoft Flight Simulator 2024/'
-            : 'You can usually find it somewhere here:\n"%LOCALAPPDATA%\\Packages\\Microsoft.Limitless_8wekyb3d8bbwe\\LocalCache"'}
-        </>
-      ),
-      actions: (
-        <>
-          <Button type={ButtonType.Neutral} onClick={() => handleSelectSimulatorBasePath(Simulators.Msfs2024)}>
-            Select Path
-          </Button>
-          <Button type={ButtonType.Neutral} onClick={() => handleSimulatorNotInstalled(Simulators.Msfs2024)}>
-            I don’t have MSFS 2024 installed
-          </Button>
-        </>
-      ),
-    },
-    {
-      condition: msfs2020InstallError,
-      title: 'MSFS 2020 Community folder not found',
-      description: (
-        <>
-          Your MSFS 2020 Community folder is set to:
-          <pre className="mx-auto my-2 w-3/5 overflow-x-auto rounded-lg bg-gray-700 px-6 py-2.5 text-center font-mono text-2xl">
-            {Directories.installLocation(Simulators.Msfs2020) || 'not set'}
-          </pre>
-          but we couldn’t find it there. Please set the correct location before continuing.
-        </>
-      ),
-      actions: (
-        <Button type={ButtonType.Neutral} onClick={() => handleSelectInstallPath(Simulators.Msfs2020)}>
-          Select Path
-        </Button>
-      ),
-    },
-    {
-      condition: msfs2024InstallError,
-      title: 'MSFS 2024 Community folder not found',
-      description: (
-        <>
-          Your MSFS 2024 Community folder is set to:
-          <pre className="mx-auto my-2 w-3/5 overflow-x-auto rounded-lg bg-gray-700 px-6 py-2.5 text-center font-mono text-2xl">
-            {Directories.installLocation(Simulators.Msfs2024) || 'not set'}
-          </pre>
-          but we couldn’t find it there. Please set the correct location before continuing.
-        </>
-      ),
-      actions: (
-        <Button type={ButtonType.Neutral} onClick={() => handleSelectInstallPath(Simulators.Msfs2024)}>
-          Select Path
-        </Button>
-      ),
-    },
-    {
-      condition: tempLocationError,
-      title: 'Temporary folder not found',
-      description: (
-        <>
-          Your location for temporary folders is set to:
-          <pre className="mx-auto my-2 w-3/5 overflow-x-auto rounded-lg bg-gray-700 px-6 py-2.5 text-center font-mono text-2xl">
-            {settings.get('mainSettings.tempLocation') || 'not set'}
-          </pre>
-          but we couldn’t find it there. Please set the correct location before continuing.
-        </>
-      ),
-      actions: (
-        <>
-          <Button type={ButtonType.Neutral} onClick={handleSelectTempLocation}>
-            Select Path
-          </Button>
-          <Button type={ButtonType.Neutral} onClick={resetTempLocation}>
-            Reset
-          </Button>
-        </>
-      ),
-    },
-  ];
+  );
 
   const activeError = errors.find((e) => e.condition);
 
