@@ -79,6 +79,14 @@ export const defaultConfiguration: Configuration = {
           ],
           targetDirectory: 'flybywire-aircraft-a320-neo',
           alternativeNames: ['A32NX', 'a32nx'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2020',
+              optional: true,
+              modalText:
+                'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
+            },
+          ],
           tracks: [
             {
               name: 'Stable',
@@ -123,14 +131,6 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'fragmenter',
               },
-            },
-          ],
-          dependencies: [
-            {
-              addon: '@flybywiresim/simbridge',
-              optional: true,
-              modalText:
-                'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
             },
           ],
           incompatibleAddons: [
@@ -289,6 +289,14 @@ export const defaultConfiguration: Configuration = {
           ],
           targetDirectory: 'flybywire-aircraft-a320-neo',
           alternativeNames: ['A32NX', 'a32nx'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2024',
+              optional: true,
+              modalText:
+                'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
+            },
+          ],
           tracks: [
             {
               name: 'Stable',
@@ -317,14 +325,6 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'fragmenter',
               },
-            },
-          ],
-          dependencies: [
-            {
-              addon: '@flybywiresim/simbridge',
-              optional: true,
-              modalText:
-                'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
             },
           ],
           incompatibleAddons: [
@@ -441,8 +441,8 @@ export const defaultConfiguration: Configuration = {
           disallowedRunningExternalApps: ['@/msfs'],
         },
         {
+          key: 'a380x-msfs2020',
           name: 'A380X',
-          key: 'A380X',
           simulator: 'msfs2020',
           repoOwner: 'flybywiresim',
           repoName: 'aircraft',
@@ -466,6 +466,152 @@ export const defaultConfiguration: Configuration = {
           ],
           targetDirectory: 'flybywire-aircraft-a380-842',
           alternativeNames: ['A380X', 'a380x'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2020',
+              optional: true,
+              modalText: 'SimBridge allows the A380X to use the external terrain database.',
+            },
+          ],
+          tracks: [
+            {
+              name: 'Stable (4K)',
+              key: 'a380x-stable-4k',
+              url: 'https://flybywirecdn.com/addons/a380x/stable-4k',
+              alternativeUrls: [],
+              description:
+                'Includes our 4K downscaled cabin, cockpit and exterior textures. Choose this option for reduced ' +
+                'stutters, better performance, with HIGH or lower texture resolution. Especially, if you intend to use the ' +
+                'following:\n\n' +
+                '* Use frame generation \n\n' +
+                '* Virtual Reality (VR) \n\n' +
+                '* DX12 beta \n\n' +
+                '* or are otherwise limited by your graphics card VRAM amount. ' +
+                '[System Requirements](https://docs.flybywiresim.com/aircraft/install/installation/#estimated-system-requirements-for-a380x)',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Stable (8K)',
+              key: 'a380x-stable-8k',
+              url: 'https://flybywirecdn.com/addons/a380x/stable-8k',
+              alternativeUrls: [],
+              description:
+                'Includes our 8K full resolution cabin, cockpit and exterior textures. This is the full fidelity ' +
+                'experience and our recommendation if your system is powerful enough to support it. Realistic and in high ' +
+                'detail.\n\n' +
+                '* DX11 recommended \n\n' +
+                '* HIGH or lower texture resolution setting recommended \n\n',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Development (4K)',
+              key: 'a380x-dev-4k',
+              url: 'https://flybywirecdn.com/addons/a380x/master-4k',
+              alternativeUrls: [],
+              description:
+                'Development will have the latest features that will end up in the next stable. ' +
+                'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
+                "the 'master' branch on Github. Please visit our discord for support. \n\n" +
+                'Includes our 4K downscaled cabin, cockpit and exterior textures. Choose this option for reduced ' +
+                'stutters, better performance, with HIGH or lower texture resolution. Especially, if you intend to use the ' +
+                'following:\n\n' +
+                '* Use frame generation \n\n' +
+                '* Virtual Reality (VR) \n\n' +
+                '* DX12 beta \n\n' +
+                '* or are otherwise limited by your graphics card VRAM amount. ',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Development (8K)',
+              key: 'a380x-dev-8k',
+              url: 'https://flybywirecdn.com/addons/a380x/master-8k',
+              alternativeUrls: [],
+              description:
+                'Development will have the latest features that will end up in the next stable. ' +
+                'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
+                "the 'master' branch on Github. Please visit our discord for support. \n\n" +
+                '* DX11 recommended \n\n' +
+                '* HIGH or lower texture resolution setting recommended \n\n',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+          ],
+          incompatibleAddons: [
+            // title: the exact title as it appears in the manifest.json
+            // creator: the exact creator as it appears in the manifest.json
+            // packageVersion syntax follows: https://www.npmjs.com/package/semver
+            // description: a short description of why the addon is incompatible
+            {
+              title: 'Mets747 FBW A380 Lights Mod',
+              description:
+                'It is recommended to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'a380_light_mod',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'Super6uo FBW A380X Realistic Light Enhancement',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'FlyByWire Airbus A380X OIT Functionality',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+          ],
+          disallowedRunningExternalApps: ['@/msfs'],
+        },
+        {
+          key: 'a380x-msfs2024',
+          name: 'A380X',
+          simulator: 'msfs2024',
+          repoOwner: 'flybywiresim',
+          repoName: 'aircraft',
+          category: '@aircraft',
+          aircraftName: 'A380-842',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a380x/light.svg',
+          enabled: true,
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-a380x/a380x.png'],
+          shortDescription: 'Airbus A380-800',
+          description: '',
+          techSpecs: [
+            {
+              name: 'Engines',
+              value: 'RR Trent 972B-84',
+            },
+            {
+              name: 'APU',
+              value: 'PW980',
+            },
+          ],
+          targetDirectory: 'flybywire-aircraft-a380-842',
+          alternativeNames: ['A380X', 'a380x'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2024',
+              optional: true,
+              modalText: 'SimBridge allows the A380X to use the external terrain database.',
+            },
+          ],
           tracks: [
             {
               name: 'Stable (4K)',
@@ -612,9 +758,65 @@ export const defaultConfiguration: Configuration = {
           ],
         },
         {
+          key: 'simbridge-msfs2020',
           name: 'SimBridge',
-          key: 'simbridge',
           simulator: 'msfs2020',
+          category: '@simbridge',
+          repoOwner: 'flybywiresim',
+          repoName: 'simbridge',
+          aircraftName: 'FBW SimBridge',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
+          enabled: true,
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-simbridge/0.png'],
+          backgroundImageShadow: false,
+          shortDescription: 'Airbus A380-800',
+          description: `<span style="color: rgb(255, 106, 0);">&#9888; Important: Starting with version 0.6.0, custom resources such as PDF Charts and Company Routes must be stored in the Documents folder (typically located at \`C:\\Users\\<Username>\\Documents\\FlyByWireSim\\Simbridge\\resources)\`. <br> Please ensure you back up your files before updating. After the update, transfer your files to this new location to keep them safe from future updates. You can also use the Resources button in the About section of the installer to locate the folder.</span> \n\nSimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
+          targetDirectory: 'flybywire-externaltools-simbridge',
+          tracks: [
+            {
+              name: 'Release',
+              key: 'release',
+              releaseModel: {
+                type: 'githubRelease',
+              },
+              url: 'https://flybywirecdn.com/addons/simbridge/release/',
+              alternativeUrls: [
+                // move Bunny CDN users to Cloudflare
+                'https://cdn.flybywiresim.com/addons/simbridge/release/',
+              ],
+              isExperimental: false,
+              description: `<span style="color: rgb(255, 106, 0);">&#9888; Important: Starting with version 0.6.0, custom resources such as PDF Charts and Company Routes must be stored in the Documents folder (typically located at \`C:\\Users\\<Username>\\Documents\\FlyByWireSim\\Simbridge\\resources)\`. <br> Please ensure you back up your files before updating. After the update, transfer your files to this new location to keep them safe from future updates. You can also use the Resources button in the About section of the installer to locate the folder.</span> \n\nSimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
+            },
+          ],
+          disallowedRunningExternalApps: ['@/simbridge-app'],
+          backgroundService: {
+            executableFileBasename: 'fbw-simbridge',
+            runCheckExternalAppRef: '@/simbridge-app',
+            commandLineArgs: ['--hide'],
+          },
+          myInstallPage: {
+            links: [
+              {
+                url: 'https://docs.flybywiresim.com/simbridge/',
+                title: 'Documentation',
+              },
+            ],
+            directories: [
+              {
+                location: {
+                  in: 'documents',
+                  path: 'FlyByWireSim/Simbridge/resources',
+                },
+                title: 'Resources',
+              },
+            ],
+          },
+        },
+        {
+          key: 'simbridge-msfs2024',
+          name: 'SimBridge',
+          simulator: 'msfs2024',
           category: '@simbridge',
           repoOwner: 'flybywiresim',
           repoName: 'simbridge',
