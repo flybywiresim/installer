@@ -112,7 +112,7 @@ export class InstallManager {
 
     // Find dependencies
     for (const dependency of addon.dependencies ?? []) {
-      const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
+      const [, publisherKey, addonKey] = dependency.addon.match(/@([\w-]+)\/([\w-]+)/);
 
       const dependencyPublisher = Resolver.findPublisher(publisherKey);
       const dependencyAddon = Resolver.findAddon(publisherKey, addonKey);
@@ -211,8 +211,8 @@ export class InstallManager {
       }
     }
 
-    const destDir = Directories.inInstallLocation(addon.targetDirectory);
-    const tempDir = Directories.temp();
+    const destDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
+    const tempDir = Directories.temp(addon.simulator);
 
     const fragmenterUpdateChecker = new FragmenterUpdateChecker();
     const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, destDir, { forceCacheBust: true });
@@ -220,7 +220,7 @@ export class InstallManager {
     // Confirm download size and required disk space with user
     const requiredDiskSpace = updateInfo.requiredDiskSpace;
 
-    const freeDeskSpaceInfo = await FreeDiskSpace.analyse(requiredDiskSpace);
+    const freeDeskSpaceInfo = await FreeDiskSpace.analyse(addon, requiredDiskSpace);
 
     const diskSpaceModalSettingString = `mainSettings.disableAddonDiskSpaceModal.${publisher.key}.${addon.key}`;
     const dontAsk = settings.get(diskSpaceModalSettingString);
@@ -264,7 +264,7 @@ export class InstallManager {
       }),
     );
 
-    if (tempDir === Directories.installLocation()) {
+    if (tempDir === Directories.installLocation(addon.simulator)) {
       console.error('[InstallManager](installAddon) Community directory equals temp directory');
 
       this.notifyDownload(addon, false);
@@ -540,7 +540,7 @@ export class InstallManager {
     let download = store.getState().downloads.find((it) => it.id === addon.key);
     if (!download) {
       for (const dependency of addon.dependencies ?? []) {
-        const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
+        const [, publisherKey, addonKey] = dependency.addon.match(/@([\w-]+)\/([\w-]+)/);
 
         const dependencyAddon = Resolver.findAddon(publisherKey, addonKey);
 
@@ -590,10 +590,10 @@ export class InstallManager {
       await BackgroundServices.setAutoStartEnabled(addon, publisher, false);
     }
 
-    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+    const installDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
 
     await ipcRenderer.invoke(channels.installManager.uninstall, installDir, [
-      Directories.inPackages(addon.targetDirectory),
+      Directories.inPackages(addon.simulator, addon.targetDirectory),
     ]);
 
     this.setCurrentInstallState(addon, { status: InstallStatus.NotInstalled });
@@ -658,7 +658,7 @@ export class InstallManager {
       return installedTrack;
     }
 
-    const install = this.getAddonInstall(Directories.inInstallLocation(addon.targetDirectory));
+    const install = this.getAddonInstall(Directories.inInstallLocation(addon.simulator, addon.targetDirectory));
 
     if (!install) {
       return null;
@@ -692,7 +692,7 @@ export class InstallManager {
   private static async determineAddonInstallStatus(addon: Addon): Promise<InstallState> {
     console.log('[InstallManager](determineAddonInstallStatus) Checking install status');
 
-    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+    const installDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
     const addonInstalledTrack = this.determineAddonInstalledTrack(addon);
     const addonSelectedTrack = this.getAddonSelectedTrack(addon);
 
@@ -739,7 +739,7 @@ export class InstallManager {
   public static async checkForUpdates(addon: Addon): Promise<void> {
     console.log('[InstallManager](checkForUpdates) Checking for updates for ' + addon.key);
 
-    const installDir = Directories.inInstallLocation(addon.targetDirectory);
+    const installDir = Directories.inInstallLocation(addon.simulator, addon.targetDirectory);
 
     const state = store.getState();
 
@@ -755,6 +755,11 @@ export class InstallManager {
     const fragmenterUpdateChecker = new FragmenterUpdateChecker();
 
     for (const track of addon.tracks) {
+      if (!installDir) {
+        console.warn(`[InstallManager](checkForUpdates) No install directory for addon ${addon.key}`);
+        store.dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.Unknown } }));
+        continue;
+      }
       const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, installDir, { forceCacheBust: true });
 
       let info: ReleaseInfo;

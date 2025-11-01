@@ -1,70 +1,9 @@
 import Store, { Schema } from 'electron-store';
-import * as fs from 'fs';
-import walk from 'walkdir';
-import * as path from 'path';
-import * as os from 'os';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as packageInfo from '../../package.json';
-import { Directories } from 'renderer/utils/Directories';
-
-export const msStoreBasePath = path.join(
-  Directories.localAppData(),
-  '\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\',
-);
-export const steamBasePath = path.join(Directories.appData(), '\\Microsoft Flight Simulator\\');
-
-const msfsBasePath = (): string => {
-  if (os.platform().toString() === 'linux') {
-    return 'linux';
-  }
-
-  // Ensure proper functionality in main- and renderer-process
-  let msfsConfigPath = null;
-
-  const steamPath = path.join(steamBasePath, 'UserCfg.opt');
-  const storePath = path.join(msStoreBasePath, 'UserCfg.opt');
-  if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return 'C:\\';
-  if (fs.existsSync(steamPath)) {
-    msfsConfigPath = steamPath;
-  } else if (fs.existsSync(storePath)) {
-    msfsConfigPath = storePath;
-  } else {
-    walk(Directories.localAppData(), (path) => {
-      if (path.includes('Flight') && path.includes('UserCfg.opt')) {
-        msfsConfigPath = path;
-      }
-    });
-  }
-
-  if (!msfsConfigPath) {
-    return 'C:\\';
-  }
-
-  return path.dirname(msfsConfigPath);
-};
-
-export const defaultCommunityDir = (msfsBase: string): string => {
-  const msfsConfigPath = path.join(msfsBase, 'UserCfg.opt');
-  if (!fs.existsSync(msfsConfigPath)) {
-    if (os.platform().toString() === 'linux') {
-      return 'linux';
-    }
-    return 'C:\\';
-  }
-
-  try {
-    const msfsConfig = fs.readFileSync(msfsConfigPath).toString();
-    const msfsConfigLines = msfsConfig.split(/\r?\n/);
-    const packagesPathLine = msfsConfigLines.find((line) => line.includes('InstalledPackagesPath'));
-    const communityDir = path.join(packagesPathLine.split(' ').slice(1).join(' ').replaceAll('"', ''), '\\Community');
-
-    return fs.existsSync(communityDir) ? communityDir : 'C:\\';
-  } catch (e) {
-    console.warn('Could not parse community dir from file', msfsConfigPath);
-    console.error(e);
-    return 'C:\\';
-  }
-};
+import { defaultCommunityDir, msfsBasePath } from './actions/install-path.utils';
+import { Simulators } from './utils/SimManager';
+import { Directories } from './utils/Directories';
 
 export const useSetting = <T>(key: string, defaultValue?: T): [T, Dispatch<SetStateAction<T>>] => {
   const [storedValue, setStoredValue] = useState(store.get<string, T>(key, defaultValue));
@@ -103,9 +42,6 @@ interface RendererSettings {
     useLongDateFormat: boolean;
     useDarkTheme: boolean;
     allowSeasonalEffects: boolean;
-    msfsBasePath: string;
-    configDownloadUrl: string;
-    configForceUseLocal: boolean;
   };
   cache: {
     main: {
@@ -193,17 +129,55 @@ const schema: Schema<RendererSettings> = {
         type: 'boolean',
         default: true,
       },
-      msfsBasePath: {
-        type: 'string',
-        default: msfsBasePath(),
-      },
-      msfsCommunityPath: {
-        type: 'string',
-        default: defaultCommunityDir(msfsBasePath()),
-      },
-      installPath: {
-        type: 'string',
-        default: defaultCommunityDir(msfsBasePath()),
+      simulator: {
+        type: 'object',
+        default: {},
+        properties: {
+          msfs2020: {
+            type: 'object',
+            default: {},
+            properties: {
+              enabled: {
+                type: 'boolean',
+                default: msfsBasePath(Simulators.Msfs2020) !== null,
+              },
+              basePath: {
+                type: ['string', 'null'],
+                default: msfsBasePath(Simulators.Msfs2020),
+              },
+              communityPath: {
+                type: ['string', 'null'],
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2020)),
+              },
+              installPath: {
+                type: ['string', 'null'],
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2020)),
+              },
+            },
+          },
+          msfs2024: {
+            type: 'object',
+            default: {},
+            properties: {
+              enabled: {
+                type: 'boolean',
+                default: msfsBasePath(Simulators.Msfs2024) !== null,
+              },
+              basePath: {
+                type: ['string', 'null'],
+                default: msfsBasePath(Simulators.Msfs2024),
+              },
+              communityPath: {
+                type: ['string', 'null'],
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2024)),
+              },
+              installPath: {
+                type: ['string', 'null'],
+                default: defaultCommunityDir(msfsBasePath(Simulators.Msfs2024)),
+              },
+            },
+          },
+        },
       },
       separateTempLocation: {
         type: 'boolean',
@@ -211,7 +185,7 @@ const schema: Schema<RendererSettings> = {
       },
       tempLocation: {
         type: 'string',
-        default: defaultCommunityDir(msfsBasePath()),
+        default: Directories.osTemp(),
       },
       configDownloadUrl: {
         type: 'string',
@@ -231,6 +205,10 @@ const schema: Schema<RendererSettings> = {
         type: 'object',
         default: {},
         properties: {
+          managedSim: {
+            type: 'string',
+            default: '',
+          },
           lastShownSection: {
             type: 'string',
             default: '',
@@ -263,5 +241,20 @@ const store = new Store({ schema, clearInvalidConfig: true });
 
 // Workaround to flush the defaults
 store.set('metaInfo.lastLaunch', Date.now());
+
+// TODO: Remove in future
+// Transfer old MSFS path settings
+if (store.get('mainSettings.msfsBasePath')) {
+  store.set('mainSettings.simulator.msfs2020.basePath', store.get('mainSettings.msfsBasePath'));
+  store.delete('mainSettings.msfsBasePath' as keyof RendererSettings);
+}
+if (store.get('mainSettings.msfsCommunityPath')) {
+  store.set('mainSettings.simulator.msfs2020.communityPath', store.get('mainSettings.msfsCommunityPath'));
+  store.delete('mainSettings.msfsCommunityPath' as keyof RendererSettings);
+}
+if (store.get('mainSettings.installPath')) {
+  store.set('mainSettings.simulator.msfs2020.installPath', store.get('mainSettings.installPath'));
+  store.delete('mainSettings.installPath' as keyof RendererSettings);
+}
 
 export default store;

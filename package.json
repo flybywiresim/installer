@@ -1,7 +1,7 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "3.4.3-dev.1",
+  "version": "3.5.0-dev.1",
   "description": "Desktop application to install and customize FlyByWire addons",
   "configUrls": {
     "production": "https://flybywirecdn.com/installer/config/production.json",
@@ -114,6 +114,7 @@
     "@types/winreg": "^1.2.31",
     "@types/ws": "^8.5.3",
     "check-disk-space": "^3.3.1",
+    "clsx": "^2.1.1",
     "config-ini-parser": "~1.5.9",
     "dateformat": "^5.0.1",
     "electron-store": "^8.0.1",
