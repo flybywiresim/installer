@@ -11,6 +11,9 @@
 releases:
   - name: 3.4.4
     changes:
+      - title: Fix addon dependencies not detected preventing installation
+        categories: [Core]
+        authors: [FoxtrotSierra]
       - title: Added reload-button to developer configuration
         categories: [Core]
         authors: [Revyn112]
@@ -23,7 +26,7 @@ releases:
       - title: Reset-to-default button for developer configuration
         categories: [Core]
         authors: [Gaudv]
-      - title: fix move people to new installer config url
+      - title: Fix move people to new installer config url
         categories: [Core]
         authors: [FoxtrotSierra]
   - name: 3.4.3
@@ -336,7 +339,7 @@ releases:
         authors: [FoxtrotSierra]
       - title: Add Windows notification when download complete
         categories: [UX]
-        authors: [FoxtotSierra]
+        authors: [FoxtrotSierra]
       - title: Add changelog for the installer
         categories: [UX]
         authors: [FoxtrotSierra]

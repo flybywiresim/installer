@@ -112,7 +112,7 @@ export class InstallManager {
 
     // Find dependencies
     for (const dependency of addon.dependencies ?? []) {
-      const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
+      const [, publisherKey, addonKey] = dependency.addon.match(/@([\w-]+)\/([\w-]+)/);
 
       const dependencyPublisher = Resolver.findPublisher(publisherKey);
       const dependencyAddon = Resolver.findAddon(publisherKey, addonKey);
@@ -540,7 +540,7 @@ export class InstallManager {
     let download = store.getState().downloads.find((it) => it.id === addon.key);
     if (!download) {
       for (const dependency of addon.dependencies ?? []) {
-        const [, publisherKey, addonKey] = dependency.addon.match(/@(\w+)\/(\w+)/);
+        const [, publisherKey, addonKey] = dependency.addon.match(/@([\w-]+)\/([\w-]+)/);
 
         const dependencyAddon = Resolver.findAddon(publisherKey, addonKey);
 
