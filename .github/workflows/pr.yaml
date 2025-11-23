@@ -51,3 +51,9 @@ jobs:
         with:
           name: FlyByWire_Installer_Setup
           path: ./dist/FlyByWire_Installer_Setup.exe
+      - name: Upload to CloudFlare CDN (test)
+        env:
+          CLOUDFLARE_BUCKET_PASSWORD: ${{ secrets.CLOUDFLARE_BUCKET_PASSWORD }}
+          CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
+          CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
+        run: ./scripts/cdn-cf.sh dist/ installer/test
