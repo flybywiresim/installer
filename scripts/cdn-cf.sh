@@ -37,8 +37,7 @@ for FILE in "${FILES}"/*; do
 done
 
 # Create JSON payload for Cloudflare API
-PURGE_JSON=$(printf '{"files":["%s"]}' "$(IFS='","'; echo "${PURGE_URLS[*]}")")
-
+PURGE_JSON=$(jq -n --argjson urls "$(printf '%s\n' "${PURGE_URLS[@]}" | jq -R . | jq -s .)" '{files: $urls}')
 echo "Purging cache via Cloudflare API"
 echo "JSON payload: $PURGE_JSON"
 
