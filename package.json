@@ -3,6 +3,12 @@
   "productName": "FlyByWire Installer",
   "version": "3.5.0-dev.1",
   "description": "Desktop application to install and customize FlyByWire addons",
+  "author": {
+    "name": "FlyByWire Simulations",
+    "email": "contact@flybywiresim.com",
+    "url": "https://flybywiresim.com"
+  },
+  "license": "GPL-3.0",
   "configUrls": {
     "production": "https://flybywirecdn.com/installer/config/production.json",
     "confidentialBaseUrl": "https://flybywirecdn.com/installer/config/confidential"
@@ -13,13 +19,14 @@
     "start": "electron-vite",
     "dev": "electron-vite dev",
     "build": "npm run generate-licenses && electron-vite build",
-    "package": "npm run build && electron-builder --win --publish=never",
+    "package": "npm run build && electron-builder --publish=never",
+    "package:linux": "npm run build && electron-builder --linux --publish=never",
+    "package:win": "npm run build && electron-builder --win --publish=never",
+    "package:all": "npm run build && electron-builder --win --linux --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "keywords": [],
-  "author": "FlyByWire Simulations",
-  "license": "GPL-3.0",
   "build": {
     "extraResources": [
       "./extraResources/**"
@@ -35,6 +42,26 @@
       "files": [
         "out/**/*"
       ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "snap"
+      ],
+      "icon": "src/main/icons/icon.png",
+      "executableName": "fbw-installer",
+      "desktop": {
+       "Name": "FlyByWire Installer",
+       "Comment": "Desktop application to install and customize FlyByWire addons",
+       "Type": "Application",
+       "Categories": "Utility;",
+       "StartupWMClass": "FlyByWire Installer"
+     },
+      "files": [
+        "out/**/*"
+      ],
+      "category": "Utility"
     }
   },
   "devDependencies": {
