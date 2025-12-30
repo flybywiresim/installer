@@ -46,7 +46,8 @@
     "linux": {
       "target": [
         "AppImage",
-        "deb"
+        "deb",
+        "rpm"
       ],
       "icon": "build/icons/fbw-installer",
       "executableName": "fbw-installer",
@@ -54,13 +55,15 @@
         "--no-sandbox"
       ],
       "desktop": {
-       "Name": "FlyByWire Installer",
-       "Comment": "Desktop application to install and customize FlyByWire addons",
-       "Type": "Application",
-       "Categories": "Utility;",
-       "StartupWMClass": "FlyByWire Installer",
-       "Icon": "fbw-installer"
-     },
+        "entry": {
+          "Name": "FlyByWire Installer",
+          "Comment": "Desktop application to install and customize FlyByWire addons",
+          "Type": "Application",
+          "Categories": "Utility;",
+          "StartupWMClass": "FlyByWire Installer",
+          "Icon": "fbw-installer"
+        }
+      },
       "files": [
         "out/**/*"
       ],
@@ -97,7 +100,7 @@
     "concurrently": "^6.5.1",
     "css-loader": "^4.3.0",
     "electron": "^25.9.8",
-    "electron-builder": "^24.13.3",
+    "electron-builder": "^26.0.20",
     "electron-devtools-installer": "^3.2.1",
     "electron-vite": "^2.3.0",
     "eslint": "^8.57.1",

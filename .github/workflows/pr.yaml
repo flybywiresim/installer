@@ -56,6 +56,11 @@ jobs:
         with:
           name: FlyByWire_Installer_Setup_AppImage
           path: ./dist/*.AppImage
+      - name: Upload PR artifact (.rpm)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyByWire_Installer_Setup_rpm
+          path: ./dist/*.rpm
       - name: Upload PR artifact (.deb)
         uses: actions/upload-artifact@v4
         with:

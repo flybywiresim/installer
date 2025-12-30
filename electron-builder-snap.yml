@@ -6,13 +6,14 @@ linux:
   executableArgs: [
         --no-sandbox
   ]
-  desktop: 
-    Name: FlyByWire Installer
-    Comment: Desktop application to install and customize FlyByWire addons
-    Type: Application
-    Categories: "Utility;"
-    StartupWMClass: FlyByWire Installer
-    Icon: ${SNAP}/meta/gui/icon.png
+  desktop:
+    entry: 
+      Name: FlyByWire Installer
+      Comment: Desktop application to install and customize FlyByWire addons
+      Type: Application
+      Categories: "Utility;"
+      StartupWMClass: FlyByWire Installer
+      Icon: ${SNAP}/meta/gui/icon.png
   files: [
       "out/**/*"
   ]
