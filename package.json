@@ -49,14 +49,18 @@
         "deb",
         "snap"
       ],
-      "icon": "src/main/icons/icon.png",
+      "icon": "build/icons/fbw-installer",
       "executableName": "fbw-installer",
+      "executableArgs": [
+        "--no-sandbox"
+      ],
       "desktop": {
        "Name": "FlyByWire Installer",
        "Comment": "Desktop application to install and customize FlyByWire addons",
        "Type": "Application",
        "Categories": "Utility;",
-       "StartupWMClass": "FlyByWire Installer"
+       "StartupWMClass": "FlyByWire Installer",
+       "Icon": "fbw-installer"
      },
       "files": [
         "out/**/*"
