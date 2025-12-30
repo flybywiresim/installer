@@ -20,9 +20,9 @@
     "dev": "electron-vite dev",
     "build": "npm run generate-licenses && electron-vite build",
     "package": "npm run build && electron-builder --publish=never",
-    "package:linux": "npm run build && electron-builder --linux --publish=never",
+    "package:linux": "npm run build && electron-builder --linux --publish=never && electron-builder --config electron-builder-snap.yml --linux snap --publish=never",
     "package:win": "npm run build && electron-builder --win --publish=never",
-    "package:all": "npm run build && electron-builder --win --linux --publish=never",
+    "package:all": "npm run build && electron-builder --win --linux --publish=never && electron-builder --config electron-builder-snap.yml --linux snap --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
@@ -46,8 +46,7 @@
     "linux": {
       "target": [
         "AppImage",
-        "deb",
-        "snap"
+        "deb"
       ],
       "icon": "build/icons/fbw-installer",
       "executableName": "fbw-installer",
