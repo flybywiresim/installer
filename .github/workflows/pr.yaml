@@ -50,6 +50,8 @@ jobs:
           sudo apt-get install -y wine32 wine64
           sudo apt-get install -y flatpak
           sudo apt-get install -y flatpak-builder
+      - name: Add Flathub Flatpak remote
+        run: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       - name: Build Installer
         run: npm run package:all
       - name: Upload PR artifact (.exe)
