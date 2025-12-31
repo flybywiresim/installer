@@ -57,30 +57,30 @@ jobs:
       - name: Upload PR artifact (.exe)
         uses: actions/upload-artifact@v4
         with:
-          name: FlyByWire_Installer_Setup_exe
+          name: FlyByWire-Installer-exe
           path: ./dist/*.exe
       - name: Upload PR artifact (.AppImage)
         uses: actions/upload-artifact@v4
         with:
-          name: FlyByWire_Installer_Setup_AppImage
+          name: FlyByWire-Installer-AppImage
           path: ./dist/*.AppImage
       - name: Upload PR artifact (.rpm)
         uses: actions/upload-artifact@v4
         with:
-          name: FlyByWire_Installer_Setup_rpm
+          name: FlyByWire-Installer-rpm
           path: ./dist/*.rpm
       - name: Upload PR artifact (.deb)
         uses: actions/upload-artifact@v4
         with:
-          name: FlyByWire_Installer_Setup_deb
+          name: FlyByWire-Installer-deb
           path: ./dist/*.deb
       - name: Upload PR artifact (.snap)
         uses: actions/upload-artifact@v4
         with:
-          name: FlyByWire_Installer_Setup_snap
+          name: FlyByWire-Installer-snap
           path: ./dist/*.snap
       - name: Upload PR artifact (.flatpak)
         uses: actions/upload-artifact@v4
         with:
-          name: FlyByWire_Installer_Setup_flatpak
+          name: FlyByWire-Installer-flatpak
           path: ./dist/*.flatpak

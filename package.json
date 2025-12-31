@@ -47,7 +47,7 @@
     "appId": "com.flybywiresim.installer",
     "nsis": {
       "include": "scripts/installer.nsh",
-      "artifactName": "FlyByWire_Installer_Setup.${ext}"
+      "artifactName": "FlyByWire-Installer-${version}-${arch}.${ext}"
     },
     "win": {
       "target": "nsis",

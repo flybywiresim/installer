@@ -11,7 +11,7 @@ jobs:
     env:
       MASTER_PRE_RELEASE_ID: 273592762
       MASTER_PRE_RELEASE_TAG: test-linux-vmaster
-      WINDOWS_ASSET_NAME: FlyByWire_Installer_Setup.exe
+      PACKAGE_NAME: FlyByWire-Installer
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -39,26 +39,31 @@ jobs:
       - name: Package installer
         run: |
           npm run package:all
-          mkdir -p uploads
-          cp ./dist/*.exe ./uploads/
-          cp ./dist/*.AppImage ./uploads/
-          cp ./dist/*.rpm ./uploads/
-          cp ./dist/*.deb ./uploads/
-          cp ./dist/*.flatpak ./uploads/
-          cp ./dist/*.snap ./uploads/
+          mkdir -p cdn
+          for file in ./dist/FlyByWire-Installer-*-*.*; do
+            [ -e "$file" ] || continue
+            # Extract extension
+            ext="${file##*.}"
+            # Extract arch (the part after the last '-' and before the extension)
+            arch=$(basename "$file" | sed -E 's/.*-([^-]+)\.'"$ext"'$/\1/')
+            # Compose new filename
+            staticname="FlyByWire-Installer-$arch.$ext"
+            cp "$file" "./upload/github/"
+            cp "$file" "./upload/cdn/$staticname"
+          done
 
       - name: Upload to Bunny CDN (dev)
         env:
           BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
           BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
-        run: ./scripts/cdn.sh uploads/ installer/linux-test
+        run: ./scripts/cdn.sh upload/cdn/ installer/linux-test
 
       - name: Upload to CloudFlare CDN (dev)
         env:
           CLOUDFLARE_BUCKET_PASSWORD: ${{ secrets.CLOUDFLARE_BUCKET_PASSWORD }}
           CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
           CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
-        run: ./scripts/cdn-cf.sh uploads/ installer/linux-test
+        run: ./scripts/cdn-cf.sh upload/cdn/ installer/linux-test
 
       - name: Delete previous assets from master pre-release
         env:
@@ -79,7 +84,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for file in uploads/*; do
+          for file in upload/github/*; do
             [ -e "$file" ] || continue
             name=$(basename "$file")
             echo "Uploading $name"
@@ -96,5 +101,5 @@ jobs:
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'Content-Type: application/json' \
             --data-raw '{
-              "body": "This pre-release has its assets updated on every commit to the master branch\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\nThis link will always point to the latest Windows master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.WINDOWS_ASSET_NAME }}"
+              "body": "This pre-release has its assets updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}"
             }'
