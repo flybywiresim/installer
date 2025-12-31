@@ -34,6 +34,7 @@ jobs:
           sudo apt-get install -y wine32 wine64
           sudo apt-get install -y flatpak
           sudo apt-get install -y flatpak-builder
+          sudo apt-get install -y rclone
       - name: Add Flathub Flatpak remote
         run: flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       - name: Package installer
@@ -56,7 +57,19 @@ jobs:
             cp "$file" "./upload/github/$staticname"
             cp "$file" "./upload/cdn/$staticname"
           done
-
+      - name: Configure rclone for Cloudflare R2
+        run: |
+            mkdir -p ~/.config/rclone
+            cat > ~/.config/rclone/rclone.conf <<EOF
+            [cloudflare-r2]
+            type = s3
+            provider = Cloudflare
+            env_auth = false
+            access_key_id = ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+            secret_access_key = ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+            endpoint = ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+            region = auto
+            EOF
       - name: Upload to Bunny CDN (dev)
         env:
           BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}

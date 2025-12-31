@@ -1,18 +1,15 @@
 #!/bin/bash
 
+RCLONE_REMOTE="cloudflare-r2"
 CDN_URL="flybywirecdn.com"
 FILES=${1}
 CDN_DIR=${2:-"installer/test"}
 
 echo "Syncing files from: ${FILES}/*"
-echo "Syncing to: ${CDN_DIR}"
+echo "Syncing to: $RCLONE_REMOTE:$CDN_DIR"
 
-for FILE in "${FILES}"/*; do
-    DEST="$CDN_URL/$CDN_DIR/$(basename -- "$FILE")"
-    echo "Syncing file: $FILE"
-    echo "Destination: $DEST"
-    curl -X PUT -H "X-FBW-Access-Key: $CLOUDFLARE_BUCKET_PASSWORD" -T "$FILE" "$DEST"
-done
+# Upload all files in the directory to R2
+rclone copy "${FILES}" "$RCLONE_REMOTE:$CDN_DIR" --progress
 
 # Purge after all uploads that the files are somewhat in sync
 echo "Purging cache"
