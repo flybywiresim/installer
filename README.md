@@ -17,6 +17,16 @@ Please make sure you have:
 - [git](https://git-scm.com/downloads)
 - [NodeJS 20](https://nodejs.org/en/)
 
+If you want to build flatpaks (package:flatpak, package:linux, package:all) you will also need to install the following from your preferred package manager:
+
+- [flatpak](https://flatpak.org/)
+- [flatpak-builder](https://docs.flatpak.org/en/latest/building-introduction.html)
+
+After installing flatpak add the flathub remote:
+
+```shell script
+flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+```
 ### Get started
 
 First fork the project and install the dependencies
