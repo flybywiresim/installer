@@ -41,10 +41,23 @@ Then run the development server using
 npm run dev
 ```
 
-To build the package as .exe, run
+To build the package as an executable application, run
 
 ```shell script
 npm run package
+```
+
+On Windows this will build an .exe file, on linux it will build as .AppImage, .deb and .rpm. If you wish to target specific ways of distribution, you may instead run
+
+```shell
+npm run package:all # packages for all targets
+npm run package:win # packages for windows (.exe)
+npm run package:linux # packages for all linux targets (.AppImage,.deb,.rpm,.flatpak and .snap)
+npm run package:appimage # packages as .AppImage
+npm run package:deb # packages as .deb
+npm run package:rpm # packages as .rpm
+npm run package:snap # packages as .snap
+npm run package:flatpak # packages as .flatpak
 ```
 
 Packaged applications will automatically update if there is a newer version available (compared to build version in package.json), this does
