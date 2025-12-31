@@ -3,13 +3,14 @@
 RCLONE_REMOTE="cloudflare-r2"
 CDN_URL="flybywirecdn.com"
 FILES=${1}
+R2_BUCKET="flybywiresim"
 CDN_DIR=${2:-"installer/test"}
 
 echo "Syncing files from: ${FILES}/*"
 echo "Syncing to: $RCLONE_REMOTE:$CDN_DIR"
 
 # Upload all files in the directory to R2
-rclone copy "${FILES}" "$RCLONE_REMOTE:$CDN_DIR" --progress
+rclone copy "${FILES}" "$RCLONE_REMOTE:$R2_BUCKET/$CDN_DIR" --progress
 
 # Purge after all uploads that the files are somewhat in sync
 echo "Purging cache"
