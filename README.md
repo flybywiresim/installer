@@ -60,6 +60,6 @@ npm run package:snap # packages as .snap
 npm run package:flatpak # packages as .flatpak
 ```
 
-Packaged applications will automatically update if there is a newer version available (compared to build version in package.json), this does
+Packaged applications (.exe and .AppImage only) will automatically update if there is a newer version available (compared to build version in package.json). On windows, this does
 also apply to development versions (ending on -devXX), which are updated via a separate stream. Updates are distributed once the build
 version is changed and a tag has been added.
