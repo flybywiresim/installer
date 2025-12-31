@@ -84,13 +84,15 @@ jobs:
       - name: Upload all release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
         run: |
+          base_url="${UPLOAD_URL%\{*}"
           for file in upload/github/*; do
             [ -e "$file" ] || continue
             name=$(basename "$file")
-            echo "Uploading $name as $url_name"
+            echo "Uploading $name"
             curl --request POST \
-              --url "${{ steps.create_release.outputs.upload_url }}?name=$name" \
+              --url "$base_url?name=$name" \
               --header "authorization: Bearer $GITHUB_TOKEN" \
               --header "Content-Type: application/octet-stream" \
               --data-binary @"$file"
