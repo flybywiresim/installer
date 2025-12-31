@@ -40,12 +40,12 @@ jobs:
         run: |
           npm run package:all
           mkdir -p uploads
-          cp ./dist/*.exe ./uploads/*.exe
-          cp ./dist/*.AppImage ./uploads/*.AppImage
-          cp ./dist/*.rpm ./uploads/*.rpm
-          cp ./dist/*.deb ./uploads/*.deb
-          cp ./dist/*.flatpak ./uploads/*.flatpak
-          cp ./dist/*.snap ./uploads/*.snap
+          cp ./dist/*.exe ./uploads/
+          cp ./dist/*.AppImage ./uploads/
+          cp ./dist/*.rpm ./uploads/
+          cp ./dist/*.deb ./uploads/
+          cp ./dist/*.flatpak ./uploads/
+          cp ./dist/*.snap ./uploads/
 
       - name: Upload to Bunny CDN (dev)
         env:
