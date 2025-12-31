@@ -82,7 +82,8 @@
       "files": [
         "out/**/*"
       ],
-      "category": "Utility"
+      "category": "Utility",
+      "artifactName": "FlyByWire-Installer-${version}-${arch}.${ext}"
     }
   },
   "devDependencies": {

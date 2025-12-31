@@ -22,3 +22,4 @@ linux:
       "out/**/*"
   ]
   category: Utility
+  artifactName: "FlyByWire-Installer-${version}-${arch}.${ext}"

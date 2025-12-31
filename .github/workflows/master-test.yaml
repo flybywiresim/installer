@@ -82,10 +82,9 @@ jobs:
           for file in uploads/*; do
             [ -e "$file" ] || continue
             name=$(basename "$file")
-            url_name="${name// /%20}"
-            echo "Uploading $name as $url_name"
+            echo "Uploading $name"
             curl --request POST \
-              --url "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets?name=$url_name" \
+              --url "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets?name=$name" \
               --header "authorization: Bearer $GITHUB_TOKEN" \
               --header "Content-Type: application/octet-stream" \
               --data-binary @"$file"
