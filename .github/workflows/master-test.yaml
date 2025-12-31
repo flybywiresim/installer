@@ -41,14 +41,14 @@ jobs:
           npm run package:all
           mkdir -p upload/github/
           mkdir -p upload/cdn/
-          for file in ./dist/FlyByWire-Installer-*-*.*; do
+          for file in ./dist/$PACKAGE_NAME-*-*.*; do
             [ -e "$file" ] || continue
             # Extract extension
             ext="${file##*.}"
             # Extract arch (the part after the last '-' and before the extension)
             arch=$(basename "$file" | sed -E 's/.*-([^-]+)\.'"$ext"'$/\1/')
             # Compose new filename
-            staticname="FlyByWire-Installer-$arch.$ext"
+            staticname="$PACKAGE_NAME-$arch.$ext"
             cp "$file" "./upload/github/$staticname"
             cp "$file" "./upload/cdn/$staticname"
           done
