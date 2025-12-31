@@ -42,6 +42,8 @@ jobs:
           npm run package:all
           mkdir -p upload/github/
           mkdir -p upload/cdn/
+          cp ./dist/latest-linux.yml ./upload/github/
+          cp ./dist/latest-linux.yml ./upload/cdn/
           for file in ./dist/$PACKAGE_NAME-*-*.*; do
             [ -e "$file" ] || continue
             # Extract extension
