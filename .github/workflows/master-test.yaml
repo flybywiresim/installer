@@ -49,7 +49,7 @@ jobs:
             arch=$(basename "$file" | sed -E 's/.*-([^-]+)\.'"$ext"'$/\1/')
             # Compose new filename
             staticname="FlyByWire-Installer-$arch.$ext"
-            cp "$file" "./upload/github/"
+            cp "$file" "./upload/github/$staticname"
             cp "$file" "./upload/cdn/$staticname"
           done
 
@@ -102,5 +102,5 @@ jobs:
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'Content-Type: application/json' \
             --data-raw '{
-              "body": "This pre-release has its assets updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}"
+              "body": "This pre-release has its assets updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\n\nThis link will always point to the latest Windows master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.PACKAGE_NAME }}-x64.exe"
             }'
