@@ -45,6 +45,10 @@ jobs:
             [ -e "$file" ] || continue
             # Extract extension
             ext="${file##*.}"
+            # Skip .blockmap files
+            if [ "$ext" = "blockmap" ]; then
+              continue
+            fi
             # Extract arch (the part after the last '-' and before the extension)
             arch=$(basename "$file" | sed -E 's/.*-([^-]+)\.'"$ext"'$/\1/')
             # Compose new filename
