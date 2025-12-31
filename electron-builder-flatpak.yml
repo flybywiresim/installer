@@ -1,0 +1,42 @@
+extraResources:
+  [
+    "./extraResources/**"
+  ]
+appId: com.flybywiresim.installer
+linux:
+  target:
+    - target: flatpak
+  icon: build/icons/fbw-installer
+  executableName: fbw-installer
+  executableArgs: [
+        --no-sandbox
+  ]
+  synopsis: Install and customize FlyByWire addons
+  description: Desktop application to install and customize FlyByWire addons
+  desktop:
+    entry:
+      Name: FlyByWire Installer
+      Comment: Desktop application to install and customize FlyByWire addons
+      Type: Application
+      Categories: "Utility;"
+      StartupWMClass: FlyByWire Installer
+      Icon: com.flybywiresim.installer
+  files: [
+    "out/**/*"
+  ]
+  category: Utility
+flatpak:
+  runtime: org.freedesktop.Platform
+  runtimeVersion: "23.08"
+  sdk: org.freedesktop.Sdk
+  branch: stable
+  finishArgs: [
+    "--share=network",
+    "--socket=x11",
+    "--socket=wayland",
+    "--device=dri",
+    "--filesystem=home"
+  ]
+  files: [
+    ["out/", "app/bin/"]
+  ]

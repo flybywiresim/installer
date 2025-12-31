@@ -71,3 +71,8 @@ jobs:
         with:
           name: FlyByWire_Installer_Setup_snap
           path: ./dist/*.snap
+      - name: Upload PR artifact (.flatpak)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyByWire_Installer_Setup_flatpak
+          path: ./dist/*.flatpak

@@ -20,9 +20,15 @@
     "dev": "electron-vite dev",
     "build": "npm run generate-licenses && electron-vite build",
     "package": "npm run build && electron-builder --publish=never",
-    "package:linux": "npm run build && electron-builder --linux --publish=never && electron-builder --config electron-builder-snap.yml --linux snap --publish=never",
+    "package:all": "npm run build && electron-builder --win --linux --publish=never && electron-builder --config electron-builder-snap.yml --linux snap --publish=never && electron-builder --config electron-builder-flatpak.yml --linux flatpak --publish=never",
     "package:win": "npm run build && electron-builder --win --publish=never",
-    "package:all": "npm run build && electron-builder --win --linux --publish=never && electron-builder --config electron-builder-snap.yml --linux snap --publish=never",
+    "package:linux": "npm run build && electron-builder --linux --publish=never && electron-builder --config electron-builder-snap.yml --linux snap --publish=never && electron-builder --config electron-builder-flatpak.yml --linux flatpak --publish=never",
+    "package:appimage": "npm run build && electron-builder --linux AppImage --publish=never",
+    "package:deb": "npm run build && electron-builder --linux deb --publish=never",
+    "package:rpm": "npm run build && electron-builder --linux rpm --publish=never",
+    "package:snap": "npm run build && electron-builder --config electron-builder-snap.yml --linux snap --publish=never",
+    "package:flatpak": "npm run build && electron-builder --config electron-builder-flatpak.yml --linux flatpak --publish=never",
+
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
@@ -54,6 +60,8 @@
       "executableArgs": [
         "--no-sandbox"
       ],
+      "synopsis": "Install and customize FlyByWire addons",
+      "description": "Desktop application to install and customize FlyByWire addons",
       "desktop": {
         "entry": {
           "Name": "FlyByWire Installer",

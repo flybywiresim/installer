@@ -1,3 +1,7 @@
+extraResources:
+  [
+    "./extraResources/**"
+  ]
 linux:
   target:
     - target: snap
