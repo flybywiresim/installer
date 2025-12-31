@@ -28,7 +28,6 @@
     "package:rpm": "npm run build && electron-builder --linux rpm --publish=never",
     "package:snap": "npm run build && electron-builder --config electron-builder-snap.yml --linux snap --publish=never",
     "package:flatpak": "npm run build && electron-builder --config electron-builder-flatpak.yml --linux flatpak --publish=never",
-
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
@@ -205,7 +204,6 @@
     ]
   },
   "optionalDependencies": {
-    "bufferutil": "^4.1.0",
     "utf-8-validate": "^5.0.10"
   }
 }
