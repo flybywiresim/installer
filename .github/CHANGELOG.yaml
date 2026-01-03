@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.5.1
+    changes:
+      - title: Fix missing settings button for Simbridge
+        categories: [UI]
+        authors: [saschl]
   - name: 3.5.0
     changes:
       - title: Add multi-simulator support (MSFS2020 and MSFS2024)
