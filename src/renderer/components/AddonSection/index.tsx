@@ -425,7 +425,7 @@ export const AddonSection = (): JSX.Element => {
                           Release Notes
                         </SideBarLink>
                       )}
-                      {selectedAddon.key === 'simbridge' && ( // TODO find a better way to do this...
+                      {selectedAddon.key.includes('simbridge') && ( // TODO find a better way to do this...
                         <SideBarLink
                           to={`/addon-section/${publisherName}/main/simbridge-config`}
                           disabled={InstallStatusCategories.installing.includes(status)}
