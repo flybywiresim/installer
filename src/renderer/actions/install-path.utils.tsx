@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import walk from 'walkdir';
 import * as path from 'path';
 import * as os from 'os';
 import settings from 'renderer/rendererSettings';
@@ -18,9 +17,15 @@ const possibleBasePaths: Record<TypeOfSimulator, { store: string; steam: string 
   },
 };
 
+const basePathCache: Record<string, string | null> = {};
+
 export const msfsBasePath = (sim: TypeOfSimulator): string | null => {
+  if (basePathCache[sim] !== undefined) {
+    return basePathCache[sim];
+  }
+
   if (os.platform().toString() === 'linux') {
-    return null;
+    return (basePathCache[sim] = null);
   }
 
   // Ensure proper functionality in main- and renderer-process
@@ -28,33 +33,34 @@ export const msfsBasePath = (sim: TypeOfSimulator): string | null => {
 
   const steamPath = path.join(possibleBasePaths[sim].steam, 'UserCfg.opt');
   const storePath = path.join(possibleBasePaths[sim].store, 'UserCfg.opt');
-  if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return null;
+  if (fs.existsSync(steamPath) && fs.existsSync(storePath)) return (basePathCache[sim] = null);
   if (fs.existsSync(steamPath)) {
     msfsConfigPath = steamPath;
   } else if (fs.existsSync(storePath)) {
     msfsConfigPath = storePath;
-  } else {
-    walk(Directories.localAppData(), (path) => {
-      if (path.includes('Flight') && path.includes('UserCfg.opt')) {
-        msfsConfigPath = path;
-      }
-    });
   }
 
   if (!msfsConfigPath) {
-    return null;
+    return (basePathCache[sim] = null);
   }
 
-  return path.dirname(msfsConfigPath);
+  return (basePathCache[sim] = path.dirname(msfsConfigPath));
 };
+
+const communityDirCache: Record<string, string | null> = {};
 
 export const defaultCommunityDir = (msfsBase: string | null): string | null => {
   if (!msfsBase) {
     return null;
   }
+
+  if (communityDirCache[msfsBase] !== undefined) {
+    return communityDirCache[msfsBase];
+  }
+
   const msfsConfigPath = path.join(msfsBase, 'UserCfg.opt');
   if (!fs.existsSync(msfsConfigPath)) {
-    return null;
+    return (communityDirCache[msfsBase] = null);
   }
 
   try {
@@ -64,11 +70,11 @@ export const defaultCommunityDir = (msfsBase: string | null): string | null => {
     const packagesPathLine = msfsConfigLines.find((line) => line.includes('InstalledPackagesPath '));
     const communityDir = path.join(packagesPathLine.split(' ').slice(1).join(' ').replaceAll('"', ''), '\\Community');
 
-    return fs.existsSync(communityDir) ? communityDir : null;
+    return (communityDirCache[msfsBase] = fs.existsSync(communityDir) ? communityDir : null);
   } catch (e) {
     console.warn('Could not parse community dir from file', msfsConfigPath);
     console.error(e);
-    return null;
+    return (communityDirCache[msfsBase] = null);
   }
 };
 
