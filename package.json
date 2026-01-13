@@ -194,7 +194,6 @@
     "styled-components": "^5.3.11",
     "tabler-icons-react": "~1.33.0",
     "tailwind-merge": "^2.6.0",
-    "walkdir": "^0.4.1",
     "winreg": "^1.2.5",
     "ws": "^8.18.3"
   },

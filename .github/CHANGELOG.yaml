@@ -14,6 +14,9 @@ releases:
       - title: Add Linux versions
         categories: [Core]
         authors: [FoxtotSierra]
+      - title: Fix recursive disk reads causing high CPU & RAM usage
+        categories: [Core]
+        authors: [vikingnope]
   - name: 3.5.1
     changes:
       - title: Fix missing settings button for Simbridge
