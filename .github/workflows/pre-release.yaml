@@ -26,21 +26,33 @@ jobs:
         run: npm ci
 
       - name: Install system requirements
-        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 && sudo apt-get install -y wine32 wine64
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386
+          sudo apt-get install -y wine32 wine64
+          sudo apt-get install -y rclone
 
       - name: Package installer
         run: |
           npm run package && rm -rf ./dist/win-unpacked/
 
-      - name: Upload to Bunny CDN
-        env:
-          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
-          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
-        run: ./scripts/cdn.sh dist/ installer/rc
+      - name: Configure rclone for Cloudflare R2
+        run: |
+            mkdir -p ~/.config/rclone
+            cat > ~/.config/rclone/rclone.conf <<EOF
+            [cloudflare-r2]
+            type = s3
+            provider = Cloudflare
+            env_auth = false
+            access_key_id = ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+            secret_access_key = ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+            endpoint = ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+            region = auto
+            EOF
 
       - name: Upload to CloudFlare CDN
         env:
-          CLOUDFLARE_BUCKET_PASSWORD: ${{ secrets.CLOUDFLARE_BUCKET_PASSWORD }}
           CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
           CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
         run: ./scripts/cdn-cf.sh dist/ installer/rc
