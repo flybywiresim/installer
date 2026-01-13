@@ -59,6 +59,7 @@ jobs:
             cp "$file" "./upload/github/"
             cp "$file" "./upload/cdn/$staticname"
           done
+
       - name: Configure rclone for Cloudflare R2
         run: |
             mkdir -p ~/.config/rclone
@@ -72,18 +73,12 @@ jobs:
             endpoint = ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
             region = auto
             EOF
-      - name: Upload to Bunny CDN
-        env:
-          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
-          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
-        run: ./scripts/cdn.sh upload/cdn/ installer/release && ./scripts/cdn.sh dist/ installer/rc
 
       - name: Upload to CloudFlare CDN
         env:
-          CLOUDFLARE_BUCKET_PASSWORD: ${{ secrets.CLOUDFLARE_BUCKET_PASSWORD }}
           CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
           CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
-        run: ./scripts/cdn-cf.sh upload/cdn/ installer/release && ./scripts/cdn-cf.sh dist/ installer/rc
+        run: ./scripts/cdn-cf.sh upload/cdn/ installer/release && ./scripts/cdn-cf.sh upload/cdn/ installer/rc
 
       - name: Create Release
         id: create_release
