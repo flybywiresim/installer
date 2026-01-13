@@ -419,7 +419,7 @@ export class InstallerConfiguration {
               const mergedConfig = await this.mergeQaConfigurations(config);
               return mergedConfig;
             } else {
-              return Promise.reject('Both CDN and local configurations are invalid');
+              throw new Error('Both CDN and local configurations are invalid');
             }
           });
         }
@@ -431,7 +431,7 @@ export class InstallerConfiguration {
             const mergedConfig = await this.mergeQaConfigurations(config);
             return mergedConfig;
           } else {
-            return Promise.reject('Could not retrieve CDN configuration, and local configuration is invalid');
+            throw new Error('Could not retrieve CDN configuration, and local configuration is invalid');
           }
         });
       });
@@ -518,12 +518,16 @@ export class InstallerConfiguration {
     return merged;
   }
 
-  private static deepMergeObjects<T extends Record<string, any>>(
+  private static isObject(value: unknown): value is Record<string, unknown> {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  private static deepMergeObjects<T extends Record<string, unknown>>(
     base: T,
     overlay: Partial<T>,
-    arrayMergeStrategies: Record<string, MergeStrategy<any>> = {},
+    arrayMergeStrategies: Record<string, MergeStrategy<unknown>> = {},
   ): T {
-    const merged = { ...base };
+    const merged: Record<string, unknown> = { ...base };
 
     for (const [key, value] of Object.entries(overlay)) {
       if (value === undefined) continue;
@@ -531,33 +535,38 @@ export class InstallerConfiguration {
       if (Array.isArray(value) && Array.isArray(merged[key])) {
         // Use array merge strategy if provided
         const strategy = arrayMergeStrategies[key] || {};
-        merged[key] = this.mergeArrays(merged[key], value, strategy);
-      } else if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        merged[key] = this.mergeArrays(merged[key] as unknown[], value, strategy);
+      } else if (this.isObject(value) && this.isObject(merged[key])) {
         // Recursively merge objects
-        merged[key] = this.deepMergeObjects(merged[key] || {}, value, arrayMergeStrategies);
+        merged[key] = this.deepMergeObjects(
+          (merged[key] as Record<string, unknown>) || {},
+          value as Record<string, unknown>,
+          arrayMergeStrategies,
+        );
       } else {
         // Primitive values: override
         merged[key] = value;
       }
     }
 
-    return merged;
+    return merged as T;
   }
 
   private static mergeConfigurations(base: Configuration, overlay: Partial<Configuration>): Configuration {
-    return this.deepMergeObjects(base, overlay, {
+    return this.deepMergeObjects(base as unknown as Record<string, unknown>, overlay, {
       publishers: {
-        matcher: (basePublisher, overlayPublisher) => basePublisher.key === overlayPublisher.key,
+        matcher: (basePublisher: Publisher, overlayPublisher: Publisher) => basePublisher.key === overlayPublisher.key,
         onMatch: 'merge',
-        customMerge: (basePublisher, overlayPublisher) => this.mergePublishers(basePublisher, overlayPublisher),
+        customMerge: (basePublisher: Publisher, overlayPublisher: Publisher) =>
+          this.mergePublishers(basePublisher, overlayPublisher),
       },
-    });
+    }) as unknown as Configuration;
   }
 
   private static mergePublishers(base: Publisher, overlay: Partial<Publisher>): Publisher {
-    return this.deepMergeObjects(base, overlay, {
+    return this.deepMergeObjects(base as unknown as Record<string, unknown>, overlay, {
       defs: {
-        matcher: (baseDef, overlayDef) => {
+        matcher: (baseDef: Definition, overlayDef: Definition) => {
           // Match by kind and key if both have keys
           if ('key' in baseDef && 'key' in overlayDef) {
             return baseDef.kind === overlayDef.kind && baseDef.key === overlayDef.key;
@@ -566,36 +575,38 @@ export class InstallerConfiguration {
         },
       },
       buttons: {
-        matcher: (baseButton, overlayButton) =>
+        matcher: (baseButton: PublisherButton, overlayButton: PublisherButton) =>
           baseButton.text === overlayButton.text && baseButton.action === overlayButton.action,
       },
       addons: {
-        matcher: (baseAddon, overlayAddon) => baseAddon.key === overlayAddon.key,
+        matcher: (baseAddon: Addon, overlayAddon: Addon) => baseAddon.key === overlayAddon.key,
         onMatch: 'merge',
-        customMerge: (baseAddon, overlayAddon) => this.mergeAddons(baseAddon, overlayAddon),
+        customMerge: (baseAddon: Addon, overlayAddon: Addon) => this.mergeAddons(baseAddon, overlayAddon),
       },
-    });
+    }) as unknown as Publisher;
   }
 
   private static mergeAddons(base: Addon, overlay: Partial<Addon>): Addon {
-    return this.deepMergeObjects(base, overlay, {
+    return this.deepMergeObjects(base as unknown as Record<string, unknown>, overlay, {
       tracks: {
-        matcher: (baseTrack, overlayTrack) => baseTrack.key === overlayTrack.key,
+        matcher: (baseTrack: AddonTrack, overlayTrack: AddonTrack) => baseTrack.key === overlayTrack.key,
       },
       dependencies: {
-        matcher: (baseDep, overlayDep) => baseDep.addon === overlayDep.addon,
+        matcher: (baseDep: AddonDependency, overlayDep: AddonDependency) => baseDep.addon === overlayDep.addon,
       },
       incompatibleAddons: {
-        matcher: (baseIncompat, overlayIncompat) =>
+        matcher: (baseIncompat: AddonIncompatibleAddon, overlayIncompat: AddonIncompatibleAddon) =>
           baseIncompat.title === overlayIncompat.title && baseIncompat.creator === overlayIncompat.creator,
       },
       configurationAspects: {
-        matcher: (baseAspect, overlayAspect) => baseAspect.key === overlayAspect.key,
+        matcher: (baseAspect: ConfigurationAspect, overlayAspect: ConfigurationAspect) =>
+          baseAspect.key === overlayAspect.key,
       },
       techSpecs: {
-        matcher: (baseTechSpec, overlayTechSpec) => baseTechSpec.name === overlayTechSpec.name,
+        matcher: (baseTechSpec: AddonTechSpec, overlayTechSpec: AddonTechSpec) =>
+          baseTechSpec.name === overlayTechSpec.name,
       },
-    });
+    }) as unknown as Addon;
   }
 
   private static async loadConfigurationFromLocalStorage(): Promise<Configuration> {
