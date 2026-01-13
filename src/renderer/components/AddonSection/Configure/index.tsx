@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Addon, AddonTrack, ConfigurationAspect } from 'renderer/utils/InstallerConfiguration';
-import { Track, Tracks } from './TrackSelector';
+import { QATrackSelector, Track, Tracks } from './TrackSelector';
 import { ConfigurationAspectDisplay } from 'renderer/components/AddonSection/Configure/ConfigurationAspectDisplay';
 
 import './index.css';
@@ -72,21 +72,14 @@ export const Configure: FC<ConfigureProps> = ({
         </div>
         {selectedAddon.tracks.some((track) => track.isQualityAssurance) && (
           <div className="mt-8 flex flex-row gap-x-8">
-            <div>
-              <Tracks>
-                {selectedAddon.tracks
-                  .filter((track) => track.isQualityAssurance)
-                  .map((track) => (
-                    <Track
-                      addon={selectedAddon}
-                      key={track.key}
-                      track={track}
-                      isSelected={selectedTrack?.key === track.key}
-                      isInstalled={installedTrack?.key === track.key}
-                      handleSelected={() => onTrackSelection(track)}
-                    />
-                  ))}
-              </Tracks>
+            <div className="w-full">
+              <QATrackSelector
+                addon={selectedAddon}
+                tracks={selectedAddon.tracks.filter((track) => track.isQualityAssurance)}
+                selectedTrack={selectedTrack}
+                installedTrack={installedTrack}
+                onTrackSelection={onTrackSelection}
+              />
               <span className="ml-0.5 mt-3 inline-block text-2xl text-quasi-white">Quality Assurance</span>
             </div>
           </div>
