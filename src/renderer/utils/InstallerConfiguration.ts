@@ -375,6 +375,25 @@ export interface Configuration {
   publishers: Publisher[];
 }
 
+type MergeStrategy<T> = {
+  /**
+   * Function to determine if two items are the same (for overriding)
+   * If not provided, items are always appended
+   */
+  matcher?: (baseItem: T, overlayItem: T) => boolean;
+
+  /**
+   * Whether to override (replace) or merge when a match is found
+   * Default: 'override'
+   */
+  onMatch?: 'override' | 'merge';
+
+  /**
+   * Custom merge function for when onMatch is 'merge'
+   */
+  customMerge?: (baseItem: T, overlayItem: T) => T;
+};
+
 export class InstallerConfiguration {
   static async obtain(): Promise<Configuration> {
     const forceUseLocalConfig = settings.get('mainSettings.configForceUseLocal') as boolean;
@@ -469,104 +488,114 @@ export class InstallerConfiguration {
       });
   }
 
-  private static mergeConfigurations(base: Configuration, overlay: Partial<Configuration>): Configuration {
-    const merged: Configuration = {
-      ...base,
-      version: overlay.version ?? base.version,
-      publishers: [...base.publishers],
-    };
+  private static mergeArrays<T>(baseArray: T[] = [], overlayArray: T[] = [], strategy: MergeStrategy<T> = {}): T[] {
+    if (!overlayArray.length) return baseArray;
+    if (!baseArray.length) return overlayArray;
 
-    if (overlay.publishers) {
-      for (const overlayPublisher of overlay.publishers) {
-        const basePublisherIndex = merged.publishers.findIndex((p) => p.key === overlayPublisher.key);
+    const { matcher, onMatch = 'override', customMerge } = strategy;
+    const merged = [...baseArray];
 
-        if (basePublisherIndex >= 0) {
-          // Merge existing publisher
-          const basePublisher = merged.publishers[basePublisherIndex];
-          merged.publishers[basePublisherIndex] = this.mergePublishers(basePublisher, overlayPublisher);
-        } else {
-          // Add new publisher if full object is provided
-          if (this.isFullPublisher(overlayPublisher)) {
-            merged.publishers.push(overlayPublisher);
+    for (const overlayItem of overlayArray) {
+      if (matcher) {
+        const existingIndex = merged.findIndex((baseItem) => matcher(baseItem, overlayItem));
+
+        if (existingIndex >= 0) {
+          if (onMatch === 'merge' && customMerge) {
+            merged[existingIndex] = customMerge(merged[existingIndex], overlayItem);
+          } else {
+            // Default: override
+            merged[existingIndex] = overlayItem;
           }
+        } else {
+          merged.push(overlayItem);
         }
+      } else {
+        // No matcher provided, just append
+        merged.push(overlayItem);
       }
     }
 
     return merged;
+  }
+
+  private static deepMergeObjects<T extends Record<string, any>>(
+    base: T,
+    overlay: Partial<T>,
+    arrayMergeStrategies: Record<string, MergeStrategy<any>> = {},
+  ): T {
+    const merged = { ...base };
+
+    for (const [key, value] of Object.entries(overlay)) {
+      if (value === undefined) continue;
+
+      if (Array.isArray(value) && Array.isArray(merged[key])) {
+        // Use array merge strategy if provided
+        const strategy = arrayMergeStrategies[key] || {};
+        merged[key] = this.mergeArrays(merged[key], value, strategy);
+      } else if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        // Recursively merge objects
+        merged[key] = this.deepMergeObjects(merged[key] || {}, value, arrayMergeStrategies);
+      } else {
+        // Primitive values: override
+        merged[key] = value;
+      }
+    }
+
+    return merged;
+  }
+
+  private static mergeConfigurations(base: Configuration, overlay: Partial<Configuration>): Configuration {
+    return this.deepMergeObjects(base, overlay, {
+      publishers: {
+        matcher: (basePublisher, overlayPublisher) => basePublisher.key === overlayPublisher.key,
+        onMatch: 'merge',
+        customMerge: (basePublisher, overlayPublisher) => this.mergePublishers(basePublisher, overlayPublisher),
+      },
+    });
   }
 
   private static mergePublishers(base: Publisher, overlay: Partial<Publisher>): Publisher {
-    const merged: Publisher = {
-      ...base,
-      ...overlay,
-      addons: [...base.addons],
-      defs: overlay.defs ? [...(overlay.defs || []), ...(base.defs || [])] : base.defs,
-      buttons: overlay.buttons ? [...(overlay.buttons || []), ...(base.buttons || [])] : base.buttons,
-    };
-
-    if (overlay.addons) {
-      for (const overlayAddon of overlay.addons) {
-        const baseAddonIndex = merged.addons.findIndex((a) => a.key === overlayAddon.key);
-
-        if (baseAddonIndex >= 0) {
-          // Merge existing addon
-          const baseAddon = merged.addons[baseAddonIndex];
-          merged.addons[baseAddonIndex] = this.mergeAddons(baseAddon, overlayAddon);
-        } else {
-          // Add new addon if full object is provided
-          if (this.isFullAddon(overlayAddon)) {
-            merged.addons.push(overlayAddon);
+    return this.deepMergeObjects(base, overlay, {
+      defs: {
+        matcher: (baseDef, overlayDef) => {
+          // Match by kind and key if both have keys
+          if ('key' in baseDef && 'key' in overlayDef) {
+            return baseDef.kind === overlayDef.kind && baseDef.key === overlayDef.key;
           }
-        }
-      }
-    }
-
-    return merged;
+          return false;
+        },
+      },
+      buttons: {
+        matcher: (baseButton, overlayButton) =>
+          baseButton.text === overlayButton.text && baseButton.action === overlayButton.action,
+      },
+      addons: {
+        matcher: (baseAddon, overlayAddon) => baseAddon.key === overlayAddon.key,
+        onMatch: 'merge',
+        customMerge: (baseAddon, overlayAddon) => this.mergeAddons(baseAddon, overlayAddon),
+      },
+    });
   }
 
   private static mergeAddons(base: Addon, overlay: Partial<Addon>): Addon {
-    const merged: Addon = {
-      ...base,
-      ...overlay,
-      tracks: [...base.tracks],
-    };
-
-    if (overlay.tracks) {
-      for (const overlayTrack of overlay.tracks) {
-        const baseTrackIndex = merged.tracks.findIndex((t) => t.key === overlayTrack.key);
-
-        if (baseTrackIndex >= 0) {
-          // Replace existing track
-          merged.tracks[baseTrackIndex] = overlayTrack;
-        } else {
-          // Add new track
-          merged.tracks.push(overlayTrack);
-        }
-      }
-    }
-
-    return merged;
-  }
-
-  private static isFullPublisher(publisher: Partial<Publisher>): publisher is Publisher {
-    return !!(publisher.name && publisher.key && publisher.logoUrl && publisher.addons);
-  }
-
-  private static isFullAddon(addon: Partial<Addon>): addon is Addon {
-    return !!(
-      addon.key &&
-      addon.name &&
-      addon.simulator &&
-      addon.aircraftName &&
-      addon.titleImageUrl &&
-      addon.titleImageUrlSelected &&
-      addon.shortDescription &&
-      addon.description &&
-      addon.targetDirectory &&
-      addon.tracks &&
-      addon.enabled !== undefined
-    );
+    return this.deepMergeObjects(base, overlay, {
+      tracks: {
+        matcher: (baseTrack, overlayTrack) => baseTrack.key === overlayTrack.key,
+      },
+      dependencies: {
+        matcher: (baseDep, overlayDep) => baseDep.addon === overlayDep.addon,
+      },
+      incompatibleAddons: {
+        matcher: (baseIncompat, overlayIncompat) =>
+          baseIncompat.title === overlayIncompat.title && baseIncompat.creator === overlayIncompat.creator,
+      },
+      configurationAspects: {
+        matcher: (baseAspect, overlayAspect) => baseAspect.key === overlayAspect.key,
+      },
+      techSpecs: {
+        matcher: (baseTechSpec, overlayTechSpec) => baseTechSpec.name === overlayTechSpec.name,
+      },
+    });
   }
 
   private static async loadConfigurationFromLocalStorage(): Promise<Configuration> {
