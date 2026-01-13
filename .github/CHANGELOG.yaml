@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.6.0
+    changes:
+      - title: Add Quality Assurance functionality
+        categories: [Core]
+        authors: [FoxtotSierra]
   - name: 3.5.2
     changes:
       - title: Fix recursive disk reads causing high CPU & RAM usage
