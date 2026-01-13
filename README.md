@@ -47,7 +47,7 @@ To build the package as an executable application, run
 npm run package
 ```
 
-On Windows this will build an .exe file, on linux it will build as .AppImage, .deb and .rpm. If you wish to target specific ways of distribution, you may instead run
+On Windows this will build an .exe file, on Linux it will build as .AppImage, .deb and .rpm. If you wish to target specific ways of distribution, you may instead run:
 
 ```shell
 npm run package:all # packages for all targets
