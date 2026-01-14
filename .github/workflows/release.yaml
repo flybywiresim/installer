@@ -57,7 +57,9 @@ jobs:
         env:
           CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
           CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
-        run: ./scripts/cdn-cf.sh dist/ installer/release && ./scripts/cdn-cf.sh dist/ installer/rc
+        run: |
+          ./scripts/cdn-cf.sh dist/ installer/release
+          ./scripts/cdn-cf.sh dist/ installer/rc
 
       - name: Create Release
         id: create_release
