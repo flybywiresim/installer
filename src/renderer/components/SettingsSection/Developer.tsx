@@ -1,6 +1,10 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from 'renderer/components/Toggle';
+import * as packageInfo from '../../../../package.json';
+import { Button, ButtonType } from 'renderer/components/Button';
+import { ipcRenderer } from 'electron';
+import channels from 'common/channels';
 
 const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
@@ -32,7 +36,7 @@ export const DeveloperSettings: React.FC = () => {
   return (
     <div>
       <div className="flex flex-col">
-        <h2 className="text-white">General Settings</h2>
+        <h2 className="font-manrope font-bold text-white">Developer Settings</h2>
         <div className="flex flex-col divide-y divide-gray-600">
           <SettingsItem name="Configuration Download URL">
             <div className="flex flex-row items-center justify-between py-2 text-white">
@@ -44,6 +48,20 @@ export const DeveloperSettings: React.FC = () => {
                 onBlur={() => validateUrl()}
                 size={50}
               />
+              <Button
+                type={ButtonType.Neutral}
+                className="ml-2 h-fit min-h-10 text-lg"
+                onClick={() => ipcRenderer.send(channels.window.reload)}
+              >
+                Reload Installer
+              </Button>
+              <Button
+                type={ButtonType.Neutral}
+                className="ml-2 h-fit min-h-10 text-lg"
+                onClick={() => setConfigDownloadUrl(packageInfo.configUrls.production)}
+              >
+                Reset to default
+              </Button>
             </div>
           </SettingsItem>
           <SettingsItem name="Force Use Local Configuration">

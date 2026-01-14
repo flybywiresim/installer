@@ -83,7 +83,7 @@ export class BackgroundServices {
     }
 
     const exePath = path.join(
-      Directories.inInstallLocation(addon.targetDirectory),
+      Directories.inInstallLocation(addon.simulator, addon.targetDirectory),
       backgroundService.executableFileBasename,
     );
     const commandLineArgs = backgroundService.commandLineArgs ? ` ${backgroundService.commandLineArgs.join(' ')}` : '';
@@ -124,7 +124,7 @@ export class BackgroundServices {
 
     const exePath = path.normalize(
       path.join(
-        Directories.inInstallLocation(addon.targetDirectory),
+        Directories.inInstallLocation(addon.simulator, addon.targetDirectory),
         `${backgroundService.executableFileBasename}.exe`,
       ),
     );

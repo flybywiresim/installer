@@ -130,6 +130,13 @@ function initializeApp() {
 
     mainWindow.center();
 
+    if (
+      (settings.get('mainSettings.configDownloadUrl') as string) ===
+      'https://cdn.flybywiresim.com/installer/config/production.json'
+    ) {
+      settings.set('mainSettings.configDownloadUrl', packageInfo.configUrls.production);
+    }
+
     if (import.meta.env.DEV) {
       mainWindow.webContents.openDevTools();
     }
@@ -159,17 +166,17 @@ function initializeApp() {
       if (packageInfo.version.includes('dev')) {
         updateOptions = {
           provider: 'generic' as const,
-          url: 'https://cdn.flybywiresim.com/installer/dev',
+          url: 'https://flybywirecdn.com/installer/dev',
         };
       } else if (packageInfo.version.includes('rc')) {
         updateOptions = {
           provider: 'generic' as const,
-          url: 'https://cdn.flybywiresim.com/installer/rc',
+          url: 'https://flybywirecdn.com/installer/rc',
         };
       } else {
         updateOptions = {
           provider: 'generic' as const,
-          url: 'https://cdn.flybywiresim.com/installer/release',
+          url: 'https://flybywirecdn.com/installer/release',
         };
       }
 

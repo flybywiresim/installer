@@ -1,5 +1,6 @@
 import { defaultConfiguration } from 'renderer/data';
 import settings from 'renderer/rendererSettings';
+import { TypeOfSimulator } from './SimManager';
 
 export interface ExternalLink {
   url: string;
@@ -107,6 +108,7 @@ export interface AddonMyInstallPageConfiguration {
 export interface Addon {
   key: string;
   name: string;
+  simulator: TypeOfSimulator;
   repoOwner?: string;
   repoName?: string;
   category?: `@${string}`;
@@ -401,7 +403,8 @@ export class InstallerConfiguration {
   }
 
   private static async fetchConfigurationFromCdn(): Promise<Configuration> {
-    const url = settings.get('mainSettings.configDownloadUrl') as string;
+    const url = `${settings.get('mainSettings.configDownloadUrl') as string}?cache-killer=${Math.random()}`;
+
     console.log('Obtaining configuration from CDN (%s)', url);
     return await fetch(url)
       .then((res) => res.blob())

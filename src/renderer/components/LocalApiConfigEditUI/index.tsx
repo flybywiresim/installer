@@ -7,6 +7,7 @@ import path from 'path';
 import { Toggle } from '../Toggle';
 import { app } from '@electron/remote';
 import { Directories } from 'renderer/utils/Directories';
+import { Simulators } from 'renderer/utils/SimManager';
 
 const LEGACY_SIMBRIDGE_DIRECTORY = 'flybywire-externaltools-simbridge';
 const SIMBRIDGE_DIRECTORY = '/FlyByWireSim/Simbridge';
@@ -39,7 +40,7 @@ const localApiDefaultConfiguration: LocalApiConfiguration = {
 
 class LocalApiConfigurationHandler {
   private static get legacySimbridgeDirectory(): string {
-    return path.join(Directories.inInstallLocation(LEGACY_SIMBRIDGE_DIRECTORY));
+    return path.join(Directories.inInstallLocation(Simulators.Msfs2020, LEGACY_SIMBRIDGE_DIRECTORY));
   }
 
   private static get simbridgeDirectory(): string {

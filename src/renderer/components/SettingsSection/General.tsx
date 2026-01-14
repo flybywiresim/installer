@@ -74,7 +74,7 @@ export const GeneralSettings = (): JSX.Element => {
   return (
     <div>
       <div className="flex flex-col">
-        <h2 className="text-white">General Settings</h2>
+        <h2 className="font-manrope font-bold text-white">General Settings</h2>
         <div className="flex flex-col divide-y divide-gray-600">
           <AutoStartSettingItem value={autoStart} setValue={setAutoStart} />
           <DateLayoutItem value={dateLayout} setValue={setDateLayout} />

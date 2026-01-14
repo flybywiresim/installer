@@ -1,16 +1,17 @@
 {
   "name": "fbw-installer",
   "productName": "FlyByWire Installer",
-  "version": "3.4.2-dev.1",
+  "version": "3.5.2-dev.1",
   "description": "Desktop application to install and customize FlyByWire addons",
   "configUrls": {
-    "production": "https://cdn.flybywiresim.com/installer/config/production.json",
-    "confidentialBaseUrl": "https://flybywiresim.b-cdn.net/installer/config/confidential"
+    "production": "https://flybywirecdn.com/installer/config/production.json",
+    "confidentialBaseUrl": "https://flybywirecdn.com/installer/config/confidential"
   },
   "main": "out/main/index.js",
   "scripts": {
     "generate-licenses": "node scripts/licenses.js",
     "start": "electron-vite",
+    "dev": "electron-vite dev",
     "build": "npm run generate-licenses && electron-vite build",
     "package": "npm run build && electron-builder --win --publish=never",
     "lint": "eslint --ext .ts,.tsx .",
@@ -113,6 +114,7 @@
     "@types/winreg": "^1.2.31",
     "@types/ws": "^8.5.3",
     "check-disk-space": "^3.3.1",
+    "clsx": "^2.1.1",
     "config-ini-parser": "~1.5.9",
     "dateformat": "^5.0.1",
     "electron-store": "^8.0.1",
@@ -144,7 +146,6 @@
     "styled-components": "^5.2.1",
     "tabler-icons-react": "~1.33.0",
     "tailwind-merge": "^2.2.1",
-    "walkdir": "^0.4.1",
     "winreg": "^1.2.4",
     "ws": "^8.8.0"
   },

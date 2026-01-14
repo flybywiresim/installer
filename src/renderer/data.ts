@@ -6,7 +6,7 @@ export const defaultConfiguration: Configuration = {
     {
       name: 'FlyByWire Simulations',
       key: 'flybywiresim',
-      logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/flybywiresim/0.svg',
+      logoUrl: 'https://flybywirecdn.com/installer/media-assets/publisher-icons/flybywiresim/0.svg',
       defs: [
         {
           kind: 'addonCategory',
@@ -49,18 +49,17 @@ export const defaultConfiguration: Configuration = {
       ],
       addons: [
         {
-          key: 'A32NX',
+          key: 'a32nx-msfs2020',
           name: 'A32NX',
+          simulator: 'msfs2020',
           repoOwner: 'flybywiresim',
           repoName: 'aircraft',
           category: '@aircraft',
           aircraftName: 'A320-251N',
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/dark.svg',
-          titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a32nx/light.svg',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a32nx/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a32nx/light.svg',
           enabled: true,
-          // TODO: Change this
-          backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-a32nx/1.png'],
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-a32nx/1.png'],
           shortDescription: 'Airbus A320neo Series',
           description:
             'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
@@ -80,6 +79,14 @@ export const defaultConfiguration: Configuration = {
           ],
           targetDirectory: 'flybywire-aircraft-a320-neo',
           alternativeNames: ['A32NX', 'a32nx'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2020',
+              optional: true,
+              modalText:
+                'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
+            },
+          ],
           tracks: [
             {
               name: 'Stable',
@@ -91,12 +98,12 @@ export const defaultConfiguration: Configuration = {
                 'https://cdn.flybywiresim.com/addons/a32nx/stable',
               ],
               description:
-                'Stable is our variant that has the least bugs and best performance. ' +
-                'This version will not always be up to date but we guarantee its compatibility ' +
-                'with each major patch from MSFS.',
+                'The stable edition is for those who need a stable home cockpit API, or controlled upgrades every few months. ' +
+                'This edition will always be behind the development edition in both features and fixes, ' +
+                'but it will receive compatibility patches if required for MSFS updates. Please visit our discord for support.',
               isExperimental: false,
               releaseModel: {
-                type: 'githubRelease',
+                type: 'fragmenter',
               },
             },
             {
@@ -117,22 +124,13 @@ export const defaultConfiguration: Configuration = {
                 'https://github.com/flybywiresim/a32nx/releases/download/assets/experimental/',
               ],
               description:
-                'Development will have the latest features that will end up in the next stable. ' +
-                "Bugs are to be expected. It updates whenever something is added to the 'master' " +
-                'branch on Github. Please visit our discord for support.',
+                'The development edition has all of the latest features and bug fixes that will end up in the next stable edition release. ' +
+                'Although every change is QA-tested, bugs sometimes slip in; please reach out to us if you find any. ' +
+                "Updates occur whenever something is added to the 'master' branch on Github. Please visit our discord for support.",
               isExperimental: false,
               releaseModel: {
-                type: 'githubBranch',
-                branch: 'master',
+                type: 'fragmenter',
               },
-            },
-          ],
-          dependencies: [
-            {
-              addon: '@flybywiresim/simbridge',
-              optional: true,
-              modalText:
-                'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
             },
           ],
           incompatibleAddons: [
@@ -176,7 +174,7 @@ export const defaultConfiguration: Configuration = {
             },
             {
               title: 'lvfr-airbus-a319-ceo-fbw-compatibility',
-              // creator: 'FlyByWire Simulations, karuchie',
+              // creator: "FlyByWire Simulations, karuchie",
               // packageVersion: '<0.6.1',
               description:
                 'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
@@ -261,36 +259,476 @@ export const defaultConfiguration: Configuration = {
           disallowedRunningExternalApps: ['@/msfs', '@/mcdu-server'],
         },
         {
+          key: 'a32nx-msfs2024',
+          name: 'A32NX',
+          simulator: 'msfs2024',
+          repoOwner: 'flybywiresim',
+          repoName: 'aircraft',
+          category: '@aircraft',
+          aircraftName: 'A320-251N',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a32nx/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a32nx/light.svg',
+          enabled: true,
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-a32nx/1.png'],
+          shortDescription: 'Airbus A320neo Series',
+          description:
+            'The A320neo (new engine option) is one of many upgrades introduced by Airbus to help maintain ' +
+            'its A320 product line’s position as the world’s most advanced and fuel-efficient single-aisle ' +
+            'aircraft family. The baseline A320neo jetliner has a choice of two new-generation engines ' +
+            '(the PurePower PW1100G-JM from Pratt and Whitney and the LEAP-1A from CFM International) ' +
+            'and features large, fuel-saving wingtip devices known as Sharklets.',
+          techSpecs: [
+            {
+              name: 'Engines',
+              value: 'CFM LEAP 1A-26',
+            },
+            {
+              name: 'APU',
+              value: 'APS3200',
+            },
+          ],
+          targetDirectory: 'flybywire-aircraft-a320-neo',
+          alternativeNames: ['A32NX', 'a32nx'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2024',
+              optional: true,
+              modalText:
+                'SimBridge allows the A32NX to expose remote tools like the Web MCDU, as well as use the external terrain database.',
+            },
+          ],
+          tracks: [
+            {
+              name: 'Stable',
+              key: 'a32nx-stable',
+              url: 'https://flybywirecdn.com/addons/a32nx/stable',
+              alternativeUrls: ['external/a32nx/stable'],
+              description:
+                'The stable edition is for those who need a stable home cockpit API, or controlled upgrades every few months. ' +
+                'This edition will always be behind the development edition in both features and fixes, ' +
+                'but it will receive compatibility patches if required for MSFS updates. Please visit our discord for support.',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Development',
+              key: 'a32nx-dev',
+              url: 'https://flybywirecdn.com/addons/a32nx/master',
+              alternativeUrls: ['external/a32nx/master'],
+              description:
+                'The development edition has all of the latest features and bug fixes that will end up in the next stable edition release. ' +
+                'Although every change is QA-tested, bugs sometimes slip in; please reach out to us if you find any. ' +
+                "Updates occur whenever something is added to the 'master' branch on Github. Please visit our discord for support.",
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+          ],
+          incompatibleAddons: [
+            // title: the exact title as it appears in the manifest.json
+            // creator: the exact creator as it appears in the manifest.json
+            // packageVersion syntax follows: https://www.npmjs.com/package/semver
+            // description: a short description of why the addon is incompatible
+            {
+              title: 'FlightFlow | IMPROVED TEXTURES MOD',
+              creator: 'FlightFlow',
+              description:
+                'It is recommended to remove this add-on/mod before installing and using the A32NX. This add-on/mod is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
+            {
+              title: 'Horizon Simulations A321neo',
+              // packageVersion: '<0.4.0', see https://discord.com/channels/738864299392630914/785976111875751956/1055617417189011546
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
+            {
+              title: 'LVFR A321neo FBW A32NX Compatibility Mod',
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and to break the A32NX.',
+            },
+            {
+              title: 'LVFR A321neo Extreme',
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
+            {
+              title: 'lvfr-airbus-a319-ceo-fbw-compatibility',
+              // creator: "FlyByWire Simulations, karuchie",
+              // packageVersion: '<0.6.1',
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
+            {
+              title: '[MOD] Mugz FBW A32NX Dev',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: '[MOD] Mugz FBW A32NX Stable',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: 'Toolbar Pushback',
+              creator: 'AmbitiousPilots',
+              description:
+                'This add-on sometimes causes performance issues and also sometimes prevents the A32NX from taxiing. Consider removing it if you experience these issues.',
+            },
+            {
+              title: 'Asobo_A320_A (A32NX Converted)',
+              creator: 'UnitDeath',
+              description:
+                'It is required to remove this livery before installing and using the A32NX as it breaks the A32NX',
+            },
+            {
+              title: 'xeffect-320',
+              creator: 'swingbird',
+              // packageVersion: '<0.1.2', (the mod does provide accurate version info in manifest.json)
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. It is known known to override A32NX files and to break the A32NX.',
+            },
+            {
+              title: 'z-Newlight-settinglight-FBW-A320NX-dev',
+              creator: 'Nicottine',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: 'z-Newlight-settinglight-FBW-A320NX-stable',
+              creator: 'Nicottine',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: 'z-Newlight-settinglight-FBW-A320NX-EXP',
+              creator: 'Nicottine',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and renders the A32NX unusable.',
+            },
+            {
+              title: 'FBW A32NX Weather Radar Mod',
+              creator: '',
+              description:
+                'It is required to remove this add-on before installing and using the A32NX. This add-on overrides A32NX components and may render the A32NX unusable.',
+            },
+            {
+              title: 'China Eastern',
+              creator: 'JasonC68',
+              description:
+                'It is recommended to remove this add-on before installing and using the A32NX. This add-on is known to override A32NX components and cause unexpected behavior and issues when flying the A32NX.',
+            },
+          ],
+          myInstallPage: {
+            links: [
+              {
+                url: 'https://docs.flybywiresim.com/fbw-a32nx/',
+                title: 'Documentation',
+              },
+            ],
+            directories: [
+              {
+                location: {
+                  in: 'packageCache',
+                  path: 'work',
+                },
+                title: 'Work Folder',
+              },
+            ],
+          },
+          disallowedRunningExternalApps: ['@/msfs'],
+        },
+        {
+          key: 'a380x-msfs2020',
           name: 'A380X',
-          key: 'A380X',
+          simulator: 'msfs2020',
           repoOwner: 'flybywiresim',
           repoName: 'aircraft',
           category: '@aircraft',
           aircraftName: 'A380-842',
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
-          titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-a380x/light.svg',
-          enabled: false,
-          backgroundImageUrls: [
-            'https://nyc3.digitaloceanspaces.com/fselite/2020/11/123263426_126778999193686_7966913238295950901_o.png',
-          ],
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a380x/light.svg',
+          enabled: true,
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-a380x/a380x.png'],
           shortDescription: 'Airbus A380-800',
           description: '',
-          targetDirectory: 'A380',
-          tracks: [],
+          techSpecs: [
+            {
+              name: 'Engines',
+              value: 'RR Trent 972B-84',
+            },
+            {
+              name: 'APU',
+              value: 'PW980',
+            },
+          ],
+          targetDirectory: 'flybywire-aircraft-a380-842',
+          alternativeNames: ['A380X', 'a380x'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2020',
+              optional: true,
+              modalText: 'SimBridge allows the A380X to use the external terrain database.',
+            },
+          ],
+          tracks: [
+            {
+              name: 'Stable (4K)',
+              key: 'a380x-stable-4k',
+              url: 'https://flybywirecdn.com/addons/a380x/stable-4k',
+              alternativeUrls: [],
+              description:
+                'Includes our 4K downscaled cabin, cockpit and exterior textures. Choose this option for reduced ' +
+                'stutters, better performance, with HIGH or lower texture resolution. Especially, if you intend to use the ' +
+                'following:\n\n' +
+                '* Use frame generation \n\n' +
+                '* Virtual Reality (VR) \n\n' +
+                '* DX12 beta \n\n' +
+                '* or are otherwise limited by your graphics card VRAM amount. ' +
+                '[System Requirements](https://docs.flybywiresim.com/aircraft/install/installation/#estimated-system-requirements-for-a380x)',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Stable (8K)',
+              key: 'a380x-stable-8k',
+              url: 'https://flybywirecdn.com/addons/a380x/stable-8k',
+              alternativeUrls: [],
+              description:
+                'Includes our 8K full resolution cabin, cockpit and exterior textures. This is the full fidelity ' +
+                'experience and our recommendation if your system is powerful enough to support it. Realistic and in high ' +
+                'detail.\n\n' +
+                '* DX11 recommended \n\n' +
+                '* HIGH or lower texture resolution setting recommended \n\n',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Development (4K)',
+              key: 'a380x-dev-4k',
+              url: 'https://flybywirecdn.com/addons/a380x/master-4k',
+              alternativeUrls: [],
+              description:
+                'Development will have the latest features that will end up in the next stable. ' +
+                'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
+                "the 'master' branch on Github. Please visit our discord for support. \n\n" +
+                'Includes our 4K downscaled cabin, cockpit and exterior textures. Choose this option for reduced ' +
+                'stutters, better performance, with HIGH or lower texture resolution. Especially, if you intend to use the ' +
+                'following:\n\n' +
+                '* Use frame generation \n\n' +
+                '* Virtual Reality (VR) \n\n' +
+                '* DX12 beta \n\n' +
+                '* or are otherwise limited by your graphics card VRAM amount. ',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Development (8K)',
+              key: 'a380x-dev-8k',
+              url: 'https://flybywirecdn.com/addons/a380x/master-8k',
+              alternativeUrls: [],
+              description:
+                'Development will have the latest features that will end up in the next stable. ' +
+                'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
+                "the 'master' branch on Github. Please visit our discord for support. \n\n" +
+                '* DX11 recommended \n\n' +
+                '* HIGH or lower texture resolution setting recommended \n\n',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+          ],
+          incompatibleAddons: [
+            // title: the exact title as it appears in the manifest.json
+            // creator: the exact creator as it appears in the manifest.json
+            // packageVersion syntax follows: https://www.npmjs.com/package/semver
+            // description: a short description of why the addon is incompatible
+            {
+              title: 'Mets747 FBW A380 Lights Mod',
+              description:
+                'It is recommended to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'a380_light_mod',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'Super6uo FBW A380X Realistic Light Enhancement',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'FlyByWire Airbus A380X OIT Functionality',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+          ],
+          disallowedRunningExternalApps: ['@/msfs'],
+        },
+        {
+          key: 'a380x-msfs2024',
+          name: 'A380X',
+          simulator: 'msfs2024',
+          repoOwner: 'flybywiresim',
+          repoName: 'aircraft',
+          category: '@aircraft',
+          aircraftName: 'A380-842',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a380x/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-a380x/light.svg',
+          enabled: true,
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-a380x/a380x.png'],
+          shortDescription: 'Airbus A380-800',
+          description: '',
+          techSpecs: [
+            {
+              name: 'Engines',
+              value: 'RR Trent 972B-84',
+            },
+            {
+              name: 'APU',
+              value: 'PW980',
+            },
+          ],
+          targetDirectory: 'flybywire-aircraft-a380-842',
+          alternativeNames: ['A380X', 'a380x'],
+          dependencies: [
+            {
+              addon: '@flybywiresim/simbridge-msfs2024',
+              optional: true,
+              modalText: 'SimBridge allows the A380X to use the external terrain database.',
+            },
+          ],
+          tracks: [
+            {
+              name: 'Stable (4K)',
+              key: 'a380x-stable-4k',
+              url: 'https://flybywirecdn.com/addons/a380x/stable-4k',
+              alternativeUrls: [],
+              description:
+                'Includes our 4K downscaled cabin, cockpit and exterior textures. Choose this option for reduced ' +
+                'stutters, better performance, with HIGH or lower texture resolution. Especially, if you intend to use the ' +
+                'following:\n\n' +
+                '* Use frame generation \n\n' +
+                '* Virtual Reality (VR) \n\n' +
+                '* DX12 beta \n\n' +
+                '* or are otherwise limited by your graphics card VRAM amount. ' +
+                '[System Requirements](https://docs.flybywiresim.com/aircraft/install/installation/#estimated-system-requirements-for-a380x)',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Stable (8K)',
+              key: 'a380x-stable-8k',
+              url: 'https://flybywirecdn.com/addons/a380x/stable-8k',
+              alternativeUrls: [],
+              description:
+                'Includes our 8K full resolution cabin, cockpit and exterior textures. This is the full fidelity ' +
+                'experience and our recommendation if your system is powerful enough to support it. Realistic and in high ' +
+                'detail.\n\n' +
+                '* DX11 recommended \n\n' +
+                '* HIGH or lower texture resolution setting recommended \n\n',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Development (4K)',
+              key: 'a380x-dev-4k',
+              url: 'https://flybywirecdn.com/addons/a380x/master-4k',
+              alternativeUrls: [],
+              description:
+                'Development will have the latest features that will end up in the next stable. ' +
+                'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
+                "the 'master' branch on Github. Please visit our discord for support. \n\n" +
+                'Includes our 4K downscaled cabin, cockpit and exterior textures. Choose this option for reduced ' +
+                'stutters, better performance, with HIGH or lower texture resolution. Especially, if you intend to use the ' +
+                'following:\n\n' +
+                '* Use frame generation \n\n' +
+                '* Virtual Reality (VR) \n\n' +
+                '* DX12 beta \n\n' +
+                '* or are otherwise limited by your graphics card VRAM amount. ',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+            {
+              name: 'Development (8K)',
+              key: 'a380x-dev-8k',
+              url: 'https://flybywirecdn.com/addons/a380x/master-8k',
+              alternativeUrls: [],
+              description:
+                'Development will have the latest features that will end up in the next stable. ' +
+                'Although every change is QA-tested, bugs are a little more likely. It updates whenever something is added to ' +
+                "the 'master' branch on Github. Please visit our discord for support. \n\n" +
+                '* DX11 recommended \n\n' +
+                '* HIGH or lower texture resolution setting recommended \n\n',
+              isExperimental: false,
+              releaseModel: {
+                type: 'fragmenter',
+              },
+            },
+          ],
+          incompatibleAddons: [
+            // title: the exact title as it appears in the manifest.json
+            // creator: the exact creator as it appears in the manifest.json
+            // packageVersion syntax follows: https://www.npmjs.com/package/semver
+            // description: a short description of why the addon is incompatible
+            {
+              title: 'Mets747 FBW A380 Lights Mod',
+              description:
+                'It is recommended to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'a380_light_mod',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'Super6uo FBW A380X Realistic Light Enhancement',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+            {
+              title: 'FlyByWire Airbus A380X OIT Functionality',
+              description:
+                'It is required to remove this add-on before installing and using the A380X. This add-on overrides ' +
+                'A380X components and may render the A380X unusable.',
+            },
+          ],
           disallowedRunningExternalApps: ['@/msfs'],
         },
         {
           name: 'KFBW',
           key: 'KFBW',
+          simulator: 'msfs2020',
           category: '@scenery',
           aircraftName: 'FBW Headquarters',
           enabled: true,
           overrideAddonWhileHidden: 'A380X',
-          backgroundImageUrls: ['https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-kfbw/0.png'],
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/dark.svg',
-          titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-kfbw/light.svg',
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-kfbw/0.png'],
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-kfbw/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-kfbw/light.svg',
           shortDescription: 'FlyByWire Headquarters',
           description:
             'Welcome to KFBW! \n\n' +
@@ -305,7 +743,11 @@ export const defaultConfiguration: Configuration = {
             {
               name: 'Release',
               key: 'kfbw-release',
-              url: 'https://cdn.flybywiresim.com/addons/kfbw/release/',
+              url: 'https://flybywirecdn.com/addons/kfbw/release/',
+              alternativeUrls: [
+                // move Bunny CDN users to Cloudflare
+                'https://cdn.flybywiresim.com/addons/kfbw/release/',
+              ],
               isExperimental: false,
               releaseModel: {
                 type: 'CDN',
@@ -316,23 +758,20 @@ export const defaultConfiguration: Configuration = {
           ],
         },
         {
+          key: 'simbridge-msfs2020',
           name: 'SimBridge',
-          key: 'simbridge',
+          simulator: 'msfs2020',
           category: '@simbridge',
           repoOwner: 'flybywiresim',
           repoName: 'simbridge',
           aircraftName: 'FBW SimBridge',
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
-          titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
           enabled: true,
-          backgroundImageUrls: [
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fbw-simbridge/0.png',
-          ],
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-simbridge/0.png'],
           backgroundImageShadow: false,
           shortDescription: 'Airbus A380-800',
-          description:
-            'SimBridge is an external application which allows FBW aircraft to communicate with components located outside the simulator. SimBridge will be used for a number of features requiring external data (such as TAWS terrain display), as well as for functionality providing remote access to aircraft systems or data.',
+          description: `<span style="color: rgb(255, 106, 0);">&#9888; Important: Starting with version 0.6.0, custom resources such as PDF Charts and Company Routes must be stored in the Documents folder (typically located at \`C:\\Users\\<Username>\\Documents\\FlyByWireSim\\Simbridge\\resources)\`. <br> Please ensure you back up your files before updating. After the update, transfer your files to this new location to keep them safe from future updates. You can also use the Resources button in the About section of the installer to locate the folder.</span> \n\nSimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
           targetDirectory: 'flybywire-externaltools-simbridge',
           tracks: [
             {
@@ -341,9 +780,69 @@ export const defaultConfiguration: Configuration = {
               releaseModel: {
                 type: 'githubRelease',
               },
-              url: 'https://cdn.flybywiresim.com/addons/simbridge/release/',
+              url: 'https://flybywirecdn.com/addons/simbridge/release/',
+              alternativeUrls: [
+                // move Bunny CDN users to Cloudflare
+                'https://cdn.flybywiresim.com/addons/simbridge/release/',
+              ],
               isExperimental: false,
-              description: `<b><span class="text-utility-amber">&#9888; Note: Starting with version 0.6.0 custom resources like PDF Charts and Company Routes need to be located inside the Documents folder. Please refer to the documentation.</span></b> \n\n SimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
+              description: `<span style="color: rgb(255, 106, 0);">&#9888; Important: Starting with version 0.6.0, custom resources such as PDF Charts and Company Routes must be stored in the Documents folder (typically located at \`C:\\Users\\<Username>\\Documents\\FlyByWireSim\\Simbridge\\resources)\`. <br> Please ensure you back up your files before updating. After the update, transfer your files to this new location to keep them safe from future updates. You can also use the Resources button in the About section of the installer to locate the folder.</span> \n\nSimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
+            },
+          ],
+          disallowedRunningExternalApps: ['@/simbridge-app'],
+          backgroundService: {
+            executableFileBasename: 'fbw-simbridge',
+            runCheckExternalAppRef: '@/simbridge-app',
+            commandLineArgs: ['--hide'],
+          },
+          myInstallPage: {
+            links: [
+              {
+                url: 'https://docs.flybywiresim.com/simbridge/',
+                title: 'Documentation',
+              },
+            ],
+            directories: [
+              {
+                location: {
+                  in: 'documents',
+                  path: 'FlyByWireSim/Simbridge/resources',
+                },
+                title: 'Resources',
+              },
+            ],
+          },
+        },
+        {
+          key: 'simbridge-msfs2024',
+          name: 'SimBridge',
+          simulator: 'msfs2024',
+          category: '@simbridge',
+          repoOwner: 'flybywiresim',
+          repoName: 'simbridge',
+          aircraftName: 'FBW SimBridge',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-simbridge/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fbw-simbridge/light.svg',
+          enabled: true,
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fbw-simbridge/0.png'],
+          backgroundImageShadow: false,
+          shortDescription: 'Airbus A380-800',
+          description: `<span style="color: rgb(255, 106, 0);">&#9888; Important: Starting with version 0.6.0, custom resources such as PDF Charts and Company Routes must be stored in the Documents folder (typically located at \`C:\\Users\\<Username>\\Documents\\FlyByWireSim\\Simbridge\\resources)\`. <br> Please ensure you back up your files before updating. After the update, transfer your files to this new location to keep them safe from future updates. You can also use the Resources button in the About section of the installer to locate the folder.</span> \n\nSimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
+          targetDirectory: 'flybywire-externaltools-simbridge',
+          tracks: [
+            {
+              name: 'Release',
+              key: 'release',
+              releaseModel: {
+                type: 'githubRelease',
+              },
+              url: 'https://flybywirecdn.com/addons/simbridge/release/',
+              alternativeUrls: [
+                // move Bunny CDN users to Cloudflare
+                'https://cdn.flybywiresim.com/addons/simbridge/release/',
+              ],
+              isExperimental: false,
+              description: `<span style="color: rgb(255, 106, 0);">&#9888; Important: Starting with version 0.6.0, custom resources such as PDF Charts and Company Routes must be stored in the Documents folder (typically located at \`C:\\Users\\<Username>\\Documents\\FlyByWireSim\\Simbridge\\resources)\`. <br> Please ensure you back up your files before updating. After the update, transfer your files to this new location to keep them safe from future updates. You can also use the Resources button in the About section of the installer to locate the folder.</span> \n\nSimBridge is an external app that enables FlyByWire Simulations aircraft to communicate outside your simulator. From remote displays to external terrain display rendering, it is used for a variety of optional features.`,
             },
           ],
           disallowedRunningExternalApps: ['@/simbridge-app'],
@@ -398,7 +897,7 @@ export const defaultConfiguration: Configuration = {
     {
       name: 'Salty Simulations',
       key: 'salty',
-      logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/salty/0.svg',
+      logoUrl: 'https://flybywirecdn.com/installer/media-assets/publisher-icons/salty/0.svg',
       defs: [
         {
           kind: 'addonCategory',
@@ -410,13 +909,13 @@ export const defaultConfiguration: Configuration = {
         {
           key: '74S',
           name: '74S',
+          simulator: 'msfs2020',
           repoOwner: 'saltysimulations',
           repoName: 'salty-747',
           category: '@aircraft',
           aircraftName: 'B747-8I',
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/dark.svg',
-          titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/salty-74S/light.svg',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/salty-74S/dark.svg',
+          titleImageUrlSelected: 'https://flybywirecdn.com/installer/media-assets/addon-titles/salty-74S/light.svg',
           enabled: true,
           backgroundImageUrls: [
             'https://raw.githubusercontent.com/saltysimulations/branding/main/png/salty_banner.png',
@@ -481,7 +980,7 @@ export const defaultConfiguration: Configuration = {
     {
       name: 'FSLTL',
       key: 'fsltl',
-      logoUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/publisher-icons/fsltl/fsltl-test-2.png',
+      logoUrl: 'https://flybywirecdn.com/installer/media-assets/publisher-icons/fsltl/0.png',
       logoSize: 36,
       defs: [
         {
@@ -505,15 +1004,13 @@ export const defaultConfiguration: Configuration = {
         {
           key: 'traffic-base-models',
           name: 'FSLTL Traffic',
+          simulator: 'msfs2020',
           aircraftName: 'FSLTL Traffic',
-          titleImageUrl:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/dark.svg',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fsltl/base-models/dark.svg',
           titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/base-models/light.svg',
+            'https://flybywirecdn.com/installer/media-assets/addon-titles/fsltl/base-models/light.svg',
           enabled: true,
-          backgroundImageUrls: [
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fsltl/traffic/0.png',
-          ],
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fsltl/traffic/0.png'],
           shortDescription: 'FSLTL Traffic Base Models',
           description:
             'FSLTL is a free standalone real-time online traffic overhaul and VATSIM model-matching solution for MSFS.\n\n' +
@@ -541,14 +1038,13 @@ export const defaultConfiguration: Configuration = {
         {
           key: 'traffic-injector',
           name: 'FSLTL Injector',
+          simulator: 'msfs2020',
           aircraftName: 'FSLTL Traffic',
-          titleImageUrl: 'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/injector/dark.svg',
+          titleImageUrl: 'https://flybywirecdn.com/installer/media-assets/addon-titles/fsltl/injector/dark.svg',
           titleImageUrlSelected:
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-titles/fsltl/injector/light.svg',
+            'https://flybywirecdn.com/installer/media-assets/addon-titles/fsltl/injector/light.svg',
           enabled: true,
-          backgroundImageUrls: [
-            'https://flybywiresim.b-cdn.net/installer/media-assets/addon-headers/fsltl/traffic/0.png',
-          ],
+          backgroundImageUrls: ['https://flybywirecdn.com/installer/media-assets/addon-headers/fsltl/traffic/0.png'],
           shortDescription: 'FSLTL Traffic Injector Software',
           description:
             'FSLTL Live Traffic Injector - giving you a more immersive experience at airports globally!\n\n' +
@@ -563,7 +1059,7 @@ export const defaultConfiguration: Configuration = {
               url: 'https://github.com/FSLiveTrafficLiveries/FSLTL_Injector_Releases/releases/latest/download/',
               isExperimental: false,
               releaseModel: {
-                type: 'CDN',
+                type: 'fragmenter',
               },
               description:
                 'Stable version of the FSLTL Traffic Injector for use on stable versions of MSFS.\n\n' +
@@ -577,7 +1073,7 @@ export const defaultConfiguration: Configuration = {
               warningContent:
                 'No support is offered for this release, it is a preview of features that may be included in future releases.',
               releaseModel: {
-                type: 'CDN',
+                type: 'fragmenter',
               },
               description:
                 'Experimental Release that includes features that are not yet ready for stable release.\n\n' +
