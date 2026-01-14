@@ -28,7 +28,7 @@ linux:
   artifactName: "FlyByWire-Installer-${version}-${arch}.${ext}"
 flatpak:
   runtime: org.freedesktop.Platform
-  runtimeVersion: "23.08"
+  runtimeVersion: "25.08"
   sdk: org.freedesktop.Sdk
   branch: stable
   finishArgs: [
