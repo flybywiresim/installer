@@ -112,16 +112,19 @@ export const QATrackSelector: React.FC<QATrackSelectorProps> = ({
 
       {isOpen && (
         <div className="absolute inset-x-0 top-full z-10 mt-2 max-h-72 overflow-y-auto rounded-sm-md border border-navy-lightest bg-navy-dark shadow-lg">
-          {tracks.map((track) => (
-            <QATrackDropdownItem
-              key={track.key}
-              addon={addon}
-              track={track}
-              isSelected={track.key === selectedTrack?.key}
-              isInstalled={track.key === installedTrack?.key}
-              onSelect={() => handleTrackSelect(track)}
-            />
-          ))}
+          {tracks
+            .slice()
+            .sort((a, b) => b.key.localeCompare(a.key, undefined, { numeric: true }))
+            .map((track) => (
+              <QATrackDropdownItem
+                key={track.key}
+                addon={addon}
+                track={track}
+                isSelected={track.key === selectedTrack?.key}
+                isInstalled={track.key === installedTrack?.key}
+                onSelect={() => handleTrackSelect(track)}
+              />
+            ))}
         </div>
       )}
     </div>
