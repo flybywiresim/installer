@@ -109,6 +109,7 @@ export const CompactYesNoOptionToggle: FC<YesNoOptionToggleProps> = ({
   children,
 }) => {
   const handleClick = onToggle;
+  const voidFunction = () => {};
 
   const borderColor = enabled ? 'border-cyan' : 'border-navy-light';
   const titleColor = enabled ? 'text-cyan' : 'text-quasi-white';
@@ -118,7 +119,7 @@ export const CompactYesNoOptionToggle: FC<YesNoOptionToggleProps> = ({
       className={`flex items-center gap-x-6 border-2 ${borderColor} transition-color cursor-pointer rounded-md px-6 py-5 duration-200`}
       onClick={handleClick}
     >
-      <Toggle value={enabled} onToggle={handleClick} scale={1.2} onColor={enabledBgColor} />
+      <Toggle value={enabled} onToggle={voidFunction} scale={1.2} onColor={enabledBgColor} />
 
       <span className="flex gap-x-20">
         <span className={`font-manrope text-3xl font-bold ${titleColor}`}>{children}</span>
