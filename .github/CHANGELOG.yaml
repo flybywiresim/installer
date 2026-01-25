@@ -16,6 +16,9 @@ releases:
         authors: [FoxtotSierra]
   - name: 3.5.2
     changes:
+      - title: Fixed "Don't show this again" toggle button
+        categories: [UI]
+        authors: [JoaoOliveira85]
       - title: Fix recursive disk reads causing high CPU & RAM usage
         categories: [Core]
         authors: [vikingnope]
@@ -28,7 +31,12 @@ releases:
     changes:
       - title: Add multi-simulator support (MSFS2020 and MSFS2024)
         categories: [Core]
-        authors: [FoxtotSierra]
+        authors: [FoxtrotSierra]
+  - name: 3.4.4
+    changes:
+      - title: Fix addon dependencies not detected preventing installation
+        categories: [Core]
+        authors: [FoxtrotSierra]
       - title: Added reload-button to developer configuration
         categories: [Core]
         authors: [Revyn112]
@@ -41,6 +49,9 @@ releases:
       - title: Reset-to-default button for developer configuration
         categories: [Core]
         authors: [Gaudv]
+      - title: Fix move people to new installer config url
+        categories: [Core]
+        authors: [FoxtrotSierra]
   - name: 3.4.3
     changes:
       - title: Change installer configuration to Cloudflare
@@ -351,7 +362,7 @@ releases:
         authors: [FoxtrotSierra]
       - title: Add Windows notification when download complete
         categories: [UX]
-        authors: [FoxtotSierra]
+        authors: [FoxtrotSierra]
       - title: Add changelog for the installer
         categories: [UX]
         authors: [FoxtrotSierra]
