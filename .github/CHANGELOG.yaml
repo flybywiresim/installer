@@ -11,6 +11,9 @@
 releases:
   - name: 3.5.2
     changes:
+      - title: Fixed "Don't show this again" toggle button
+        categories: [UI]
+        authors: [JoaoOliveira85]
       - title: Fix recursive disk reads causing high CPU & RAM usage
         categories: [Core]
         authors: [vikingnope]
