@@ -14,8 +14,6 @@ releases:
       - title: Add Quality Assurance functionality
         categories: [Core]
         authors: [FoxtotSierra]
-  - name: 3.5.2
-    changes:
       - title: Fixed "Don't show this again" toggle button
         categories: [UI]
         authors: [JoaoOliveira85]
