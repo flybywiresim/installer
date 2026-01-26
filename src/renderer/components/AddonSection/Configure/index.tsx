@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Addon, AddonTrack, ConfigurationAspect } from 'renderer/utils/InstallerConfiguration';
-import { Track, Tracks } from './TrackSelector';
+import { QATrackSelector, Track, Tracks } from './TrackSelector';
 import { ConfigurationAspectDisplay } from 'renderer/components/AddonSection/Configure/ConfigurationAspectDisplay';
 
 import './index.css';
@@ -35,7 +35,7 @@ export const Configure: FC<ConfigureProps> = ({
           <div>
             <Tracks>
               {selectedAddon.tracks
-                .filter((track) => !track.isExperimental)
+                .filter((track) => !track.isExperimental && !track.isQualityAssurance)
                 .map((track) => (
                   <Track
                     addon={selectedAddon}
@@ -52,7 +52,7 @@ export const Configure: FC<ConfigureProps> = ({
           <div>
             <Tracks>
               {selectedAddon.tracks
-                .filter((track) => track.isExperimental)
+                .filter((track) => track.isExperimental && !track.isQualityAssurance)
                 .map((track) => (
                   <Track
                     addon={selectedAddon}
@@ -65,11 +65,25 @@ export const Configure: FC<ConfigureProps> = ({
                 ))}
             </Tracks>
 
-            {selectedAddon.tracks.filter((track) => track.isExperimental).length > 0 && (
+            {selectedAddon.tracks.some((track) => track.isExperimental) && (
               <span className="ml-0.5 mt-3 inline-block text-2xl text-quasi-white">Experimental versions</span>
             )}
           </div>
         </div>
+        {selectedAddon.tracks.some((track) => track.isQualityAssurance) && (
+          <div className="mt-8 flex flex-row gap-x-8">
+            <div className="w-full">
+              <QATrackSelector
+                addon={selectedAddon}
+                tracks={selectedAddon.tracks.filter((track) => track.isQualityAssurance)}
+                selectedTrack={selectedTrack}
+                installedTrack={installedTrack}
+                onTrackSelection={onTrackSelection}
+              />
+              <span className="ml-0.5 mt-3 inline-block text-2xl text-quasi-white">Quality Assurance</span>
+            </div>
+          </div>
+        )}
         {selectedTrack && selectedTrack.description && (
           <div className="mt-10">
             <h2 className="font-bold text-white">Description</h2>

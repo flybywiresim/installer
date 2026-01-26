@@ -42,6 +42,7 @@ interface RendererSettings {
     useLongDateFormat: boolean;
     useDarkTheme: boolean;
     allowSeasonalEffects: boolean;
+    qaConfigUrls: Record<number, string>;
   };
   cache: {
     main: {
@@ -194,6 +195,13 @@ const schema: Schema<RendererSettings> = {
       configForceUseLocal: {
         type: 'boolean',
         default: false,
+      },
+      qaConfigUrls: {
+        type: 'object',
+        default: {},
+        additionalProperties: {
+          type: 'string',
+        },
       },
     },
   },

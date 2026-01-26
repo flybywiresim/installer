@@ -9,8 +9,11 @@
 
 
 releases:
-  - name: 3.5.2
+  - name: 3.6.0
     changes:
+      - title: Add Quality Assurance functionality
+        categories: [Core]
+        authors: [FoxtotSierra]
       - title: Fixed "Don't show this again" toggle button
         categories: [UI]
         authors: [JoaoOliveira85]

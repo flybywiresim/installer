@@ -59,11 +59,21 @@ type BaseAddonTrack = {
   releaseModel: ReleaseModel;
 };
 
-export type MainlineAddonTrack = BaseAddonTrack & { isExperimental: false };
+export type MainlineAddonTrack = BaseAddonTrack & { isExperimental?: false; isQualityAssurance?: false };
 
-export type ExperimentalAddonTrack = BaseAddonTrack & { isExperimental: true; warningContent: string };
+export type ExperimentalAddonTrack = BaseAddonTrack & {
+  isExperimental: true;
+  warningContent: string;
+  isQualityAssurance?: false;
+};
 
-export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack;
+export type QualityAssuranceAddonTrack = BaseAddonTrack & {
+  isExperimental?: boolean;
+  warningContent?: string;
+  isQualityAssurance: true;
+};
+
+export type AddonTrack = MainlineAddonTrack | ExperimentalAddonTrack | QualityAssuranceAddonTrack;
 
 export interface AddonBackgroundService {
   /**
@@ -365,6 +375,25 @@ export interface Configuration {
   publishers: Publisher[];
 }
 
+type MergeStrategy<T> = {
+  /**
+   * Function to determine if two items are the same (for overriding)
+   * If not provided, items are always appended
+   */
+  matcher?: (baseItem: T, overlayItem: T) => boolean;
+
+  /**
+   * Whether to override (replace) or merge when a match is found
+   * Default: 'override'
+   */
+  onMatch?: 'override' | 'merge';
+
+  /**
+   * Custom merge function for when onMatch is 'merge'
+   */
+  customMerge?: (baseItem: T, overlayItem: T) => T;
+};
+
 export class InstallerConfiguration {
   static async obtain(): Promise<Configuration> {
     const forceUseLocalConfig = settings.get('mainSettings.configForceUseLocal') as boolean;
@@ -373,46 +402,211 @@ export class InstallerConfiguration {
       return this.loadConfigurationFromLocalStorage();
     }
 
-    return this.fetchConfigurationFromCdn()
-      .then((config) => {
+    return (
+      this.fetchConfigurationFromUrl(settings.get('mainSettings.configDownloadUrl') as string) as Promise<Configuration>
+    )
+      .then(async (config) => {
         if (this.isConfigurationValid(config)) {
-          console.log('Configuration from CDN is valid');
-          return config;
+          console.log('Configuration from URL is valid');
+          // Merge QA configurations
+          const mergedConfig = await this.mergeQaConfigurations(config);
+          return mergedConfig;
         } else {
           console.warn('CDN configuration was invalid, using local configuration');
-          return this.loadConfigurationFromLocalStorage().then((config) => {
+          return this.loadConfigurationFromLocalStorage().then(async (config) => {
             if (this.isConfigurationValid(config)) {
               console.log('Configuration from local storage is valid');
-              return config;
+              const mergedConfig = await this.mergeQaConfigurations(config);
+              return mergedConfig;
             } else {
-              return Promise.reject('Both CDN and local configurations are invalid');
+              throw new Error('Both CDN and local configurations are invalid');
             }
           });
         }
       })
       .catch(() => {
-        return this.loadConfigurationFromLocalStorage().then((config) => {
+        return this.loadConfigurationFromLocalStorage().then(async (config) => {
           if (this.isConfigurationValid(config)) {
             console.warn('CDN configuration could not be loaded, using local configuration');
-            return config;
+            const mergedConfig = await this.mergeQaConfigurations(config);
+            return mergedConfig;
           } else {
-            return Promise.reject('Could not retrieve CDN configuration, and local configuration is invalid');
+            throw new Error('Could not retrieve CDN configuration, and local configuration is invalid');
           }
         });
       });
   }
 
-  private static async fetchConfigurationFromCdn(): Promise<Configuration> {
-    const url = `${settings.get('mainSettings.configDownloadUrl') as string}?cache-killer=${Math.random()}`;
+  private static async mergeQaConfigurations(baseConfig: Configuration): Promise<Configuration> {
+    const qaConfigUrls = settings.get('mainSettings.qaConfigUrls') as Record<number, string>;
 
-    console.log('Obtaining configuration from CDN (%s)', url);
-    return await fetch(url)
+    if (!qaConfigUrls || Object.keys(qaConfigUrls).length === 0) {
+      return baseConfig;
+    }
+
+    let mergedConfig = { ...baseConfig };
+
+    // Fetch all QA configurations in parallel
+    const qaConfigPromises = Object.entries(qaConfigUrls).map(async ([key, url]) => {
+      if (!url) return null;
+
+      try {
+        console.log(`Fetching QA configuration ${key} from: ${url}`);
+        const qaConfig = await this.fetchConfigurationFromUrl(`${url}?cache-killer=${Math.random()}`);
+        return { key: Number(key), config: qaConfig };
+      } catch (error) {
+        console.warn(`Failed to fetch QA configuration ${key} from ${url}:`, error);
+        return null;
+      }
+    });
+
+    const qaConfigs = await Promise.all(qaConfigPromises);
+
+    // Sort by key to ensure consistent merge order
+    const sortedQaConfigs = qaConfigs.filter((qa) => qa !== null).sort((a, b) => a!.key - b!.key);
+
+    // Merge each QA configuration into the base config
+    for (const qaConfigResult of sortedQaConfigs) {
+      if (qaConfigResult) {
+        console.log(`Merging QA configuration ${qaConfigResult.key}`);
+        mergedConfig = this.mergeConfigurations(mergedConfig, qaConfigResult.config);
+      }
+    }
+
+    return mergedConfig;
+  }
+
+  private static async fetchConfigurationFromUrl(url: string): Promise<Partial<Configuration> | Configuration> {
+    const fullUrl = `${url}?cache-killer=${Math.random()}`;
+
+    return await fetch(fullUrl)
       .then((res) => res.blob())
       .then((blob) => blob.text())
       .then((text) => JSON.parse(text))
       .catch(() => {
-        return Promise.reject('Could not retrieve CDN configuration');
+        throw new Error(`Could not retrieve configuration from ${url}`);
       });
+  }
+
+  private static mergeArrays<T>(baseArray: T[] = [], overlayArray: T[] = [], strategy: MergeStrategy<T> = {}): T[] {
+    if (!overlayArray.length) return baseArray;
+    if (!baseArray.length) return overlayArray;
+
+    const { matcher, onMatch = 'override', customMerge } = strategy;
+    const merged = [...baseArray];
+
+    for (const overlayItem of overlayArray) {
+      if (matcher) {
+        const existingIndex = merged.findIndex((baseItem) => matcher(baseItem, overlayItem));
+
+        if (existingIndex >= 0) {
+          if (onMatch === 'merge' && customMerge) {
+            merged[existingIndex] = customMerge(merged[existingIndex], overlayItem);
+          } else {
+            // Default: override
+            merged[existingIndex] = overlayItem;
+          }
+        } else {
+          merged.push(overlayItem);
+        }
+      } else {
+        // No matcher provided, just append
+        merged.push(overlayItem);
+      }
+    }
+
+    return merged;
+  }
+
+  private static isObject(value: unknown): value is Record<string, unknown> {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  private static deepMergeObjects<T extends Record<string, unknown>>(
+    base: T,
+    overlay: Partial<T>,
+    arrayMergeStrategies: Record<string, MergeStrategy<unknown>> = {},
+  ): T {
+    const merged: Record<string, unknown> = { ...base };
+
+    for (const [key, value] of Object.entries(overlay)) {
+      if (value === undefined) continue;
+
+      if (Array.isArray(value) && Array.isArray(merged[key])) {
+        // Use array merge strategy if provided
+        const strategy = arrayMergeStrategies[key] || {};
+        merged[key] = this.mergeArrays(merged[key] as unknown[], value, strategy);
+      } else if (this.isObject(value) && this.isObject(merged[key])) {
+        // Recursively merge objects
+        merged[key] = this.deepMergeObjects(
+          (merged[key] as Record<string, unknown>) || {},
+          value as Record<string, unknown>,
+          arrayMergeStrategies,
+        );
+      } else {
+        // Primitive values: override
+        merged[key] = value;
+      }
+    }
+
+    return merged as T;
+  }
+
+  private static mergeConfigurations(base: Configuration, overlay: Partial<Configuration>): Configuration {
+    return this.deepMergeObjects(base as unknown as Record<string, unknown>, overlay, {
+      publishers: {
+        matcher: (basePublisher: Publisher, overlayPublisher: Publisher) => basePublisher.key === overlayPublisher.key,
+        onMatch: 'merge',
+        customMerge: (basePublisher: Publisher, overlayPublisher: Publisher) =>
+          this.mergePublishers(basePublisher, overlayPublisher),
+      },
+    }) as unknown as Configuration;
+  }
+
+  private static mergePublishers(base: Publisher, overlay: Partial<Publisher>): Publisher {
+    return this.deepMergeObjects(base as unknown as Record<string, unknown>, overlay, {
+      defs: {
+        matcher: (baseDef: Definition, overlayDef: Definition) => {
+          // Match by kind and key if both have keys
+          if ('key' in baseDef && 'key' in overlayDef) {
+            return baseDef.kind === overlayDef.kind && baseDef.key === overlayDef.key;
+          }
+          return false;
+        },
+      },
+      buttons: {
+        matcher: (baseButton: PublisherButton, overlayButton: PublisherButton) =>
+          baseButton.text === overlayButton.text && baseButton.action === overlayButton.action,
+      },
+      addons: {
+        matcher: (baseAddon: Addon, overlayAddon: Addon) => baseAddon.key === overlayAddon.key,
+        onMatch: 'merge',
+        customMerge: (baseAddon: Addon, overlayAddon: Addon) => this.mergeAddons(baseAddon, overlayAddon),
+      },
+    }) as unknown as Publisher;
+  }
+
+  private static mergeAddons(base: Addon, overlay: Partial<Addon>): Addon {
+    return this.deepMergeObjects(base as unknown as Record<string, unknown>, overlay, {
+      tracks: {
+        matcher: (baseTrack: AddonTrack, overlayTrack: AddonTrack) => baseTrack.key === overlayTrack.key,
+      },
+      dependencies: {
+        matcher: (baseDep: AddonDependency, overlayDep: AddonDependency) => baseDep.addon === overlayDep.addon,
+      },
+      incompatibleAddons: {
+        matcher: (baseIncompat: AddonIncompatibleAddon, overlayIncompat: AddonIncompatibleAddon) =>
+          baseIncompat.title === overlayIncompat.title && baseIncompat.creator === overlayIncompat.creator,
+      },
+      configurationAspects: {
+        matcher: (baseAspect: ConfigurationAspect, overlayAspect: ConfigurationAspect) =>
+          baseAspect.key === overlayAspect.key,
+      },
+      techSpecs: {
+        matcher: (baseTechSpec: AddonTechSpec, overlayTechSpec: AddonTechSpec) =>
+          baseTechSpec.name === overlayTechSpec.name,
+      },
+    }) as unknown as Addon;
   }
 
   private static async loadConfigurationFromLocalStorage(): Promise<Configuration> {
