@@ -9,9 +9,7 @@ jobs:
     name: Upload Release Asset
     runs-on: ubuntu-22.04
     env:
-      ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
-      ASSET_DIRECTORY: dist/
-      ASSET_NAME: FlyByWire_Installer_Setup.exe
+      PACKAGE_NAME: FlyByWire-Installer
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,11 +29,34 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386
           sudo apt-get install -y wine32 wine64
+          sudo apt-get install -y flatpak
+          sudo apt-get install -y flatpak-builder
           sudo apt-get install -y rclone
+      - name: Add Flathub Flatpak remote
+        run: flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
       - name: Package installer
         run: |
-          npm run package && rm -rf ./dist/win-unpacked/
+          npm run package:all
+          mkdir -p upload/github/
+          mkdir -p upload/cdn/
+          cp ./dist/latest-linux.yml ./upload/github/
+          cp ./dist/latest-linux.yml ./upload/cdn/
+          for file in ./dist/$PACKAGE_NAME-*-*.*; do
+            [ -e "$file" ] || continue
+            # Extract extension
+            ext="${file##*.}"
+            # Skip .blockmap files
+            if [ "$ext" = "blockmap" ]; then
+              continue
+            fi
+            # Extract arch (the part after the last '-' and before the extension)
+            arch=$(basename "$file" | sed -E 's/.*-([^-]+)\.'"$ext"'$/\1/')
+            # Compose new filename
+            staticname="$PACKAGE_NAME-$arch.$ext"
+            cp "$file" "./upload/github/"
+            cp "$file" "./upload/cdn/$staticname"
+          done
 
       - name: Configure rclone for Cloudflare R2
         run: |
@@ -55,7 +76,7 @@ jobs:
         env:
           CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
           CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
-        run: ./scripts/cdn-cf.sh dist/ installer/rc
+        run: ./scripts/cdn-cf.sh upload/cdn/ installer/rc
 
       - name: Create Release
         id: create_release
@@ -68,13 +89,19 @@ jobs:
           draft: false
           prerelease: true
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
+      - name: Upload all release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.ASSET_PATH }}
-          asset_name: ${{ env.ASSET_NAME }}
-          asset_content_type: application/x-msdos-program
+          UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
+        run: |
+          base_url="${UPLOAD_URL%\{*}"
+          for file in upload/github/*; do
+            [ -e "$file" ] || continue
+            name=$(basename "$file")
+            echo "Uploading $name"
+            curl --request POST \
+              --url "$base_url?name=$name" \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$file"
+          done
