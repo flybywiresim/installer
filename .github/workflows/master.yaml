@@ -8,6 +8,8 @@ jobs:
     # Prevent running this on forks
     if: github.repository_owner == 'flybywiresim'
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     env:
       MASTER_PRE_RELEASE_ID: 36189658
       MASTER_PRE_RELEASE_TAG: vmaster

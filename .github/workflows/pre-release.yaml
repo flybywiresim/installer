@@ -8,6 +8,8 @@ jobs:
   build:
     name: Upload Release Asset
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     env:
       ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
       ASSET_DIRECTORY: dist/
