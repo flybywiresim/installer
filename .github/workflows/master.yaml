@@ -11,8 +11,7 @@ jobs:
     env:
       MASTER_PRE_RELEASE_ID: 36189658
       MASTER_PRE_RELEASE_TAG: vmaster
-      ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
-      ASSET_NAME: FlyByWire_Installer_Setup.exe
+      PACKAGE_NAME: FlyByWire-Installer
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -33,12 +32,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386
           sudo apt-get install -y wine32 wine64
+          sudo apt-get install -y flatpak
+          sudo apt-get install -y flatpak-builder
           sudo apt-get install -y rclone
-
+      - name: Add Flathub Flatpak remote
+        run: flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       - name: Package installer
         run: |
-          npm run package && rm -rf ./dist/win-unpacked/
-
+          npm run package:all
+          mkdir -p upload/github/
+          mkdir -p upload/cdn/
+          cp ./dist/latest-linux.yml ./upload/github/
+          cp ./dist/latest-linux.yml ./upload/cdn/
+          for file in ./dist/$PACKAGE_NAME-*-*.*; do
+            [ -e "$file" ] || continue
+            # Extract extension
+            ext="${file##*.}"
+            # Skip .blockmap files
+            if [ "$ext" = "blockmap" ]; then
+              continue
+            fi
+            # Extract arch (the part after the last '-' and before the extension)
+            arch=$(basename "$file" | sed -E 's/.*-([^-]+)\.'"$ext"'$/\1/')
+            # Compose new filename
+            staticname="$PACKAGE_NAME-$arch.$ext"
+            cp "$file" "./upload/github/$staticname"
+            cp "$file" "./upload/cdn/$staticname"
+          done
       - name: Configure rclone for Cloudflare R2
         run: |
             mkdir -p ~/.config/rclone
@@ -57,33 +77,37 @@ jobs:
         env:
           CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
           CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
-        run: ./scripts/cdn-cf.sh dist/ installer/dev
+        run: ./scripts/cdn-cf.sh upload/cdn/ installer/dev
 
-      - name: Get and delete master pre-release zip asset
-        run: |
-          echo 'checking for first release asset...'
-          assets=$( \
-            curl --location --request GET \
-              --url https://api.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets
-          )
-          if [ $(echo $assets | jq '.[0].size') -eq '0' ]; then
-            echo 'no asset to delete'
-          else
-            assetId=$(echo $assets | jq '.[0].id')
-            echo 'deleting asset '$assetId
-            curl --request DELETE \
-              --url https://api.github.com/repos/${{ github.repository }}/releases/assets/$assetId \
-              --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}'
-          fi
-      - name: Upload release binary
-        uses: actions/upload-release-asset@v1.0.2
+      - name: Delete previous assets from master pre-release
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets{?name,label}
-          asset_path: ${{ env.ASSET_PATH }}
-          asset_name: ${{ env.ASSET_NAME }}
-          asset_content_type: application/x-msdos-program
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo 'Fetching all release assets...'
+          assets=$(curl --location --request GET \
+            --url https://api.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets \
+            --header "authorization: Bearer $GITHUB_TOKEN")
+          asset_ids=$(echo "$assets" | jq '.[].id')
+          for id in $asset_ids; do
+            echo "Deleting asset $id"
+            curl --request DELETE \
+              --url https://api.github.com/repos/${{ github.repository }}/releases/assets/$id \
+              --header "authorization: Bearer $GITHUB_TOKEN"
+          done
+      - name: Upload binaries to GitHub pre-release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for file in upload/github/*; do
+            [ -e "$file" ] || continue
+            name=$(basename "$file")
+            echo "Uploading $name"
+            curl --request POST \
+              --url "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.MASTER_PRE_RELEASE_ID }}/assets?name=$name" \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$file"
+          done
       - name: Update master pre-release body
         run: |
           curl --request PATCH \
@@ -91,5 +115,5 @@ jobs:
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'Content-Type: application/json' \
             --data-raw '{
-              "body": "This pre-release has its ${{ env.ASSET_NAME }} asset updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\nThis link will always point to the latest master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.ASSET_NAME }}"
+              "body": "This pre-release has its assets updated on every commit to the master branch\nDo not use the source code assets, they are never updated\nLast updated on ${{ env.BUILT_DATE_TIME }} from commit ${{ github.sha }}\n\nThis link will always point to the latest Windows master build: https://github.com/${{ github.repository }}/releases/download/${{ env.MASTER_PRE_RELEASE_TAG }}/${{ env.PACKAGE_NAME }}-x64.exe"
             }'

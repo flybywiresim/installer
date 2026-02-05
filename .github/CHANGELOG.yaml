@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.6.1
+    changes:
+      - title: Add Linux versions
+        categories: [Core]
+        authors: [FoxtotSierra]
   - name: 3.6.0
     changes:
       - title: Add Quality Assurance functionality

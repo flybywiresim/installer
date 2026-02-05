@@ -43,11 +43,44 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Install system requirements
-        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 && sudo apt-get install -y wine32 wine64
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386
+          sudo apt-get install -y wine32 wine64
+          sudo apt-get install -y flatpak
+          sudo apt-get install -y flatpak-builder
+      - name: Add Flathub Flatpak remote
+        run: flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       - name: Build Installer
-        run: npm run package
-      - name: Upload PR artifact
+        run: npm run package:all
+      - name: Upload PR artifact (.exe)
         uses: actions/upload-artifact@v4
         with:
-          name: FlyByWire_Installer_Setup
-          path: ./dist/FlyByWire_Installer_Setup.exe
+          name: FlyByWire-Installer-exe
+          path: ./dist/*.exe
+      - name: Upload PR artifact (.AppImage)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyByWire-Installer-AppImage
+          path: ./dist/*.AppImage
+      - name: Upload PR artifact (.rpm)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyByWire-Installer-rpm
+          path: ./dist/*.rpm
+      - name: Upload PR artifact (.deb)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyByWire-Installer-deb
+          path: ./dist/*.deb
+      - name: Upload PR artifact (.snap)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyByWire-Installer-snap
+          path: ./dist/*.snap
+      - name: Upload PR artifact (.flatpak)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyByWire-Installer-flatpak
+          path: ./dist/*.flatpak
