@@ -9,11 +9,16 @@
 
 
 releases:
+  - name: 3.6.1
+    changes:
+      - title: Fetch addon versions asynchronously
+        categories: [Logic]
+        authors: [FoxtrotSierra]
   - name: 3.6.0
     changes:
       - title: Add Quality Assurance functionality
         categories: [Core]
-        authors: [FoxtotSierra]
+        authors: [FoxtrotSierra]
       - title: Fixed "Don't show this again" toggle button
         categories: [UI]
         authors: [JoaoOliveira85]
