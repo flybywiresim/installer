@@ -754,31 +754,35 @@ export class InstallManager {
 
     const fragmenterUpdateChecker = new FragmenterUpdateChecker();
 
-    for (const track of addon.tracks) {
-      if (!installDir) {
-        console.warn(`[InstallManager](checkForUpdates) No install directory for addon ${addon.key}`);
-        store.dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.Unknown } }));
-        continue;
-      }
-      const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, installDir, { forceCacheBust: true });
+    await Promise.all(
+      addon.tracks.map(async (track) => {
+        if (!installDir) {
+          console.warn(`[InstallManager](checkForUpdates) No install directory for addon ${addon.key}`);
+          store.dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.Unknown } }));
+          return;
+        }
+        const updateInfo = await fragmenterUpdateChecker.needsUpdate(track.url, installDir, { forceCacheBust: true });
 
-      let info: ReleaseInfo;
-      if (track.releaseModel.type === 'fragmenter') {
-        info = {
-          name: updateInfo.distributionManifest.version,
-          changelogUrl: undefined,
-          releaseDate: Date.now(),
-        };
-      } else {
-        info = await AddonData.latestNonFragmenterVersionForTrack(addon, track);
-      }
+        let info: ReleaseInfo;
+        if (track.releaseModel.type === 'fragmenter') {
+          info = {
+            name: updateInfo.distributionManifest.version,
+            changelogUrl: undefined,
+            releaseDate: Date.now(),
+          };
+        } else {
+          info = await AddonData.latestNonFragmenterVersionForTrack(addon, track);
+        }
 
-      store.dispatch(setAddonAndTrackLatestReleaseInfo({ addonKey: addon.key, trackKey: track.key, info }));
+        store.dispatch(setAddonAndTrackLatestReleaseInfo({ addonKey: addon.key, trackKey: track.key, info }));
 
-      if (track.key === state.installedTracks[addon.key]?.key && updateInfo.needsUpdate) {
-        store.dispatch(setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.NeedsUpdate } }));
-      }
-    }
+        if (track.key === state.installedTracks[addon.key]?.key && updateInfo.needsUpdate) {
+          store.dispatch(
+            setInstallStatus({ addonKey: addon.key, installState: { status: InstallStatus.NeedsUpdate } }),
+          );
+        }
+      }),
+    );
   }
 
   private static setCurrentInstallState(addon: Addon, installState: InstallState): void {
