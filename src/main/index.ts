@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
-import { NsisUpdater } from 'electron-updater';
+import { NsisUpdater, autoUpdater } from 'electron-updater';
 import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import * as packageInfo from '../../package.json';
 import settings, { persistWindowSettings } from './mainSettings';
@@ -180,31 +180,59 @@ function initializeApp() {
         };
       }
 
-      const autoUpdater = new NsisUpdater(updateOptions);
+      const winAutoUpdater = new NsisUpdater(updateOptions);
+      const appImageAutoUpdater = autoUpdater;
 
-      autoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
-        mainWindow.webContents.send(channels.update.downloaded, { event, releaseNotes, releaseName });
-      });
+      if (process.platform === 'win32') {
+        winAutoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
+          mainWindow.webContents.send(channels.update.downloaded, { event, releaseNotes, releaseName });
+        });
 
-      autoUpdater.addListener('update-available', () => {
-        mainWindow.webContents.send(channels.update.available);
-      });
+        winAutoUpdater.addListener('update-available', () => {
+          mainWindow.webContents.send(channels.update.available);
+        });
 
-      autoUpdater.addListener('error', (error) => {
-        mainWindow.webContents.send(channels.update.error, { error });
-      });
+        winAutoUpdater.addListener('error', (error) => {
+          mainWindow.webContents.send(channels.update.error, { error });
+        });
+      }
+      if (process.platform === 'linux' && process.env.APPIMAGE) {
+        appImageAutoUpdater.addListener('update-downloaded', (event, releaseNotes, releaseName) => {
+          mainWindow.webContents.send(channels.update.downloaded, { event, releaseNotes, releaseName });
+        });
+
+        appImageAutoUpdater.addListener('update-available', () => {
+          mainWindow.webContents.send(channels.update.available);
+        });
+
+        appImageAutoUpdater.addListener('error', (error) => {
+          mainWindow.webContents.send(channels.update.error, { error });
+        });
+      }
 
       // tell autoupdater to check for updates
       mainWindow.once('show', () => {
-        autoUpdater.checkForUpdates().then();
+        if (process.platform === 'win32') {
+          winAutoUpdater.checkForUpdates().then();
+        } else if (process.platform === 'linux' && process.env.APPIMAGE) {
+          appImageAutoUpdater.checkForUpdates().then();
+        }
       });
 
       ipcMain.on(channels.checkForInstallerUpdate, () => {
-        autoUpdater.checkForUpdates().then();
+        if (process.platform === 'win32') {
+          winAutoUpdater.checkForUpdates().then();
+        } else if (process.platform === 'linux' && process.env.APPIMAGE) {
+          appImageAutoUpdater.checkForUpdates().then();
+        }
       });
 
       ipcMain.on('restartAndUpdate', () => {
-        autoUpdater.quitAndInstall();
+        if (process.platform === 'win32') {
+          winAutoUpdater.quitAndInstall();
+        } else if (process.platform === 'linux' && process.env.APPIMAGE) {
+          appImageAutoUpdater.quitAndInstall();
+        }
         app.exit();
       });
     }
