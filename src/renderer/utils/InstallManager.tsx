@@ -665,7 +665,9 @@ export class InstallManager {
       return null;
     }
 
-    const matchingTrack = addon.tracks.find((it) => it.url === install.source);
+    const matchingTrack = addon.tracks.find(
+      (it) => it.url === install.source || it.alternativeUrls?.includes(install.source),
+    );
 
     if (!matchingTrack) {
       return null;
