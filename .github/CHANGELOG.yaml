@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.7.1
+    changes:
+      - title: Fix detection of old install sources
+        categories: [Logic]
+        authors: [FoxtrotSierra]
   - name: 3.7.0
     changes:
       - title: Add Linux compatibility
