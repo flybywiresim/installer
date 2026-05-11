@@ -9,9 +9,14 @@
 
 
 releases:
-  - name: 3.7.1
+  - name: 3.7.2
     changes:
       - title: Fetch addon versions asynchronously
+        categories: [Logic]
+        authors: [FoxtrotSierra]
+  - name: 3.7.1
+    changes:
+      - title: Fix detection of old install sources
         categories: [Logic]
         authors: [FoxtrotSierra]
   - name: 3.7.0
