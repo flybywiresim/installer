@@ -8,6 +8,8 @@ jobs:
   build:
     name: Upload Release Asset
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     env:
       PACKAGE_NAME: FlyByWire-Installer
     steps:
