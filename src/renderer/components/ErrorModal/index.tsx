@@ -58,6 +58,7 @@ export const ErrorModal = (): JSX.Element => {
   };
 
   const handleSimulatorNotInstalled = (sim: TypeOfSimulator) => {
+    settings.set(`mainSettings.simulator.${sim}.enabled`, false);
     settings.set(`mainSettings.simulator.${sim}.basePath`, 'notInstalled');
     reload();
   };

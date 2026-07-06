@@ -108,9 +108,14 @@ export const errorConfig = (
       </>
     ),
     actions: (
-      <Button type={ButtonType.Neutral} onClick={() => handlers.handleSelectInstallPath(Simulators.Msfs2020)}>
-        Select Path
-      </Button>
+      <>
+        <Button type={ButtonType.Neutral} onClick={() => handlers.handleSelectInstallPath(Simulators.Msfs2020)}>
+          Select Path
+        </Button>
+        <Button type={ButtonType.Neutral} onClick={() => handlers.handleSimulatorNotInstalled(Simulators.Msfs2020)}>
+          {"I don't have MSFS 2020 installed"}
+        </Button>
+      </>
     ),
   },
   {
@@ -126,9 +131,14 @@ export const errorConfig = (
       </>
     ),
     actions: (
-      <Button type={ButtonType.Neutral} onClick={() => handlers.handleSelectInstallPath(Simulators.Msfs2024)}>
-        Select Path
-      </Button>
+      <>
+        <Button type={ButtonType.Neutral} onClick={() => handlers.handleSelectInstallPath(Simulators.Msfs2024)}>
+          Select Path
+        </Button>
+        <Button type={ButtonType.Neutral} onClick={() => handlers.handleSimulatorNotInstalled(Simulators.Msfs2024)}>
+          {"I don't have MSFS 2024 installed"}
+        </Button>
+      </>
     ),
   },
   {
