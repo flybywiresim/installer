@@ -9,8 +9,47 @@
 
 
 releases:
+  - name: 3.7.2
+    changes:
+      - title: Fetch addon versions asynchronously
+        categories: [Logic]
+        authors: [FoxtrotSierra]
+  - name: 3.7.1
+    changes:
+      - title: Fix detection of old install sources
+        categories: [Logic]
+        authors: [FoxtrotSierra]
+  - name: 3.7.0
+    changes:
+      - title: Add Linux compatibility
+        categories: [Core]
+        authors: [FoxtrotSierra]
+  - name: 3.6.0
+    changes:
+      - title: Add Quality Assurance functionality
+        categories: [Core]
+        authors: [FoxtrotSierra]
+      - title: Fixed "Don't show this again" toggle button
+        categories: [UI]
+        authors: [JoaoOliveira85]
+      - title: Fix recursive disk reads causing high CPU & RAM usage
+        categories: [Core]
+        authors: [vikingnope]
+  - name: 3.5.1
+    changes:
+      - title: Fix missing settings button for Simbridge
+        categories: [UI]
+        authors: [saschl]
+  - name: 3.5.0
+    changes:
+      - title: Add multi-simulator support (MSFS2020 and MSFS2024)
+        categories: [Core]
+        authors: [FoxtrotSierra]
   - name: 3.4.4
     changes:
+      - title: Fix addon dependencies not detected preventing installation
+        categories: [Core]
+        authors: [FoxtrotSierra]
       - title: Added reload-button to developer configuration
         categories: [Core]
         authors: [Revyn112]
@@ -23,7 +62,7 @@ releases:
       - title: Reset-to-default button for developer configuration
         categories: [Core]
         authors: [Gaudv]
-      - title: fix move people to new installer config url
+      - title: Fix move people to new installer config url
         categories: [Core]
         authors: [FoxtrotSierra]
       - title: Add advanced settings (e.g. disable hardware acceleration)
@@ -339,7 +378,7 @@ releases:
         authors: [FoxtrotSierra]
       - title: Add Windows notification when download complete
         categories: [UX]
-        authors: [FoxtotSierra]
+        authors: [FoxtrotSierra]
       - title: Add changelog for the installer
         categories: [UX]
         authors: [FoxtrotSierra]

@@ -1,3 +1,4 @@
+import os from 'os';
 import React, { FC } from 'react';
 import { InstallStatus, InstallStatusCategories } from 'renderer/components/AddonSection/Enums';
 import { useAppSelector } from 'renderer/redux/store';
@@ -133,7 +134,7 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
           </div>
 
           <div className="flex items-center gap-x-14">
-            {(addon.backgroundService.enableAutostartConfiguration ?? true) && (
+            {(addon.backgroundService.enableAutostartConfiguration ?? true) && os.platform() !== 'linux' && (
               <span
                 className="flex cursor-pointer items-center gap-x-3.5 text-3xl text-quasi-white hover:text-cyan"
                 onClick={handleClickAutostart}
@@ -143,9 +144,16 @@ const BackgroundServiceBanner: FC<BackgroundServiceBannerProps> = ({ publisher, 
               </span>
             )}
 
-            <Button className="w-64" type={ButtonType.Neutral} onClick={handleStartStop}>
-              {isRunning ? 'Stop' : 'Start'}
-            </Button>
+            {os.platform() !== 'linux' && (
+              <Button className="w-64" type={ButtonType.Neutral} onClick={handleStartStop}>
+                {isRunning ? 'Stop' : 'Start'}
+              </Button>
+            )}
+            {os.platform() === 'linux' && (
+              <span className="flex items-center gap-x-3.5 text-3xl text-quasi-white">
+                {isRunning ? 'Stop manually' : 'Start manually (e.g. Steam Proton)'}
+              </span>
+            )}
           </div>
         </StateContainer>
 

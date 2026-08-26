@@ -1,0 +1,25 @@
+extraResources:
+  [
+    "./extraResources/**"
+  ]
+linux:
+  target:
+    - target: snap
+  icon: build/icons/fbw-installer-512x512.png
+  executableName: fbw-installer
+  executableArgs: [
+        --no-sandbox
+  ]
+  desktop:
+    entry: 
+      Name: FlyByWire Installer
+      Comment: Desktop application to install and customize FlyByWire addons
+      Type: Application
+      Categories: "Utility;"
+      StartupWMClass: FlyByWire Installer
+      Icon: ${SNAP}/meta/gui/icon.png
+  files: [
+      "out/**/*"
+  ]
+  category: Utility
+  artifactName: "FlyByWire-Installer-${version}-${arch}.${ext}"

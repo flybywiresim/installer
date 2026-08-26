@@ -44,7 +44,7 @@ export const MyInstall: FC<MyInstallProps> = ({ addon }) => {
   const fulldirectory = (def: DirectoryDefinition) => {
     switch (def.location.in) {
       case 'community':
-        return Directories.inInstallLocation(def.location.path);
+        return Directories.inInstallLocation(addon.simulator, def.location.path);
       case 'package':
         return Directories.inInstallPackage(addon, def.location.path);
       case 'packageCache':

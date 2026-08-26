@@ -10,10 +10,10 @@ jobs:
   build:
     name: Upload Release Asset
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     env:
-      ASSET_PATH: dist/FlyByWire_Installer_Setup.exe
-      ASSET_DIRECTORY: dist/
-      ASSET_NAME: FlyByWire_Installer_Setup.exe
+      PACKAGE_NAME: FlyByWire-Installer
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,11 +28,59 @@ jobs:
         run: npm ci
 
       - name: Install system requirements
-        run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 && sudo apt-get install -y wine32 wine64
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386
+          sudo apt-get install -y wine32 wine64
+          sudo apt-get install -y flatpak
+          sudo apt-get install -y flatpak-builder
+          sudo apt-get install -y rclone
+      - name: Add Flathub Flatpak remote
+        run: flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
       - name: Package installer
         run: |
-          npm run package && rm -rf ./dist/win-unpacked/
+          npm run package:all
+          mkdir -p upload/github/
+          cp ./dist/latest.yml ./upload/github/
+          cp ./dist/latest-linux.yml ./upload/github/
+          cp ./dist/${{ env.PACKAGE_NAME }}-*-*.* ./upload/github/ || true
+          mkdir -p upload/cdn/
+          # Copy and modify latest.yml to use static filenames
+          sed -E "s/${{ env.PACKAGE_NAME }}-[0-9]+\.[0-9]+\.[0-9]+(-[^-]+)?-/${{ env.PACKAGE_NAME }}-/g" ./dist/latest.yml > ./upload/cdn/latest.yml
+          # Copy and modify latest-linux.yml to use static filenames
+          sed -E "s/${{ env.PACKAGE_NAME }}-[0-9]+\.[0-9]+\.[0-9]+(-[^-]+)?-/${{ env.PACKAGE_NAME }}-/g" ./dist/latest-linux.yml > ./upload/cdn/latest-linux.yml
+          for file in ./dist/${{ env.PACKAGE_NAME }}-*-*.*; do
+            [ -e "$file" ] || continue
+            filename=$(basename "$file")
+            
+            # Remove version from filename to create static filename
+            staticname=$(echo "$filename" | sed -E "s/${{ env.PACKAGE_NAME }}-[0-9]+\.[0-9]+\.[0-9]+(-[^-]+)?-/${{ env.PACKAGE_NAME }}-/")
+            
+            cp "$file" "./upload/cdn/$staticname"
+          done
+      - name: Configure rclone for Cloudflare R2
+        run: |
+            mkdir -p ~/.config/rclone
+            cat > ~/.config/rclone/rclone.conf <<EOF
+            [cloudflare-r2]
+            type = s3
+            provider = Cloudflare
+            env_auth = false
+            access_key_id = ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+            secret_access_key = ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+            endpoint = ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+            region = auto
+            EOF
+
+      - name: Upload to CloudFlare CDN
+        env:
+          CLOUDFLARE_CDN_ZONE_ID: ${{ secrets.CLOUDFLARE_CDN_ZONE_ID }}
+          CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
+        run: |
+          ./scripts/cdn-cf.sh upload/cdn/ installer/release
+          ./scripts/cdn-cf.sh upload/cdn/ installer/rc
 
       - name: Create Release
         id: create_release
@@ -45,24 +93,19 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
+      - name: Upload all release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.ASSET_PATH }}
-          asset_name: ${{ env.ASSET_NAME }}
-          asset_content_type: application/x-msdos-program
-
-      - name: Upload to Bunny CDN
-        env:
-          BUNNY_BUCKET_PASSWORD: ${{ secrets.BUNNY_BUCKET_PASSWORD }}
-          BUNNY_SECRET_TOKEN: ${{ secrets.BUNNY_SECRET_TOKEN }}
-        run: ./scripts/cdn.sh dist/ installer/release && ./scripts/cdn.sh dist/ installer/rc
-
-      - name: Upload to CloudFlare CDN
-        env:
-          CLOUDFLARE_BUCKET_PASSWORD: ${{ secrets.CLOUDFLARE_BUCKET_PASSWORD }}
-        run: ./scripts/cdn-cf.sh dist/ installer/release && ./scripts/cdn-cf.sh dist/ installer/rc
+          UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
+        run: |
+          base_url="${UPLOAD_URL%\{*}"
+          for file in upload/github/*; do
+            [ -e "$file" ] || continue
+            name=$(basename "$file")
+            echo "Uploading $name"
+            curl --request POST \
+              --url "$base_url?name=$name" \
+              --header "authorization: Bearer $GITHUB_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$file"
+          done
