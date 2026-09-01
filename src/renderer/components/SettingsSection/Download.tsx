@@ -1,21 +1,9 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { setupMsfsCommunityPath, setupInstallPath, setupTempLocation } from 'renderer/actions/install-path.utils';
 import settings, { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from '../Toggle';
+import { SettingItemProps, SettingsItem } from './General';
 import { enabledSimulators, managedSim, nextSim, setManagedSim, Simulators } from 'renderer/utils/SimManager';
-
-const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
-  <div className="flex flex-row items-center justify-between py-3.5">
-    {/* TODO: Remove this styling later */}
-    <p className="m-0">{name}</p>
-    {children}
-  </div>
-);
-
-interface SettingItemProps<T> {
-  value: T;
-  setValue: (value: T) => void;
-}
 
 interface PathSettingItemProps extends SettingItemProps<string> {
   name: string;

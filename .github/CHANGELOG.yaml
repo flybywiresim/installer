@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.7.3
+    changes:
+      - title: Add advanced settings (e.g. disable hardware acceleration)
+        categories: [Core]
+        authors: [FoxtrotSierra]
   - name: 3.7.2
     changes:
       - title: Fetch addon versions asynchronously
