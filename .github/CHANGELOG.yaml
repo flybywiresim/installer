@@ -9,6 +9,11 @@
 
 
 releases:
+  - name: 3.7.3
+    changes:
+      - title: Add advanced settings (e.g. disable hardware acceleration)
+        categories: [Core]
+        authors: [FoxtrotSierra]
   - name: 3.7.2
     changes:
       - title: Fetch addon versions asynchronously
@@ -63,9 +68,6 @@ releases:
         categories: [Core]
         authors: [Gaudv]
       - title: Fix move people to new installer config url
-        categories: [Core]
-        authors: [FoxtrotSierra]
-      - title: Add advanced settings (e.g. disable hardware acceleration)
         categories: [Core]
         authors: [FoxtrotSierra]
   - name: 3.4.3
