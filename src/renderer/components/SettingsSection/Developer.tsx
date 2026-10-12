@@ -1,17 +1,11 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSetting } from 'renderer/rendererSettings';
 import { Toggle } from 'renderer/components/Toggle';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from 'renderer/components/Button';
 import { ipcRenderer } from 'electron';
 import channels from 'common/channels';
-
-const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
-  <div className="flex flex-row items-center justify-between py-3.5">
-    <p className="m-0">{name}</p>
-    {children}
-  </div>
-);
+import { SettingsItem } from './General';
 
 export const DeveloperSettings: React.FC = () => {
   const [configDownloadUrl, setConfigDownloadUrl] = useSetting<string>('mainSettings.configDownloadUrl');

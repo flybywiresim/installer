@@ -3,7 +3,7 @@ import settings, { useSetting } from 'renderer/rendererSettings';
 import { ipcRenderer } from 'electron';
 import { Toggle } from '../Toggle';
 
-const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
+export const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   <div className="flex flex-row items-center justify-between py-3.5">
     {/* TODO: Remove this styling later */}
     <p className="m-0">{name}</p>
@@ -11,7 +11,7 @@ const SettingsItem: FC<{ name: string }> = ({ name, children }) => (
   </div>
 );
 
-interface SettingItemProps<T> {
+export interface SettingItemProps<T> {
   value: T;
   setValue: (value: T) => void;
 }
